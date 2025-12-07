@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Aneesh Reddy",
+    "title": "Founder & CEO, Capillary Technologies",
+    "image": "/investor-photos/aneesh_reddy.webp",
+    "linkedin": "https://www.linkedin.com/in/aneesh-reddy-38b176b/?originalSubdomain=in",
+    "downloaded": true,
+    "type": "person"
+  },
+  {
+    "name": "Abhinav Daga",
+    "title": "COO, AasaanWill",
+    "image": "/investor-photos/abhinav_daga.webp",
+    "linkedin": "https://www.linkedin.com/in/abhinavdaga/?originalSubdomain=in",
+    "downloaded": true,
+    "type": "person"
+  },
+  {
+    "name": "Harsh Shah",
+    "title": "Co-founder, Fynd",
+    "image": "/investor-photos/harsh_shah.webp",
+    "linkedin": "https://www.linkedin.com/in/harshshah/",
+    "downloaded": true,
+    "type": "person"
+  },
+  {
+    "name": "Sourav Mukherjee",
+    "title": "Founder & CEO, Netscribes",
+    "image": "/investor-photos/sourav_mukherjee.webp",
+    "linkedin": "https://www.linkedin.com/in/souravns/",
+    "downloaded": true,
+    "type": "person"
+  }
+]

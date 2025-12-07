@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Incubate Fund Asia",
+    "image": "/new-institution-logos/incubate_fund_asia.webp",
+    "link": "https://incubatefund.in/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "WEH Ventures",
+    "image": "/new-institution-logos/Weh-VC-transparent.png",
+    "link": "https://www.wehventures.com/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "2 AM VC",
+    "image": "/new-institution-logos/2AM-VC-transparent.png",
+    "link": "https://www.2amvc.com/about-us",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "Pareto Holdings",
+    "image": "/new-institution-logos/pareto-transparent.png",
+    "link": "https://www.pareto20.com/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "Misfits Capital",
+    "image": "/new-institution-logos/misfits_capital.webp",
+    "link": "https://www.misfits.capital/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "FaaD Capital",
+    "image": "/new-institution-logos/faad-transparent.png",
+    "link": "https://www.faad.in/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "Twin and Bull",
+    "image": "/new-institution-logos/twinandbull-transparent.png",
+    "link": "https://www.twinandbull.com/",
+    "downloaded": true,
+    "type": "logo"
+  },
+  {
+    "name": "91VC",
+    "image": "/new-institution-logos/91vc-transparent.png",
+    "link": "https://www.91vc.in/",
+    "downloaded": true,
+    "type": "logo"
+  }
+]
