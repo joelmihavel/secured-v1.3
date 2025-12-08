@@ -203,7 +203,7 @@ export const BottomNavigation: React.FC<{}> = () => {
                     delay: 1.5
                 }}
             >
-                <div className="bg-white/95 backdrop-blur-lg rounded-full shadow-2xl border border-text-main px-6 py-4">
+                <div className="bg-white/95 backdrop-blur-lg rounded-full shadow-2xl border border-text-main px-3 py-2">
                     <div className="flex items-center gap-4">
                         {/* Navigation Links */}
                         {navLinks.map((link) => (
