@@ -80,7 +80,7 @@ export const AsSeenIn = () => {
                                 }}
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.075 }}
                             >
-                                <p className="text-[0.64rem] tracking-wider text-text-main font-body">
+                                <p className="text-[0.64rem] tracking-wider text-text-main font-body uppercase">
                                     {article.title}
                                 </p>
                             </motion.div>
