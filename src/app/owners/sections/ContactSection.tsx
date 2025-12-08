@@ -14,7 +14,7 @@ export const ContactSection = () => {
                             Let's Get <span className="font-zin font-light">Started</span>
                         </h2>
                         <p className="text-subtitle font-body text-text-main/70 max-w-2xl mx-auto">
-                            Fill out the form below and our team will reach out to discuss how we can help you maximize your property's potential.
+                        Fill out the form below and our team will reach out to guide you through Flent-ing your home.
                         </p>
                     </div>
 

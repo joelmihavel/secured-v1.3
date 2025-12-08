@@ -107,7 +107,7 @@ export const Neighborhood = ({
             Neighborhood
           </p>
           <h2 className="font-heading text-white text-fluid-h2">
-            Explore the area around
+          See what's around
             <br />
             <span className="font-zin font-light italic">{locationName}</span>
           </h2>

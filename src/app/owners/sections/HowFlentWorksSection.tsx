@@ -132,7 +132,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            We secure top-tier tenants from our vetted network, ensuring your home is in the best hands. Quick placement, quality guaranteed.
+                            We secure top-tier tenants from our vetted network, ensuring your home is in the best hands. 
                         </p>
                     </div>
                 </div>

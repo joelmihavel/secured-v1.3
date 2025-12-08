@@ -34,7 +34,7 @@ export const FAQ = () => {
                 {
                     id: 4,
                     question: "What does my fully furnished home include?",
-                    answer: "Your home comes fully set up with:\n\nKitchen: Essential cookware, cutlery, pots, pans and everyday kitchenware.\n\nBedroom: An ergonomic work setup, a mattress, a fresh linen set, pillows, set of 5 hangers and soft furnishings.\n\nBathroom: Dispensers, bathroom fixtures (toothbrush holder, toilet holder), shower curtains, basic cleaning tools\n\nAppliances: Microwave, common-area TV and mixer/grinder.\n\nLaundry & Cleaning: Washing machine, drying rack, laundry basket, mop set and cleaning tools.\n\nOther Essentials: Pre-installed Wi-Fi router and extenders, water purifier, power backup and extension cords.\n\nSome homes include additional amenities. A detailed annexure is shared before move-in."
+                    answer: "Apart from the furniture shown in the pictures, your home is fully set up with:\n\nKitchen\nEssential cookware, cutlery, pots, pans, and everyday kitchenware.\n\nAppliances\nMicrowave, grinder, and washing machine.\n\nLaundry and Cleaning\nDrying rack, laundry basket, and basic cleaning tools.\n\nOther Essentials\nPre-installed Wi-Fi router with extenders, water purifier, power backup, and extension cords."
                 }
             ]
         },
@@ -179,7 +179,7 @@ export const FAQ = () => {
                 {
                     id: 26,
                     question: "What happens if I damage something or notice something damaged when I move in?",
-                    answer: "If an item is damaged due to misuse or careless handling, the repair cost is chargeable. If you notice a fault or missing item at move-in, it is fully covered when reported within the 15-day gestation period. Items reported after this period are assessed under partial coverage or tenant responsibility."
+                    answer: "If an item is damaged because of misuse or careless handling, the repair cost will be charged to the tenant. Any fault or missing item found at move-in is fully covered when reported within 15 days from the move-in day."
                 }
             ]
         },

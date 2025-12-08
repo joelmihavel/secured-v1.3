@@ -17,7 +17,7 @@ const stats = [
   {
     value: "58",
     label:
-      "Checks across plumbing, electricals, safety, finishing, and functionality",
+      "Quality checks across utilities and safety",
     color: "text-white",
     bgColor: "bg-forest-green",
     rotation: 3,

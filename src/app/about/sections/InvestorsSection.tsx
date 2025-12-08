@@ -168,7 +168,7 @@ export const InvestorsSection = () => {
                         <span className="font-zin font-light"> (and a chance)</span>
                         </h2>
                         <p className="text-lg text-primary-black/80 leading-relaxed">
-                        Meet the investors who&apos;ve believed in our mission long before the market did.
+                        Meet the investors who believed in our mission long before the market did.
                         </p>
                     </div>
 
