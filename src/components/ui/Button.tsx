@@ -11,17 +11,28 @@ function cn(...inputs: ClassValue[]) {
 
 type PastelColor = "brown" | "violet" | "green" | "orange" | "pink" | "cyan" | "red" | "yellow";
 
-interface ButtonProps extends Omit<HTMLMotionProps<"button">, 'children'> {
+interface BaseButtonProps {
     variant?: "primary" | "primary-rounded" | "secondary" | "white" | "ghost" | "outline";
     size?: "sm" | "md" | "lg";
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     children?: React.ReactNode;
     pastelColor?: PastelColor;
+    className?: string;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant = "primary", size = "md", leftIcon, rightIcon, children, pastelColor, ...props }, ref) => {
+interface ButtonAsButton extends BaseButtonProps, Omit<HTMLMotionProps<"button">, keyof BaseButtonProps> {
+    href?: never;
+}
+
+interface ButtonAsLink extends BaseButtonProps, Omit<HTMLMotionProps<"a">, keyof BaseButtonProps> {
+    href: string;
+}
+
+type ButtonProps = ButtonAsButton | ButtonAsLink;
+
+export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
+    ({ className, variant = "primary", size = "md", leftIcon, rightIcon, children, pastelColor, href, ...props }, ref) => {
         const variants = {
             primary: "bg-black text-white border border-white shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[-1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[-3px] active:translate-y-[3px]",
             "primary-rounded": "bg-black text-white border-2 border-text-main rounded-full shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] hover:shadow-[0px_2px_0px_0px_rgba(21,16,46,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px]",
@@ -79,22 +90,22 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             lg: "gap-2.5",
         };
 
-        return (
-            <motion.button
-                ref={ref}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98, y: 0 }}
-                className={cn(
-                    "inline-flex items-center justify-center font-bold transition-colors duration-200 cursor-pointer font-heading tracking-wide whitespace-nowrap",
-                    variant === "primary-rounded" ? "rounded-full" : "rounded-r-[1rem]",
-                    pastelColor && variant === "secondary" ? "" : variants[variant],
-                    sizes[size],
-                    iconGap[size],
-                    className
-                )}
-                {...(pastelStyle && { style: pastelStyle })}
-                {...props}
-            >
+        const commonProps = {
+            whileHover: { scale: 1.02, y: -2 },
+            whileTap: { scale: 0.98, y: 0 },
+            className: cn(
+                "inline-flex items-center justify-center font-bold transition-colors duration-200 cursor-pointer font-heading tracking-wide whitespace-nowrap",
+                variant === "primary-rounded" ? "rounded-full" : "rounded-r-[1rem]",
+                pastelColor && variant === "secondary" ? "" : variants[variant],
+                sizes[size],
+                iconGap[size],
+                className
+            ),
+            ...(pastelStyle && { style: pastelStyle }),
+        };
+
+        const content = (
+            <>
                 {leftIcon && (
                     <span className={cn("flex items-center justify-center flex-shrink-0", iconSizes[size])}>
                         {leftIcon}
@@ -106,6 +117,29 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                         {rightIcon}
                     </span>
                 )}
+            </>
+        );
+
+        if (href) {
+            return (
+                <motion.a
+                    ref={ref as React.Ref<HTMLAnchorElement>}
+                    href={href}
+                    {...commonProps}
+                    {...(props as Omit<HTMLMotionProps<"a">, keyof BaseButtonProps>)}
+                >
+                    {content}
+                </motion.a>
+            );
+        }
+
+        return (
+            <motion.button
+                ref={ref as React.Ref<HTMLButtonElement>}
+                {...commonProps}
+                {...(props as Omit<HTMLMotionProps<"button">, keyof BaseButtonProps>)}
+            >
+                {content}
             </motion.button>
         );
     }

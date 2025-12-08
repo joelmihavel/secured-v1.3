@@ -2,6 +2,7 @@ import React from "react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
+import { WHATSAPP_LINK } from "@/constants";
 
 const steps = [
     {
@@ -42,7 +43,7 @@ export const HowItWorks = () => {
                             <span className="font-zin font-light">Move-in Tomorrow </span>
                         </h2>
                     </div>
-                    <Button variant="secondary" className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8">
+                    <Button href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" variant="secondary" className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8">
                         Talk to Us <span>→</span>
                     </Button>
                 </div>

@@ -13,6 +13,7 @@ import { RentCalculatorDrawer } from "@/components/homes/RentCalculatorDrawer";
 import { getRoomRentBreakdown, getPropertyRentBreakdown, RentBreakdown, getPropertyDisplayRent } from "@/lib/property-utils";
 import { motion } from "framer-motion";
 import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
+import { WHATSAPP_LINK } from "@/constants";
 
 interface RoomSelectionProps {
     property: Property;
@@ -310,7 +311,7 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                     <Button size="md" className="w-full">
                                                         Book a Tour
                                                     </Button>
-                                                    <Button size="md" variant="ghost" className="w-full bg-white">
+                                                    <Button size="md" variant="ghost" className="w-full bg-white" target="_blank" rel="noopener noreferrer" href={WHATSAPP_LINK}>
                                                         Talk to us
                                                     </Button>
                                                 </>
@@ -421,7 +422,7 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 <Button size="md" className="w-full">
                                                     Book a Tour
                                                 </Button>
-                                                <Button size="md" variant="ghost" className="w-full bg-white">
+                                                <Button  target="_blank" rel="noopener noreferrer"  size="md" variant="ghost" className="w-full bg-white" href={WHATSAPP_LINK}>
                                                     Talk to us
                                                 </Button>
                                             </>

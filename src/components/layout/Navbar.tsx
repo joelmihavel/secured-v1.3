@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useBreadcrumb } from "@/context/BreadcrumbContext";
 import { cn } from "@/lib/utils";
+import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
     { name: "Find Your Home", href: "/homes", sectionId: "" },
@@ -388,6 +389,9 @@ export const Navbar = ({ showDesktopNav = false }: NavbarProps) => {
                                             Our Story
                                         </Button>
                                         <Button
+                                            href={WHATSAPP_LINK}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
                                             className="w-full"
                                             size="sm"
                                             variant="ghost"

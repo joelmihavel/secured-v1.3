@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { WHATSAPP_LINK } from "@/constants";
 
 // WhatsApp Icon Component
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -17,10 +18,6 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
     </svg>
 );
 
-interface BottomNavProps {
-    whatsappNumber?: string;
-    whatsappMessage?: string;
-}
 
 const navLinks = [
     { name: "Rooms", href: "#rooms" },
@@ -30,10 +27,7 @@ const navLinks = [
     { name: "FAQ", href: "#faq" },
 ];
 
-export const BottomNavigation: React.FC<BottomNavProps> = ({
-    whatsappNumber = "+919876543210",
-    whatsappMessage = "Hi! I'm interested in this property."
-}) => {
+export const BottomNavigation: React.FC<{}> = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [activeSection, setActiveSection] = useState("Rooms");
     const [showMobileNav, setShowMobileNav] = useState(false);
@@ -95,13 +89,6 @@ export const BottomNavigation: React.FC<BottomNavProps> = ({
         }, 300); // Match the modal close animation duration
     };
 
-    const handleWhatsAppClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        const encodedMessage = encodeURIComponent(whatsappMessage);
-        const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodedMessage}`;
-        window.open(whatsappUrl, "_blank");
-    };
-
     return (
         <>
             {/* Mobile Navigation (Expandable Menu) */}
@@ -155,7 +142,9 @@ export const BottomNavigation: React.FC<BottomNavProps> = ({
 
                                     {/* Right: CTA */}
                                     <Button
-                                        onClick={handleWhatsAppClick}
+                                        href={WHATSAPP_LINK}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         variant="secondary"
                                         size="md"
                                         leftIcon={<WhatsAppIcon />}
@@ -233,7 +222,9 @@ export const BottomNavigation: React.FC<BottomNavProps> = ({
 
                         {/* Chat With Us Button */}
                         <Button
-                            onClick={handleWhatsAppClick}
+                            href={WHATSAPP_LINK}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             variant="secondary"
                             size="md"
                             leftIcon={<WhatsAppIcon />}
