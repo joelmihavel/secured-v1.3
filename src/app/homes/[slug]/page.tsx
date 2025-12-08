@@ -12,14 +12,54 @@ import { BottomNavigation } from "@/components/ui/BottomNavigation";
 import { BreadcrumbSetter } from "@/components/utils/BreadcrumbSetter";
 import { Amenities } from "./sections/Amenities";
 import { HowItWorks } from "./sections/HowItWorks";
+import type { Metadata } from "next";
 
-
+const baseTitle = "Flent | India's New Standard of Renting";
+const baseDescription = "Unlock India's top 1% rental homes with Flent. Fully furnished, designer homes with no broker hassles and minimal security deposit. Just bring your clothes, and you're home.";
 
 export async function generateStaticParams() {
     const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
     return properties.map((property) => ({
         slug: property.fieldData.slug,
     }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
+    const property = properties.find((p) => p.fieldData.slug === slug);
+
+    if (!property) {
+        return {
+            title: baseTitle,
+            description: baseDescription,
+        };
+    }
+
+    const propertyName = property.fieldData.name;
+    const title = `${propertyName} | ${baseTitle}`;
+    const description = property.fieldData["property-description"] || property.fieldData["property-long-description"] || baseDescription;
+    
+    // Use property featured photo or thumbnail for OG image
+    const ogImage = property.fieldData["property-featured-photo"]?.url 
+        || property.fieldData["property-thumbnail"]?.url 
+        || "/images/og-image.jpg";
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images: ogImage,
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+            images: ogImage,
+        },
+    };
 }
 
 export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
