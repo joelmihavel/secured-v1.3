@@ -21,6 +21,7 @@ interface RoomSelectionProps {
     occupants: Occupant[];
     allImages: string[];
     photoCategories: PhotoCategory[];
+    slug: string;
 }
 
 interface RoomDisplayData {
@@ -46,7 +47,7 @@ interface RoomDisplayData {
     raw: Room;
 }
 
-export const RoomSelection = ({ property, rooms, occupants, allImages, photoCategories }: RoomSelectionProps) => {
+export const RoomSelection = ({ property, rooms, occupants, allImages, photoCategories, slug }: RoomSelectionProps) => {
     const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
     const [calculatorData, setCalculatorData] = useState<{
         title: string;
@@ -308,7 +309,13 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Button size="md" className="w-full">
+                                                    <Button 
+                                                        size="md" 
+                                                        className="w-full"
+                                                        href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
                                                         Book a Tour
                                                     </Button>
                                                     <Button size="md" variant="ghost" className="w-full bg-white" target="_blank" rel="noopener noreferrer" href={WHATSAPP_LINK}>
@@ -419,7 +426,13 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                     <div className="space-y-3">
                                         {property.fieldData["full-house-available"] ? (
                                             <>
-                                                <Button size="md" className="w-full">
+                                                <Button 
+                                                    size="md" 
+                                                    className="w-full"
+                                                    href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
                                                     Book a Tour
                                                 </Button>
                                                 <Button  target="_blank" rel="noopener noreferrer"  size="md" variant="ghost" className="w-full bg-white" href={WHATSAPP_LINK}>

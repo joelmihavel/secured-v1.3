@@ -10,9 +10,10 @@ interface AmenitiesProps {
     property: Property;
     amenities: Amenity[];
     allImages: string[];
+    slug: string;
 }
 
-export const Amenities = ({ property, amenities, allImages }: AmenitiesProps) => {
+export const Amenities = ({ property, amenities, allImages, slug }: AmenitiesProps) => {
     // Use property featured photo, fallback to random image logic
     const featuredPhoto = property.fieldData["property-featured-photo"]?.url;
 
@@ -58,10 +59,15 @@ export const Amenities = ({ property, amenities, allImages }: AmenitiesProps) =>
                             Save 10% month if <br />
                             booked by Dec 30
                         </h2>
-                        <button className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base">
+                        <a 
+                            href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base"
+                        >
                             Book a Tour
                             <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>

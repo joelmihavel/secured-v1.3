@@ -127,6 +127,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
                     occupants={propertyOccupants}
                     allImages={allImages}
                     photoCategories={photoCategories}
+                    slug={slug}
                 />
             </section>
 
@@ -135,6 +136,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
                     property={property}
                     amenities={propertyAmenities}
                     allImages={allImages}
+                    slug={slug}
                 />
             </section>
 
