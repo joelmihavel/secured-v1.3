@@ -1,5 +1,6 @@
 /// <reference types="@types/google.maps" />
 import { useEffect, useRef } from 'react';
+import { loadGoogleMapsAPI } from '@/lib/googleMapsLoader';
 
 interface UseGooglePlacesAutocompleteProps {
   onPlaceSelected: (place: any) => void;
@@ -16,21 +17,14 @@ export const useGooglePlacesAutocomplete = ({
   const autocompleteRef = useRef<any>(null);
 
   useEffect(() => {
-    // Check if Google Maps API is already loaded
-    if (typeof window !== 'undefined' && (window as any).google?.maps?.places) {
-      initAutocomplete();
-      return;
-    }
-
-    // Load Google Maps API
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-      initAutocomplete();
-    };
-    document.head.appendChild(script);
+    // Use the centralized loader to prevent duplicate script loading
+    loadGoogleMapsAPI(apiKey, ['places'])
+      .then(() => {
+        initAutocomplete();
+      })
+      .catch((error) => {
+        console.error('Failed to load Google Maps API:', error);
+      });
 
     return () => {
       // Cleanup
@@ -67,3 +61,4 @@ export const useGooglePlacesAutocomplete = ({
 
   return inputRef;
 };
+
