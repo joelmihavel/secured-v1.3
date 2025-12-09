@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 
 import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
 import { ScrollRestoration } from "@/components/utils/ScrollRestoration";
+import { CSPostHogProvider } from "./providers";
 
 // ... existing imports
 
@@ -398,12 +399,15 @@ export default function RootLayout({
           }}
         />
 
-        <BreadcrumbProvider>
-          <ScrollRestoration />
-          <Navbar />
-          {children}
-          <Footer />
-        </BreadcrumbProvider>
+
+        <CSPostHogProvider>
+          <BreadcrumbProvider>
+            <ScrollRestoration />
+            <Navbar />
+            {children}
+            <Footer />
+          </BreadcrumbProvider>
+        </CSPostHogProvider>
       </body>
     </html>
   );
