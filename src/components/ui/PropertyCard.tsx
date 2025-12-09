@@ -130,10 +130,7 @@ export const PropertyCard = ({
   }, [isHovering, images.length, variant]);
 
   const isComingSoon = variant === "coming-soon";
-  const isOccupied =
-    !isComingSoon &&
-    !property.fieldData.available &&
-    !property.fieldData["available-from"];
+  const isOccupied = !isComingSoon && !property.fieldData.available;
 
   // Calculate derived data
   const propertyRoomIds = property.fieldData.rooms || [];
@@ -424,7 +421,7 @@ export const PropertyCard = ({
             <>
               {/* Availability & Tags */}
               <div className="flex items-center gap-3 flex-wrap">
-                {property.fieldData.available ? (
+                {/* {property.fieldData.available ? (
                   <div className="flex items-center gap-1 md:gap-2 text-text-main/80">
                     <Calendar size={16} className="md:w-[18px] md:h-[18px]" />
                     <span className="font-body font-medium text-xs">
@@ -446,15 +443,14 @@ export const PropertyCard = ({
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 md:gap-2 bg-brick-red text-black px-3 py-1 rounded-full">
-                    <Calendar
-                      size={16}
-                      className="md:w-[18px] md:h-[18px] text-white"
-                    />
-                    <span className="font-body font-medium text-xs text-white">
-                      Occupied
-                    </span>
-                  </div>
+                  <Occupied />
+                )} */}
+                {property.fieldData.available === false ? (
+                  <Occupied />
+                ) : (
+                  <Available
+                    availableFrom={property.fieldData["available-from"]}
+                  />
                 )}
                 {property.fieldData["female-only"] && (
                   <span className="bg-pink-200 text-pink-800 px-3 py-1 rounded-full text-xs font-bold font-body">
@@ -559,4 +555,52 @@ export const PropertyCard = ({
       </div>
     </div>
   );
+};
+
+const Occupied = () => (
+  <div className="flex items-center gap-1 md:gap-2 bg-brick-red text-black px-3 py-1 rounded-full">
+    <Calendar size={16} className="md:w-[18px] md:h-[18px] text-white" />
+    <span className="font-body font-medium text-xs text-white">Occupied</span>
+  </div>
+);
+
+const Available = ({
+  availableFrom,
+}: {
+  availableFrom: string | undefined;
+}) => {
+  const availableFromText = getAvailableFromText(availableFrom);
+  return (
+    <div className="flex items-center gap-1 md:gap-2 text-text-main/80">
+      <Calendar size={16} className="md:w-[18px] md:h-[18px]" />
+      <span className="font-body font-medium text-xs">{availableFromText}</span>
+    </div>
+  );
+};
+
+const getAvailableFromText = (availableFrom: string | undefined) => {
+  if (availableFrom) {
+    const availableFromDate = new Date(availableFrom);
+    const today = new Date();
+    const diffTime = today.getTime() - availableFromDate.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays > 0) {
+      return "Available now";
+    }
+
+    if (diffDays < 0 && diffDays >= -30) {
+      return "Available now";
+    }
+
+    // for dates 30+ days in future
+    return (
+      "Available from " +
+      availableFromDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    );
+  }
+
+  return "Available now";
 };
