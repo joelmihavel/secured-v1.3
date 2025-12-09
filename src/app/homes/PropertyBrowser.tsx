@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -22,16 +22,91 @@ export const PropertyBrowser = ({
   rooms = [],
   occupants = [],
 }: PropertyBrowserProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const initialLocationId = searchParams.get("locationId") || "";
+  const locationNameParam = searchParams.get("location") || "";
+  const isSyncingFromUrl = useRef(false);
+
+  // Find location ID from location name
+  const locationIdFromUrl = useMemo(() => {
+    if (!locationNameParam) return "";
+    const location = locations.find(
+      (loc) =>
+        loc.fieldData.name.toLowerCase().trim() ===
+        decodeURIComponent(locationNameParam).toLowerCase().trim()
+    );
+    return location?.id || "";
+  }, [locationNameParam, locations]);
 
   const [filters, setFilters] = useState<SearchFilters>({
     minBudget: 0,
     maxBudget: Infinity,
-    locationId: initialLocationId,
+    locationId: locationIdFromUrl,
     moveInDate: "",
     showAvailable: true,
   });
+
+  // Create a reverse map: locationId -> locationName
+  const locationNameMap = useMemo(
+    () => new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
+    [locations]
+  );
+
+  // Sync filters state when URL param changes (external navigation)
+  useEffect(() => {
+    if (locationIdFromUrl !== filters.locationId) {
+      isSyncingFromUrl.current = true;
+      setFilters((prev) => ({
+        ...prev,
+        locationId: locationIdFromUrl,
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationIdFromUrl]);
+
+  // Update URL when location filter changes (from user interaction)
+  useEffect(() => {
+    // Skip if we're currently syncing from URL
+    if (isSyncingFromUrl.current) {
+      isSyncingFromUrl.current = false;
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+    const currentLocationName = filters.locationId
+      ? locationNameMap.get(filters.locationId)
+      : null;
+
+    const urlLocationName = locationNameParam
+      ? decodeURIComponent(locationNameParam)
+      : "";
+
+    // Only update URL if it's different from current state
+    if (filters.locationId && currentLocationName) {
+      if (urlLocationName !== currentLocationName) {
+        params.set("location", encodeURIComponent(currentLocationName));
+        const newUrl = params.toString()
+          ? `${pathname}?${params.toString()}`
+          : pathname;
+        router.replace(newUrl, { scroll: false });
+      }
+    } else if (!filters.locationId && urlLocationName) {
+      // Clear location from URL if filter is cleared
+      params.delete("location");
+      const newUrl = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
+      router.replace(newUrl, { scroll: false });
+    }
+  }, [
+    filters.locationId,
+    locationNameMap,
+    pathname,
+    router,
+    searchParams,
+    locationNameParam,
+  ]);
 
   const locationMap = useMemo(
     () => new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
