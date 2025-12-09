@@ -31,6 +31,14 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
         setFilters({ ...filters, minBudget: min, maxBudget: max });
     };
 
+    // Determine the selected budget option based on current filters
+    const getBudgetValue = () => {
+        if (filters.minBudget === 25000 && filters.maxBudget === 35000) return "25-35";
+        if (filters.minBudget === 35000 && filters.maxBudget === 45000) return "35-45";
+        if (filters.minBudget === 45000 && filters.maxBudget === Infinity) return "45+";
+        return "all";
+    };
+
     return (
         <div className="w-full bg-night-violet rounded-2xl p-6 flex flex-col lg:flex-row items-center gap-4 lg:gap-6 shadow-lg">
             {/* Budget Range */}
@@ -38,6 +46,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 <label className="block text-text-invert text-sm font-medium mb-2">Budget Range</label>
                 <div className="relative">
                     <select
+                        value={getBudgetValue()}
                         onChange={handleBudgetChange}
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none cursor-pointer"
                     >

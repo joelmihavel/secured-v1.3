@@ -26,6 +26,10 @@ export const PropertyBrowser = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const locationNameParam = searchParams.get("location") || "";
+  const minBudgetParam = searchParams.get("minBudget");
+  const maxBudgetParam = searchParams.get("maxBudget");
+  const moveInDateParam = searchParams.get("moveInDate") || "";
+  const showAvailableParam = searchParams.get("showAvailable");
   const isSyncingFromUrl = useRef(false);
 
   // Find location ID from location name
@@ -39,13 +43,40 @@ export const PropertyBrowser = ({
     return location?.id || "";
   }, [locationNameParam, locations]);
 
-  const [filters, setFilters] = useState<SearchFilters>({
-    minBudget: 0,
-    maxBudget: Infinity,
-    locationId: locationIdFromUrl,
-    moveInDate: "",
-    showAvailable: true,
-  });
+  // Initialize filters from URL params
+  const initialFilters = useMemo<SearchFilters>(() => {
+    let minBudget = 0;
+    let maxBudget = Infinity;
+
+    if (minBudgetParam) {
+      const parsed = parseInt(minBudgetParam, 10);
+      if (!isNaN(parsed)) minBudget = parsed;
+    }
+
+    if (maxBudgetParam) {
+      const parsed = parseInt(maxBudgetParam, 10);
+      if (!isNaN(parsed)) maxBudget = parsed;
+    }
+
+    const showAvailable =
+      showAvailableParam === null ? true : showAvailableParam === "true";
+
+    return {
+      minBudget,
+      maxBudget,
+      locationId: locationIdFromUrl,
+      moveInDate: moveInDateParam,
+      showAvailable,
+    };
+  }, [
+    locationIdFromUrl,
+    minBudgetParam,
+    maxBudgetParam,
+    moveInDateParam,
+    showAvailableParam,
+  ]);
+
+  const [filters, setFilters] = useState<SearchFilters>(initialFilters);
 
   // Create a reverse map: locationId -> locationName
   const locationNameMap = useMemo(
@@ -55,17 +86,68 @@ export const PropertyBrowser = ({
 
   // Sync filters state when URL param changes (external navigation)
   useEffect(() => {
+    const urlFilters: Partial<SearchFilters> = {};
+    let hasChanges = false;
+
+    // Check location
     if (locationIdFromUrl !== filters.locationId) {
+      urlFilters.locationId = locationIdFromUrl;
+      hasChanges = true;
+    }
+
+    // Check minBudget
+    const urlMinBudget = minBudgetParam ? parseInt(minBudgetParam, 10) : 0;
+    if (!isNaN(urlMinBudget) && urlMinBudget !== filters.minBudget) {
+      urlFilters.minBudget = urlMinBudget;
+      hasChanges = true;
+    } else if (!minBudgetParam && filters.minBudget !== 0) {
+      urlFilters.minBudget = 0;
+      hasChanges = true;
+    }
+
+    // Check maxBudget
+    const urlMaxBudget = maxBudgetParam
+      ? parseInt(maxBudgetParam, 10)
+      : Infinity;
+    if (!isNaN(urlMaxBudget) && urlMaxBudget !== filters.maxBudget) {
+      urlFilters.maxBudget = urlMaxBudget;
+      hasChanges = true;
+    } else if (!maxBudgetParam && filters.maxBudget !== Infinity) {
+      urlFilters.maxBudget = Infinity;
+      hasChanges = true;
+    }
+
+    // Check moveInDate
+    if (moveInDateParam !== filters.moveInDate) {
+      urlFilters.moveInDate = moveInDateParam;
+      hasChanges = true;
+    }
+
+    // Check showAvailable
+    const urlShowAvailable =
+      showAvailableParam === null ? true : showAvailableParam === "true";
+    if (urlShowAvailable !== filters.showAvailable) {
+      urlFilters.showAvailable = urlShowAvailable;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
       isSyncingFromUrl.current = true;
       setFilters((prev) => ({
         ...prev,
-        locationId: locationIdFromUrl,
+        ...urlFilters,
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [locationIdFromUrl]);
+  }, [
+    locationIdFromUrl,
+    minBudgetParam,
+    maxBudgetParam,
+    moveInDateParam,
+    showAvailableParam,
+  ]);
 
-  // Update URL when location filter changes (from user interaction)
+  // Update URL when filters change (from user interaction)
   useEffect(() => {
     // Skip if we're currently syncing from URL
     if (isSyncingFromUrl.current) {
@@ -74,26 +156,71 @@ export const PropertyBrowser = ({
     }
 
     const params = new URLSearchParams(searchParams.toString());
+    let urlChanged = false;
+
+    // Update location
     const currentLocationName = filters.locationId
       ? locationNameMap.get(filters.locationId)
       : null;
-
     const urlLocationName = locationNameParam
       ? decodeURIComponent(locationNameParam)
       : "";
 
-    // Only update URL if it's different from current state
     if (filters.locationId && currentLocationName) {
       if (urlLocationName !== currentLocationName) {
         params.set("location", encodeURIComponent(currentLocationName));
-        const newUrl = params.toString()
-          ? `${pathname}?${params.toString()}`
-          : pathname;
-        router.replace(newUrl, { scroll: false });
+        urlChanged = true;
       }
     } else if (!filters.locationId && urlLocationName) {
-      // Clear location from URL if filter is cleared
       params.delete("location");
+      urlChanged = true;
+    }
+
+    // Update minBudget
+    if (filters.minBudget !== 0) {
+      if (minBudgetParam !== filters.minBudget.toString()) {
+        params.set("minBudget", filters.minBudget.toString());
+        urlChanged = true;
+      }
+    } else if (minBudgetParam) {
+      params.delete("minBudget");
+      urlChanged = true;
+    }
+
+    // Update maxBudget
+    if (filters.maxBudget !== Infinity) {
+      if (maxBudgetParam !== filters.maxBudget.toString()) {
+        params.set("maxBudget", filters.maxBudget.toString());
+        urlChanged = true;
+      }
+    } else if (maxBudgetParam) {
+      params.delete("maxBudget");
+      urlChanged = true;
+    }
+
+    // Update moveInDate
+    if (filters.moveInDate) {
+      if (moveInDateParam !== filters.moveInDate) {
+        params.set("moveInDate", filters.moveInDate);
+        urlChanged = true;
+      }
+    } else if (moveInDateParam) {
+      params.delete("moveInDate");
+      urlChanged = true;
+    }
+
+    // Update showAvailable
+    if (filters.showAvailable !== true) {
+      if (showAvailableParam !== "false") {
+        params.set("showAvailable", "false");
+        urlChanged = true;
+      }
+    } else if (showAvailableParam === "false") {
+      params.delete("showAvailable");
+      urlChanged = true;
+    }
+
+    if (urlChanged) {
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
         : pathname;
@@ -101,11 +228,19 @@ export const PropertyBrowser = ({
     }
   }, [
     filters.locationId,
+    filters.minBudget,
+    filters.maxBudget,
+    filters.moveInDate,
+    filters.showAvailable,
     locationNameMap,
     pathname,
     router,
     searchParams,
     locationNameParam,
+    minBudgetParam,
+    maxBudgetParam,
+    moveInDateParam,
+    showAvailableParam,
   ]);
 
   const locationMap = useMemo(
