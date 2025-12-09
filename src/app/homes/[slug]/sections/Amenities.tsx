@@ -77,9 +77,9 @@ export const Amenities = ({ property, amenities, allImages, slug }: AmenitiesPro
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch mx-auto">
                     {/* Amenities List (60%) */}
                     <div className="w-full lg:w-[60%]">
-                        <h2 className="font-heading text-2xl md:text-fluid-h2 text-text-main mb-6 md:mb-8">
-                            Highlights of this home
-                        </h2>
+                        <h3 className="font-fluid-heading text-2xl md:text-fluid-h2 text-text-main mb-6 md:mb-8">
+                            This home comes with
+                        </h3>
 
                         <div className="flex flex-wrap gap-3 md:gap-4">
                             {amenities.map((amenity, index) => {
@@ -127,16 +127,16 @@ export const Amenities = ({ property, amenities, allImages, slug }: AmenitiesPro
                     <div className="w-full lg:w-[40%]">
                         <div className="bg-[#8B5E3C] rounded-3xl p-8 md:p-10 text-white relative overflow-hidden h-full flex flex-col justify-center shadow-2xl">
                             {/* Background Pattern Overlay */}
-                            <div className="absolute inset-0 opacity-10 pointer-events-none">
-                                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                                    <defs>
-                                        <pattern id="chevron-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                                            <path d="M0 10 L10 0 L20 10" fill="none" stroke="currentColor" strokeWidth="2" />
-                                        </pattern>
-                                    </defs>
-                                    <rect width="100%" height="100%" fill="url(#chevron-pattern)" />
-                                </svg>
-                            </div>
+                            <div
+                                className="absolute inset-0 pointer-events-none"
+                                style={{
+                                    backgroundImage: 'url(/patterns/moroccan.svg)',
+                                    backgroundRepeat: 'repeat',
+                                    opacity: 0.1,
+                                    maskImage: 'linear-gradient(to bottom, black 0%, transparent 20%, transparent 80%, black 100%)',
+                                    WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 20%, transparent 80%, black 100%)',
+                                }}
+                            />
 
                             <div className="relative z-10">
                                 <h3 className="font-heading text-2xl md:text-3xl text-white mb-6">

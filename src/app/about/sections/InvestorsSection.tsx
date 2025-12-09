@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { VerticalInfiniteScroll } from "@/components/ui/vertical-infinite-scroll";
+import { HorizontalInfiniteScroll } from "@/components/ui/horizontal-infinite-scroll";
 import { cn } from "@/lib/utils";
 import investorsData from "@/data/investors-data.json";
 import institutionsData from "@/data/institutions-data.json";
@@ -112,7 +113,7 @@ const InvestorCard = ({ item }: { item: any }) => {
 
     const personContent = (
         <div className="bg-white p-3 rounded-2xl shadow-sm hover:shadow-md transition-shadow w-full max-w-[280px] mx-auto">
-            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-100">
+            <div className="relative aspect-[3/5] w-full rounded-xl overflow-hidden bg-gray-100">
                 <Image
                     src={item.src}
                     alt={item.name}
@@ -152,7 +153,35 @@ const VerticalColumn = ({ items, direction = "up", speed = 50 }: { items: any[],
     );
 };
 
+const HorizontalRow = ({ items, direction = "left", speed = 30 }: { items: any[], direction?: "left" | "right", speed?: number }) => {
+    return (
+        <div className="w-full overflow-hidden relative">
+            <HorizontalInfiniteScroll speed={speed} direction={direction} pauseOnHover={false}>
+                <div className="flex flex-row gap-4 pr-4">
+                    {items.map((item, index) => (
+                        <div key={index} className="shrink-0 w-[200px]">
+                            <InvestorCard item={item} />
+                        </div>
+                    ))}
+                </div>
+            </HorizontalInfiniteScroll>
+        </div>
+    );
+};
+
 export const InvestorsSection = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     return (
         <OpenSection className="bg-ground-brown/6">
             <div className="container mx-auto px-4 md:px-6">
@@ -164,23 +193,30 @@ export const InvestorsSection = () => {
                             </span>
                         </div>
                         <h2 className="text-5xl md:text-7xl font-bold font-heading leading-[1.1] tracking-tight text-text-main mb-8">
-                        They gave us money 
-                        <span className="font-zin font-light"> (and a chance)</span>
+                            They gave us money
+                            <span className="font-zin font-light"> (and a chance)</span>
                         </h2>
                         <p className="text-lg text-primary-black/80 leading-relaxed">
-                        Meet the investors who believed in our mission long before the market did.
+                            Meet the investors who believed in our mission long before the market did.
                         </p>
                     </div>
 
-                    {/* Right Columns */}
-                    <div className="lg:col-span-8 flex justify-center gap-6">
-                        <div className="w-full max-w-[280px]">
-                            <VerticalColumn items={COLUMN_1} speed={30} direction="up" />
+                    {/* Carousel Columns - Desktop: Vertical, Mobile: Horizontal */}
+                    {isMobile ? (
+                        <div className="lg:col-span-8 flex flex-col gap-4 w-full overflow-hidden -mx-4 px-0">
+                            <HorizontalRow items={COLUMN_1} speed={25} direction="left" />
+                            <HorizontalRow items={COLUMN_2} speed={30} direction="right" />
                         </div>
-                        <div className="w-full max-w-[280px]">
-                            <VerticalColumn items={COLUMN_2} speed={40} direction="down" />
+                    ) : (
+                        <div className="lg:col-span-8 flex justify-center gap-6">
+                            <div className="w-full max-w-[280px]">
+                                <VerticalColumn items={COLUMN_1} speed={30} direction="up" />
+                            </div>
+                            <div className="w-full max-w-[280px]">
+                                <VerticalColumn items={COLUMN_2} speed={40} direction="down" />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </OpenSection>

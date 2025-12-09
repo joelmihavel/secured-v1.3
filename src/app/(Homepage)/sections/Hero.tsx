@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Property } from "@/lib/webflow";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Marquee from "@/components/ui/image-tiles";
 
 interface HeroProps {
     properties?: Property[];
@@ -28,9 +30,17 @@ export const Hero = ({ properties = [] }: HeroProps) => {
         ];
     }, []);
 
+    // Transform heroImages for marquee component
+    const heroMarqueeItems = React.useMemo(() => {
+        return heroImages.map((src, index) => ({
+            src,
+            alt: `Flent Home ${index + 1}`
+        }));
+    }, [heroImages]);
+
     return (
         <div
-            className="relative flex w-full h-screen min-h-[600px] justify-center items-center overflow-hidden"
+            className="relative flex flex-col w-full h-screen min-h-[600px] md:justify-center items-center overflow-hidden"
         >
             {/* Background Pattern Layer */}
             <div
@@ -51,7 +61,7 @@ export const Hero = ({ properties = [] }: HeroProps) => {
             />
 
             <div
-                className="z-40 text-center space-y-6 items-center flex flex-col px-4 max-w-6xl mx-auto"
+                className="z-40 text-center space-y-6 items-center flex flex-col px-4 max-w-6xl mx-auto mt-24 md:mt-0"
             >
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
@@ -83,13 +93,14 @@ export const Hero = ({ properties = [] }: HeroProps) => {
                 </motion.div>
             </div>
 
-            <div className="absolute inset-0 z-20 pointer-events-none">
+            {/* Desktop: Parallax Images */}
+            <div className="hidden md:block absolute inset-0 z-20 pointer-events-none">
                 {/* FOLD 1 IMAGES */}
                 {heroImages[3] && (
                     <ParallaxImage
                         depth={0.5}
                         delay={0.2}
-                        className="top-[16%] left-[4%] md:top-[16%] md:left-[4%]"
+                        className="top-[9%] left-[4%] md:top-[16%] md:left-[4%]"
                         imgClassName="w-28 h-28 md:w-40 md:h-40 cursor-pointer rounded-xl shadow-lg"
                         src={heroImages[3]}
                     />
@@ -143,6 +154,31 @@ export const Hero = ({ properties = [] }: HeroProps) => {
                     />
                 )}
             </div>
+
+            {/* Mobile: Image Marquee */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1.0, ease: CLASSY_EASE, delay: 0.8 }}
+                className="md:hidden w-full mt-8 z-20"
+            >
+                <Marquee
+                    speed={8}
+                    itemClassName="w-[20rem] !py-0 !pl-3"
+                    items={heroMarqueeItems}
+                    renderItem={(item) => (
+                        <div className="p-1.5 border border-black/5 rounded-xl bg-white shadow-sm">
+                            <Image
+                                src={item.src}
+                                alt={item.alt}
+                                width={240}
+                                height={160}
+                                className="w-full h-auto object-cover rounded-lg"
+                            />
+                        </div>
+                    )}
+                />
+            </motion.div>
         </div>
     );
 };

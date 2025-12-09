@@ -9,7 +9,7 @@ export const HiringSection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                 {/* Left Column: Heading */}
                 <div className="space-y-2">
-                    <h2 className="text-fluid-h2 text-brand-yellow leading-[1.1] font-heading font-bold">
+                    <h2 className="text-fluid-h2 text-brand-yellow ">
                         <span className="block">
                             Resumes don’t impress us.
                         </span>

@@ -20,10 +20,6 @@ const LOCK_IN_OPTIONS: { value: LockInPeriod; label: string }[] = [
 ];
 
 export const LockInSlider = ({ value, onChange, className, compact = false }: LockInSliderProps) => {
-    const getPosition = (val: LockInPeriod): number => {
-        const index = LOCK_IN_OPTIONS.findIndex(opt => opt.value === val);
-        return (index / (LOCK_IN_OPTIONS.length - 1)) * 100;
-    };
 
     return (
         <div className={cn("w-full", className)}>
@@ -37,15 +33,9 @@ export const LockInSlider = ({ value, onChange, className, compact = false }: Lo
             {/* Slider Track */}
             <div className="relative h-8 flex items-center">
                 {/* Background Track */}
-                <div className="absolute w-full h-1.5 bg-ground-brown/20 rounded-full" />
+                <div className="absolute w-full h-1 bg-ground-brown/20 rounded-full" />
 
-                {/* Active Track */}
-                <div
-                    className="absolute h-1.5 bg-text-main rounded-full transition-all duration-200"
-                    style={{ width: `${getPosition(value)}%` }}
-                />
-
-                {/* Tick Marks */}
+                {/* Tick Marks - Only highlight selected item */}
                 <div className="absolute w-full flex justify-between">
                     {LOCK_IN_OPTIONS.map((option) => (
                         <button
@@ -55,9 +45,7 @@ export const LockInSlider = ({ value, onChange, className, compact = false }: Lo
                                 "w-4 h-4 rounded-full border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-text-main/20",
                                 value === option.value
                                     ? "bg-text-main border-text-main scale-110"
-                                    : value > option.value
-                                        ? "bg-text-main border-text-main"
-                                        : "bg-white border-ground-brown/30 hover:border-text-main/50"
+                                    : "bg-white border-ground-brown/30 hover:border-text-main/50"
                             )}
                             aria-label={`Select ${option.value} months lock-in`}
                         />

@@ -45,13 +45,17 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
     const lastScrollY = useRef(0);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        const currentScrollY = e.currentTarget.scrollTop;
-        if (currentScrollY > lastScrollY.current && currentScrollY > 20) {
-            setIsInfoVisible(false);
-        } else if (currentScrollY < lastScrollY.current) {
+        const target = e.currentTarget;
+        const currentScrollY = target.scrollTop;
+        const isScrollable = target.scrollHeight > target.clientHeight;
+
+        if (!isScrollable) {
             setIsInfoVisible(true);
+            return;
         }
-        lastScrollY.current = currentScrollY;
+
+        // Collapse when scrolled, reveal when at top
+        setIsInfoVisible(currentScrollY <= 5);
     };
 
     // Auto-scroll active tab into view

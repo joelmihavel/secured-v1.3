@@ -66,7 +66,7 @@ const tabsTriggerVariants = cva(
         variants: {
             variant: {
                 default: "rounded-sm px-3 py-1.5 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-                pill: "rounded-full p-4 py-2 md:px-6 text-gray-600 hover:text-gray-900 data-[state=active]:bg-black data-[state=active]:text-white text-bold data-[state=active]:border border-white data-[state=active]:shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] w-32 md:w-40 truncate",
+                pill: "rounded-full p-4 py-2 md:px-6 text-gray-600 hover:text-gray-900 data-[state=active]:bg-black data-[state=active]:text-white text-fluid-sm data-[state=active]:border border-white data-[state=active]:shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] w-32 md:w-40 truncate",
                 bar: "rounded-none border-b-2 border-transparent px-4 py-2 text-muted-foreground hover:text-foreground data-[state=active]:border-black data-[state=active]:text-foreground",
             },
         },

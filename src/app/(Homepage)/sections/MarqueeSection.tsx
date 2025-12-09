@@ -39,7 +39,7 @@ export const MarqueeSection = () => {
                     <motion.div
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
-                        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 py-8 shrink-0"
                     >
                         {topContent}
@@ -47,7 +47,7 @@ export const MarqueeSection = () => {
                     <motion.div
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
-                        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 py-8 shrink-0"
                     >
                         {topContent}
@@ -66,7 +66,7 @@ export const MarqueeSection = () => {
                     <motion.div
                         initial={{ x: "-100%" }}
                         animate={{ x: "0%" }}
-                        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 py-4 md:py-8 pl-4 pr-8 shrink-0"
                     >
                         {bottomContent}
@@ -74,7 +74,7 @@ export const MarqueeSection = () => {
                     <motion.div
                         initial={{ x: "-100%" }}
                         animate={{ x: "0%" }}
-                        transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 py-4 md:py-8 pl-4 pr-8 shrink-0"
                     >
                         {bottomContent}

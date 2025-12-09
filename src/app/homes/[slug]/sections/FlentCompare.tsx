@@ -107,7 +107,7 @@ export const FlentCompare = () => {
                     </TabsList>
                 </div>
 
-                <div className="w-full max-w-7xl relative z-10">
+                <div className="w-full max-w-7xl relative z-10 h-[65vh] md:h-[calc(45vh+232px)]">
                     <AnimatePresence mode="wait">
                         {activeTab === "flent" ? (
                             <motion.div
@@ -116,42 +116,41 @@ export const FlentCompare = () => {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="w-full"
+                                className="w-full h-full"
                             >
-                                <TabsContent value="flent" className="w-full m-0 space-y-8" forceMount>
+                                <TabsContent value="flent" className="w-full m-0 h-full flex flex-col" forceMount>
                                     {/* Header Section */}
-                                    <div className="w-full flex items-center justify-center pt-2">
+                                    <div className="w-full flex-shrink-0 flex items-center justify-center pt-2 pb-4">
                                         <div className="text-center max-w-3xl mx-auto">
 
                                             <h2 className="font-heading text-fluid-h2 text-text-main">
                                                 Just get your clothes <br /> <span className="font-zin font-light opacity-60">And start living</span>
                                             </h2>
-                                            <p className="text-sm md:text-subtitle-sm font-medium mb-4 text-text-main/70 pt-4">
+                                            <p className="text-sm md:text-subtitle-sm font-medium text-text-main/70 pt-4">
                                                 We do all the heavy lifting so that you don’t have to.
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Canvas Section */}
-                                    <div className="relative w-full overflow-hidden h-[30vh] md:h-[45vh] rounded-lg">
+                                    <div className="relative w-full flex-1 overflow-hidden rounded-lg">
                                         <Gravity gravity={{ x: 0, y: 1 }} className="w-full h-full" addTopWall>
                                             {withFlentItems.map((item, i) => (
                                                 <MatterBody
                                                     key={`with-${i}`}
-                                                    x={`${15 + (i * 12) % 70}%`}
-                                                    y={`${10 + (i * 10) % 40}%`}
+                                                    x={`${10 + (i * 18) % 80}%`}
+                                                    y={`${20 + (i * 15) % 50}%`}
                                                     angle={angles[i]}
-                                                    matterBodyOptions={{ friction: 0.5, restitution: 0.4, density: 0.001 }}
+                                                    matterBodyOptions={{ friction: 0.001, restitution: 0.6, density: 0.001, frictionAir: 0.01 }}
                                                 >
                                                     <div
-                                                        className="px-4 py-2 md:px-8 md:py-4 rounded-full text-sm md:text-xl font-semibold whitespace-nowrap cursor-grab active:cursor-grabbing shadow-lg flex items-center gap-2 md:gap-4 border-2"
+                                                        className="px-3 py-1.5 md:px-8 md:py-4 rounded-full text-xs md:text-xl font-semibold whitespace-nowrap cursor-grab active:cursor-grabbing shadow-lg flex items-center gap-1.5 md:gap-4"
                                                         style={{
                                                             backgroundColor: item.bgColor,
                                                             color: item.textColor,
-                                                            borderColor: item.borderColor
                                                         }}
                                                     >
-                                                        <item.icon className="w-4 h-4 md:w-6 md:h-6" strokeWidth={2} />
+                                                        <item.icon className="w-3 h-3 md:w-6 md:h-6" strokeWidth={2} />
                                                         {item.text}
                                                     </div>
                                                 </MatterBody>
@@ -167,11 +166,11 @@ export const FlentCompare = () => {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="w-full"
+                                className="w-full h-full"
                             >
-                                <TabsContent value="without" className="w-full m-0" forceMount>
+                                <TabsContent value="without" className="w-full m-0 h-full" forceMount>
                                     {/* Full Height Canvas Section (Header Height + Canvas Height) */}
-                                    <div className="relative w-full overflow-hidden h-[50vh] md:h-[calc(45vh+232px)] rounded-lg">
+                                    <div className="relative w-full overflow-hidden h-full rounded-lg">
                                         <Gravity gravity={{ x: 0, y: 2.5 }} className="w-full h-full" addTopWall>
                                             {/* Burden pills - start at top, fall immediately */}
                                             {withoutFlentItems.map((item, i) => (
@@ -183,11 +182,10 @@ export const FlentCompare = () => {
                                                     matterBodyOptions={{ friction: 0.9, restitution: 0.1, density: 0.05, frictionAir: 0.05 }}
                                                 >
                                                     <div
-                                                        className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap cursor-grab active:cursor-grabbing shadow-sm flex items-center gap-1.5 md:gap-2 border border-black/15"
+                                                        className="px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium whitespace-nowrap cursor-grab active:cursor-grabbing shadow-sm flex items-center gap-1.5 md:gap-2 "
                                                         style={{
                                                             backgroundColor: item.bgColor,
                                                             color: item.textColor,
-                                                            borderColor: item.textColor
                                                         }}
                                                     >
                                                         <item.icon className="w-3 h-3 md:w-4 md:h-4" strokeWidth={1.5} />

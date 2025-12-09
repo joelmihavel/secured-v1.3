@@ -4,7 +4,6 @@
     "title": "Founder & CEO, Capillary Technologies",
     "image": "/investor-photos/aneesh_reddy.webp",
     "linkedin": "https://www.linkedin.com/in/aneesh-reddy-38b176b/?originalSubdomain=in",
-    "downloaded": true,
     "type": "person"
   },
   {
@@ -12,7 +11,6 @@
     "title": "COO, AasaanWill",
     "image": "/investor-photos/abhinav_daga.webp",
     "linkedin": "https://www.linkedin.com/in/abhinavdaga/?originalSubdomain=in",
-    "downloaded": true,
     "type": "person"
   },
   {
@@ -20,7 +18,6 @@
     "title": "Co-founder, Fynd",
     "image": "/investor-photos/harsh_shah.webp",
     "linkedin": "https://www.linkedin.com/in/harshshah/",
-    "downloaded": true,
     "type": "person"
   },
   {
@@ -28,7 +25,34 @@
     "title": "Founder & CEO, Netscribes",
     "image": "/investor-photos/sourav_mukherjee.webp",
     "linkedin": "https://www.linkedin.com/in/souravns/",
-    "downloaded": true,
+    "type": "person"
+  },
+  {
+    "name": "Arjun Vaidya",
+    "title": "Partner, V3 Ventures",
+    "image": "/investor-photos/arjun_vaidya.webp",
+    "linkedin": "https://www.linkedin.com/in/arjunvaidya/",
+    "type": "person"
+  },
+  {
+    "name": "Samyak Jain",
+    "title": "Director, Nirmal Properties",
+    "image": "/investor-photos/samyak_jain.webp",
+    "linkedin": "https://www.linkedin.com/in/samyakjain19/",
+    "type": "person"
+  },
+  {
+    "name": "Shradha Sharma",
+    "title": "Founder & CEO, YourStory Media",
+    "image": "/investor-photos/shradha_sharma.webp",
+    "linkedin": "https://www.linkedin.com/in/sharmashradha/",
+    "type": "person"
+  },
+  {
+    "name": "Rajesh Yabaji",
+    "title": "Co-Founder & CEO, BlackBuck",
+    "image": "/investor-photos/rajesh_yabaji.webp",
+    "linkedin": "https://www.linkedin.com/in/rajesh-yabaji-302347a/",
     "type": "person"
   }
 ]

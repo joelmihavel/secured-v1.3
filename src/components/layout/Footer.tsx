@@ -44,7 +44,7 @@ export const Footer = () => {
             {/* Tweet Marquee */}
             <div className="w-full relative overflow-hidden bg-bg-white flex items-center justify-center">
                 <Marquee
-                    speed={8}
+                    speed={5}
                     itemClassName="w-[400px] !py-0 !pl-4"
                     items={marqueeItems}
                     renderItem={(item) => {
