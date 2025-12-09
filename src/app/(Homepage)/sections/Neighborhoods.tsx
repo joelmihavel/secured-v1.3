@@ -58,11 +58,23 @@ interface NeighborhoodsProps {
 
 export const Neighborhoods = ({ locations, properties, children }: NeighborhoodsProps) => {
     const [neighborhoods, setNeighborhoods] = useState<NeighborhoodItem[]>([]);
+    const [isMobile, setIsMobile] = useState(false);
     // const [activeColors, setActiveColors] = useState({
     //     bg: "bg-white",
     //     accent: "bg-night-violet",
     //     text: "text-night-violet"
     // });
+
+    // Detect mobile devices
+    useLayoutEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // Process locations prop
     useLayoutEffect(() => {
@@ -160,7 +172,7 @@ export const Neighborhoods = ({ locations, properties, children }: Neighborhoods
                 <div className="relative w-full flex items-center justify-center">
                     <FlexibleCarousel
                         cards={cards}
-                        cardSize="md"
+                        cardWidth={isMobile ? "80vw" : "24vw"}
                         isInfinite={true}
                         highlightMiddle={true}
                         showNavigation={true}

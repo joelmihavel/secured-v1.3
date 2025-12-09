@@ -160,9 +160,19 @@ const ParallaxImage = ({
     depth: number;
     delay: number;
 }) => {
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     const { scrollY } = useScroll();
-    const y = useTransform(scrollY, [0, 1000], [0, -60 * depth]);
-    const imgY = useTransform(scrollY, [0, 1000], [0, 30 * depth]);
+    // Disable parallax on mobile for better performance
+    const y = useTransform(scrollY, [0, 1000], [0, isMobile ? 0 : -60 * depth]);
+    const imgY = useTransform(scrollY, [0, 1000], [0, isMobile ? 0 : 30 * depth]);
 
     return (
         <motion.div

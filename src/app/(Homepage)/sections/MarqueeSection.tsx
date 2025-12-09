@@ -26,7 +26,7 @@ export const MarqueeSection = () => {
     );
 
     return (
-        <OpenSection className="bg-bg-white pb-16 pt-24 md:pt-12">
+        <OpenSection className="bg-bg-white py-12">
             <div className="relative flex flex-col gap-0">
                 {/* Top strip - Others' Approach (Gray tones, The Problem) */}
                 <div
@@ -40,7 +40,7 @@ export const MarqueeSection = () => {
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
                         transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-                        className="whitespace-nowrap flex items-center space-x-12 py-4 md:py-8 pl-4 pr-8 shrink-0"
+                        className="whitespace-nowrap flex items-center space-x-12 py-8 shrink-0"
                     >
                         {topContent}
                     </motion.div>
@@ -48,7 +48,7 @@ export const MarqueeSection = () => {
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
                         transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-                        className="whitespace-nowrap flex items-center space-x-12 py-4 md:py-8 pl-4 pr-8 shrink-0"
+                        className="whitespace-nowrap flex items-center space-x-12 py-8 shrink-0"
                     >
                         {topContent}
                     </motion.div>

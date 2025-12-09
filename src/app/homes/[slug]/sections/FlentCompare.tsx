@@ -96,7 +96,7 @@ export const FlentCompare = () => {
                 variant="pill"
             >
                 {/* Tabs at the top */}
-                <div className="w-full px-4 sm:px-6 lg:px-8 flex justify-center mb-8 relative z-20">
+                <div className="w-full flex justify-center mb-8 relative z-20">
                     <TabsList>
                         <TabsTrigger value="flent">
                             With Flent
@@ -120,7 +120,7 @@ export const FlentCompare = () => {
                             >
                                 <TabsContent value="flent" className="w-full m-0 space-y-8" forceMount>
                                     {/* Header Section */}
-                                    <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center pt-2">
+                                    <div className="w-full flex items-center justify-center pt-2">
                                         <div className="text-center max-w-3xl mx-auto">
 
                                             <h2 className="font-heading text-fluid-h2 text-text-main">

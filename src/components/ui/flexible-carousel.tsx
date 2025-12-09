@@ -37,7 +37,7 @@ const GAP = 24;
 const MOBILE_GAP = 14;
 
 // Number of complete sets to render on each side for infinite scroll
-const INFINITE_BUFFER_SETS = 10;
+const INFINITE_BUFFER_SETS = 4;
 
 export interface FlexibleCarouselHandle {
     scrollPrev: () => void;
@@ -90,8 +90,12 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
                 baseWidth = CARD_SIZES[cardSize].width;
             }
 
+            // For highlightMiddle variant, respect the cardWidth prop on mobile
+            // For non-highlightMiddle, use the full-width mobile override
+            const mobileWidth = highlightMiddle ? baseWidth : Math.min(window.innerWidth * 0.85, 400);
+
             setConfig({
-                width: isMobile ? Math.min(window.innerWidth * 0.85, 400) : baseWidth,
+                width: isMobile ? mobileWidth : baseWidth,
                 gap: isMobile ? MOBILE_GAP : GAP
             });
         };
@@ -99,7 +103,7 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
         updateConfig();
         window.addEventListener('resize', updateConfig);
         return () => window.removeEventListener('resize', updateConfig);
-    }, [cardSize, cardWidth]);
+    }, [cardSize, cardWidth, highlightMiddle]);
 
     // Animation value for track position
     const x = useMotionValue(0);

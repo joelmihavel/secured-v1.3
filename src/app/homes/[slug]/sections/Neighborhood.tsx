@@ -120,6 +120,7 @@ export const Neighborhood = ({
               <GoogleMap
                 center={[lat, lng]}
                 zoom={15}
+                cardWidth="28vw"
                 mainProperty={{ lat, lng, name: property.fieldData.name }}
                 neighbors={neighbors}
                 apiKey={GOOGLE_MAPS_API_KEY}

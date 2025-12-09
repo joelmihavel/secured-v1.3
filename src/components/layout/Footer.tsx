@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Instagram, Twitter, Linkedin, Mail } from "lucide-react";
 import Marquee from "@/components/ui/image-tiles";
 import { usePathname } from "next/navigation";
+import { CardSection } from "@/components/layout/CardSection";
 
 const TWEET_ITEMS = [
     { src: "/tweet-images/tweet_1.webp", alt: "Tweet 1", url: "https://x.com/kaashvisaxena/status/1792521732768571898?s=20" },
@@ -41,7 +42,7 @@ export const Footer = () => {
             className="bg-bg-white text-text-main pb-0 overflow-hidden relative "
         >
             {/* Tweet Marquee */}
-            <div className="w-full relative overflow-hidden bg-bg-white flex items-center justify-center pb-8 min-h-[500px]">
+            <div className="w-full relative overflow-hidden bg-bg-white flex items-center justify-center">
                 <Marquee
                     speed={8}
                     itemClassName="w-[400px] !py-0 !pl-4"
@@ -86,7 +87,7 @@ export const Footer = () => {
                     }}
                 />
             </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <CardSection className="bg-ground-brown/4" paddingX="large" paddingY="large">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16 py-2">
                     {/* Left Section - Logo and Tagline */}
                     <div className="col-span-1">
@@ -170,7 +171,9 @@ export const Footer = () => {
                         </div>
                     </div>
                 </div>
+            </CardSection>
 
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 {/* Bottom Section */}
                 <div className="border-t border-text-main/10 pt-6 pb-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-text-main/60 text-sm mb-4 md:mb-0">

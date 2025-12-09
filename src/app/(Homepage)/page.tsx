@@ -10,10 +10,13 @@ import { getCollectionItems, COLLECTIONS, Property, Location, Room, Occupant } f
 import { AsSeenIn } from "@/components/layout/AsSeenIn";
 
 export default async function Home() {
-  const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
-  const locations = await getCollectionItems<Location>(COLLECTIONS.LOCATIONS);
-  const rooms = await getCollectionItems<Room>(COLLECTIONS.ROOMS);
-  const occupants = await getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS);
+  // Fetch all collections in parallel for better performance
+  const [properties, locations, rooms, occupants] = await Promise.all([
+    getCollectionItems<Property>(COLLECTIONS.PROPERTIES),
+    getCollectionItems<Location>(COLLECTIONS.LOCATIONS),
+    getCollectionItems<Room>(COLLECTIONS.ROOMS),
+    getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
+  ]);
 
 
   return (

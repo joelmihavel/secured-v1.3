@@ -292,21 +292,21 @@ export const Community = () => {
                     {/* Mobile: Tinder-style stacked cards */}
                     {isMobile && cards.length > 0 && (
                         <div className="absolute inset-x-4 inset-y-8 z-10 flex items-center justify-center">
-                            {cards.slice(currentCardIndex, currentCardIndex + 3).map((card, index) => (
+                            {cards.slice(currentCardIndex, currentCardIndex + 2).map((card, index) => (
                                 <motion.div
                                     key={card.id}
                                     className="absolute w-72 h-80"
                                     initial={false}
                                     animate={{
                                         scale: 1 - index * 0.05,
-                                        y: index * 10,
-                                        rotate: card.rotation * 0.5,
-                                        zIndex: 3 - index,
+                                        y: index * 8,
+                                        rotate: card.rotation * 0.3,
+                                        zIndex: 2 - index,
                                     }}
                                     transition={{
                                         type: "tween",
-                                        duration: 0.35,
-                                        ease: [0.25, 0.1, 0.25, 1], // cubic-bezier for smooth ease-out
+                                        duration: 0.25,
+                                        ease: [0.25, 0.1, 0.25, 1],
                                     }}
                                     style={{
                                         pointerEvents: index === 0 ? 'auto' : 'none',
@@ -330,7 +330,7 @@ export const Community = () => {
 
                     {/* Desktop: Multi-card layout */}
                     {!isMobile && (
-                        <DraggableCardContainer className="absolute inset-x-40 inset-y-8 z-10">
+                        <DraggableCardContainer className="absolute inset-x-10 inset-y-8 z-10">
                             {cards.map((card) => (
                                 <DraggableCardBody
                                     key={card.id}

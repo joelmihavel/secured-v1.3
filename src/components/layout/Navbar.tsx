@@ -128,7 +128,7 @@ export const Navbar = ({ showDesktopNav = false }: NavbarProps) => {
                             onClick={() => router.push('/homes')}
 
                         >
-                            <ArrowLeft className="w-4 h-4 md:w-5 md:h-5 text-text-main" />
+                            <ArrowLeft />
                         </Button>
 
                         {/* Flent Logo */}
