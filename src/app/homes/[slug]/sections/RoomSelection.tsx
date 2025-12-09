@@ -37,7 +37,7 @@ import {
 } from "@/lib/property-utils";
 import { motion } from "framer-motion";
 import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
-import { WHATSAPP_LINK } from "@/constants";
+import { getPropertyWhatsappLink } from "@/constants";
 import { LockInSlider } from "@/components/homes/LockInSlider";
 import { LockInPeriod } from "@/lib/property-utils";
 
@@ -520,7 +520,9 @@ export const RoomSelection = ({
                             className="w-full bg-white"
                             target="_blank"
                             rel="noopener noreferrer"
-                            href={WHATSAPP_LINK}
+                            href={getPropertyWhatsappLink(
+                              property.fieldData.name
+                            )}
                           >
                             Talk to us
                           </Button>
@@ -677,7 +679,9 @@ export const RoomSelection = ({
                           size="md"
                           variant="ghost"
                           className="w-full bg-white"
-                          href={WHATSAPP_LINK}
+                          href={getPropertyWhatsappLink(
+                            property.fieldData.name
+                          )}
                         >
                           Talk to us
                         </Button>
@@ -728,6 +732,7 @@ export const RoomSelection = ({
           breakdown={calculatorData.breakdown}
           room={calculatorData.room}
           slug={slug}
+          propertyName={property.fieldData.name}
         />
       )}
 

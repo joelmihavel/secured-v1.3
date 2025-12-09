@@ -23,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { WHATSAPP_LINK } from "@/constants";
+import { getPropertyWhatsappLink } from "@/constants";
 
 interface RentCalculatorDrawerProps {
   isOpen: boolean;
@@ -34,6 +34,7 @@ interface RentCalculatorDrawerProps {
   breakdown: RentBreakdown;
   room?: Room; // Optional room for recalculating breakdown
   slug: string;
+  propertyName: string;
 }
 
 export const RentCalculatorDrawer = ({
@@ -45,6 +46,7 @@ export const RentCalculatorDrawer = ({
   breakdown: initialBreakdown,
   room,
   slug,
+  propertyName,
 }: RentCalculatorDrawerProps) => {
   const [isBreakdownVisible, setIsBreakdownVisible] = useState(true);
   const [selectedLockIn, setSelectedLockIn] =
@@ -207,7 +209,7 @@ export const RentCalculatorDrawer = ({
                     className="w-full bg-white"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={WHATSAPP_LINK}
+                    href={getPropertyWhatsappLink(propertyName)}
                   >
                     Talk to us
                   </Button>
