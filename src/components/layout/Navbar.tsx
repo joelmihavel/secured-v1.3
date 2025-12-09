@@ -84,7 +84,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
             return [
                 { href: "/homes", label: "Homes", isLast: false },
                 {
-                    href: neighborhoodId ? `/homes?locationId=${neighborhoodId}` : "/neighborhoods",
+                    href: neighborhoodName ? `/homes?location=${encodeURIComponent(neighborhoodName)}` : "/neighborhoods",
                     label: neighborhoodName || "Neighbourhoods",
                     isLast: false
                 },
