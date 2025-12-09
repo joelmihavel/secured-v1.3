@@ -3,7 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import * as Accordion from "@radix-ui/react-accordion";
-import { Minus, Plus } from "lucide-react";
+import { IconMinus as Minus, IconPlus as Plus } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
 export interface FAQItem {

@@ -7,13 +7,37 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { GridLightBox } from "./GridLightBox";
 import { PhotoCategory } from "@/lib/property-utils";
-import { User, Cigarette, CigaretteOff, Utensils, Leaf, Bed, Car, Layers, Bath, Wind, Laptop, Info } from "lucide-react";
+import { IconUser as User, IconSmoking as Cigarette, IconSmokingNo as CigaretteOff, IconToolsKitchen2 as Utensils, IconLeaf as Leaf, IconBed as Bed, IconCar as Car, IconStack2 as Layers, IconBath as Bath, IconWind as Wind, IconDeviceLaptop as Laptop, IconInfoCircle as Info, IconChevronDown as ChevronDown } from "@tabler/icons-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { RentCalculatorDrawer } from "@/components/homes/RentCalculatorDrawer";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getRoomRentBreakdown, getPropertyRentBreakdown, RentBreakdown, getPropertyDisplayRent } from "@/lib/property-utils";
 import { motion } from "framer-motion";
 import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
 import { WHATSAPP_LINK } from "@/constants";
+import { LockInSlider } from "@/components/homes/LockInSlider";
+import { LockInPeriod } from "@/lib/property-utils";
+
+// Helper functions for lock-in period pricing
+// Note: CMS field naming is counterintuitive:
+// - room-rent = price for 6 month lock-in (highest rent, most flexibility)
+// - 3-month-cost-2 = price for 9 month lock-in (middle)
+// - 6-month-cost-2 = price for 11 month lock-in (lowest rent, longest commitment)
+const getRentForLockIn = (room: Room, lockIn: LockInPeriod): number => {
+    if (lockIn === 6) return Number(room.fieldData["room-rent"]);
+    if (lockIn === 9) return Number(room.fieldData["3-month-cost-2"]) || Number(room.fieldData["room-rent"]);
+    return Number(room.fieldData["6-month-cost-2"]) || Number(room.fieldData["room-rent"]);
+};
+
+// Deposit field mapping:
+// - security-deposit = 6 month lock-in deposit (highest)
+// - 9-month-security-deposit = 9 month deposit (middle)
+// - 11-month-security-deposit = 11 month deposit (lowest)
+const getDepositForLockIn = (room: Room, lockIn: LockInPeriod): number | null => {
+    if (lockIn === 6) return room.fieldData["security-deposit"] ?? null;
+    if (lockIn === 9) return room.fieldData["9-month-security-deposit"] ?? null;
+    return room.fieldData["11-month-security-deposit"] ?? null;
+};
 
 interface RoomSelectionProps {
     property: Property;
@@ -52,35 +76,41 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
     const [calculatorData, setCalculatorData] = useState<{
         title: string;
         image: string;
-        lockInPeriod: string;
+        lockInPeriod: LockInPeriod;
         breakdown: RentBreakdown;
+        room: Room;
     } | null>(null);
     const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
     const [notificationModalData, setNotificationModalData] = useState<{
         propertyId: string;
-        roomId: string; 
+        roomId: string;
         roomName: string;
         propertyName: string;
     } | null>(null);
+    // Track selected lock-in period for each room
+    const [roomLockIns, setRoomLockIns] = useState<Record<string, LockInPeriod>>({});
 
-    const handleRoomPricingClick = (room: RoomDisplayData) => {
-        const breakdown = getRoomRentBreakdown(room.raw);
+    const handleRoomPricingClick = (room: RoomDisplayData, lockIn: LockInPeriod) => {
+        const breakdown = getRoomRentBreakdown(room.raw, lockIn);
         setCalculatorData({
             title: room.name,
             image: room.images[0],
-            lockInPeriod: room.lockIn,
-            breakdown
+            lockInPeriod: lockIn,
+            breakdown,
+            room: room.raw
         });
         setIsCalculatorOpen(true);
     };
 
     const handleFullHousePricingClick = () => {
         const breakdown = getPropertyRentBreakdown(property);
+        const lockIn: LockInPeriod = property.fieldData["6-month-lock-in"] ? 6 : 11;
         setCalculatorData({
             title: "Full House",
             image: property.fieldData["property-thumbnail"]?.url || "",
-            lockInPeriod: property.fieldData["6-month-lock-in"] ? "6 months" : "11 months",
-            breakdown
+            lockInPeriod: lockIn,
+            breakdown,
+            room: undefined as unknown as Room // Full house doesn't have a room, but we need to satisfy the type
         });
         setIsCalculatorOpen(true);
     };
@@ -241,20 +271,31 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 <div className="text-center mb-6 md:mb-8 bg-ground-brown/12 rounded-2xl px-4 py-12 md:py-16 relative">
                                                     <p className="text-sm font-medium text-text-main/70 mb-2">{room.name}</p>
                                                     <div className="flex items-baseline justify-center gap-1 mb-2">
-                                                        <span className="font-heading text-fluid-h3 text-text-main font-zin">₹{Number(room.price).toLocaleString('en-IN')}</span>
+                                                        <span className="font-heading text-fluid-h3 text-text-main font-zin">₹{getRentForLockIn(room.raw, roomLockIns[room.id] || 11).toLocaleString('en-IN')}</span>
                                                         <span className="text-sm text-text-main/70">/ mo</span>
                                                     </div>
+
+                                                    {/* Lock-in Period with Popover */}
                                                     <div className="flex items-center justify-center gap-1 text-xs text-text-main/60">
-                                                        <span className="flex items-center gap-1">
-                                                            Lock in Period: {room.lockIn}
-                                                            <div className="relative group inline-block">
-                                                                <Info className="w-3 h-3 cursor-help" />
-                                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
-                                                                    Minimum commitment period for your stay
-                                                                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black"></div>
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                                <button className="flex items-center gap-1 hover:text-text-main transition-colors cursor-pointer group">
+                                                                    <Info className="w-3 h-3" />
+                                                                    <span>Lock In Period: {roomLockIns[room.id] || 11} months</span>
+                                                                    <ChevronDown className="w-3 h-3 transition-transform group-data-[state=open]:rotate-180" />
+                                                                </button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-64 p-4" align="center">
+                                                                <div className="space-y-3">
+                                                                    <p className="text-xs text-text-main/60">Select your commitment period</p>
+                                                                    <LockInSlider
+                                                                        value={roomLockIns[room.id] || 11}
+                                                                        onChange={(val) => setRoomLockIns(prev => ({ ...prev, [room.id]: val }))}
+                                                                    />
+                                                                    <p className="text-[10px] text-text-main/50 text-center">Longer lock-in = lower rent</p>
                                                                 </div>
-                                                            </div>
-                                                        </span>
+                                                            </PopoverContent>
+                                                        </Popover>
                                                     </div>
 
                                                     {/* See Pricing Button */}
@@ -262,7 +303,7 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                         <Button
                                                             variant="outline"
                                                             className="bg-ground-brown/12 border-text-main text-text-main hover:bg-text-main/5 rounded-lg py-2 px-6 text-sm h-auto"
-                                                            onClick={() => handleRoomPricingClick(room)}
+                                                            onClick={() => handleRoomPricingClick(room, roomLockIns[room.id] || 11)}
                                                         >
                                                             Understand Your Rent
                                                         </Button>
@@ -290,9 +331,9 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                     <Button disabled size="md" variant="ghost" className="w-full cursor-not-allowed bg-ground-brown/10 text-text-main/60">
                                                         Occupied
                                                     </Button>
-                                                    <Button 
-                                                        size="md" 
-                                                        variant="ghost" 
+                                                    <Button
+                                                        size="md"
+                                                        variant="ghost"
                                                         className="w-full bg-white border-text-main text-text-main"
                                                         onClick={() => {
                                                             setNotificationModalData({
@@ -309,8 +350,8 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Button 
-                                                        size="md" 
+                                                    <Button
+                                                        size="md"
                                                         className="w-full"
                                                         href={`https://cal.com/flent/home-visit?property-name=${slug}`}
                                                         target="_blank"
@@ -426,8 +467,8 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                     <div className="space-y-3">
                                         {property.fieldData["full-house-available"] ? (
                                             <>
-                                                <Button 
-                                                    size="md" 
+                                                <Button
+                                                    size="md"
                                                     className="w-full"
                                                     href={`https://cal.com/flent/home-visit?property-name=${slug}`}
                                                     target="_blank"
@@ -435,7 +476,7 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 >
                                                     Book a Tour
                                                 </Button>
-                                                <Button  target="_blank" rel="noopener noreferrer"  size="md" variant="ghost" className="w-full bg-white" href={WHATSAPP_LINK}>
+                                                <Button target="_blank" rel="noopener noreferrer" size="md" variant="ghost" className="w-full bg-white" href={WHATSAPP_LINK}>
                                                     Talk to us
                                                 </Button>
                                             </>
@@ -444,9 +485,9 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                                                 <Button disabled size="md" variant="ghost" className="w-full cursor-not-allowed bg-ground-brown/10 text-text-main/60">
                                                     Occupied
                                                 </Button>
-                                                <Button 
-                                                    size="md" 
-                                                    variant="ghost" 
+                                                <Button
+                                                    size="md"
+                                                    variant="ghost"
                                                     className="w-full bg-white border-text-main text-text-main"
                                                     onClick={() => {
                                                         setNotificationModalData({
@@ -480,6 +521,7 @@ export const RoomSelection = ({ property, rooms, occupants, allImages, photoCate
                     image={calculatorData.image}
                     lockInPeriod={calculatorData.lockInPeriod}
                     breakdown={calculatorData.breakdown}
+                    room={calculatorData.room}
                 />
             )}
 

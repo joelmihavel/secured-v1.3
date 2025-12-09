@@ -3,6 +3,8 @@ import { HeroSection } from "./sections/HeroSection";
 import { FlentMagicSection } from "./sections/FlentMagicSection";
 import { WhyPartnerSection } from "./sections/WhyPartnerSection";
 import { HowFlentWorksSection } from "./sections/HowFlentWorksSection";
+import { TestimonialsSection } from "./sections/TestimonialsSection";
+import { OwnersFAQ } from "./sections/OwnersFAQ";
 import { ContactSection } from "./sections/ContactSection";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { GetStartedForm } from "@/components/ui/GetStartedForm";
@@ -21,6 +23,12 @@ export default function OwnersPage() {
 
             {/* How Flent Works Section */}
             <HowFlentWorksSection />
+
+            {/* Testimonials Section */}
+            <TestimonialsSection />
+
+            {/* Owners FAQ Section */}
+            <OwnersFAQ />
 
             {/* Contact Form Section */}
             <ContactSection />

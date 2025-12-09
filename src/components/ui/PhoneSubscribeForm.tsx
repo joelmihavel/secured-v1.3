@@ -60,10 +60,11 @@ export const PhoneSubscribeForm = ({
                     className="flex-1 px-6 py-3 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
                     disabled={isSubmitting}
                 />
-                <Button 
-                    type="submit" 
-                    size="md" 
-                    className="px-8 bg-white text-ground-brown hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                <Button
+                    type="submit"
+                    size="md"
+                    variant="primary"
+
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? 'Subscribing...' : buttonText}

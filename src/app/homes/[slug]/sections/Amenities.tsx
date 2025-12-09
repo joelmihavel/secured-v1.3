@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Amenity, Property } from "@/lib/webflow";
-import { ArrowUpRight } from "lucide-react";
+import { IconArrowUpRight as ArrowUpRight } from "@tabler/icons-react";
 
 interface AmenitiesProps {
     property: Property;
@@ -59,7 +59,7 @@ export const Amenities = ({ property, amenities, allImages, slug }: AmenitiesPro
                             Save 10% month if <br />
                             booked by Dec 30
                         </h2>
-                        <a 
+                        <a
                             href={`https://cal.com/flent/home-visit?property-name=${slug}`}
                             target="_blank"
                             rel="noopener noreferrer"

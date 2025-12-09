@@ -1,7 +1,7 @@
 import React from "react";
 import { CardSection } from "@/components/layout/CardSection";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight as ArrowRight } from "@tabler/icons-react";
 
 export const HiringSection = () => {
     return (

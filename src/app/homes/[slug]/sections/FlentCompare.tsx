@@ -2,32 +2,32 @@
 
 import { CardSection } from "@/components/layout/CardSection";
 import {
-    Armchair,
-    BadgeCheck,
-    Wallet,
-    Zap,
-    BatteryCharging,
-    Utensils,
-    Plug,
-    Laptop,
-    Wrench,
-    Banknote,
-    ShoppingCart,
-    Phone,
-    HandCoins,
-    Hammer,
-    AlertCircle,
-    Wifi,
-    Search,
-    TrendingUp,
-    FileX,
-    Users,
-    CircleDollarSign,
-    Sparkles,
-    Headphones,
-    Shield,
-    LucideIcon
-} from "lucide-react";
+    IconArmchair as Armchair,
+    IconRosetteDiscountCheck as BadgeCheck,
+    IconWallet as Wallet,
+    IconBolt as Zap,
+    IconBatteryCharging as BatteryCharging,
+    IconToolsKitchen2 as Utensils,
+    IconPlug as Plug,
+    IconDeviceLaptop as Laptop,
+    IconTool as Wrench,
+    IconCashBanknote as Banknote,
+    IconShoppingCart as ShoppingCart,
+    IconPhone as Phone,
+    IconCoins as HandCoins,
+    IconHammer as Hammer,
+    IconAlertCircle as AlertCircle,
+    IconWifi as Wifi,
+    IconSearch as Search,
+    IconTrendingUp as TrendingUp,
+    IconFileX as FileX,
+    IconUsers as Users,
+    IconCurrencyDollar as CircleDollarSign,
+    IconSparkles as Sparkles,
+    IconHeadphones as Headphones,
+    IconShield as Shield,
+    Icon as LucideIcon
+} from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { Gravity, MatterBody } from "@/components/ui/gravity";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

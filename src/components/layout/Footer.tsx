@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Instagram, Twitter, Linkedin, Mail } from "lucide-react";
+import { IconBrandInstagram as Instagram, IconBrandTwitter as Twitter, IconBrandLinkedin as Linkedin, IconMail as Mail } from "@tabler/icons-react";
 import Marquee from "@/components/ui/image-tiles";
 import { usePathname } from "next/navigation";
 import { CardSection } from "@/components/layout/CardSection";

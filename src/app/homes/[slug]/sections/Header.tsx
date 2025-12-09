@@ -7,8 +7,8 @@ import { FastAverageColor } from 'fast-average-color';
 import { findClosestColor, DARK_SHADES, PASTELS } from "@/lib/colors";
 import { PhotoCategory } from "@/lib/property-utils";
 import {
-    MapPin, Calendar, Bed, Play, ArrowRight
-} from "lucide-react";
+    IconMapPin as MapPin, IconCalendar as Calendar, IconBed as Bed, IconPlayerPlay as Play, IconArrowRight as ArrowRight
+} from "@tabler/icons-react";
 import { GridLightBox } from "./GridLightBox";
 import {
     Dialog,

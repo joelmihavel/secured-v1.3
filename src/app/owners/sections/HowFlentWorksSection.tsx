@@ -3,7 +3,7 @@
 import React, { useMemo } from "react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Timeline } from "@/components/ui/timeline";
-import { ClipboardCheck, Paintbrush, UserCheck, RefreshCw } from "lucide-react";
+import { IconClipboardCheck as ClipboardCheck, IconBrush as Paintbrush, IconUserCheck as UserCheck, IconRefresh as RefreshCw } from "@tabler/icons-react";
 import { CardSection } from "@/components/layout/CardSection";
 
 export const HowFlentWorksSection = () => {
@@ -132,7 +132,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            We secure top-tier tenants from our vetted network, ensuring your home is in the best hands. 
+                            We secure top-tier tenants from our vetted network, ensuring your home is in the best hands.
                         </p>
                     </div>
                 </div>

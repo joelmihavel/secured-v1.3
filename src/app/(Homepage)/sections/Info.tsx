@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
-import { Play } from "lucide-react";
+import { IconPlayerPlay as Play } from "@tabler/icons-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 
 const stats = [
@@ -246,13 +246,11 @@ export const Info = () => {
                   whileHover={{ scale: 1.05, rotate: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className={`flex flex-col gap-4 items-center justify-center text-center ${
-                    stat.bgColor
-                  } rounded-3xl p-8 shadow-lg aspect-[2/1] md:aspect-auto ${
-                    index === 2
+                  className={`flex flex-col gap-4 items-center justify-center text-center ${stat.bgColor
+                    } rounded-3xl p-8 shadow-lg aspect-[2/1] md:aspect-auto ${index === 2
                       ? "col-span-2 md:col-span-1 mx-auto max-w-md md:max-w-none"
                       : ""
-                  }`}
+                    }`}
                 >
                   <CountUp end={stat.value} color={stat.color} duration={2.5} />
                   <p className="text-sm text-text-invert/80 font-heading leading-relaxed line-clamp-3">

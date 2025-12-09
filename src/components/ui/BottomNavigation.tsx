@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp } from "lucide-react";
+import { IconChevronUp as ChevronUp } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { WHATSAPP_LINK } from "@/constants";
@@ -166,21 +166,21 @@ export const BottomNavigation: React.FC<{}> = () => {
                                         >
                                             <div className="h-px bg-gray-100 w-full my-2 mx-2" />
                                             {navLinks.map((link) => (
-                                                <Button
+                                                <div
                                                     key={link.name}
-                                                    variant="ghost"
-                                                    size="md"
                                                     onClick={(e) => handleLinkClick(e, link.href)}
                                                     className={cn(
-                                                        "w-full justify-between",
+                                                        "w-full flex items-center justify-between px-3 py-3 rounded-full cursor-pointer transition-colors duration-200 hover:bg-ground-brown/5",
                                                         activeSection === link.name && "bg-black/5"
                                                     )}
                                                 >
-                                                    {link.name}
+                                                    <span className="font-heading text-button-link text-text-main font-bold tracking-wide">
+                                                        {link.name}
+                                                    </span>
                                                     {activeSection === link.name && (
-                                                        <div className="w-2 h-2 rounded-full bg-black" />
+                                                        <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
                                                     )}
-                                                </Button>
+                                                </div>
                                             ))}
                                         </motion.div>
                                     )}

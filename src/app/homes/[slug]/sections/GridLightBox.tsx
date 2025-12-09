@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
-import { Grid, X, ChevronLeft, Copy, MessageCircle, Home, Expand } from "lucide-react";
+import { IconLayoutGrid as Grid, IconX as X, IconChevronLeft as ChevronLeft, IconCopy as Copy, IconMessageCircle as MessageCircle, IconHome as Home, IconArrowsMaximize as Expand } from "@tabler/icons-react";
 import {
     Drawer,
     DrawerClose,
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { AnimatePresence, motion } from "framer-motion";
 
 export interface PhotoCategory {
     name: string;
@@ -40,6 +41,18 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState(defaultTab.toLowerCase().replace(/\s+/g, '-'));
     const [api, setApi] = useState<CarouselApi>();
+    const [isInfoVisible, setIsInfoVisible] = useState(true);
+    const lastScrollY = useRef(0);
+
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        const currentScrollY = e.currentTarget.scrollTop;
+        if (currentScrollY > lastScrollY.current && currentScrollY > 20) {
+            setIsInfoVisible(false);
+        } else if (currentScrollY < lastScrollY.current) {
+            setIsInfoVisible(true);
+        }
+        lastScrollY.current = currentScrollY;
+    };
 
     // Auto-scroll active tab into view
     React.useEffect(() => {
@@ -79,6 +92,7 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
             const newTab = allTabs[index];
             if (newTab) {
                 setActiveTab(newTab);
+                setIsInfoVisible(true); // Reset visibility on tab change
             }
         });
     }, [api, allTabs]);
@@ -96,6 +110,7 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
     // Sync Tabs -> Carousel
     const handleTabChange = (value: string) => {
         setActiveTab(value);
+        setIsInfoVisible(true); // Reset visibility on explicit tab change
         if (api) {
             const index = allTabs.indexOf(value);
             if (index !== -1) {
@@ -106,10 +121,11 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
 
     return (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
-            <div className="w-full h-full relative group grid grid-cols-3 grid-rows-[2fr_1fr] gap-2">
-                {/* Main Image (Row 1, Col Span 3) */}
+            {/* On mobile: single image. On md+: grid with 4 images */}
+            <div className="w-full h-full relative group grid grid-cols-1 md:grid-cols-3 md:grid-rows-[2fr_1fr] gap-2">
+                {/* Main Image (Full height on mobile, Row 1 Col Span 3 on desktop) */}
                 <div
-                    className="relative col-span-3 bg-gray-200 overflow-hidden cursor-pointer"
+                    className="relative col-span-1 md:col-span-3 h-full bg-gray-200 overflow-hidden cursor-pointer"
                     onClick={() => setIsOpen(true)}
                 >
                     {displayImages[0] ? (
@@ -128,7 +144,7 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
 
                     {/* Status Badge - Top Right */}
                     {status && (
-                        <div className="absolute top-8 right-8 z-20">
+                        <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20">
                             <span className={cn(
                                 "px-3 py-2 rounded-full text-fluid-sm font-medium border-0",
                                 isOccupied
@@ -155,11 +171,11 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
                     </Button>
                 </div>
 
-                {/* Sub Images (Row 2, Col Span 1 each) */}
+                {/* Sub Images (Row 2, Col Span 1 each) - Hidden on mobile, visible on md+ */}
                 {[1, 2, 3].map((offset) => (
                     <div
                         key={offset}
-                        className="relative col-span-1 bg-gray-100 overflow-hidden cursor-pointer"
+                        className="relative col-span-1 bg-gray-100 overflow-hidden cursor-pointer hidden md:block"
                         onClick={() => setIsOpen(true)}
                     >
                         {displayImages[offset] && (
@@ -173,7 +189,7 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
                     </div>
                 ))}
 
-                <DrawerContent className="h-[90vh] md:h-[98vh]">
+                <DrawerContent className="h-[90vh] md:h-[98vh] pb-0 flex flex-col">
                     <DrawerTitle className="sr-only">Image Gallery</DrawerTitle>
                     {/* Custom Header */}
                     <div className="border-b border-black/10">
@@ -188,29 +204,47 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
                             </DrawerClose>
 
                             {/* Right: Action Buttons */}
-                            <div className="flex items-center gap-2 md:gap-3">
-                                <button className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <Copy className="w-3 h-3 md:w-4 md:h-4" />
+                            <div className="flex items-center gap-4 md:gap-4">
+                                <Button
+                                    variant="white"
+                                    size="sm"
+                                    leftIcon={<Copy />}
+                                    className="!text-xs md:!text-sm"
+                                >
                                     <span className="hidden sm:inline">Copy Link</span>
-                                </button>
-                                <button className="flex items-center gap-1 md:gap-2 px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
-                                    <MessageCircle className="w-3 h-3 md:w-4 md:h-4" />
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    leftIcon={<MessageCircle />}
+                                    className="!text-xs md:!text-sm"
+                                >
                                     <span className="hidden sm:inline">Chat with Us</span>
                                     <span className="sm:hidden">Chat</span>
-                                </button>
+                                </Button>
                             </div>
                         </div>
 
                         {/* Property Info */}
-                        <div className="px-4 md:px-6 pb-3 md:pb-4">
-                            <h3 className="text-fluid-h3 font-heading font-bold mb-1 md:mb-2">{propertyName}</h3>
-                            {propertyStats && (
-                                <div className="flex items-center gap-1.5 md:gap-2 text-gray-600">
-                                    <Home className="w-4 h-4 flex-shrink-0" />
-                                    <span className="text-xs md:text-sm">{propertyStats}</span>
-                                </div>
+                        <AnimatePresence>
+                            {isInfoVisible && (
+                                <motion.div
+                                    initial={{ height: "auto", opacity: 1, marginBottom: 16 }}
+                                    animate={{ height: "auto", opacity: 1, marginBottom: 16 }}
+                                    exit={{ height: 0, opacity: 0, marginBottom: 0 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                    className="px-4 md:px-6 overflow-hidden"
+                                >
+                                    <h3 className="text-fluid-h3 font-heading font-bold mb-1 md:mb-2">{propertyName}</h3>
+                                    {propertyStats && (
+                                        <div className="flex items-center gap-1.5 md:gap-2 text-gray-600">
+                                            <Home className="w-4 h-4 flex-shrink-0" />
+                                            <span className="text-xs md:text-sm">{propertyStats}</span>
+                                        </div>
+                                    )}
+                                </motion.div>
                             )}
-                        </div>
+                        </AnimatePresence>
 
                         {/* Tabs */}
                         <div className="overflow-x-auto md:overflow-visible mx-2 md:mx-4 scroll-smooth scrollbar-hide">
@@ -239,11 +273,14 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
                     </div>
 
                     {/* Carousel Content */}
-                    <Carousel setApi={setApi} className="w-full h-full">
-                        <CarouselContent className="-ml-0">
+                    <Carousel setApi={setApi} className="w-full flex-1 min-h-0 [&>div]:h-full">
+                        <CarouselContent className="-ml-0 h-full">
                             {/* All Photos Slide */}
-                            <CarouselItem className="pl-0">
-                                <div className="p-4 md:p-6 overflow-y-auto max-h-[calc(90vh-240px)] md:max-h-[calc(98vh-280px)]">
+                            <CarouselItem className="pl-0 h-full">
+                                <div
+                                    className="p-4 md:p-6 overflow-y-auto h-full pb-4"
+                                    onScroll={handleScroll}
+                                >
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                                         {images.map((img, idx) => (
                                             <div
@@ -275,8 +312,11 @@ export const GridLightBox = ({ images, propertyName, propertyStats, photoCategor
 
                             {/* Category Slides */}
                             {sortedCategories.map((category, idx) => (
-                                <CarouselItem key={idx} className="pl-0">
-                                    <div className="p-4 md:p-6 overflow-y-auto max-h-[calc(90vh-240px)] md:max-h-[calc(98vh-280px)]">
+                                <CarouselItem key={idx} className="pl-0 h-full">
+                                    <div
+                                        className="p-4 md:p-6 overflow-y-auto h-full pb-4"
+                                        onScroll={handleScroll}
+                                    >
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                                             {category.images.map((img, imgIdx) => (
                                                 <div

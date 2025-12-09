@@ -3,7 +3,7 @@
 import React from "react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { motion } from "framer-motion";
-import { TrendingUp, ShieldCheck, Users, Home } from "lucide-react";
+import { IconTrendingUp as TrendingUp, IconShieldCheck as ShieldCheck, IconUsers as Users, IconHome as Home } from "@tabler/icons-react";
 
 const benefits = [
     {

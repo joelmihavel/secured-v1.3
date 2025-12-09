@@ -75,6 +75,7 @@ export interface Property extends WebflowItem {
         "map-latitude"?: string;
         "map-longitude"?: string;
         "house-tour"?: { url: string; metadata?: Record<string, unknown> };
+        "is-upcoming"?: boolean;
     };
 }
 
@@ -131,6 +132,9 @@ export interface Room extends WebflowItem {
         "bed-tyoe"?: string; // Option ID (typo in Webflow)
         property?: string; // Reference ID to Property
         occupant?: string; // Reference ID to Occupant
+        "security-deposit"?: number; // 6-month lock-in deposit
+        "9-month-security-deposit"?: number;
+        "11-month-security-deposit"?: number;
     };
 }
 

@@ -7,7 +7,7 @@ import { CardSection } from "@/components/layout/CardSection";
 import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
 import { Button } from "@/components/ui/Button";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-react";
 
 
 interface HomesProps {

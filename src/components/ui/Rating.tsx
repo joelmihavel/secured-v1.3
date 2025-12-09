@@ -3,7 +3,7 @@
 import React from "react";
 import { Review } from "@/lib/webflow";
 import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
-import { Quote, Star } from "lucide-react";
+import { IconQuote as Quote, IconStar as Star } from "@tabler/icons-react";
 import { AsSeenIn } from "@/components/layout/AsSeenIn";
 import { motion } from "framer-motion";
 import Image from "next/image";

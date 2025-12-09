@@ -4,17 +4,17 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    Bed,
-    Bath,
-    Square,
-    MapPin,
-    ArrowRight,
-    ArrowUpRight,
-    Calendar,
-    DoorOpen,
-    Users,
-    Building2,
-} from "lucide-react";
+    IconBed as Bed,
+    IconBath as Bath,
+    IconSquare as Square,
+    IconMapPin as MapPin,
+    IconArrowRight as ArrowRight,
+    IconArrowUpRight as ArrowUpRight,
+    IconCalendar as Calendar,
+    IconDoor as DoorOpen,
+    IconUsers as Users,
+    IconBuilding as Building2,
+} from "@tabler/icons-react";
 import { Property, Room, Occupant } from "@/lib/webflow";
 import { Button } from "@/components/ui/Button";
 

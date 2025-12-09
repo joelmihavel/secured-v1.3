@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
 import { motion, useMotionValue, animate, PanInfo, useDragControls, useMotionValueEvent } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
 // --- Types ---

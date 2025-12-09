@@ -82,18 +82,38 @@ export interface RentBreakdown {
     deposit: number | null;
 }
 
-export const getRoomRentBreakdown = (room: Room): RentBreakdown => {
+export type LockInPeriod = 6 | 9 | 11;
+
+export const getRoomRentBreakdown = (room: Room, lockIn: LockInPeriod = 11): RentBreakdown => {
     const baseRent = room.fieldData["base-rent"] ?? null;
     const maintenance = room.fieldData["maintenance"] ?? null;
     const furnishing = room.fieldData["furnishing-cost"] ?? null;
     const convenience = room.fieldData["convenience-fee"] ?? null;
     const gst = room.fieldData["gst"] ?? null;
 
-    // Total rent
-    const totalRent = Number(room.fieldData["room-rent"]) || null;
+    // Get rent based on lock-in period
+    // CMS field mapping (counterintuitive naming):
+    // - room-rent = 6 month price (highest - most flexibility)
+    // - 3-month-cost-2 = 9 month price (middle)
+    // - 6-month-cost-2 = 11 month price (lowest - longest commitment)
+    let totalRent: number | null = null;
+    if (lockIn === 6) {
+        totalRent = Number(room.fieldData["room-rent"]) || null;
+    } else if (lockIn === 9) {
+        totalRent = Number(room.fieldData["3-month-cost-2"]) || Number(room.fieldData["room-rent"]) || null;
+    } else {
+        totalRent = Number(room.fieldData["6-month-cost-2"]) || Number(room.fieldData["room-rent"]) || null;
+    }
 
-    // Deposit: No field available currently.
-    const deposit = null;
+    // Get deposit based on lock-in period
+    let deposit: number | null = null;
+    if (lockIn === 6) {
+        deposit = room.fieldData["security-deposit"] ?? null;
+    } else if (lockIn === 9) {
+        deposit = room.fieldData["9-month-security-deposit"] ?? null;
+    } else {
+        deposit = room.fieldData["11-month-security-deposit"] ?? null;
+    }
 
     return {
         baseRent,

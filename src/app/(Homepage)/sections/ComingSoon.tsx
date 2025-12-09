@@ -19,12 +19,14 @@ export const ComingSoon = ({ properties = [], locations = [], rooms = [], occupa
     const [randomProperties, setRandomProperties] = useState<Property[]>([]);
 
     useEffect(() => {
-        if (properties.length === 0) {
+        const comingSoonProperties = properties.filter(p => p.fieldData["is-upcoming"]);
+
+        if (comingSoonProperties.length === 0) {
             setRandomProperties([]);
             return;
         }
         // Use a consistent seed or just random on client is fine since it's client-only now
-        const shuffled = [...properties].sort(() => 0.5 - Math.random());
+        const shuffled = [...comingSoonProperties].sort(() => 0.5 - Math.random());
         setRandomProperties(shuffled.slice(0, 3));
     }, [properties]);
 

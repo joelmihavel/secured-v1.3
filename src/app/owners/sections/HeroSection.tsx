@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowRight } from "lucide-react";
+import { IconArrowRight as ArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";

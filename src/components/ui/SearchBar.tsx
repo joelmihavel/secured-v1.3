@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Search, Calendar, ChevronDown } from "lucide-react";
+import { IconSearch as Search, IconCalendar as Calendar, IconChevronDown as ChevronDown } from "@tabler/icons-react";
 import { Location } from "@/lib/webflow";
 
 export interface SearchFilters {

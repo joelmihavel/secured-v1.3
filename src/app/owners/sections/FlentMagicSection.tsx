@@ -7,7 +7,7 @@ import {
     ImageComparisonImage,
     ImageComparisonSlider
 } from "@/components/ui/image-comparison";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-react";
 
 export const FlentMagicSection = () => {
     return (

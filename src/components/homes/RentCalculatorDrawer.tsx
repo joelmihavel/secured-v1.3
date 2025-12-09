@@ -1,18 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerClose, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/Button";
-import { ChevronUp, ChevronDown, ChevronLeft, MessageCircle, Info } from "lucide-react";
-import { RentBreakdown, ADD_ONS, formatCurrency } from "@/lib/property-utils";
+import { IconChevronUp as ChevronUp, IconChevronDown as ChevronDown, IconChevronLeft as ChevronLeft, IconMessageCircle as MessageCircle, IconInfoCircle as Info } from "@tabler/icons-react";
+import { RentBreakdown, ADD_ONS, formatCurrency, getRoomRentBreakdown, LockInPeriod } from "@/lib/property-utils";
+import { Room } from "@/lib/webflow";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { LockInSlider } from "@/components/homes/LockInSlider";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface RentCalculatorDrawerProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
     image: string;
-    lockInPeriod: string;
+    lockInPeriod: LockInPeriod;
     breakdown: RentBreakdown;
+    room?: Room; // Optional room for recalculating breakdown
 }
 
 export const RentCalculatorDrawer = ({
@@ -20,10 +24,27 @@ export const RentCalculatorDrawer = ({
     onClose,
     title,
     image,
-    lockInPeriod,
-    breakdown
+    lockInPeriod: initialLockIn,
+    breakdown: initialBreakdown,
+    room
 }: RentCalculatorDrawerProps) => {
     const [isBreakdownVisible, setIsBreakdownVisible] = useState(true);
+    const [selectedLockIn, setSelectedLockIn] = useState<LockInPeriod>(initialLockIn);
+    const [breakdown, setBreakdown] = useState<RentBreakdown>(initialBreakdown);
+
+    // Update local state when props change
+    useEffect(() => {
+        setSelectedLockIn(initialLockIn);
+        setBreakdown(initialBreakdown);
+    }, [initialLockIn, initialBreakdown]);
+
+    // Handle lock-in change within drawer
+    const handleLockInChange = (lockIn: LockInPeriod) => {
+        setSelectedLockIn(lockIn);
+        if (room) {
+            setBreakdown(getRoomRentBreakdown(room, lockIn));
+        }
+    };
 
     return (
         <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -53,16 +74,25 @@ export const RentCalculatorDrawer = ({
                                     <div>
                                         <h2 className="text-fluid-h3 font-heading text-text-main mb-1 md:mb-2">{title}</h2>
                                         <div className="flex items-center gap-1.5 md:gap-2 text-xs md:text-sm text-text-main/60">
-                                            <span className="flex items-center gap-1">
-                                                Lock In Period: {lockInPeriod}
-                                                <div className="relative group inline-block">
-                                                    <Info className="w-3 h-3 md:w-3.5 md:h-3.5 cursor-help" />
-                                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none z-50">
-                                                        Minimum commitment period for your stay
-                                                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-black"></div>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <button className="flex items-center gap-1 hover:text-text-main transition-colors cursor-pointer group">
+                                                        <Info className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                                                        <span>Lock In Period: {selectedLockIn} months</span>
+                                                        <ChevronDown className="w-3 h-3 transition-transform group-data-[state=open]:rotate-180" />
+                                                    </button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-64 p-4" align="start">
+                                                    <div className="space-y-3">
+                                                        <p className="text-xs text-text-main/60">Select your commitment period</p>
+                                                        <LockInSlider
+                                                            value={selectedLockIn}
+                                                            onChange={handleLockInChange}
+                                                        />
+                                                        <p className="text-[10px] text-text-main/50 text-center">Longer lock-in = lower rent</p>
                                                     </div>
-                                                </div>
-                                            </span>
+                                                </PopoverContent>
+                                            </Popover>
                                         </div>
                                     </div>
                                 </div>
@@ -121,11 +151,19 @@ export const RentCalculatorDrawer = ({
 
                                 {/* Actions */}
                                 <div className="space-y-2.5 md:space-y-3 pt-3 md:pt-4">
-                                    <Button className="w-full bg-black text-white hover:bg-black/90 py-4 md:py-6 rounded-xl text-sm md:text-base font-bold">
+                                    <Button
+                                        variant="primary"
+                                        size="lg"
+                                        className="w-full"
+                                    >
                                         Schedule a Visit
                                     </Button>
-                                    <Button variant="outline" className="w-full border-text-main text-text-main hover:bg-text-main/5 py-4 md:py-6 rounded-xl text-sm md:text-base font-bold flex items-center justify-center gap-2">
-                                        <MessageCircle className="w-5 h-5" />
+                                    <Button
+                                        variant="white"
+                                        size="lg"
+                                        className="w-full"
+                                        leftIcon={<MessageCircle />}
+                                    >
                                         Chat with Us
                                     </Button>
                                 </div>
