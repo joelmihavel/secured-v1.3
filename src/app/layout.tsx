@@ -214,6 +214,13 @@ export default function RootLayout({
 
                 // Create floating WhatsApp button
                 function createFloatingWhatsAppButton() {
+                  // Check path
+                  if (window.location.pathname.startsWith('/homes/')) {
+                    const existing = document.querySelector('.whatsapp-float');
+                    if (existing) existing.remove();
+                    return;
+                  }
+
                   // Check if button already exists
                   if (document.querySelector('.whatsapp-float')) {
                     return;
