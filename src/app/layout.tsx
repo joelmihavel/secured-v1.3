@@ -40,6 +40,7 @@ export const metadata: Metadata = {
 
 import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
 import { ScrollRestoration } from "@/components/utils/ScrollRestoration";
+import { CSPostHogProvider } from "./providers";
 
 // ... existing imports
 
@@ -213,6 +214,13 @@ export default function RootLayout({
 
                 // Create floating WhatsApp button
                 function createFloatingWhatsAppButton() {
+                  // Check path
+                  if (window.location.pathname.startsWith('/homes/')) {
+                    const existing = document.querySelector('.whatsapp-float');
+                    if (existing) existing.remove();
+                    return;
+                  }
+
                   // Check if button already exists
                   if (document.querySelector('.whatsapp-float')) {
                     return;
@@ -398,12 +406,15 @@ export default function RootLayout({
           }}
         />
 
-        <BreadcrumbProvider>
-          <ScrollRestoration />
-          <Navbar />
-          {children}
-          <Footer />
-        </BreadcrumbProvider>
+
+        <CSPostHogProvider>
+          <BreadcrumbProvider>
+            <ScrollRestoration />
+            <Navbar />
+            {children}
+            <Footer />
+          </BreadcrumbProvider>
+        </CSPostHogProvider>
       </body>
     </html>
   );
