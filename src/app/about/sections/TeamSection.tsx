@@ -109,7 +109,11 @@ const PolaroidCard = ({
                     className="font-heading text-sm font-bold mb-0. pb-2"
                     style={{ color: headingColor }}
                 >
-                    {name}
+                    {name.includes('Balasubramanyam') ? (
+                        <>Abhimanyu Balasubraman<wbr />yam</>
+                    ) : (
+                        name
+                    )}
                 </h4>
                 <p
                     className="font-zin text-sm leading-tight pb-2"
@@ -173,7 +177,7 @@ export const TeamSection = () => {
                         ))}
                     </ParallaxColumn>
                     <ParallaxColumn y={y2} className="pt-16">
-                        {TEAM_MEMBERS.slice(6, 11).map((member, i) => (
+                        {TEAM_MEMBERS.slice(6, 12).map((member, i) => (
                             <PolaroidCard
                                 key={member.id}
                                 {...member}
@@ -183,21 +187,21 @@ export const TeamSection = () => {
                         ))}
                     </ParallaxColumn>
                     <ParallaxColumn y={y3} className="pt-8">
-                        {TEAM_MEMBERS.slice(11, 16).map((member, i) => (
+                        {TEAM_MEMBERS.slice(12, 18).map((member, i) => (
                             <PolaroidCard
                                 key={member.id}
                                 {...member}
-                                index={i + 11}
+                                index={i + 12}
                                 className="w-full"
                             />
                         ))}
                     </ParallaxColumn>
                     <ParallaxColumn y={y1} className="pt-20">
-                        {TEAM_MEMBERS.slice(16, 21).map((member, i) => (
+                        {TEAM_MEMBERS.slice(18, 24).map((member, i) => (
                             <PolaroidCard
                                 key={member.id}
                                 {...member}
-                                index={i + 16}
+                                index={i + 18}
                                 className="w-full"
                             />
                         ))}

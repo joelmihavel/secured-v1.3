@@ -29,14 +29,14 @@
   },
   {
     "name": "Dhiram Shah",
-    "title": "Growth Lead",
+    "title": "Demand Lead",
     "image": "/team-photos-normalized/dhiram_shah.webp",
     "linkedin": "https://www.linkedin.com/in/dhiram/",
     "downloaded": true
   },
   {
     "name": "Raghav Malhotra",
-    "title": "Growth Lead",
+    "title": "Supply Lead",
     "image": "/team-photos-normalized/raghav_malhotra.webp",
     "linkedin": "https://www.linkedin.com/in/malhotra-raghav/",
     "downloaded": true
@@ -141,9 +141,30 @@
   },
   {
     "name": "Shreya Bhagwat",
-    "title": "",
+    "title": "Product Ops Associate",
     "image": "/team-photos-normalized/shreya_bhagwat.webp",
     "linkedin": "https://www.linkedin.com/in/shreya-bhagwat-1716b1218/",
+    "downloaded": true
+  },
+  {
+    "name": "Abhimanyu B",
+    "title": "Brand Lead",
+    "image": "/team-photos-normalized/Abhimanyu Balasubramanyam final.webp",
+    "linkedin": "https://www.linkedin.com/in/abhimanyu-balasubramanyam-b36706b5/",
+    "downloaded": true
+  },
+  {
+    "name": "Shivoham Gautam",
+    "title": "Product Ops Associate",
+    "image": "/team-photos-normalized/Shivoham.webp",
+    "linkedin": "https://www.linkedin.com/in/shivoham7/",
+    "downloaded": true
+  },
+  {
+    "name": "Srinandh Gosala",
+    "title": "FlentX Intern",
+    "image": "/team-photos-normalized/Srinandh Gosala final.webp",
+    "linkedin": "https://www.linkedin.com/in/srinandh/",
     "downloaded": true
   }
 ]
