@@ -57,7 +57,7 @@ export const OwnersFAQ = () => {
                     <div className="w-full md:w-1/2 text-left mb-8 px-4 md:mb-0">
                         <h2 className="font-heading text-text-main mb-6">
                             You got questions? <br className="hidden md:block" />
-                            <span className="font-zin font-light">
+                            <span className="font-zin-italic">
                                 <br className="md:hidden" />
                                 We got answers.
                             </span>

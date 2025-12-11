@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";
-import { VerticalInfiniteScroll } from "@/components/ui/vertical-infinite-scroll";
-import { HorizontalInfiniteScroll } from "@/components/ui/horizontal-infinite-scroll";
+import { Marquee } from "@/components/ui/Marquee";
 import { cn } from "@/lib/utils";
 import investorsData from "@/data/investors-data.json";
 import institutionsData from "@/data/institutions-data.json";
@@ -99,31 +98,23 @@ const InvestorCard = ({ item }: { item: any }) => {
                     />
                 </div>
             </div>
-        );
-
-        if (item.link) {
-            return (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                    {content}
-                </a>
-            );
-        }
+        )
         return content;
     }
 
     const personContent = (
         <div className="bg-white p-3 rounded-2xl shadow-sm hover:shadow-md transition-shadow w-full max-w-[280px] mx-auto">
-            <div className="relative aspect-[3/5] w-full rounded-xl overflow-hidden bg-gray-100">
+            <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-100">
                 <Image
                     src={item.src}
                     alt={item.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute bottom-3 left-3 right-3 bg-black p-4 rounded-lg text-left">
-                    <h4 className="text-white font-bold text-lg leading-tight mb-1">{item.name}</h4>
-                    <p className="text-white/70 text-xs leading-snug">{item.role}</p>
-                </div>
+            </div>
+            <div className="pt-4 pb-2 px-1 text-left">
+                <h4 className="text-primary-black font-bold text-lg leading-tight mb-1">{item.name}</h4>
+                <p className="text-primary-black/60 text-sm leading-snug">{item.role}</p>
             </div>
         </div>
     );
@@ -138,36 +129,7 @@ const InvestorCard = ({ item }: { item: any }) => {
     return <div className="group">{personContent}</div>;
 };
 
-const VerticalColumn = ({ items, direction = "up", speed = 50 }: { items: any[], direction?: "up" | "down", speed?: number }) => {
-    return (
-        <div className="h-[800px] overflow-hidden relative">
 
-            <VerticalInfiniteScroll speed={speed} direction={direction} className="h-full" pauseOnHover={false}>
-                <div className="flex flex-col gap-8 pb-8">
-                    {items.map((item, index) => (
-                        <InvestorCard key={index} item={item} />
-                    ))}
-                </div>
-            </VerticalInfiniteScroll>
-        </div>
-    );
-};
-
-const HorizontalRow = ({ items, direction = "left", speed = 30 }: { items: any[], direction?: "left" | "right", speed?: number }) => {
-    return (
-        <div className="w-full overflow-hidden relative">
-            <HorizontalInfiniteScroll speed={speed} direction={direction} pauseOnHover={false}>
-                <div className="flex flex-row gap-4 pr-4">
-                    {items.map((item, index) => (
-                        <div key={index} className="shrink-0 w-[200px]">
-                            <InvestorCard item={item} />
-                        </div>
-                    ))}
-                </div>
-            </HorizontalInfiniteScroll>
-        </div>
-    );
-};
 
 export const InvestorsSection = () => {
     const [isMobile, setIsMobile] = useState(false);
@@ -184,36 +146,60 @@ export const InvestorsSection = () => {
 
     return (
         <OpenSection className="bg-ground-brown/6">
-            <div className="container mx-auto px-4 md:px-6">
+            <div className="container mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                    <div className="lg:col-span-4">
-                        <div className="mb-8">
-                            <span className="inline-block px-3 py-1 rounded-full bg-[#F3F1EB] text-sm font-medium text-primary-black/60">
+                    <div className="lg:col-span-4 mx-4">
+                        <div className="mb-8 mt-12">
+                            <span className="inline-block px-3 py-1 rounded-full bg-pastel-brown text-sm font-medium text-primary-black/60">
                                 About / <span className="text-primary-black">Investors</span>
                             </span>
                         </div>
                         <h2 className="text-5xl md:text-7xl font-bold font-heading leading-[1.1] tracking-tight text-text-main mb-8">
                             They gave us money
-                            <span className="font-zin font-light"> (and a chance)</span>
+                            <span className="font-zin-italic"> <br className="block md:hidden" /> (and a chance)</span>
                         </h2>
-                        <p className="text-lg text-primary-black/80 leading-relaxed">
+                        <p className="text-subtitle text-primary-black/80 leading-relaxed">
                             Meet the investors who believed in our mission long before the market did.
                         </p>
                     </div>
 
                     {/* Carousel Columns - Desktop: Vertical, Mobile: Horizontal */}
                     {isMobile ? (
-                        <div className="lg:col-span-8 flex flex-col gap-4 w-full overflow-hidden -mx-4 px-0">
-                            <HorizontalRow items={COLUMN_1} speed={25} direction="left" />
-                            <HorizontalRow items={COLUMN_2} speed={30} direction="right" />
+                        <div className="lg:col-span-8 flex flex-col gap-4 w-full overflow-hidden pb-4 md:pb-0">
+                            <Marquee duration={200} className="w-full">
+                                {COLUMN_1.map((item, index) => (
+                                    <div key={index} className="mx-2 w-[200px]">
+                                        <InvestorCard item={item} />
+                                    </div>
+                                ))}
+                            </Marquee>
+                            <Marquee duration={200} reverse className="w-full">
+                                {COLUMN_2.map((item, index) => (
+                                    <div key={index} className="mx-2 w-[200px]">
+                                        <InvestorCard item={item} />
+                                    </div>
+                                ))}
+                            </Marquee>
                         </div>
                     ) : (
-                        <div className="lg:col-span-8 flex justify-center gap-6">
-                            <div className="w-full max-w-[280px]">
-                                <VerticalColumn items={COLUMN_1} speed={30} direction="up" />
+                        <div className="lg:col-span-8 flex justify-center gap-6 h-[100vh] overflow-hidden">
+                            <div className="w-full max-w-[280px] h-full">
+                                <Marquee vertical duration={200} className="h-full">
+                                    {COLUMN_1.map((item, index) => (
+                                        <div key={index} className="my-4">
+                                            <InvestorCard item={item} />
+                                        </div>
+                                    ))}
+                                </Marquee>
                             </div>
-                            <div className="w-full max-w-[280px]">
-                                <VerticalColumn items={COLUMN_2} speed={40} direction="down" />
+                            <div className="w-full max-w-[280px] h-full">
+                                <Marquee vertical duration={200} reverse className="h-full">
+                                    {COLUMN_2.map((item, index) => (
+                                        <div key={index} className="my-4">
+                                            <InvestorCard item={item} />
+                                        </div>
+                                    ))}
+                                </Marquee>
                             </div>
                         </div>
                     )}

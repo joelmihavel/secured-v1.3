@@ -39,7 +39,7 @@ export const TestimonialsSection = () => {
             <div className="container mx-auto px-4 mb-12 text-center">
                 <h2 className="font-heading text-text-main">
                     What Owners Say About{" "}
-                    <span className="font-zin font-light">Flent</span>
+                    <span className="font-zin-italic">Flent</span>
                 </h2>
             </div>
 

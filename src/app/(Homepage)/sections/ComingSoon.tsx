@@ -35,8 +35,8 @@ export const ComingSoon = ({
       {/* Top Section - Centered */}
       <div className="flex flex-col items-center text-center mb-12 px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="font-heading text-fluid-h2 text-white mb-6">
-        Find a Flent home <br />
-          <span className="font-zin font-light">like no other</span>
+          Flent homes are a <br className="hidden md:block" />
+          <span className="font-zin-italic"> scarce commodity</span>
         </h2>
 
         <p className="text-subtitle !text-white/90 font-body font-medium max-w-2xl">
@@ -69,7 +69,7 @@ export const ComingSoon = ({
       </div>
 
       {/* Newsletter Section */}
-      <div className="mx-4 sm:mx-2 lg:mx-8 rounded-[2rem] p-12 lg:p-20 md:px-8 text-center relative z-10">
+      <div className=" rounded-[2rem] py-12 px-2 text-center relative z-10">
         <h3 className="font-heading text-fluid-h3 text-white mb-8">
           Be the first to know when new homes drop
         </h3>

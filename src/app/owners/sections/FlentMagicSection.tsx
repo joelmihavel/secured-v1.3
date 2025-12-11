@@ -23,7 +23,7 @@ export const FlentMagicSection = () => {
                 {/* Section Header */}
                 <div className="text-center mb-12">
                     <h2 className="text-fluid-h2 font-heading text-text-main text-white mb-4">
-                        <span className="font-zin font-light">Flent's</span> Magic
+                        <span className="font-zin-italic">Flent's</span> Magic
                     </h2>
                     <p className="text-subtitle font-body max-w-3xl mx-auto text-white">
                         We beef up your home with curated furniture & interior upgrades without making any structural changes.

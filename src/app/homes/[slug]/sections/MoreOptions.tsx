@@ -20,10 +20,10 @@ export const MoreOptions = ({ properties, currentPropertyId }: MoreOptionsProps)
     }
 
     return (
-        <OpenSection className="pt-20 pb-4">
+        <OpenSection className="py-20">
             <div className="container mx-auto px-4">
                 <h2 className="font-heading text-text-main mb-12 text-center">
-                    Other  <span className="font-zin font-light">Available Homes</span>
+                    Other  <span className="font-zin-italic">Available Homes</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {otherProperties.map((property, index) => (

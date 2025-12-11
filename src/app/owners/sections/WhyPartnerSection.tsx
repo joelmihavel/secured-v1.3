@@ -47,7 +47,7 @@ export const WhyPartnerSection = () => {
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
                         <h2 className="text-fluid-h2 font-heading text-text-main mb-6">
-                            Why Partner With <span className="font-zin font-light">Flent</span>
+                            Why Partner With <span className="font-zin-italic">Flent</span>
                         </h2>
                     </div>
 

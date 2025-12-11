@@ -81,7 +81,7 @@ export const Rating = ({ reviews }: RatingProps) => {
 
                     </div>
                     <h2 className="font-heading text-text-main ">
-                        People love <br /><span className="font-zin font-light">Flent-ing</span>
+                        People love <br /><span className="font-zin-italic">Flent-ing</span>
                     </h2>
 
 

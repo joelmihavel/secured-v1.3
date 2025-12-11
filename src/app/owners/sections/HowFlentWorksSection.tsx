@@ -178,7 +178,7 @@ export const HowFlentWorksSection = () => {
                 {/* Section Header - Left Aligned */}
                 <div className="max-w-5xl mx-auto mb-12">
                     <h2 className="text-fluid-h2 font-heading text-text-main">
-                        How <span className="font-zin font-light">Flent</span> Works
+                        How <span className="font-zin-italic">Flent</span> Works
                     </h2>
                 </div>
 

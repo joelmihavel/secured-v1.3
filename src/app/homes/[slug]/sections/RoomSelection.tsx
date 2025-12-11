@@ -230,24 +230,24 @@ export const RoomSelection = ({
         status: room.fieldData.available
           ? room.fieldData["available-from"]
             ? `Available From ${new Date(
-                room.fieldData["available-from"]
-              ).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })}`
+              room.fieldData["available-from"]
+            ).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            })}`
             : "Available Now"
           : "Occupied",
         isOccupied: !room.fieldData.available,
         occupant: occupant
           ? {
-              name: occupant.fieldData.name,
-              profession: occupant.fieldData.profession,
-              company: occupant.fieldData.company,
-              image: occupant.fieldData["profile-picture"]?.url,
-              gender: occupant.fieldData.gender,
-              smokes: occupant.fieldData.smokes,
-              foodPreference: occupant.fieldData["food-preference"],
-            }
+            name: occupant.fieldData.name,
+            profession: occupant.fieldData.profession,
+            company: occupant.fieldData.company,
+            image: occupant.fieldData["profile-picture"]?.url,
+            gender: occupant.fieldData.gender,
+            smokes: occupant.fieldData.smokes,
+            foodPreference: occupant.fieldData["food-preference"],
+          }
           : null,
         images: allImages.map((img) => img.url),
         raw: room,
@@ -258,10 +258,10 @@ export const RoomSelection = ({
     <OpenSection id="rooms" className="py-16 px-4 md:py-32 md:px-24">
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-fluid-h2 text-text-main mb-4 md:mb-6">
-          Take a room or the entire house
-          <span className="font-zin font-light">
+          Take a room or the entire house,
+          <span className="font-zin-italic">
             {" "}
-            <br /> Your call
+            <br className="hidden md:block" /> Your call
           </span>
         </h2>
 

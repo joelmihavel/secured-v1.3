@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { IconBrandInstagram as Instagram, IconBrandTwitter as Twitter, IconBrandLinkedin as Linkedin, IconMail as Mail } from "@tabler/icons-react";
+import { IconBrandInstagram as Instagram, IconBrandTwitter as Twitter, IconBrandLinkedin as Linkedin, IconBrandFacebook as Facebook } from "@tabler/icons-react";
 import Marquee from "@/components/ui/image-tiles";
 import { usePathname } from "next/navigation";
 import { CardSection } from "@/components/layout/CardSection";
@@ -100,10 +100,10 @@ export const Footer = () => {
                                 className="h-10 w-auto"
                             />
                         </Link>
-                        <h3 className="text-3xl md:text-4xl font-heading font-bold text-text-main leading-tight">
+                        <h3 className=" font-heading font-bold text-text-main leading-tight">
                             Why Rent,
                             <br />
-                            When You Can Flent
+                            <span className="font-zin-italic">When You Can Flent</span>
                         </h3>
                     </div>
 
@@ -117,10 +117,9 @@ export const Footer = () => {
                             <ul className="space-y-3">
                                 {[
                                     { label: "All Homes", href: "/homes" },
-                                    { label: "About Us", href: "/about" },
-                                    { label: "For Homeowners", href: "/homeowners" },
-                                    { label: "Join the Team", href: "/careers" },
-                                    { label: "Conceirge", href: "/concierge" }
+                                    { label: "Our Story", href: "/about" },
+                                    { label: "For Owners", href: "/owners" },
+                                    { label: "Careers", href: "/about#team" }
                                 ].map((item) => (
                                     <li key={item.label}>
                                         <Link
@@ -140,29 +139,45 @@ export const Footer = () => {
                                 CONTACT
                             </h4>
                             <ul className="space-y-3">
-                                {[
-                                    { label: "Get in Touch", href: "/contact" },
-                                    { label: "Help Center", href: "/help" },
-                                    { label: "Partner With Us", href: "/partners" }
-                                ].map((item) => (
-                                    <li key={item.label}>
-                                        <Link
-                                            href={item.href}
-                                            className="text-text-main hover:text-text-main/70 transition-colors text-base"
+                                <li>
+                                    <p className="text-text-main text-base">
+                                        <span className="font-medium">For Tenants:</span>{" "}
+                                        <a
+                                            href="tel:+918123659925"
+                                            className="hover:text-text-main/70 transition-colors"
                                         >
-                                            {item.label}
-                                        </Link>
-                                    </li>
-                                ))}
+                                            +91 8123659925
+                                        </a>
+                                    </p>
+                                </li>
+                                <li>
+                                    <p className="text-text-main text-base">
+                                        <span className="font-medium">For Homeowners:</span>{" "}
+                                        <a
+                                            href="tel:+918123380807"
+                                            className="hover:text-text-main/70 transition-colors"
+                                        >
+                                            +91 8123380807
+                                        </a>
+                                    </p>
+                                </li>
                             </ul>
 
                             {/* Social Icons */}
                             <div className="flex space-x-3 mt-8">
-                                {[Instagram, Twitter, Linkedin, Mail].map((Icon, i) => (
+                                {[
+                                    { Icon: Instagram, href: "https://www.instagram.com/flent.in/", label: "Instagram" },
+                                    { Icon: Linkedin, href: "https://www.linkedin.com/company/flenthomes/", label: "LinkedIn" },
+                                    { Icon: Twitter, href: "https://x.com/flenthomes", label: "Twitter" },
+                                    { Icon: Facebook, href: "https://www.facebook.com/p/Flent-61560227362485/", label: "Facebook" }
+                                ].map(({ Icon, href, label }) => (
                                     <a
-                                        key={i}
-                                        href="#"
+                                        key={label}
+                                        href={href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="w-9 h-9 rounded-full border-2 border-text-main text-text-main flex items-center justify-center hover:bg-text-main hover:text-white transition-colors"
+                                        aria-label={label}
                                     >
                                         <Icon size={18} />
                                     </a>

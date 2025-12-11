@@ -56,7 +56,7 @@ export const Amenities = ({ property, amenities, allImages, slug }: AmenitiesPro
                             <span className="text-xs md:text-sm font-medium text-text-main">✨ Holiday Offer</span>
                         </div>
                         <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
-                            Save 10% month if <br />
+                            Save 10% month if <br className="hidden md:block" />
                             booked by Dec 30
                         </h2>
                         <a

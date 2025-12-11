@@ -56,7 +56,7 @@ export const PhoneSubscribeForm = ({
       onSubmit={handleSubmit(handleFormSubmit)}
       className={`max-w-md mx-auto mb-4 ${className}`}
     >
-      <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         <input
           type="tel"
           placeholder={placeholder}
@@ -75,6 +75,7 @@ export const PhoneSubscribeForm = ({
           size="md"
           variant="primary"
           disabled={isSubmitting}
+          className="w-full md:w-auto"
         >
           {isSubmitting ? "Subscribing..." : buttonText}
         </Button>

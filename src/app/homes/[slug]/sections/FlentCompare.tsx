@@ -30,6 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
 import { Gravity, MatterBody } from "@/components/ui/gravity";
+import { Marquee } from "@/components/ui/Marquee";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -73,6 +74,23 @@ const withoutFlentItems: CompareItem[] = [
     { text: "Move-in cleaning", icon: Sparkles, bgColor: "var(--color-brand-yellow)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
 ];
 
+const Chip = ({ item }: { item: CompareItem }) => (
+    <div
+        className="px-3 py-1.5 md:px-8 md:py-4 rounded-full text-xs md:text-xl font-semibold whitespace-nowrap shadow-lg flex items-center gap-1.5 md:gap-4 mx-2 md:mx-4 border border-white/10"
+        style={{
+            backgroundColor: item.bgColor,
+            color: item.textColor,
+            borderColor: item.borderColor,
+            boxShadow: `0 4px 12px ${item.borderColor}20`,
+        }}
+    >
+        <item.icon className="w-3 h-3 md:w-6 md:h-6" strokeWidth={2} />
+        {item.text}
+    </div>
+);
+
+
+
 export const FlentCompare = () => {
     const [activeTab, setActiveTab] = useState("flent");
 
@@ -107,7 +125,7 @@ export const FlentCompare = () => {
                     </TabsList>
                 </div>
 
-                <div className="w-full max-w-7xl relative z-10 h-[65vh] md:h-[calc(45vh+232px)]">
+                <div className="w-full relative z-10 h-[65vh] md:h-[calc(45vh+232px)]">
                     <AnimatePresence mode="wait">
                         {activeTab === "flent" ? (
                             <motion.div
@@ -124,7 +142,7 @@ export const FlentCompare = () => {
                                         <div className="text-center max-w-3xl mx-auto">
 
                                             <h2 className="font-heading text-fluid-h2 text-text-main">
-                                                Just get your clothes <br /> <span className="font-zin font-light opacity-60">And start living</span>
+                                                Just get your clothes <br className="hidden md:block" /> <span className="font-zin-italic opacity-60">And start living</span>
                                             </h2>
                                             <p className="text-sm md:text-subtitle-sm font-medium text-text-main/70 pt-4">
                                                 We do all the heavy lifting so that you don’t have to.
@@ -132,30 +150,25 @@ export const FlentCompare = () => {
                                         </div>
                                     </div>
 
-                                    {/* Canvas Section */}
-                                    <div className="relative w-full flex-1 overflow-hidden rounded-lg">
-                                        <Gravity gravity={{ x: 0, y: 1 }} className="w-full h-full" addTopWall>
-                                            {withFlentItems.map((item, i) => (
-                                                <MatterBody
-                                                    key={`with-${i}`}
-                                                    x={`${10 + (i * 18) % 80}%`}
-                                                    y={`${20 + (i * 15) % 50}%`}
-                                                    angle={angles[i]}
-                                                    matterBodyOptions={{ friction: 0.001, restitution: 0.6, density: 0.001, frictionAir: 0.01 }}
-                                                >
-                                                    <div
-                                                        className="px-3 py-1.5 md:px-8 md:py-4 rounded-full text-xs md:text-xl font-semibold whitespace-nowrap cursor-grab active:cursor-grabbing shadow-lg flex items-center gap-1.5 md:gap-4"
-                                                        style={{
-                                                            backgroundColor: item.bgColor,
-                                                            color: item.textColor,
-                                                        }}
-                                                    >
-                                                        <item.icon className="w-3 h-3 md:w-6 md:h-6" strokeWidth={2} />
-                                                        {item.text}
-                                                    </div>
-                                                </MatterBody>
+                                    {/* Carousel Section */}
+                                    <div
+                                        className="relative w-screen ml-[calc(50%-50vw)] flex-1 overflow-hidden flex flex-col justify-center gap-6 md:gap-12"
+                                    >
+                                        <Marquee duration={200} className="w-full" repeat={4}>
+                                            {withFlentItems.slice(0, 5).map((item, i) => (
+                                                <Chip key={i} item={item} />
                                             ))}
-                                        </Gravity>
+                                        </Marquee>
+                                        <Marquee duration={200} reverse className="w-full" repeat={4}>
+                                            {withFlentItems.slice(5, 9).map((item, i) => (
+                                                <Chip key={i} item={item} />
+                                            ))}
+                                        </Marquee>
+                                        <Marquee duration={200} className="w-full" repeat={4}>
+                                            {withFlentItems.slice(9).map((item, i) => (
+                                                <Chip key={i} item={item} />
+                                            ))}
+                                        </Marquee>
                                     </div>
                                 </TabsContent>
                             </motion.div>
@@ -171,7 +184,7 @@ export const FlentCompare = () => {
                                 <TabsContent value="without" className="w-full m-0 h-full" forceMount>
                                     {/* Full Height Canvas Section (Header Height + Canvas Height) */}
                                     <div className="relative w-full overflow-hidden h-full rounded-lg">
-                                        <Gravity gravity={{ x: 0, y: 2.5 }} className="w-full h-full" addTopWall>
+                                        <Gravity gravity={{ x: 0, y: 2.5 }} className="w-full h-full" addTopWall resetOnResize={false}>
                                             {/* Burden pills - start at top, fall immediately */}
                                             {withoutFlentItems.map((item, i) => (
                                                 <MatterBody
@@ -206,7 +219,7 @@ export const FlentCompare = () => {
                                             >
                                                 <div>
                                                     <h2 className="font-heading text-text-main text-fluid-h2 whitespace-nowrap text-center">
-                                                        Why go through <span className="font-zin font-light opacity-60">all this?</span>
+                                                        Why go through <span className="font-zin-italic opacity-60">all this?</span>
                                                     </h2>
                                                 </div>
                                             </MatterBody>

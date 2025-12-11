@@ -132,7 +132,7 @@ export default async function PropertyPage({
   );
 
   return (
-    <main className="min-h-screen bg-bg-white pb-24">
+    <main className="min-h-screen bg-bg-white flex flex-col gap-12">
       {location && (
         <BreadcrumbSetter
           neighborhoodName={location.fieldData.name}

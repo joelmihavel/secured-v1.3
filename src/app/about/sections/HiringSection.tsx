@@ -10,10 +10,9 @@ export const HiringSection = () => {
                 {/* Left Column: Heading */}
                 <div className="space-y-2">
                     <h2 className="text-fluid-h2 text-brand-yellow ">
-                        <span className="block">
-                            Resumes don’t impress us.
-                        </span>
-                        <span className="font-zin font-light block mt-2">
+                        Resumes don’t impress us.{""}
+
+                        <span className="font-zin-italic">
                             Sisu does.
                         </span>
                     </h2>

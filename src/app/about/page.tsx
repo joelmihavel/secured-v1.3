@@ -7,7 +7,7 @@ import { HiringSection } from "./sections/HiringSection";
 
 export default function AboutPage() {
     return (
-        <main className="min-h-screen bg-bg-white">
+        <main className="min-h-screen bg-ground-brown/2">
             <HeroSection />
             <StorySection />
             <InvestorsSection />

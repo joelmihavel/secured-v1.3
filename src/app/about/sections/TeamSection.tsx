@@ -1,7 +1,7 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useMemo, useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { cn } from "@/lib/utils";
 
@@ -9,14 +9,36 @@ import teamData from "@/data/team-data.json";
 
 const ROTATIONS = [-6, 4, -3, 5, -5, 3, -4, 6, -2];
 
-const TEAM_MEMBERS = teamData.map((member, index) => ({
+// Seeded shuffle for consistent randomization
+const seededShuffle = <T,>(array: T[], seed: number): T[] => {
+    const shuffled = [...array];
+    let currentSeed = seed;
+
+    const random = () => {
+        currentSeed = (currentSeed * 9301 + 49297) % 233280;
+        return currentSeed / 233280;
+    };
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+
+    return shuffled;
+};
+
+const TEAM_MEMBERS_RAW = teamData.map((member, index) => ({
     id: index + 1,
     src: member.image,
     name: member.name,
     role: member.title,
     rotation: ROTATIONS[index % ROTATIONS.length],
-    linkedin: member.linkedin
+    linkedin: member.linkedin,
+    originalIndex: index // Keep original index for consistent coloring
 }));
+
+// Shuffle team members for visual variety while maintaining consistent coloring
+const TEAM_MEMBERS = seededShuffle(TEAM_MEMBERS_RAW, 42);
 
 const BACKGROUND_COLORS = [
     "var(--color-forest-green)",
@@ -46,6 +68,11 @@ const PASTEL_BG_COLORS = [
     "var(--color-pastel-red)",      // matches brick-red
     "var(--color-pastel-violet)",   // matches night-violet
 ];
+
+// Lag configuration - center columns move less, outer columns move more
+// Higher values = more dramatic parallax effect
+const BASE_LAG = 0.30; // Base vertical movement for center column
+const LAG_SCALE = 0.12; // Additional movement per column from center
 
 const PolaroidCard = ({
     src,
@@ -82,7 +109,7 @@ const PolaroidCard = ({
         <Component
             {...linkProps}
             className={cn(
-                "relative p-2.5 shadow-lg transition-transform hover:scale-105 hover:z-10 duration-300 ease-out rounded-[12px] max-w-[200px] block cursor-pointer",
+                "relative p-2.5 shadow-lg transition-transform hover:scale-105 hover:z-10 duration-300 ease-out rounded-[12px] block cursor-pointer",
                 className
             )}
             style={{
@@ -126,86 +153,132 @@ const PolaroidCard = ({
     );
 };
 
-const ParallaxColumn = ({
-    children,
-    y,
-    className,
+// Hook to get current column count based on breakpoints
+const useColumnCount = () => {
+    const [columnCount, setColumnCount] = useState(4);
+
+    useEffect(() => {
+        const updateColumnCount = () => {
+            if (window.innerWidth < 768) {
+                setColumnCount(2);
+            } else if (window.innerWidth < 1024) {
+                setColumnCount(3);
+            } else {
+                setColumnCount(4);
+            }
+        };
+
+        updateColumnCount();
+        window.addEventListener('resize', updateColumnCount);
+        return () => window.removeEventListener('resize', updateColumnCount);
+    }, []);
+
+    return columnCount;
+};
+
+// Group items into columns for parallax effect
+const useGroupedColumns = (items: typeof TEAM_MEMBERS, columnCount: number) => {
+    return useMemo(() => {
+        const columns: (typeof TEAM_MEMBERS)[] = Array.from({ length: columnCount }, () => []);
+
+        items.forEach((item, index) => {
+            columns[index % columnCount].push(item);
+        });
+
+        // Calculate lag for each column based on distance from center
+        const mid = (columnCount - 1) / 2;
+
+        return columns.map((column, colIndex) => {
+            const distance = Math.abs(colIndex - mid);
+            const lag = BASE_LAG + distance * LAG_SCALE;
+            return { items: column, lag, colIndex };
+        });
+    }, [items, columnCount]);
+};
+
+// Individual column with its own parallax effect
+const ParallaxGridColumn = ({
+    items,
+    lag,
+    colIndex,
+    scrollYProgress,
 }: {
-    children: React.ReactNode;
-    y: MotionValue<string>;
-    className?: string;
+    items: typeof TEAM_MEMBERS;
+    lag: number;
+    colIndex: number;
+    scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress'];
 }) => {
+    // Create a unique vertical offset based on the lag
+    // Outer columns move more, center moves less - creates depth effect
+    const startOffset = colIndex % 2 === 0 ? 80 : 0;
+
+    const yOffset = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [`${startOffset}px`, `${-lag * 1200}px`]
+    );
+
+    // Stagger initial offset for visual variety
+    const initialOffset = [0, 100, 50, 120][colIndex % 4];
+
     return (
-        <motion.div style={{ y }} className={cn("flex flex-col gap-12", className)}>
-            {children}
+        <motion.div
+            style={{ y: yOffset }}
+            className="flex flex-col gap-12 md:gap-16"
+        >
+            <div style={{ height: initialOffset }} className="shrink-0" />
+            {items.map((member) => {
+                return (
+                    <PolaroidCard
+                        key={member.id}
+                        {...member}
+                        index={member.originalIndex}
+                        className="w-full max-w-[200px] mx-auto"
+                    />
+                );
+            })}
         </motion.div>
     );
 };
 
 export const TeamSection = () => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const columnCount = useColumnCount();
+    const groupedColumns = useGroupedColumns(TEAM_MEMBERS, columnCount);
+
     const { scrollYProgress } = useScroll({
         target: containerRef,
         offset: ["start end", "end start"],
     });
 
-    const y1 = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
-    const y2 = useTransform(scrollYProgress, [0, 1], ["0%", "-20%"]);
-    const y3 = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
-
     return (
-        <OpenSection className="bg-[#FDFCF8] min-h-screen overflow-hidden py-12">
-            <div className="container mx-auto px-4 md:px-6 " ref={containerRef}>
-                <div className="text-center mb-24">
+        <OpenSection className="bg-ground-brown/2 min-h-screen overflow-hidden pt-16 pb-4">
+            <div className="container mx-auto" ref={containerRef}>
+                <div className="text-center mb-16 md:mb-24">
                     <span className="inline-block px-3 py-1 rounded-full bg-[#F3F1EB] text-sm font-medium text-primary-black/60 mb-6">
                         About / <span className="text-primary-black">Team</span>
                     </span>
                     <h2 className="text-5xl md:text-7xl font-bold font-heading leading-[1.1] tracking-tight text-text-main">
-                        The People<br /><span className="font-zin font-light italic">Behind the scenes.</span>
+                        The People<br /><span className="font-zin-italic font-light italic">Behind the scenes.</span>
                     </h2>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-16 max-w-7xl mx-auto -mb-80">
-                    <ParallaxColumn y={y1} className="pt-0">
-                        {TEAM_MEMBERS.slice(0, 6).map((member, i) => (
-                            <PolaroidCard
-                                key={member.id}
-                                {...member}
-                                index={i}
-                                className="w-full"
-                            />
-                        ))}
-                    </ParallaxColumn>
-                    <ParallaxColumn y={y2} className="pt-16">
-                        {TEAM_MEMBERS.slice(6, 12).map((member, i) => (
-                            <PolaroidCard
-                                key={member.id}
-                                {...member}
-                                index={i + 6}
-                                className="w-full"
-                            />
-                        ))}
-                    </ParallaxColumn>
-                    <ParallaxColumn y={y3} className="pt-8">
-                        {TEAM_MEMBERS.slice(12, 18).map((member, i) => (
-                            <PolaroidCard
-                                key={member.id}
-                                {...member}
-                                index={i + 12}
-                                className="w-full"
-                            />
-                        ))}
-                    </ParallaxColumn>
-                    <ParallaxColumn y={y1} className="pt-20">
-                        {TEAM_MEMBERS.slice(18, 24).map((member, i) => (
-                            <PolaroidCard
-                                key={member.id}
-                                {...member}
-                                index={i + 18}
-                                className="w-full"
-                            />
-                        ))}
-                    </ParallaxColumn>
+                {/* Grid container with dynamic columns */}
+                <div
+                    className="grid gap-6 md:gap-12 lg:gap-16 max-w-7xl mx-auto -mb-80"
+                    style={{
+                        gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
+                    }}
+                >
+                    {groupedColumns.map(({ items, lag, colIndex }) => (
+                        <ParallaxGridColumn
+                            key={colIndex}
+                            items={items}
+                            lag={lag}
+                            colIndex={colIndex}
+                            scrollYProgress={scrollYProgress}
+                        />
+                    ))}
                 </div>
             </div>
         </OpenSection>

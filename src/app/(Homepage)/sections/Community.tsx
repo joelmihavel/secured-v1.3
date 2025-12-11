@@ -273,9 +273,9 @@ export const Community = () => {
                 {/* Div 1: Heading and Subtitle Section */}
                 <div className="text-center max-w-3xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-8">
                     <h2 className="font-heading text-text-main mb-6">
-                        A better crowd, <span className="font-zin font-light"> <br /> by design</span>
+                        A better crowd, <span className="font-zin-italic"> <br /> by design</span>
                     </h2>
-                    <p className="text-subtitle font-body max-w-2xl mx-auto">
+                    <p className="text-subtitle  max-w-2xl mx-auto">
                         At Flent, you end up living with people whose lifestyle and expectations naturally align with yours
                     </p>
                 </div>

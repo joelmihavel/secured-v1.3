@@ -40,7 +40,7 @@ export const HowItWorks = () => {
                         <p className="text-xs uppercase font-semibold tracking-wider mb-4 text-gray-600">How it Works?</p>
                         <h2 className="text-fluid-h2 font-heading text-text-main leading-tight">
                             Book Now,<br />
-                            <span className="font-zin font-light">Move-in Tomorrow </span>
+                            <span className="font-zin-italic">Move-in Tomorrow </span>
                         </h2>
                     </div>
                     <Button href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" variant="secondary" className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8">

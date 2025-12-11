@@ -20,7 +20,7 @@ export default async function Home() {
 
 
   return (
-    <main className="min-h-screen bg-bg-white">
+    <main className="min-h-screen bg-bg-white flex flex-col gap-12">
       <Hero properties={properties} />
       <AsSeenIn />
       <Homes properties={properties} locations={locations} rooms={rooms} occupants={occupants} />

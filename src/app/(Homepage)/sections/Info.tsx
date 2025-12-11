@@ -229,9 +229,9 @@ export const Info = () => {
           {/* Heading */}
           <div className="lg:col-span-5 text-center lg:text-left">
             <h2 className="font-heading text-text-main leading-[1.1] text-4xl md:text-5xl lg:text-6xl tracking-tight font-bold">
-              A lot goes in <br />
-              before you walk <br />
-              into <span className="font-zin font-light">that home</span>
+              A lot goes in <br className="hidden md:block" />
+              before you walk <br className="hidden md:block" />
+              into <span className="font-zin-italic">that home</span>
             </h2>
           </div>
 

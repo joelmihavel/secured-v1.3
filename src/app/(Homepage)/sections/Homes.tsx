@@ -111,9 +111,9 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
             paddingX="none"
             paddingY="none">
             <div className="flex flex-col md:flex-row justify-between items-center md:items-end px-4 sm:px-6 lg:px-8 relative z-10 mb-8">
-                <div className="text-center md:text-left px-16 md:px-4">
+                <div className="text-center md:text-left px-6">
                     <h2 className="font-heading text-white mb-6">
-                        What you see, <span className="font-zin font-light"> <br /> is what you get</span>
+                        What you see, <span className="font-zin-italic"> <br /> is what you get</span>
                     </h2>
 
                     <p className="text-subtitle font-body font-medium max-w-2xl !text-white">

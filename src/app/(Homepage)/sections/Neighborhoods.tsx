@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { type Location, type Property } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
-import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
+import { motion } from "framer-motion";
+import { FlexibleCarousel, useCarouselParallax } from "@/components/ui/flexible-carousel";
 
 // --- Configuration ---
 // Neighborhood to image mapping with matching color schemes
@@ -13,7 +14,7 @@ const NEIGHBORHOOD_CONFIG: Record<
   { image: string; scheme: { bg: string; text: string; accent: string } }
 > = {
   indiranagar: {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 01_Indiranagar.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 01_Indiranagar.webp",
     scheme: {
       bg: "bg-forest-green",
       text: "text-night-violet",
@@ -21,7 +22,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   "mg road": {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 01_MG Road.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 01_MG Road.webp",
     scheme: {
       bg: "bg-ground-brown",
       text: "text-brick-red",
@@ -29,7 +30,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   bellandur: {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 02_Bellandur.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 02_Bellandur.webp",
     scheme: {
       bg: "bg-brick-red",
       text: "text-forest-green",
@@ -37,7 +38,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   haralur: {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 02_Haralur.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 02_Haralur.webp",
     scheme: {
       bg: "bg-night-violet",
       text: "text-ground-brown",
@@ -45,7 +46,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   "hsr layout": {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 03_HSR Layout.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 03_HSR Layout.webp",
     scheme: {
       bg: "bg-night-violet",
       text: "text-forest-green",
@@ -53,7 +54,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   whitefield: {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 03_Whitefield.png",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 03_Whitefield.webp",
     scheme: {
       bg: "bg-forest-green",
       text: "text-night-violet",
@@ -78,6 +79,61 @@ interface NeighborhoodsProps {
   properties: Property[];
   children?: React.ReactNode;
 }
+
+import { IconArrowUpRight } from "@tabler/icons-react";
+
+const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
+  const parallaxX = useCarouselParallax(40);
+
+  return (
+    <Link
+      href={`/homes?location=${encodeURIComponent(slide.name)}`}
+      className="block h-full w-full"
+      draggable={false}
+    >
+      <motion.div
+        initial="initial"
+        whileHover="hover"
+        className={`flex flex-col rounded-2xl bg-white overflow-hidden shadow-xl w-full h-full`}
+      >
+        <div className="px-3 pt-8 md:px-6 md:pt-8 pb-0 flex items-center justify-center gap-2 z-10">
+          <h3 className={`text-lg font-zin md:text-2xl font-heading text-text-main mb-1`}>
+            {slide.name}
+          </h3>
+          <motion.div
+            className="overflow-hidden flex items-center"
+            variants={{
+              initial: { opacity: 0, x: -10, width: 0 },
+              hover: { opacity: 1, x: 0, width: "auto" }
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <IconArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-text-main mt-[-2px] ml-1" />
+          </motion.div>
+        </div>
+
+        <div
+          className={`relative flex-grow w-[100%] overflow-hidden bg-[#F5F5EE] mx-auto h-[48vh] rounded-t-full mt-4 isolate`}
+        >
+          <motion.div
+            className="absolute inset-0 w-full h-full will-change-transform"
+            style={{ x: parallaxX }}
+          >
+            <Image
+              src={slide.image}
+              alt={slide.name}
+              fill
+              className="object-cover pointer-events-none scale-125 origin-center"
+            />
+          </motion.div>
+
+          {/* Inner Shadow Overlay for Depth */}
+          <div className="absolute inset-0 pointer-events-none rounded-t-full shadow-[inset_0_10px_30px_rgba(0,0,0,0.04)] z-10 mix-blend-multiply" />
+        </div>
+      </motion.div>
+    </Link>
+  );
+};
 
 export const Neighborhoods = ({
   locations,
@@ -158,40 +214,7 @@ export const Neighborhoods = ({
   }
 
   const cards = neighborhoods.map((slide) => (
-    <Link
-      key={slide.id}
-      href={`/homes?location=${encodeURIComponent(slide.name)}`}
-      className="block h-full w-full"
-      draggable={false}
-    >
-      <div
-        className={`flex flex-col rounded-2xl ${slide.bgColor} overflow-hidden shadow-2xl w-full h-full`}
-      >
-        <div className="px-3 pt-8 md:px-6 md:pt-8 pb-0 text-center z-10">
-          <h3 className={`text-lg md:text-2xl font-heading text-white mb-1`}>
-            {slide.name}
-          </h3>
-        </div>
-
-        <div
-          className={`relative flex-grow w-full overflow-hidden ${slide.bgColor} mx-auto h-[40vh]`}
-        >
-          <Image
-            src={slide.image}
-            alt={slide.name}
-            fill
-            className="object-cover pointer-events-none invert grayscale contrast-200 mix-blend-screen opacity-90"
-          />
-        </div>
-
-        {/* Bottom Label */}
-        <div
-          className={`py-1 md:py-2 ${slide.bgColor} text-white text-center font-heading tracking-wider text-xs md:text-sm z-20`}
-        >
-          EXPLORE HOMES
-        </div>
-      </div>
-    </Link>
+    <NeighborhoodCard key={slide.id} slide={slide} />
   ));
 
   return (
@@ -208,9 +231,8 @@ export const Neighborhoods = ({
           <h2
             className={`font-heading text-text-main transition-colors duration-500 mb-4`}
           >
-            Explore by{" "}
-            <span className="font-zin font-light">
-              {" "}
+            Explore by
+            <span className="font-zin-italic">
               <br /> Neighborhoods
             </span>
           </h2>
@@ -233,25 +255,25 @@ export const Neighborhoods = ({
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-5xl mx-auto">
           <div className="text-center">
-            <p className="text-4xl font-heading font-bold mb-2 text-text-main">
+            <h2 className=" font-subtitle font-zin-italic font-bold mb-2 text-text-main">
               150+
-            </p>
+            </h2>
             <p className="text-sm text-text-main opacity-60">
               Homes Launched Across Bangalore
             </p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-heading font-bold mb-2 text-text-main">
+            <h2 className=" font-subtitle font-zin-italic font-bold mb-2 text-text-main">
               80%
-            </p>
+            </h2>
             <p className="text-sm text-text-main opacity-60">
               Of our homes are in Tier I gated societies
             </p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-heading font-bold mb-2 text-text-main">
+            <h2 className=" font-subtitle font-zin-italic font-bold mb-2 text-text-main">
               4.8/5
-            </p>
+            </h2>
             <p className="text-sm text-text-main opacity-60">
               Avg Rating From Flent Residents
             </p>

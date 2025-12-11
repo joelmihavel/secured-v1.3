@@ -125,19 +125,19 @@ export default function PrivacyPolicyPage() {
           <h3 className="text-xl font-bold mt-6 mb-3 font-zin">8.3. The following is the manner in which We collect, use, share and retain NPI.</h3>
           <div className="space-y-4">
             <p>
-              8.4.1. <strong>Collection</strong>:<br />
+              8.4.1. <strong>Collection</strong>:<br className="hidden md:block" />
               You agree that the Platform may collect diagnostic, technical, usage related data, for the usage purposes described below.
             </p>
             <p>
-              8.4.2. <strong>Usage</strong>:<br />
+              8.4.2. <strong>Usage</strong>:<br className="hidden md:block" />
               The NPD is gathered periodically to provide and improve the Platform and services therein facilitate the provision of software updates, product support and other services to You (if any) and verify compliance with the terms of this Policy.
             </p>
             <p>
-              8.4.3. <strong>Sharing</strong>:<br />
+              8.4.3. <strong>Sharing</strong>:<br className="hidden md:block" />
               To enable the Platform partners and third party developers to improve their software, hardware and services designed for use of the Platform, We may also provide any such partner or third party developer with a subset of diagnostic data that is relevant to that partner’s or developer’s software, hardware and/or services, as long as the diagnostic data is in a form that does not personally identify You.
             </p>
             <p>
-              8.4.4. <strong>Retention</strong>:<br />
+              8.4.4. <strong>Retention</strong>:<br className="hidden md:block" />
               The NPD so collected shall be retained only for a limited duration necessary to fulfil the purposes outlined herein unless a longer retention period is required or permitted by law and only for the purposes defined above. Once the purpose is achieved, all Data may be deleted, however, in a safe and secure mode.
             </p>
           </div>

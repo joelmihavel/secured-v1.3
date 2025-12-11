@@ -69,7 +69,7 @@ export const Hero = ({ properties = [] }: HeroProps) => {
                     transition={{ duration: 1.0, ease: CLASSY_EASE, delay: 0 }}
                     className="font-medium font-heading text-text-main text-5xl md:text-7xl"
                 >
-                    Renting that <span className="hidden md:inline">finally </span>respects <br className="hidden md:block" /> <span className="font-zin font-light">your taste and time</span>
+                    Renting that <span className="hidden md:inline">finally </span>respects <br className="hidden md:block" /> <span className="font-zin-italic">your taste and time</span>
                 </motion.h1>
 
                 <motion.p

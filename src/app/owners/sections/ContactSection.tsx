@@ -11,10 +11,10 @@ export const ContactSection = () => {
                 <div className="max-w-3xl mx-auto">
                     <div className="text-center mb-12">
                         <h2 className="text-fluid-h2 font-heading text-text-main mb-6">
-                            Let's Get <span className="font-zin font-light">Started</span>
+                            Let's Get <span className="font-zin-italic">Started</span>
                         </h2>
                         <p className="text-subtitle font-body text-text-main/70 max-w-2xl mx-auto">
-                        Fill out the form below and our team will reach out to guide you through Flent-ing your home.
+                            Fill out the form below and our team will reach out to guide you through Flent-ing your home.
                         </p>
                     </div>
 

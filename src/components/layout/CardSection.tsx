@@ -43,7 +43,7 @@ export const CardSection = ({
             : undefined;
 
     return (
-        <section className="py-8 bg-bg-white relative" id={id}>
+        <section className="relative" id={id}>
             <div
                 className={cn(
                     "max-w-[95vw] mx-auto rounded-2xl md:rounded-[4rem] relative overflow-hidden shadow-sm",

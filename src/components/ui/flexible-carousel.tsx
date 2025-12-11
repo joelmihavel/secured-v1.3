@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
-import { motion, useMotionValue, animate, PanInfo, useDragControls, useMotionValueEvent } from "framer-motion";
+import { motion, useMotionValue, animate, PanInfo, useDragControls, useTransform, MotionValue } from "framer-motion";
 import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +39,128 @@ const MOBILE_GAP = 14;
 // Number of complete sets to render on each side for infinite scroll
 const INFINITE_BUFFER_SETS = 4;
 
+// --- CarouselCard Component ---
+// Uses useTransform for smooth, GPU-accelerated scale animation without React re-renders
+interface CarouselCardProps {
+    x: MotionValue<number>;
+    virtualIndex: number;
+    itemWidth: number;
+    offset: number;
+    cardWidth: number;
+    gap: number;
+    isFirst: boolean;
+    isLast: boolean;
+    highlightMiddle: boolean;
+    shadowOnHover: boolean;
+    children: React.ReactNode;
+}
+
+// --- Context for Parallax ---
+const CarouselItemContext = React.createContext<{
+    x: MotionValue<number>;
+    index: number;
+    itemWidth: number;
+    offset: number;
+} | null>(null);
+
+export const useCarouselParallax = (strength: number = 50) => {
+    const context = React.useContext(CarouselItemContext);
+    const defaultVal = useMotionValue(0);
+
+    // We can't conditionally call useTransform, so we handle null context inside
+    // However, hooks must be unconditional.
+    // So we rely on the context being present or return a dummy motion value if possible,
+    // but useTransform requires a MotionValue input.
+    // Valid strategy: always call useTransform on a valid MotionValue.
+
+    // Check if context exists
+    if (!context) return defaultVal;
+
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useTransform(context.x, (latestX) => {
+        const cardCenter = context.index * context.itemWidth;
+
+        // Position of the card center relative to the viewport left (assuming container is full width relative to X)
+        // Actually: x is the transform of the track.
+        // track position + card relative position = card absolute position
+        // absolute position - viewport anchor (offset) = dist from center
+
+        const currentPos = cardCenter + latestX;
+        const distFromCenter = currentPos - context.offset;
+
+        // Normalize
+        // If dist is 0, we are at center.
+        // If dist is itemWidth, we are one card to the right.
+        const normalized = distFromCenter / context.itemWidth;
+
+        return normalized * strength;
+    });
+};
+
+const CarouselCard = ({
+    x,
+    virtualIndex,
+    itemWidth,
+    offset,
+    cardWidth,
+    gap,
+    isFirst,
+    isLast,
+    highlightMiddle,
+    shadowOnHover,
+    children,
+}: CarouselCardProps) => {
+    // Derive scale directly from x motion value using useTransform
+    // This runs in Framer Motion's animation loop, not React's render cycle
+    const scale = useTransform(x, (latestX) => {
+        if (!highlightMiddle) return 1;
+
+        // Calculate how far this card is from the center position
+        const cardCenterPosition = virtualIndex * itemWidth;
+        const currentCenterPosition = offset - latestX;
+        const distance = Math.abs(cardCenterPosition - currentCenterPosition);
+
+        // Normalize distance relative to itemWidth
+        const normalizedDistance = distance / itemWidth;
+
+        // Scale interpolation: 1.1 at center, 0.9 when 1+ positions away
+        const targetScale = Math.max(0.9, 1.1 - normalizedDistance * 0.2);
+        return targetScale;
+    });
+
+    const zIndex = useTransform(scale, (s) => (s > 1 ? 10 : 0));
+
+    const contextValue = React.useMemo(() => ({
+        x,
+        index: virtualIndex,
+        itemWidth,
+        offset
+    }), [x, virtualIndex, itemWidth, offset]);
+
+    return (
+        <motion.div
+            className={cn(
+                "relative shrink-0",
+                shadowOnHover && "hover:drop-shadow-2xl"
+            )}
+            style={{
+                width: cardWidth,
+                left: virtualIndex * itemWidth,
+                position: 'absolute',
+                paddingLeft: isFirst ? gap : 0,
+                paddingRight: isLast ? gap : 0,
+                scale,
+                zIndex,
+            }}
+            data-carousel-card
+        >
+            <CarouselItemContext.Provider value={contextValue}>
+                {children}
+            </CarouselItemContext.Provider>
+        </motion.div>
+    );
+};
+
 export interface FlexibleCarouselHandle {
     scrollPrev: () => void;
     scrollNext: () => void;
@@ -66,9 +188,6 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
     const isDraggingRef = useRef(false);
     const isScrollingRef = useRef(false);
     const dragControls = useDragControls();
-
-    // Real-time tracking of which virtual index is centered
-    const [visualCenterVirtualIndex, setVisualCenterVirtualIndex] = useState(0);
 
     // Responsive config
     const [config, setConfig] = useState({
@@ -120,16 +239,6 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
         }
         return 0;
     }, [config.width, highlightMiddle]);
-
-    // Track visual center in real-time for highlightMiddle
-    useMotionValueEvent(x, "change", (latestX) => {
-        if (highlightMiddle) {
-            const offset = getOffset();
-            // Calculate which virtual index is centered
-            const centeredVirtualIndex = Math.round((offset - latestX) / itemWidth);
-            setVisualCenterVirtualIndex(centeredVirtualIndex);
-        }
-    });
 
     // Generate visible indices based on mode
     const getVisibleIndices = useCallback((): number[] => {
@@ -224,7 +333,6 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
         let normalizedIndex = ((index % cards.length) + cards.length) % cards.length;
 
         setCurrentIndex(index);
-        setVisualCenterVirtualIndex(index);
         onSlideChange?.(normalizedIndex);
     }, [getOffset, itemWidth, x, cards.length, onSlideChange]);
 
@@ -520,40 +628,26 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
                         // Calculate actual data index (handle negative indices)
                         const dataIndex = ((virtualIndex % cards.length) + cards.length) % cards.length;
 
-                        // For highlightMiddle: check if this specific virtual position is centered
-                        const isCenter = highlightMiddle && virtualIndex === visualCenterVirtualIndex;
-
                         // Determine if this is the first or last item in the visible list
                         const isFirst = index === 0;
                         const isLast = index === visibleIndices.length - 1;
 
                         return (
-                            <motion.div
+                            <CarouselCard
                                 key={virtualIndex}
-                                className={cn(
-                                    "relative shrink-0",
-                                    shadowOnHover && "hover:drop-shadow-2xl"
-                                )}
-                                style={{
-                                    width: config.width,
-                                    left: virtualIndex * itemWidth,
-                                    position: 'absolute',
-                                    paddingLeft: isFirst ? config.gap : 0,
-                                    paddingRight: isLast ? config.gap : 0,
-                                }}
-                                data-carousel-card
-                                animate={{
-                                    scale: highlightMiddle ? (isCenter ? 1.1 : 0.9) : 1,
-                                    zIndex: isCenter ? 10 : 0,
-                                }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 400,
-                                    damping: 30
-                                }}
+                                x={x}
+                                virtualIndex={virtualIndex}
+                                itemWidth={itemWidth}
+                                offset={getOffset()}
+                                cardWidth={config.width}
+                                gap={config.gap}
+                                isFirst={isFirst}
+                                isLast={isLast}
+                                highlightMiddle={highlightMiddle}
+                                shadowOnHover={shadowOnHover}
                             >
                                 {cards[dataIndex]}
-                            </motion.div>
+                            </CarouselCard>
                         );
                     })}
                 </motion.div>

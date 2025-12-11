@@ -200,6 +200,7 @@ h6,
 .font-heading {
   font-weight: 600;
   /* letter-spacing: -0.02em; */
+
 }
 
 h1,
@@ -254,7 +255,13 @@ h4,
 
 .font-zin {
   font-weight: 100;
-  /* font-style: italic; */
+  font-family: var(--font-zin);
+}
+
+.font-zin-italic {
+  font-family: var(--font-zin);
+  font-style: italic;
+  font-weight: 100;
 }
 
 .dark {

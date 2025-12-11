@@ -11,7 +11,7 @@ import { GetStartedForm } from "@/components/ui/GetStartedForm";
 
 export default function OwnersPage() {
     return (
-        <main className="min-h-screen bg-bg-white">
+        <main className="min-h-screen bg-bg-white flex flex-col gap-12">
             {/* Hero Section */}
             <HeroSection />
 

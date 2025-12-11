@@ -29,14 +29,14 @@ export default async function PropertiesPage() {
         <div className="container mx-auto px-4 text-center mt-24">
           <h1 className="text-fluid-h1 font-heading text-text-main mb-4">
             Our{" "}
-            <span className="font-zin font-light">
+            <span className="font-zin-italic">
               {" "}
-              <br />
+              <br className="hidden md:block" />
               Homes
             </span>
           </h1>
           <p className="text-subtitle font-body font-medium max-w-2xl mx-auto">
-            Homes that are fully furnished, <br />
+            Homes that are fully furnished, <br className="hidden md:block" />
             thoughtfully set up, and ready from day one.
           </p>
         </div>
