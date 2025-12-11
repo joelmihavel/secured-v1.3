@@ -61,6 +61,22 @@ const NEIGHBORHOOD_CONFIG: Record<
       accent: "bg-pastel-yellow",
     },
   },
+  koramangala: {
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Koramangala.webp",
+    scheme: {
+      bg: "bg-brick-red",
+      text: "text-forest-green",
+      accent: "bg-pastel-pink",
+    },
+  },
+  "sarjapura road": {
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Sarjapur Road.webp",
+    scheme: {
+      bg: "bg-ground-brown",
+      text: "text-night-violet",
+      accent: "bg-pastel-orange",
+    },
+  },
 };
 
 interface NeighborhoodItem {

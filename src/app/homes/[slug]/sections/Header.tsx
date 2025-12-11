@@ -14,6 +14,8 @@ import {
   IconMapPin as MapPin,
   IconCalendar as Calendar,
   IconBed as Bed,
+  IconPlayerPlayFilled as PlayIcon,
+  IconDoor as DoorIcon,
 } from "@tabler/icons-react";
 import { GridLightBox } from "./GridLightBox";
 import {
@@ -110,7 +112,7 @@ export const Header = ({
   const backgroundColour2Class = backgroundColour2
     ? WEBFLOW_BACKGROUND_COLOUR_MAP[backgroundColour2]
     : BG_COLOR_MAP[bgColorName as keyof typeof BG_COLOR_MAP] ??
-      "bg-ground-brown";
+    "bg-ground-brown";
   const textColor =
     TEXT_COLOR[backgroundColour2Class as keyof typeof TEXT_COLOR] ??
     "text-white";
@@ -125,11 +127,9 @@ export const Header = ({
           <GridLightBox
             images={allImages}
             propertyName={property.fieldData.name}
-            propertyStats={`${property.fieldData["property-bedrooms"]} BHK | ${
-              property.fieldData["carpet-area"]
-            } Sq. Ft | ${
-              property.fieldData["floor-number-new"] || "1st Floor"
-            }`}
+            propertyStats={`${property.fieldData["property-bedrooms"]} BHK | ${property.fieldData["carpet-area"]
+              } Sq. Ft | ${property.fieldData["floor-number-new"] || "1st Floor"
+              }`}
             photoCategories={photoCategories}
           />
         </div>
@@ -180,13 +180,13 @@ export const Header = ({
                   {property.fieldData.available
                     ? "Available Now"
                     : property.fieldData["available-from"]
-                    ? `Available from ${new Date(
+                      ? `Available from ${new Date(
                         property.fieldData["available-from"]
                       ).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
                       })}`
-                    : "Occupied"}
+                      : "Occupied"}
                 </span>
                 {property.fieldData["female-only"] && (
                   <span className="border border-white/40 text-white/90 px-3 py-0.5 rounded-full text-xs font-medium uppercase tracking-wider">
@@ -220,14 +220,14 @@ export const Header = ({
 
           {/* CTAs */}
           <div className="mt-12 flex flex-col gap-4 w-[80%] md: w-[100%]">
-            <Button variant="primary" size="lg" onClick={scrollToRooms}>
+            <Button variant="primary" size="lg" onClick={scrollToRooms} leftIcon={<DoorIcon />}>
               Show Available Rooms
             </Button>
 
             {embedUrl && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="white" className="!text-black" size="lg">
+                  <Button variant="white" className="!text-black" size="lg" leftIcon={<PlayIcon />}>
                     Watch a Video
                   </Button>
                 </DialogTrigger>
