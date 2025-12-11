@@ -56,7 +56,7 @@ interface CarouselCardProps {
 }
 
 // --- Context for Parallax ---
-const CarouselItemContext = React.createContext<{
+export const CarouselItemContext = React.createContext<{
     x: MotionValue<number>;
     index: number;
     itemWidth: number;
@@ -188,6 +188,8 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
     const isDraggingRef = useRef(false);
     const isScrollingRef = useRef(false);
     const dragControls = useDragControls();
+    const dragStartXRef = useRef(0);
+    const dragStartIndexRef = useRef(0);
 
     // Responsive config
     const [config, setConfig] = useState({
@@ -342,17 +344,56 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [config.width, config.gap]);
 
-    // Handle Drag End
+    // Handle Drag Start - store initial position and index
+    const handleDragStart = useCallback(() => {
+        const offset = getOffset();
+        const currentX = x.get();
+        dragStartXRef.current = currentX;
+        dragStartIndexRef.current = Math.round((offset - currentX) / itemWidth);
+    }, [getOffset, x, itemWidth]);
+
+    // Handle Drag - continuously snap to nearest index based on drag delta
+    const handleDrag = useCallback((_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+        if (!highlightMiddle) return;
+
+        const dragDelta = info.offset.x;
+        const velocity = info.velocity.x;
+
+        // Calculate how many indices we've moved based on drag distance
+        // Add velocity influence for more responsive feel
+        const indexDelta = Math.round((-dragDelta + velocity * 0.05) / itemWidth);
+        let targetIndex = dragStartIndexRef.current + indexDelta;
+
+        if (!isInfinite) {
+            targetIndex = Math.max(0, Math.min(cards.length - 1, targetIndex));
+        }
+
+        // Animate to the target index position
+        const offset = getOffset();
+        const targetX = offset - (targetIndex * itemWidth);
+
+        // Use a fast spring for responsive snapping during drag
+        animate(x, targetX, {
+            type: "spring",
+            stiffness: 500,
+            damping: 35,
+            mass: 0.8
+        });
+
+        // Update current index for UI consistency
+        const normalizedIndex = ((targetIndex % cards.length) + cards.length) % cards.length;
+        setCurrentIndex(targetIndex);
+        onSlideChange?.(normalizedIndex);
+    }, [highlightMiddle, itemWidth, isInfinite, cards.length, getOffset, x, onSlideChange]);
+
+    // Handle Drag End - ensure we're snapped to final position
     const handleDragEnd = useCallback((_event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const velocity = info.velocity.x;
-        const currentX = x.get();
-        const offset = getOffset();
+        const dragDelta = info.offset.x;
 
-        // Predict end position based on velocity
-        const predictedEnd = currentX + velocity * 0.2;
-
-        // Calculate closest index
-        let targetIndex = Math.round((offset - predictedEnd) / itemWidth);
+        // Calculate target based on drag delta plus velocity boost
+        const indexDelta = Math.round((-dragDelta - velocity * 0.15) / itemWidth);
+        let targetIndex = dragStartIndexRef.current + indexDelta;
 
         if (!isInfinite) {
             targetIndex = Math.max(0, Math.min(cards.length - 1, targetIndex));
@@ -364,7 +405,7 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
         if (isInfinite) {
             setTimeout(wrapPosition, 500);
         }
-    }, [x, getOffset, itemWidth, isInfinite, cards.length, snapToIndex, wrapPosition]);
+    }, [itemWidth, isInfinite, cards.length, snapToIndex, wrapPosition]);
 
     // Auto-scroll
     useEffect(() => {
@@ -610,7 +651,9 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
                     onDragStart={() => {
                         setIsHovering(true);
                         isDraggingRef.current = true;
+                        handleDragStart();
                     }}
+                    onDrag={handleDrag}
                     onDragEnd={(e, info) => {
                         handleDragEnd(e, info);
                         setTimeout(() => {

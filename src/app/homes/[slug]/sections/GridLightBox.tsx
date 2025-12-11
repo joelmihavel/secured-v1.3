@@ -7,6 +7,8 @@ import {
   IconX as X,
   IconChevronLeft as ChevronLeft,
   IconCopy as Copy,
+  IconCheck as Check,
+  IconShare as Share,
   IconMessageCircle as MessageCircle,
   IconHome as Home,
   IconArrowsMaximize as Expand,
@@ -62,7 +64,37 @@ export const GridLightBox = ({
   );
   const [api, setApi] = useState<CarouselApi>();
   const [isInfoVisible, setIsInfoVisible] = useState(true);
+  const [isCopied, setIsCopied] = useState(false);
   const lastScrollY = useRef(0);
+
+  // Copy link to clipboard (desktop)
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
+  };
+
+  // Native share (mobile)
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: propertyName,
+          text: `Check out ${propertyName} on Flent Homes`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        // User cancelled or share failed - silently ignore
+        if ((err as Error).name !== "AbortError") {
+          console.error("Share failed:", err);
+        }
+      }
+    }
+  };
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget;
@@ -101,14 +133,14 @@ export const GridLightBox = ({
     () =>
       photoCategories
         ? [...photoCategories].sort((a, b) => {
-            // Ensure "Common Areas" always comes first if it exists
-            if (a.name === "Common Areas") return -1;
-            if (b.name === "Common Areas") return 1;
-            return a.name.localeCompare(b.name, undefined, {
-              numeric: true,
-              sensitivity: "base",
-            });
-          })
+          // Ensure "Common Areas" always comes first if it exists
+          if (a.name === "Common Areas") return -1;
+          if (b.name === "Common Areas") return 1;
+          return a.name.localeCompare(b.name, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          });
+        })
         : [],
     [photoCategories]
   );
@@ -133,7 +165,6 @@ export const GridLightBox = ({
       const newTab = allTabs[index];
       if (newTab) {
         setActiveTab(newTab);
-        setIsInfoVisible(true); // Reset visibility on tab change
       }
     });
   }, [api, allTabs]);
@@ -151,7 +182,6 @@ export const GridLightBox = ({
   // Sync Tabs -> Carousel
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    setIsInfoVisible(true); // Reset visibility on explicit tab change
     if (api) {
       const index = allTabs.indexOf(value);
       if (index !== -1) {
@@ -248,22 +278,62 @@ export const GridLightBox = ({
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-4 md:gap-4">
+                {/* Mobile: Share Button */}
                 <Button
-                  variant="white"
+                  variant="primary-rounded"
                   size="sm"
-                  leftIcon={<Copy />}
-                  className="!text-xs md:!text-sm"
+                  leftIcon={<Share className="w-4 h-4" />}
+                  className="!text-xs md:hidden"
+                  onClick={handleShare}
+                  pastelColor="cyan"
                 >
-                  <span className="hidden sm:inline">Copy Link</span>
+                  Share
+                </Button>
+
+                {/* Desktop: Copy Link Button with animated state */}
+                <Button
+                  variant="primary-rounded"
+                  size="sm"
+                  className="!text-xs md:!text-sm hidden md:flex relative overflow-hidden min-w-[110px]"
+                  onClick={handleCopyLink}
+                  pastelColor="cyan"
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {isCopied ? (
+                      <motion.span
+                        key="copied"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="flex items-center gap-2"
+                      >
+                        <Check className="w-4 h-4" />
+                        Copied!
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="copy"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -20, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="flex items-center gap-2"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Copy Link
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </Button>
                 <Button
                   target="_blank"
                   rel="noopener noreferrer"
                   href={getPropertyWhatsappLink(propertyName)}
-                  variant="primary"
+                  variant="primary-rounded"
                   size="sm"
                   leftIcon={<MessageCircle />}
-                  className="!text-xs md:!text-sm"
+
                 >
                   <span className="hidden sm:inline">Chat with Us</span>
                   <span className="sm:hidden">Chat</span>

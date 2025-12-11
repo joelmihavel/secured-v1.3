@@ -81,9 +81,33 @@ interface NeighborhoodsProps {
 }
 
 import { IconArrowUpRight } from "@tabler/icons-react";
+import { CarouselItemContext } from "@/components/ui/flexible-carousel";
+import { useMotionValue, useTransform, MotionValue } from "framer-motion";
+
+// Hook to detect if card is centered
+const useIsCardCentered = (): { opacity: MotionValue<number> } => {
+  const context = React.useContext(CarouselItemContext);
+  const defaultVal = useMotionValue(0);
+
+  if (!context) return { opacity: defaultVal };
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const opacity = useTransform(context.x, (latestX: number) => {
+    const cardCenter = context.index * context.itemWidth;
+    const currentPos = cardCenter + latestX;
+    const distFromCenter = Math.abs(currentPos - context.offset);
+    const normalized = distFromCenter / context.itemWidth;
+
+    // Fully visible when centered (normalized = 0), fade out as it moves away
+    return Math.max(0, 1 - normalized * 2);
+  });
+
+  return { opacity };
+};
 
 const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
   const parallaxX = useCarouselParallax(40);
+  const { opacity: arrowOpacity } = useIsCardCentered();
 
   return (
     <Link
@@ -91,25 +115,21 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
       className="block h-full w-full"
       draggable={false}
     >
-      <motion.div
-        initial="initial"
-        whileHover="hover"
-        className={`flex flex-col rounded-2xl bg-white overflow-hidden shadow-xl w-full h-full`}
+      <div
+        className={`relative flex flex-col rounded-2xl bg-white overflow-hidden shadow-xl w-full h-full`}
       >
-        <div className="px-3 pt-8 md:px-6 md:pt-8 pb-0 flex items-center justify-center gap-2 z-10">
+        {/* Arrow icon - absolutely positioned in top right, shows when centered */}
+        <motion.div
+          className="absolute top-3 right-3 md:top-6 md:right-6 z-20"
+          style={{ opacity: arrowOpacity }}
+        >
+          <IconArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-text-main" />
+        </motion.div>
+
+        <div className="px-3 pt-8 md:px-6 md:pt-8 pb-0 flex items-center justify-center z-10">
           <h3 className={`text-lg font-zin md:text-2xl font-heading text-text-main mb-1`}>
             {slide.name}
           </h3>
-          <motion.div
-            className="overflow-hidden flex items-center"
-            variants={{
-              initial: { opacity: 0, x: -10, width: 0 },
-              hover: { opacity: 1, x: 0, width: "auto" }
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
-            <IconArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-text-main mt-[-2px] ml-1" />
-          </motion.div>
         </div>
 
         <div
@@ -130,7 +150,7 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
           {/* Inner Shadow Overlay for Depth */}
           <div className="absolute inset-0 pointer-events-none rounded-t-full shadow-[inset_0_10px_30px_rgba(0,0,0,0.04)] z-10 mix-blend-multiply" />
         </div>
-      </motion.div>
+      </div>
     </Link>
   );
 };
@@ -248,7 +268,7 @@ export const Neighborhoods = ({
             showNavigation={true}
             onSlideChange={handleSlideChange}
             isDraggable={true}
-            friction={0.2}
+            friction={0.8}
           />
         </div>
 

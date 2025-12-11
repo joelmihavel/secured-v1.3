@@ -481,15 +481,15 @@ export const RoomSelection = ({
                           <Button
                             disabled
                             size="md"
-                            variant="ghost"
-                            className="w-full cursor-not-allowed bg-ground-brown/10 text-text-main/60"
+                            variant="outline"
+                            className="w-full cursor-not-allowed bg-ground-brown/10 border-text-main/10"
                           >
                             Occupied
                           </Button>
                           <Button
                             size="md"
-                            variant="ghost"
-                            className="w-full bg-white border-text-main text-text-main"
+                            variant="white"
+                            className="w-full"
                             onClick={() => {
                               setNotificationModalData({
                                 propertyId: property.id,
@@ -608,8 +608,8 @@ export const RoomSelection = ({
                         <p className="text-sm font-medium text-text-main/70 mb-2">
                           Full House
                         </p>
-                        <h3 className="text-fluid-h3 font-heading text-text-main mb-2">
-                          Occupied by Someone
+                        <h3 className="font-zin font-heading text-text-main mb-2">
+                          Occupied
                         </h3>
                         <p className="text-sm text-text-main mb-6 max-w-xs mx-auto">
                           {roomData.some((r) => !r.isOccupied)
@@ -691,15 +691,15 @@ export const RoomSelection = ({
                         <Button
                           disabled
                           size="md"
-                          variant="ghost"
-                          className="w-full cursor-not-allowed bg-ground-brown/10 text-text-main/60"
+                          variant="outline"
+                          className="w-full cursor-not-allowed opacity-50"
                         >
                           Occupied
                         </Button>
                         <Button
                           size="md"
-                          variant="ghost"
-                          className="w-full bg-white border-text-main text-text-main"
+                          variant="white"
+                          className="w-full"
                           onClick={() => {
                             setNotificationModalData({
                               propertyId: property.id,

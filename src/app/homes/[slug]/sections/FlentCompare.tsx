@@ -80,7 +80,7 @@ const Chip = ({ item }: { item: CompareItem }) => (
         style={{
             backgroundColor: item.bgColor,
             color: item.textColor,
-            borderColor: item.borderColor,
+
             boxShadow: `0 4px 12px ${item.borderColor}20`,
         }}
     >

@@ -36,7 +36,7 @@ const tabsListVariants = cva(
             variant: {
                 default: "h-10 rounded-md bg-muted text-muted-foreground",
                 pill: " rounded-full bg-white border border-border pb-2 pt-1 pl-2 pr-1",
-                bar: "w-full justify-start border-b border-border bg-transparent p-0 h-auto",
+                bar: "w-full justify-start bg-transparent p-0 h-auto",
             },
         },
         defaultVariants: {
