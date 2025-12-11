@@ -149,7 +149,11 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
         </div>
 
         <div
-          className={`relative flex-grow w-[100%] overflow-hidden bg-[#F5F5EE] mx-auto h-[48vh] rounded-t-full mt-4 isolate`}
+          className={`relative flex-grow w-full overflow-hidden bg-[#F5F5EE] mx-auto h-[55vh] md:h-[48vh] mt-4`}
+          style={{
+            clipPath: "ellipse(100% 100% at 50% 100%)",
+            WebkitClipPath: "ellipse(100% 100% at 50% 100%)",
+          }}
         >
           <motion.div
             className="absolute inset-0 w-full h-full will-change-transform"
@@ -164,7 +168,13 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
           </motion.div>
 
           {/* Inner Shadow Overlay for Depth */}
-          <div className="absolute inset-0 pointer-events-none rounded-t-full shadow-[inset_0_10px_30px_rgba(0,0,0,0.04)] z-10 mix-blend-multiply" />
+          <div
+            className="absolute inset-0 pointer-events-none shadow-[inset_0_10px_30px_rgba(0,0,0,0.04)] z-10 mix-blend-multiply"
+            style={{
+              clipPath: "ellipse(100% 100% at 50% 100%)",
+              WebkitClipPath: "ellipse(100% 100% at 50% 100%)",
+            }}
+          />
         </div>
       </div>
     </Link>
