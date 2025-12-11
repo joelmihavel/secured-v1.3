@@ -90,6 +90,9 @@ export interface Property extends WebflowItem {
     "house-tour"?: { url: string; metadata?: Record<string, unknown> };
     "is-upcoming"?: boolean;
     "background-colour-2"?: string; // BG Option ID
+    "apply-discount"?: boolean;
+    discount?: number;
+    "discount-end-date"?: string;
   };
 }
 
