@@ -265,7 +265,7 @@ export const TeamSection = () => {
 
                 {/* Grid container with dynamic columns */}
                 <div
-                    className="grid gap-6 md:gap-12 lg:gap-16 max-w-7xl mx-auto -mb-80"
+                    className="grid gap-6 md:gap-12 lg:gap-16 max-w-7xl mx-auto -mb-64"
                     style={{
                         gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
                     }}
