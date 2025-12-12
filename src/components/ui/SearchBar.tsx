@@ -12,6 +12,7 @@ export interface SearchFilters {
     locationIds: string[];
     moveInDate: string;
     showAvailable: boolean;
+    femaleOnly: boolean;
 }
 
 interface SearchBarProps {
@@ -35,7 +36,6 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
         setFilters({ ...filters, minBudget: min, maxBudget: max });
     };
 
-    // Determine the selected budget option based on current filters
     const getBudgetValue = () => {
         if (filters.minBudget === 25000 && filters.maxBudget === 35000) return "25-35";
         if (filters.minBudget === 35000 && filters.maxBudget === 45000) return "35-45";
@@ -73,7 +73,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
         <div className="w-full bg-night-violet rounded-2xl p-6 flex flex-col lg:flex-row items-center gap-4 lg:gap-6 shadow-lg">
             {/* Budget Range */}
             <div className="flex-1 w-full">
-                <label className="block text-text-invert text-sm font-medium mb-2">Budget Range</label>
+                <label className="block text-text-invert text-sm font-medium mb-2">Room Budget</label>
                 <div className="relative">
                     <select
                         value={getBudgetValue()}
@@ -91,7 +91,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
 
             {/* Preferred Location */}
             <div className="flex-1 w-full">
-                <label className="block text-text-invert text-sm font-medium mb-2">Preferred Location</label>
+                <label className="block text-text-invert text-sm font-medium mb-2">Preferred Neighbourhood</label>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <div className="relative cursor-pointer">
@@ -159,8 +159,8 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 </div>
             </div>
 
-            {/* Show Available & Search */}
-            <div className="flex items-center gap-4 mt-4 lg:mt-0">
+            {/* Show Available & Female Only */}
+            <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 mt-4 lg:mt-0 lg:flex-shrink-0">
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => setFilters({ ...filters, showAvailable: !filters.showAvailable })}
@@ -177,9 +177,21 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                     <span className="text-text-main text-sm font-medium whitespace-nowrap">Show Available</span>
                 </div>
 
-                <button className="bg-white text-text-main p-3 rounded-full hover:scale-105 transition-transform">
-                    <Search size={20} />
-                </button>
+                <div
+                    className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
+                    onClick={() => setFilters({ ...filters, femaleOnly: !filters.femaleOnly })}
+                >
+                    <div className="relative inline-flex items-center">
+                        <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={filters.femaleOnly}
+                            readOnly
+                        />
+                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-night-violet"></div>
+                    </div>
+                    <span className="text-text-main text-sm font-medium whitespace-nowrap">Show only Female</span>
+                </div>
             </div>
         </div>
     );

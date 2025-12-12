@@ -13,7 +13,7 @@ export const StorySection = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     <div className="lg:col-span-8">
                         <h2 className="text-fluid-h2 font-bold font-heading text-text-main mb-6">
-                            We started by leasing & furnishing a few homes in the hopes of renting them out at a premium, <br className="block md:hidden" /> <span className="text-primary-black font-zin italic">and it took off.</span>
+                            We started by leasing & furnishing a few homes in the hopes of renting them out at a premium, <br className="block md:hidden" /> <span className="text-primary-black font-zin italic">and it took off</span>
                         </h2>
                     </div>
 

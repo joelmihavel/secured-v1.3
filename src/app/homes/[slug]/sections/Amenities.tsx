@@ -152,7 +152,7 @@ export const Amenities = ({
           </div>
 
           {/* Designer Quote (40%) */}
-          <div className="w-full lg:w-[40%]">
+          <div id="notes-from-designer" className="w-full lg:w-[40%]">
             <div className="bg-[#8B5E3C] rounded-3xl p-8 md:p-10 text-white relative overflow-hidden h-full flex flex-col justify-center shadow-2xl">
               {/* Background Pattern Overlay */}
               <div

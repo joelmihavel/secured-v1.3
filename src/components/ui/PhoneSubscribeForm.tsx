@@ -18,7 +18,7 @@ interface FormData {
 
 export const PhoneSubscribeForm = ({
   propertyInterest = "all_properties",
-  placeholder = "Your phone number",
+  placeholder = "+91 | Enter your phone number",
   buttonText = "Subscribe",
   className = "",
 }: PhoneSubscribeFormProps) => {

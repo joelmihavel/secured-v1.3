@@ -84,7 +84,7 @@ export const GridLightBox = ({
       try {
         await navigator.share({
           title: propertyName,
-          text: `Check out ${propertyName} on Flent Homes`,
+          text: `Check out ${propertyName} on Flent Homes\n\n${window.location.href}`,
           url: window.location.href,
         });
       } catch (err) {

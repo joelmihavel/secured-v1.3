@@ -22,6 +22,7 @@ interface FlexibleCarouselProps {
     onSlideChange?: (index: number) => void;
     isDraggable?: boolean;
     friction?: number;
+    initialIndex?: number;
 }
 
 // --- Configuration ---
@@ -179,9 +180,10 @@ export const FlexibleCarousel = React.forwardRef<FlexibleCarouselHandle, Flexibl
     onSlideChange,
     isDraggable = true,
     friction = 0.2,
+    initialIndex = 0,
 }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [isHovering, setIsHovering] = useState(false);
     const [constraints, setConstraints] = useState({ left: 0, right: 0 });
     const [containerHeight, setContainerHeight] = useState<number>(500);

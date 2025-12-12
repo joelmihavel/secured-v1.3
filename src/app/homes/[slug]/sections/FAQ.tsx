@@ -78,7 +78,7 @@ export const FAQ = () => {
                 {
                     id: 10,
                     question: "Is there a security deposit?",
-                    answer: "The security deposit is equivalent to two to three months of rent, depending on the home. It is collected at move-in and refunded within 15 days of move-out after adjusting for any applicable charges."
+                    answer: "The security deposit is equivalent to two to three months of rent, depending on the home. It is collected at move-in and refunded within 30 days of move-out after adjusting for any applicable charges."
                 },
                 {
                     id: 11,
@@ -152,7 +152,7 @@ export const FAQ = () => {
                 {
                     id: 22,
                     question: "Am I allowed to personalise my room?",
-                    answer: "Light decor, such as hanging pictures, adding a rug, or placing a lamp, is completely fine. Feel free to add small touches to make the room your own. Please avoid any structural changes or anything that may damage the walls, as this may result in minor deductions during move-out."
+                    answer: "Light decor, such as hanging pictures, adding a rug, or placing a lamp, is completely fine. Feel free to add small touches to make the room your own. Please avoid any structural changes or anything that may damage the walls, as this may result in deductions during move-out."
                 }
             ]
         },

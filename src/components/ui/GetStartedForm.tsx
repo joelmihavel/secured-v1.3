@@ -11,7 +11,7 @@ const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
 // Add your Google Maps API key here
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
-export const GetStartedForm = () => {
+export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonText?: string }) => {
   const [formData, setFormData] = useState({
     firstname: "",
     phone: "",
@@ -262,7 +262,7 @@ export const GetStartedForm = () => {
         className="w-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         size="lg"
       >
-        {status === "loading" ? "Submitting..." : "Let's Get Started"}
+        {status === "loading" ? "Submitting..." : buttonText}
       </Button>
     </form>
   );

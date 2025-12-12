@@ -72,6 +72,7 @@ export const TestimonialsSection = () => {
                     cardSize="md"
                     showNavigation={false}
                     highlightMiddle={true}
+                    initialIndex={1}
                 />
             </div>
         </OpenSection>

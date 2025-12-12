@@ -44,13 +44,8 @@ export const HowFlentWorksSection = () => {
     const timelineData = [
         {
             title: (
-                <div className="space-y-1">
-                    <div className="text-lg md:text-xl font-body">
-                        {formatDate(dates.day1, true)}
-                    </div>
-                    <div className="text-2xl md:text-5xl font-zin font-light  tracking-tight">
-                        Contact Flent
-                    </div>
+                <div className="text-2xl md:text-5xl font-zin font-light tracking-tight">
+                    {formatDate(dates.day1, true)}
                 </div>
             ),
             content: (
@@ -68,7 +63,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            We assess your property's earning potential using our algorithm and offer a competitive, fixed rent. No hidden fees, just transparent pricing.
+                            Once you submit your details, we assess your home's earning potential using Flent's in house property intelligence and share a competitive rental offer within 48 hours. Pricing is always transparent with no hidden fees.
                         </p>
                     </div>
                 </div>
@@ -76,13 +71,8 @@ export const HowFlentWorksSection = () => {
         },
         {
             title: (
-                <div className="space-y-1">
-                    <div className="text-lg md:text-xl font-body">
-                        Day 3 ({formatDate(dates.day3)})
-                    </div>
-                    <div className="text-2xl md:text-5xl font-zin font-light  tracking-tight">
-                        Begin Furnishing
-                    </div>
+                <div className="text-2xl md:text-5xl font-zin font-light tracking-tight">
+                    Day 3 ({formatDate(dates.day3)})
                 </div>
             ),
             content: (
@@ -100,7 +90,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            Our staging designers transform your unit into a fully furnished, premium home. We make zero structural changes &amp; your property stays intact.
+                        After onboarding is complete, the security deposit is paid upfront and our design team begins transforming your home into a fully furnished, premium living space within 72 hours.
                         </p>
                     </div>
                 </div>
@@ -108,13 +98,8 @@ export const HowFlentWorksSection = () => {
         },
         {
             title: (
-                <div className="space-y-1">
-                    <div className="text-lg md:text-xl font-body">
-                        Day 30 ({formatDate(dates.day30)})
-                    </div>
-                    <div className="text-2xl md:text-5xl font-zin font-light text-text-main tracking-tight">
-                        Tenant Placement
-                    </div>
+                <div className="text-2xl md:text-5xl font-zin font-light text-text-main tracking-tight">
+                    Day 30 ({formatDate(dates.day30)})
                 </div>
             ),
             content: (
@@ -132,7 +117,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            We secure top-tier tenants from our vetted network, ensuring your home is in the best hands.
+                        Your guaranteed rental income starts from day 30. We place tenants from the top 1 percent of working professionals, all vetted internally by Flent and verified through independent third party background checks.
                         </p>
                     </div>
                 </div>
@@ -140,13 +125,8 @@ export const HowFlentWorksSection = () => {
         },
         {
             title: (
-                <div className="space-y-1">
-                    <div className="text-lg md:text-xl font-body">
-                        End of Contract
-                    </div>
-                    <div className="text-2xl md:text-5xl font-zin font-light text-text-main tracking-tight">
-                        Flexible Renewals
-                    </div>
+                <div className="text-2xl md:text-5xl font-zin font-light text-text-main tracking-tight">
+                    End of Contract
                 </div>
             ),
             content: (
@@ -164,7 +144,7 @@ export const HowFlentWorksSection = () => {
                     {/* Description Section */}
                     <div className="px-6 md:px-8 pb-6 md:pb-8">
                         <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-                            At the end of the tenure, you can renew easily or choose to take your property back in the exact condition it was let out to us.
+                            When the agreement ends, you can choose to renew with a 5 to 6 % rental revision or take your property back in the same condition it was handed over to us.
                         </p>
                     </div>
                 </div>

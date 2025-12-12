@@ -7,6 +7,13 @@ import { cn } from "@/lib/utils";
 import investorsData from "@/data/investors-data.json";
 import institutionsData from "@/data/institutions-data.json";
 
+const BLURRED_LOGOS = [
+    "/new-institution-logos/misfits_capital.webp",
+    "/new-institution-logos/incubate_fund_asia.webp",
+    "/new-institution-logos/91vc-transparent.png",
+    "/new-institution-logos/twinandbull-transparent.png"
+];
+
 // Separate investors and institutions
 const investors = investorsData.map(inv => ({
     type: inv.type,
@@ -87,9 +94,10 @@ while (invIndex < investors.length || instIndex < institutions.length) {
 
 const InvestorCard = ({ item }: { item: any }) => {
     if (item.type === "logo") {
+        const isBlurred = BLURRED_LOGOS.includes(item.src);
         const content = (
-            <div className="bg-white rounded-xl p-8 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow w-full max-w-[280px] mx-auto min-h-[140px]">
-                <div className="relative w-full h-20">
+            <div className="bg-white rounded-xl p-8 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow w-full max-w-[280px] mx-auto min-h-[140px] relative">
+                <div className={`relative w-full h-20 ${isBlurred ? 'blur-md' : ''}`}>
                     <Image
                         src={item.src}
                         alt={item.name}
@@ -97,6 +105,13 @@ const InvestorCard = ({ item }: { item: any }) => {
                         className="object-contain"
                     />
                 </div>
+                {isBlurred && (
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10">
+                        <div className="bg-white/90 rounded-lg px-4 py-2">
+                            <p className="text-text-main font-medium text-sm whitespace-nowrap">Announcing soon</p>
+                        </div>
+                    </div>
+                )}
             </div>
         )
         return content;

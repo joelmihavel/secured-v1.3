@@ -1,7 +1,7 @@
 [
   {
     "name": "Rishabh Agnihotri",
-    "title": "COO",
+    "title": "CPTO",
     "image": "/team-photos-normalized/rishabh_agnihotri.webp",
     "linkedin": "https://www.linkedin.com/in/atrishabh/",
     "downloaded": true
@@ -15,16 +15,9 @@
   },
   {
     "name": "Mayank Lalwani",
-    "title": "CPO",
+    "title": "COO",
     "image": "/team-photos-normalized/mayank_lalwani.webp",
     "linkedin": "https://www.linkedin.com/in/mayankklalwani/",
-    "downloaded": true
-  },
-  {
-    "name": "Ashish Oberoi",
-    "title": "Director - Supply Growth",
-    "image": "/team-photos-normalized/ashish_oberoi.webp",
-    "linkedin": "https://www.linkedin.com/in/ashish-oberoi-725a6711/",
     "downloaded": true
   },
   {
@@ -35,10 +28,10 @@
     "downloaded": true
   },
   {
-    "name": "Raghav Malhotra",
-    "title": "Supply Lead",
-    "image": "/team-photos-normalized/raghav_malhotra.webp",
-    "linkedin": "https://www.linkedin.com/in/malhotra-raghav/",
+    "name": "Ashish Oberoi",
+    "title": "Director - Supply Growth",
+    "image": "/team-photos-normalized/ashish_oberoi.webp",
+    "linkedin": "https://www.linkedin.com/in/ashish-oberoi-725a6711/",
     "downloaded": true
   },
   {
@@ -98,6 +91,13 @@
     "downloaded": true
   },
   {
+    "name": "Raghav Malhotra",
+    "title": "Supply Lead",
+    "image": "/team-photos-normalized/raghav_malhotra.webp",
+    "linkedin": "https://www.linkedin.com/in/malhotra-raghav/",
+    "downloaded": true
+  },
+  {
     "name": "Vandana Shaw",
     "title": "Customer Experience Associate",
     "image": "/team-photos-normalized/vandana_shaw.webp",
@@ -116,6 +116,13 @@
     "title": "Customer Experience Associate",
     "image": "/team-photos-normalized/srashti_koshta.webp",
     "linkedin": "https://www.linkedin.com/in/srashti-koshta/",
+    "downloaded": true
+  },
+  {
+    "name": "Maurya Subby",
+    "title": "Senior Associate - Finance",
+    "image": "/team-photos-normalized/Maurya.webp",
+    "linkedin": "https://www.linkedin.com/in/mauryasreelathasubby/",
     "downloaded": true
   },
   {
@@ -165,6 +172,13 @@
     "title": "FlentX Intern",
     "image": "/team-photos-normalized/Srinandh Gosala final.webp",
     "linkedin": "https://www.linkedin.com/in/srinandh/",
+    "downloaded": true
+  },
+  {
+    "name": "Joel Mihavel",
+    "title": "Product Designer",
+    "image": "/team-photos-normalized/Joe.webp",
+    "linkedin": "https://www.linkedin.com/in/joel-mihavel/",
     "downloaded": true
   }
 ]

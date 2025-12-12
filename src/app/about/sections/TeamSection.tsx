@@ -40,6 +40,22 @@ const TEAM_MEMBERS_RAW = teamData.map((member, index) => ({
 // Shuffle team members for visual variety while maintaining consistent coloring
 const TEAM_MEMBERS = seededShuffle(TEAM_MEMBERS_RAW, 42);
 
+// Ensure specific people lead the first three columns while keeping the rest of the order intact
+const reorderTeamForLeadColumns = (items: typeof TEAM_MEMBERS) => {
+    const desiredOrder = ["Rishabh Agnihotri", "Shail Daswani", "Mayank Lalwani"];
+    const desiredSet = new Set(desiredOrder);
+
+    // Pick desired members in order, then append the remaining in their original order
+    const leading = desiredOrder
+        .map((name) => items.find((member) => member.name === name))
+        .filter(Boolean) as typeof TEAM_MEMBERS;
+
+    const remaining = items.filter((member) => !desiredSet.has(member.name));
+    return [...leading, ...remaining];
+};
+
+const TEAM_MEMBERS_ORDERED = reorderTeamForLeadColumns(TEAM_MEMBERS);
+
 const BACKGROUND_COLORS = [
     "var(--color-forest-green)",
     "var(--color-ground-brown)",
@@ -127,7 +143,10 @@ const PolaroidCard = ({
                         src={src}
                         alt={name}
                         fill
-                        className="object-cover rounded-[8px]"
+                        className={cn(
+                            "object-cover rounded-[8px]",
+                            (name === "Rishabh Agnihotri" || name === "Purva Jadhav") && "scale-x-[-1]"
+                        )}
                     />
                 </div>
             </div>
@@ -182,7 +201,14 @@ const useGroupedColumns = (items: typeof TEAM_MEMBERS, columnCount: number) => {
         const columns: (typeof TEAM_MEMBERS)[] = Array.from({ length: columnCount }, () => []);
 
         items.forEach((item, index) => {
-            columns[index % columnCount].push(item);
+            let columnIndex;
+            // Special case: put index 25 in column 4 (index 3) instead of column 2
+            if (index === 25 && columnCount === 4) {
+                columnIndex = 3; // Column 4 (0-indexed)
+            } else {
+                columnIndex = index % columnCount;
+            }
+            columns[columnIndex].push(item);
         });
 
         // Calculate lag for each column based on distance from center
@@ -244,7 +270,7 @@ const ParallaxGridColumn = ({
 export const TeamSection = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const columnCount = useColumnCount();
-    const groupedColumns = useGroupedColumns(TEAM_MEMBERS, columnCount);
+    const groupedColumns = useGroupedColumns(TEAM_MEMBERS_ORDERED, columnCount);
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -259,7 +285,7 @@ export const TeamSection = () => {
                         About / <span className="text-primary-black">Team</span>
                     </span>
                     <h2 className="text-5xl md:text-7xl font-bold font-heading leading-[1.1] tracking-tight text-text-main">
-                        The People<br /><span className="font-zin-italic font-light italic">Behind the scenes.</span>
+                    The people<br /><span className="font-zin-italic font-light italic">behind the scenes</span>
                     </h2>
                 </div>
 

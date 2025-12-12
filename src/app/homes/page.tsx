@@ -11,6 +11,25 @@ import {
 import { OpenSection } from "@/components/layout/OpenSection";
 import { PropertyBrowser } from "./PropertyBrowser";
 import { Rating } from "@/components/ui/Rating";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Homes | Flent",
+  description: "Explore fully furnished, move in ready Flent homes across Bengaluru with no broker hassles. Filter by budget, neighbourhood, and move in date to find a home ready from day one.",
+  openGraph: {
+    title: "Our Homes | Flent",
+    description: "Explore fully furnished, move in ready Flent homes across Bengaluru with no broker hassles. Filter by budget, neighbourhood, and move in date to find a home ready from day one.",
+    url: "https://www.flent.in/homes",
+    type: "website",
+    images: "https://www.flent.in/images/og-image.jpg",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Homes | Flent",
+    description: "Explore fully furnished, move in ready Flent homes across Bengaluru with no broker hassles. Filter by budget, neighbourhood, and move in date to find a home ready from day one.",
+    images: "https://www.flent.in/images/og-image.jpg",
+  },
+};
 
 export default async function PropertiesPage() {
   const [properties, locations, reviews, rooms, occupants] = await Promise.all([
@@ -28,16 +47,16 @@ export default async function PropertiesPage() {
       <OpenSection className="py-10  pb-0">
         <div className="container mx-auto px-4 text-center mt-24">
           <h1 className="text-fluid-h1 font-heading text-text-main mb-4">
-            Our{" "}
+          Move in ready homes{" "}
             <span className="font-zin-italic">
               {" "}
               <br className="hidden md:block" />
-              Homes
+              for you
             </span>
           </h1>
           <p className="text-subtitle font-body font-medium max-w-2xl mx-auto">
-            Homes that are fully furnished, <br className="hidden md:block" />
-            thoughtfully set up, and ready from day one.
+          Start your search here <br className="hidden md:block" />
+          Choose a location and move in date to see what's available
           </p>
         </div>
       </OpenSection>

@@ -18,8 +18,7 @@ import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
-    { name: "Find Your Home", href: "/homes", sectionId: "" },
-    { name: "Secured", href: "", sectionId: "" },
+    { name: "All Homes", href: "/homes", sectionId: "" },
 ];
 
 type NavbarVariant = "hamburger" | "expanded";
@@ -321,10 +320,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
         return (
             <div className="hidden lg:flex items-center gap-3 bg-white rounded-full shadow-lg border border-text-main h-14 px-3 pointer-events-auto">
                 <Button variant="ghost" size="sm" onClick={() => router.push('/homes')}>
-                    Find Your Home
-                </Button>
-                <Button variant="ghost" size="sm" disabled style={{ opacity: 0.5, cursor: 'default' }}>
-                    Secured
+                    All Homes
                 </Button>
                 <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
                     Our Story

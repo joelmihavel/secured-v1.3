@@ -30,6 +30,7 @@ export const PropertyBrowser = ({
   const maxBudgetParam = searchParams.get("maxBudget");
   const moveInDateParam = searchParams.get("moveInDate") || "";
   const showAvailableParam = searchParams.get("showAvailable");
+  const femaleOnlyParam = searchParams.get("femaleOnly");
   const isSyncingFromUrl = useRef(false);
 
   /* 
@@ -82,12 +83,15 @@ export const PropertyBrowser = ({
     const showAvailable =
       showAvailableParam === null ? true : showAvailableParam === "true";
 
+    const femaleOnly = femaleOnlyParam === "true";
+
     return {
       minBudget,
       maxBudget,
       locationIds: locationIdsFromUrl,
       moveInDate: moveInDateParam,
       showAvailable,
+      femaleOnly,
     };
   }, [
     locationIdsFromUrl,
@@ -95,6 +99,7 @@ export const PropertyBrowser = ({
     maxBudgetParam,
     moveInDateParam,
     showAvailableParam,
+    femaleOnlyParam,
   ]);
 
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
@@ -156,6 +161,13 @@ export const PropertyBrowser = ({
       hasChanges = true;
     }
 
+    // Check femaleOnly
+    const urlFemaleOnly = femaleOnlyParam === "true";
+    if (urlFemaleOnly !== filters.femaleOnly) {
+      urlFilters.femaleOnly = urlFemaleOnly;
+      hasChanges = true;
+    }
+
     if (hasChanges) {
       isSyncingFromUrl.current = true;
       setFilters((prev) => ({
@@ -170,6 +182,7 @@ export const PropertyBrowser = ({
     maxBudgetParam,
     moveInDateParam,
     showAvailableParam,
+    femaleOnlyParam,
   ]);
 
   // Update URL when filters change (from user interaction)
@@ -249,6 +262,17 @@ export const PropertyBrowser = ({
       urlChanged = true;
     }
 
+    // Update femaleOnly
+    if (filters.femaleOnly) {
+      if (femaleOnlyParam !== "true") {
+        params.set("femaleOnly", "true");
+        urlChanged = true;
+      }
+    } else if (femaleOnlyParam === "true") {
+      params.delete("femaleOnly");
+      urlChanged = true;
+    }
+
     if (urlChanged) {
       const newUrl = params.toString()
         ? `${pathname}?${params.toString()}`
@@ -261,6 +285,7 @@ export const PropertyBrowser = ({
     filters.maxBudget,
     filters.moveInDate,
     filters.showAvailable,
+    filters.femaleOnly,
     locationNameMap,
     pathname,
     router,
@@ -270,6 +295,7 @@ export const PropertyBrowser = ({
     maxBudgetParam,
     moveInDateParam,
     showAvailableParam,
+    femaleOnlyParam,
   ]);
 
   const locationMap = useMemo(
@@ -303,6 +329,11 @@ export const PropertyBrowser = ({
 
       // Filter by Availability
       if (filters.showAvailable && !property.fieldData.available) {
+        return false;
+      }
+
+      // Filter by Female Only
+      if (filters.femaleOnly && !property.fieldData["female-only"]) {
         return false;
       }
 

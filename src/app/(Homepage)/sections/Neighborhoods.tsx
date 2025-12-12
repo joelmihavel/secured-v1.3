@@ -299,7 +299,7 @@ export const Neighborhoods = ({
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-5xl mx-auto">
+        <div className="hidden md:grid md:grid-cols-3 gap-6 mt-12 max-w-5xl mx-auto">
           <div className="text-center">
             <h2 className=" font-subtitle font-zin-italic font-bold mb-2 text-text-main">
               150+

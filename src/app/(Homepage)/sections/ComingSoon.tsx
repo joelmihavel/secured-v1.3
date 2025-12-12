@@ -35,12 +35,12 @@ export const ComingSoon = ({
       {/* Top Section - Centered */}
       <div className="flex flex-col items-center text-center mb-12 px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="font-heading text-fluid-h2 text-white mb-6">
-          Find a Flent home <br className="hidden md:block" />
-          <span className="font-zin-italic"> like no other</span>
+        See what's <br className="hidden md:block" />
+          <span className="font-zin-italic"> coming next</span>
         </h2>
 
         <p className="text-subtitle !text-white/90 font-body font-medium max-w-2xl">
-          Be the first to find out when Flent launches
+        Get early access to one of a kind Flent homes
         </p>
       </div>
 
@@ -71,10 +71,13 @@ export const ComingSoon = ({
       {/* Newsletter Section */}
       <div className=" rounded-[2rem] py-12 px-2 text-center relative z-10">
         <h3 className="font-heading text-fluid-h3 text-white mb-8">
-          Be the first to know when new homes drop
+        Want a text from us every time we launch a home?
         </h3>
 
-        <PhoneSubscribeForm propertyInterest="all_properties" />
+        <PhoneSubscribeForm 
+          propertyInterest="all_properties" 
+          buttonText="Nudge Me"
+        />
 
         <div className="mb-16"></div>
 

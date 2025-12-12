@@ -173,6 +173,20 @@ export const Community = () => {
                 role: "Frontend Dev",
                 companyLogoSrc: "/companies/1080px-Atlassian-logo.svg",
             },
+            {
+                id: 9,
+                type: "quote",
+                text: "Living at Flent feels like being part of a community, not just sharing a space.",
+                author: "Riya",
+                bgColor: "bg-pastel-pink",
+            },
+            {
+                id: 10,
+                type: "quote",
+                text: "The best part? I found my people here - we share the same values and work ethic.",
+                author: "Karan",
+                bgColor: "bg-pastel-cyan",
+            },
         ];
 
         // Separate portrait and quote cards for z-index ordering
@@ -180,42 +194,131 @@ export const Community = () => {
         const quoteCards = rawCards.filter(card => card.type === "quote");
 
         // Process portrait cards with even spacing along the center
+        // Layer structure:
+        // - Top layer: First 3 portrait cards (indices 0, 1, 2) - spaced apart to show quote cards behind
+        // - Middle layer: Portrait card at index 3
+        // - Bottom layer: Portrait card at index 4
         const processedPortraitCards = portraitCards.map((card, index) => {
             const totalPortraits = portraitCards.length;
-            // Calculate even spacing across horizontal axis
-            // Tighter spread for better grouping
-            const spreadWidth = 30; // Total width to spread across in viewport units
-            const spacing = spreadWidth / (totalPortraits - 1);
-            const baseX = index * spacing - (spreadWidth / 2);
+            
+            let x, y, rotation;
+            
+            // Special positioning for top 3 portrait cards to create gaps
+            if (index < 3) {
+                // Top layer: Space them apart with visible gaps between them
+                // Position them with more spacing so quote cards behind are visible
+                const topLayerSpread = 40; // Wider spread for top 3 cards
+                const topLayerSpacing = topLayerSpread / 2; // Space between each (3 cards = 2 gaps)
+                const baseX = (index * topLayerSpacing) - (topLayerSpread / 2);
+                
+                // Less jitter for top layer to maintain gaps
+                const xJitter = (Math.random() - 0.5) * 2; // Reduced jitter: +/- 1 unit
+                x = baseX + xJitter;
+                
+                // Slight vertical variation
+                const yVariation = (Math.random() - 0.5) * 8; // +/- 4 units
+                y = 4 + yVariation;
+                
+                // Moderate rotation
+                rotation = (Math.random() - 0.5) * 12; // +/- 6 degrees
+            } else {
+                // Regular spacing for remaining portrait cards
+                const spreadWidth = 30;
+                const spacing = spreadWidth / (totalPortraits - 1);
+                const baseX = index * spacing - (spreadWidth / 2);
+                
+                // Add horizontal jitter for less organized feel
+                const xJitter = (Math.random() - 0.5) * 4; // +/- 2 units
+                x = baseX + xJitter;
+                
+                // Position lower with more vertical variation for organic feel
+                const yVariation = (Math.random() - 0.5) * 12; // +/- 6 units
+                y = 4 + yVariation;
+                
+                // Add more rotation variation for natural look
+                rotation = (Math.random() - 0.5) * 18; // +/- 9 degrees
+            }
 
-            // Add horizontal jitter for less organized feel
-            const xJitter = (Math.random() - 0.5) * 4; // +/- 2 units
-            const x = baseX + xJitter;
-
-            // Position lower with more vertical variation for organic feel
-            const yVariation = (Math.random() - 0.5) * 12; // +/- 6 units
-            const y = 4 + yVariation; // Lower position with more variation
-
-            // Add more rotation variation for natural look
-            const rotation = (Math.random() - 0.5) * 18; // +/- 9 degrees
+            // Assign z-index based on layer
+            let zIndex;
+            if (index < 3) {
+                // Top layer: First 3 portrait cards (highest z-index)
+                zIndex = 20 + index;
+            } else if (index === 3) {
+                // Middle layer: 4th portrait card
+                zIndex = 10;
+            } else {
+                // Bottom layer: 5th portrait card (lowest z-index)
+                zIndex = 3;
+            }
 
             return {
                 ...card,
                 rotation,
                 x,
                 y,
-                zIndex: quoteCards.length + index + 1, // Portrait cards get higher z-index
+                zIndex,
             } as CardData;
         });
 
         const processedQuoteCards = quoteCards.map((card, index) => {
+            // Special positioning for quote card between portrait cards (id: 9)
+            if (card.id === 9) {
+                // Calculate position between first two portrait cards (indices 0 and 1)
+                const totalPortraits = portraitCards.length;
+                const spreadWidth = 30;
+                const spacing = spreadWidth / (totalPortraits - 1);
+                
+                // Base positions of first two portrait cards (without jitter)
+                const portrait0BaseX = 0 * spacing - (spreadWidth / 2); // -15
+                const portrait1BaseX = 1 * spacing - (spreadWidth / 2); // -7.5
+                
+                // Position quote card between them, with slight offset for overlap
+                const betweenX = (portrait0BaseX + portrait1BaseX) / 2 + (Math.random() - 0.5) * 2;
+                
+                // Middle layer: z-index 11 (between top layer 20+ and bottom layer 1-5)
+                return {
+                    ...card,
+                    rotation: (Math.random() - 0.5) * 12, // Slight rotation for natural look
+                    x: betweenX,
+                    y: 4 + (Math.random() - 0.5) * 6, // Similar vertical position to portrait cards
+                    zIndex: 11, // Middle layer
+                } as CardData;
+            }
+            
+            // Special positioning for quote card between portrait cards (id: 10)
+            if (card.id === 10) {
+                // Calculate position between third and fourth portrait cards (indices 2 and 3)
+                // These are Product Designer (index 2) and Data Scientist (index 3)
+                const totalPortraits = portraitCards.length;
+                const spreadWidth = 30;
+                const spacing = spreadWidth / (totalPortraits - 1);
+                
+                // Base positions of third and fourth portrait cards (without jitter)
+                const portrait2BaseX = 2 * spacing - (spreadWidth / 2); // 0
+                const portrait3BaseX = 3 * spacing - (spreadWidth / 2); // 7.5
+                
+                // Position quote card between them, with slight offset for overlap
+                const betweenX = (portrait2BaseX + portrait3BaseX) / 2 + (Math.random() - 0.5) * 2;
+                
+                // Middle layer: z-index 12 (between top layer 20+ and bottom layer 1-5)
+                return {
+                    ...card,
+                    rotation: (Math.random() - 0.5) * 12, // Slight rotation for natural look
+                    x: betweenX,
+                    y: 4 + (Math.random() - 0.5) * 6, // Similar vertical position to portrait cards
+                    zIndex: 12, // Middle layer
+                } as CardData;
+            }
+            
+            // Regular quote cards positioned randomly - Bottom layer
             const pos = generateRandomPos();
             return {
                 ...card,
                 rotation: pos.rotation,
                 x: pos.x,
                 y: pos.y,
-                zIndex: index + 1, // Quote cards get lower z-index
+                zIndex: index + 1, // Bottom layer (lowest z-index)
             } as CardData;
         });
 

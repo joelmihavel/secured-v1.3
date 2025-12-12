@@ -26,7 +26,7 @@ interface HeroSectionProps {
 export const HeroSection = ({
     badge,
     heading = "Guaranteed Rent In 30 Days Or Less",
-    description = "Flent transforms your property into a fully furnished, move-in ready apartment—and rents it out to top-tier tenants in no-time.",
+    description = "Flent transforms your property into a fully furnished, move-in ready apartment and rents it out to top tier tenants in no time.",
     buttons = {
         primary: {
             text: "Get Started",
@@ -34,7 +34,7 @@ export const HeroSection = ({
         },
     },
     image = {
-        src: "/images/owners-hero.png",
+        src: "/institution-logos/Owners_hero_final.png",
         alt: "Premium furnished apartment",
     },
 }: Partial<HeroSectionProps> = {}) => {
@@ -75,7 +75,33 @@ export const HeroSection = ({
                                 <Button
                                     variant="primary"
                                     size="lg"
-                                    onClick={buttons.primary.onClick || handleWhatsAppClick}
+                                    href={buttons.primary.url}
+                                    onClick={(e: React.MouseEvent<HTMLElement>) => {
+                                        if (!buttons.primary) return;
+                                        
+                                        // Only handle hash links (#contact) with smooth scroll
+                                        if (buttons.primary.url?.startsWith('#')) {
+                                            e.preventDefault();
+                                            const targetId = buttons.primary.url.replace("#", "");
+                                            const element = document.getElementById(targetId);
+                                            if (element) {
+                                                const navbarHeight = 100;
+                                                const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+                                                const offsetPosition = elementPosition - navbarHeight;
+                                                window.scrollTo({
+                                                    top: offsetPosition,
+                                                    behavior: "smooth",
+                                                });
+                                            }
+                                        }
+                                        // For external URLs, let default anchor behavior work (no preventDefault)
+                                        // For custom onClick handlers, they can handle preventDefault themselves
+                                        if (buttons.primary.onClick && !buttons.primary.url?.startsWith('#')) {
+                                            buttons.primary.onClick();
+                                        } else if (!buttons.primary.url && !buttons.primary.onClick) {
+                                            handleWhatsAppClick();
+                                        }
+                                    }}
                                     className="w-full sm:w-auto"
                                 >
                                     {buttons.primary.text}

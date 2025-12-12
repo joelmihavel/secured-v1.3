@@ -14,12 +14,12 @@ export const ContactSection = () => {
                             Let's Get <span className="font-zin-italic">Started</span>
                         </h2>
                         <p className="text-subtitle font-body text-text-main/70 max-w-2xl mx-auto">
-                            Fill out the form below and our team will reach out to guide you through Flent-ing your home.
+                        Fill out the form below and our team will get back to you with a tailored rental estimate within 48 hours.
                         </p>
                     </div>
 
                     <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-gray-100">
-                        <GetStartedForm />
+                        <GetStartedForm buttonText="Request My Rental Quote" />
                     </div>
                 </div>
             </div>

@@ -10,11 +10,9 @@ export const HiringSection = () => {
                 {/* Left Column: Heading */}
                 <div className="space-y-2">
                     <h2 className="text-fluid-h2 text-brand-yellow ">
-                        Resumes don’t impress us.{""}
-
-                        <span className="font-zin-italic">
-                            Sisu does.
-                        </span>
+                        Resumes don’t impress us.
+                        <br />
+                        <span className="font-zin-italic">Sisu does.</span>
                     </h2>
                 </div>
 
@@ -29,7 +27,13 @@ export const HiringSection = () => {
                         <span className="text-sm font-bold tracking-widest uppercase text-pastel-yellow pt-3 sm:pt-0">
                             WANT TO JOIN US?
                         </span>
-                        <Button leftIcon={<ArrowRight size={16} strokeWidth={3} />} variant="primary">
+                        <Button
+                            leftIcon={<ArrowRight size={16} strokeWidth={3} />}
+                            variant="primary"
+                            href="https://empty-bite-b73.notion.site/Flent-Hiring-Guide-42ffc8b1ff6648869f4c45f85ec5a1b8"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             CHECK OPEN ROLES
                         </Button>
                     </div>

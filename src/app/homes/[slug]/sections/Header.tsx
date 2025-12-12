@@ -213,7 +213,14 @@ export const Header = ({
               <span className="text-xl font-bold w-5 text-center">₹</span>
               <span className="text-lg font-medium font-body">
                 Private Rooms from ₹
-                {property.fieldData["rent-in-rupees"] || "40K"}/mo
+                {(() => {
+                  const rentValue = property.fieldData["rent-in-rupees"];
+                  if (!rentValue) return "40,000";
+                  // Remove any existing commas and K suffixes, then parse
+                  const numericValue = parseInt(rentValue.replace(/,/g, "").replace(/K/gi, "")) || 0;
+                  if (numericValue === 0) return "40,000";
+                  return numericValue.toLocaleString("en-IN");
+                })()}/mo
               </span>
             </div>
           </div>
