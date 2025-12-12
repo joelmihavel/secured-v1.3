@@ -32,15 +32,36 @@ export const PropertyBrowser = ({
   const showAvailableParam = searchParams.get("showAvailable");
   const isSyncingFromUrl = useRef(false);
 
+  /* 
+    This robust replacement handles the multi-select logic for locations. 
+    It parses comma-separated location names from the URL into location IDs, 
+    updates the URL with comma-separated names when filters change, 
+    and filters properties based on the selected location IDs.
+  */
+
   // Find location ID from location name
-  const locationIdFromUrl = useMemo(() => {
-    if (!locationNameParam) return "";
-    const location = locations.find(
-      (loc) =>
-        loc.fieldData.name.toLowerCase().trim() ===
-        decodeURIComponent(locationNameParam).toLowerCase().trim()
-    );
-    return location?.id || "";
+  const locationIdsFromUrl = useMemo(() => {
+    if (!locationNameParam) return [];
+    
+    // Split by comma and trim
+    const names = decodeURIComponent(locationNameParam)
+      .split(",")
+      .map(n => n.trim().toLowerCase())
+      .filter(n => n.length > 0);
+      
+    if (names.length === 0) return [];
+
+    const ids: string[] = [];
+    names.forEach(name => {
+      const location = locations.find(
+        (loc) => loc.fieldData.name.toLowerCase().trim() === name
+      );
+      if (location) {
+        ids.push(location.id);
+      }
+    });
+    
+    return ids;
   }, [locationNameParam, locations]);
 
   // Initialize filters from URL params
@@ -64,12 +85,12 @@ export const PropertyBrowser = ({
     return {
       minBudget,
       maxBudget,
-      locationId: locationIdFromUrl,
+      locationIds: locationIdsFromUrl,
       moveInDate: moveInDateParam,
       showAvailable,
     };
   }, [
-    locationIdFromUrl,
+    locationIdsFromUrl,
     minBudgetParam,
     maxBudgetParam,
     moveInDateParam,
@@ -78,7 +99,7 @@ export const PropertyBrowser = ({
 
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
 
-  // Create a reverse map: locationId -> locationName
+  // Create a map: locationId -> locationName
   const locationNameMap = useMemo(
     () => new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
     [locations]
@@ -90,8 +111,12 @@ export const PropertyBrowser = ({
     let hasChanges = false;
 
     // Check location
-    if (locationIdFromUrl !== filters.locationId) {
-      urlFilters.locationId = locationIdFromUrl;
+    // Simple array equality check (assuming order doesn't matter much or is stable enough for this check)
+    const currentUrlIds = locationIdsFromUrl.sort().join(",");
+    const currentFilterIds = (filters.locationIds || []).sort().join(",");
+    
+    if (currentUrlIds !== currentFilterIds) {
+      urlFilters.locationIds = locationIdsFromUrl;
       hasChanges = true;
     }
 
@@ -140,7 +165,7 @@ export const PropertyBrowser = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    locationIdFromUrl,
+    locationIdsFromUrl,
     minBudgetParam,
     maxBudgetParam,
     moveInDateParam,
@@ -159,23 +184,27 @@ export const PropertyBrowser = ({
     let urlChanged = false;
 
     // Update location
-    const currentLocationName = filters.locationId
-      ? locationNameMap.get(filters.locationId)
-      : null;
-    const urlLocationName = locationNameParam
-      ? decodeURIComponent(locationNameParam)
-      : "";
-
-    if (filters.locationId && currentLocationName) {
-      if (urlLocationName !== currentLocationName) {
-        params.set("location", encodeURIComponent(currentLocationName));
+    const selectedIds = filters.locationIds || [];
+    const locationNames: string[] = [];
+    
+    selectedIds.forEach(id => {
+        const name = locationNameMap.get(id);
+        if (name) locationNames.push(name);
+    });
+    
+    const newLocationParam = locationNames.join(",");
+    const urlLocationParam = locationNameParam ? decodeURIComponent(locationNameParam) : "";
+    
+    // Check if changed (simple string comparison works if order matches, but let's be safe?)
+    // Actually, let's just update if the serialized string is different.
+    if (newLocationParam && newLocationParam !== urlLocationParam) {
+        params.set("location", encodeURIComponent(newLocationParam));
         urlChanged = true;
-      }
-    } else if (!filters.locationId && urlLocationName) {
-      params.delete("location");
-      urlChanged = true;
+    } else if (!newLocationParam && urlLocationParam) {
+        params.delete("location");
+        urlChanged = true;
     }
-
+    
     // Update minBudget
     if (filters.minBudget !== 0) {
       if (minBudgetParam !== filters.minBudget.toString()) {
@@ -227,7 +256,7 @@ export const PropertyBrowser = ({
       router.replace(newUrl, { scroll: false });
     }
   }, [
-    filters.locationId,
+    filters.locationIds,
     filters.minBudget,
     filters.maxBudget,
     filters.moveInDate,
@@ -257,10 +286,11 @@ export const PropertyBrowser = ({
 
       // Filter by Location
       if (
-        filters.locationId &&
-        property.fieldData.location !== filters.locationId
+        filters.locationIds && 
+        filters.locationIds.length > 0
       ) {
-        return false;
+        if (!property.fieldData.location) return false;
+        if (!filters.locationIds.includes(property.fieldData.location)) return false;
       }
 
       // Filter by Budget

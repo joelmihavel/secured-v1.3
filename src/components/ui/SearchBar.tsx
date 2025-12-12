@@ -1,13 +1,15 @@
 "use client";
 
-import React from "react";
-import { IconSearch as Search, IconCalendar as Calendar, IconChevronDown as ChevronDown } from "@tabler/icons-react";
+import React, { useState } from "react";
+import { IconSearch as Search, IconCalendar as Calendar, IconChevronDown as ChevronDown, IconCheck as Check } from "@tabler/icons-react";
 import { Location } from "@/lib/webflow";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export interface SearchFilters {
     minBudget: number;
     maxBudget: number;
-    locationId: string;
+    locationIds: string[];
     moveInDate: string;
     showAvailable: boolean;
 }
@@ -19,6 +21,8 @@ interface SearchBarProps {
 }
 
 export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) => {
+    const [open, setOpen] = useState(false);
+
     const handleBudgetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const value = e.target.value;
         let min = 0;
@@ -37,6 +41,32 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
         if (filters.minBudget === 35000 && filters.maxBudget === 45000) return "35-45";
         if (filters.minBudget === 45000 && filters.maxBudget === Infinity) return "45+";
         return "all";
+    };
+
+    const handleLocationToggle = (locationId: string) => {
+        const currentIds = filters.locationIds || [];
+        const isSelected = currentIds.includes(locationId);
+        
+        let newIds: string[];
+        if (isSelected) {
+            newIds = currentIds.filter(id => id !== locationId);
+        } else {
+            newIds = [...currentIds, locationId];
+        }
+        
+        setFilters({ ...filters, locationIds: newIds });
+    };
+
+    const getLocationDisplayText = () => {
+        const selectedIds = filters.locationIds || [];
+        if (selectedIds.length === 0) return "All Locations";
+        
+        if (selectedIds.length === 1) {
+            const location = locations.find(l => l.id === selectedIds[0]);
+            return location ? location.fieldData.name : "1 Location Selected";
+        }
+
+        return `${selectedIds.length} Locations Selected`;
     };
 
     return (
@@ -62,21 +92,57 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
             {/* Preferred Location */}
             <div className="flex-1 w-full">
                 <label className="block text-text-invert text-sm font-medium mb-2">Preferred Location</label>
-                <div className="relative">
-                    <select
-                        value={filters.locationId}
-                        onChange={(e) => setFilters({ ...filters, locationId: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none cursor-pointer"
-                    >
-                        <option value="" className="text-black">All Locations</option>
-                        {locations.map((loc) => (
-                            <option key={loc.id} value={loc.id} className="text-black">
-                                {loc.fieldData.name}
-                            </option>
-                        ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={16} />
-                </div>
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                        <div className="relative cursor-pointer">
+                            <div className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 truncate pr-10">
+                                {getLocationDisplayText()}
+                            </div>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={16} />
+                        </div>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-white border-white/20" align="start">
+                        <div className="max-h-[300px] overflow-y-auto p-1">
+                            <div 
+                                className={cn(
+                                    "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
+                                    (filters.locationIds?.length === 0) && "bg-gray-50"
+                                )}
+                                onClick={() => setFilters({ ...filters, locationIds: [] })}
+                            >
+                                <div className={cn(
+                                    "w-4 h-4 border rounded flex items-center justify-center transition-colors",
+                                    (filters.locationIds?.length === 0) ? "bg-night-violet border-night-violet" : "border-gray-300"
+                                )}>
+                                    {(filters.locationIds?.length === 0) && <Check size={10} className="text-white" />}
+                                </div>
+                                <span className="text-sm text-gray-700">All Locations</span>
+                            </div>
+                            
+                            {locations.map((loc) => {
+                                const isSelected = filters.locationIds?.includes(loc.id);
+                                return (
+                                    <div 
+                                        key={loc.id}
+                                        className={cn(
+                                            "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
+                                            isSelected && "bg-gray-50"
+                                        )}
+                                        onClick={() => handleLocationToggle(loc.id)}
+                                    >
+                                        <div className={cn(
+                                            "w-4 h-4 border rounded flex items-center justify-center transition-colors",
+                                            isSelected ? "bg-night-violet border-night-violet" : "border-gray-300"
+                                        )}>
+                                            {isSelected && <Check size={10} className="text-white" />}
+                                        </div>
+                                        <span className="text-sm text-gray-700">{loc.fieldData.name}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
 
             {/* Move-In Date */}
