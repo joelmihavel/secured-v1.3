@@ -122,7 +122,10 @@ export default async function PropertyPage({
 
   // Filter properties in the same neighborhood (excluding current property)
   const neighborhoodProperties = properties.filter(
-    (p) => p.fieldData.location === location?.id && p.id !== property.id
+    (p) =>
+      p.fieldData.location === location?.id &&
+      p.id !== property.id &&
+      p.fieldData["is-upcoming"] === false
   );
 
   // Calculate image data for the property
