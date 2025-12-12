@@ -185,7 +185,7 @@ export default async function PropertyPage({
       </section>
 
       <section id="how-it-works">
-        <HowItWorks />
+        <HowItWorks propertyName={property.fieldData.name} />
       </section>
 
       <MarqueeSection />
