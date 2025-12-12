@@ -8,7 +8,7 @@ import { IconTrendingUp as TrendingUp, IconShieldCheck as ShieldCheck, IconUsers
 const benefits = [
     {
         title: "100% Rental Guarantee",
-        description: "List your home with Flent - we guarantee you a tenant placement within 30 days. If not, we start paying you the rent from Day 31.",
+        description: "List your home with Flent and we guarantee tenant placement within 30 days. If not, we start paying you rent from day 31.",
         icon: TrendingUp,
         bgColor: "bg-forest-green",
         textColor: "text-white",
@@ -16,7 +16,7 @@ const benefits = [
     },
     {
         title: "Minimal Management Fee",
-        description: "From tenant placement to ongoing property management, we handle everything—at minimal cost.",
+        description: "From tenant placement to ongoing property management, we handle everything at a minimal cost.",
         icon: ShieldCheck,
         bgColor: "bg-brick-red",
         textColor: "text-white",
@@ -32,7 +32,7 @@ const benefits = [
     },
     {
         title: "Premium Furnishing",
-        description: "We upgrade your property into a designer home that commands premium rent—all with 0 effort from your end.",
+        description: "We upgrade your property into a designer home that commands premium rent with zero effort from your end.",
         icon: Home,
         bgColor: "bg-brand-cyan",
         textColor: "text-black",
