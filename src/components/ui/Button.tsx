@@ -1,9 +1,26 @@
+/**
+ * Button Component with PostHog CTA Tracking
+ * 
+ * Reusable button component that automatically tracks clicks to PostHog
+ * with comprehensive attribution data. Prevents PostHog autocapture from
+ * creating duplicate events by setting ph-no-capture attribute/class.
+ * 
+ * Features:
+ * - Automatic CTA tracking with attribution data
+ * - Prevents duplicate autocapture events
+ * - Supports both link and button variants
+ * - Customizable CTA IDs and context
+ * 
+ * @see {@link docs/POSTHOG_ATTRIBUTION.md} Full Attribution Implementation Guide
+ */
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, HTMLMotionProps } from "framer-motion";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useCTATracking } from "@/hooks/useCTATracking";
+import { extractTextContent, generateCTAId } from "@/lib/posthog-tracking";
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -19,6 +36,16 @@ interface BaseButtonProps {
     children?: React.ReactNode;
     pastelColor?: PastelColor;
     className?: string;
+    /**
+     * Optional custom CTA ID for tracking. If not provided, will be auto-generated.
+     * Can also be set via data-cta-id attribute.
+     */
+    "data-cta-id"?: string;
+    /**
+     * Optional section context for tracking (e.g., "hero", "footer", "nav").
+     * Can also be set via data-cta-context attribute.
+     */
+    "data-cta-context"?: string;
 }
 
 interface ButtonAsButton extends BaseButtonProps, Omit<HTMLMotionProps<"button">, keyof BaseButtonProps> {
@@ -32,7 +59,42 @@ interface ButtonAsLink extends BaseButtonProps, Omit<HTMLMotionProps<"a">, keyof
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-    ({ className, variant = "primary", size = "md", leftIcon, rightIcon, children, pastelColor, href, ...props }, ref) => {
+    ({ className, variant = "primary", size = "md", leftIcon, rightIcon, children, pastelColor, href, "data-cta-id": dataCtaId, "data-cta-context": dataCtaContext, ...props }, ref) => {
+        const { trackCTAClick } = useCTATracking();
+        
+        // Create internal ref and callback to set ph-no-capture
+        const internalRef = React.useRef<HTMLButtonElement | HTMLAnchorElement | null>(null);
+        
+        // Callback ref to set ph-no-capture immediately
+        const setPhNoCaptureRef = React.useCallback((element: HTMLButtonElement | HTMLAnchorElement | null) => {
+            internalRef.current = element;
+            
+            if (element && typeof window !== 'undefined') {
+                // Set both attribute (for noCaptureProp config) and class (default PostHog behavior)
+                // This prevents PostHog autocapture from tracking these elements
+                element.setAttribute('ph-no-capture', '');
+                element.classList.add('ph-no-capture');
+            }
+            
+            // Forward to external ref if provided
+            if (ref) {
+                if (typeof ref === 'function') {
+                    ref(element);
+                } else if (ref && 'current' in ref) {
+                    (ref as React.MutableRefObject<HTMLButtonElement | HTMLAnchorElement | null>).current = element;
+                }
+            }
+        }, [ref]);
+        
+        // Backup: Also set in useEffect to ensure it's set even if callback ref is delayed
+        useEffect(() => {
+            if (typeof window === 'undefined') return;
+            if (internalRef.current) {
+                const element = internalRef.current;
+                element.setAttribute('ph-no-capture', '');
+                element.classList.add('ph-no-capture');
+            }
+        }, []);
         const variants = {
             primary: "bg-black text-white border border-white shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[-1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[-3px] active:translate-y-[3px]",
             "primary-rounded": "bg-black text-white border-2 border-text-main rounded-full shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] hover:shadow-[0px_2px_0px_0px_rgba(21,16,46,1)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px]",
@@ -120,12 +182,44 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
             </>
         );
 
+        // Handle click tracking
+        const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+            // Extract CTA metadata
+            const element = e.currentTarget;
+            const ctaText = element.textContent?.trim() || extractTextContent(children) || '';
+            const ctaId = dataCtaId || element.getAttribute('data-cta-id') || generateCTAId(element, ctaText);
+            const ctaContext = dataCtaContext || element.getAttribute('data-cta-context') || undefined;
+            
+            // Determine CTA type and destination
+            const isLink = 'href' in element;
+            const ctaType = isLink ? 'link' : (element.type === 'submit' ? 'form_submit' : 'button');
+            const ctaDestination = isLink ? (element as HTMLAnchorElement).href : undefined;
+
+            // Track the click
+            trackCTAClick({
+                cta_id: ctaId,
+                cta_text: ctaText,
+                cta_type: ctaType,
+                cta_variant: variant,
+                cta_destination: ctaDestination,
+                page_section: ctaContext,
+            });
+
+            // Call original onClick if provided
+            if (props.onClick) {
+                (props.onClick as (e: React.MouseEvent<HTMLElement>) => void)(e);
+            }
+        };
+
         if (href) {
             return (
                 <motion.a
-                    ref={ref as React.Ref<HTMLAnchorElement>}
+                    ref={setPhNoCaptureRef as React.Ref<HTMLAnchorElement>}
                     href={href}
                     {...commonProps}
+                    onClick={handleClick}
+                    data-cta-id={dataCtaId}
+                    data-cta-context={dataCtaContext}
                     {...(props as Omit<HTMLMotionProps<"a">, keyof BaseButtonProps>)}
                 >
                     {content}
@@ -135,8 +229,11 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
 
         return (
             <motion.button
-                ref={ref as React.Ref<HTMLButtonElement>}
+                ref={setPhNoCaptureRef as React.Ref<HTMLButtonElement>}
                 {...commonProps}
+                onClick={handleClick}
+                data-cta-id={dataCtaId}
+                data-cta-context={dataCtaContext}
                 {...(props as Omit<HTMLMotionProps<"button">, keyof BaseButtonProps>)}
             >
                 {content}

@@ -87,7 +87,13 @@ export const Hero = ({ properties = [] }: HeroProps) => {
                     transition={{ duration: 1.0, ease: CLASSY_EASE, delay: 1.4 }}
                     className="z-50"
                 >
-                    <Button variant="primary" size="lg" onClick={() => router.push("/homes")}>
+                    <Button 
+                        variant="primary" 
+                        size="lg" 
+                        onClick={() => router.push("/homes")}
+                        data-cta-id="hero_explore_homes"
+                        data-cta-context="hero"
+                    >
                         Explore Homes
                     </Button>
                 </motion.div>

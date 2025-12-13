@@ -200,6 +200,8 @@ export const RentCalculatorDrawer = ({
                     href={`https://cal.com/flent/home-visit?property-name=${slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cta-id="rent_calculator_book_tour"
+                    data-cta-context="rent_calculator_drawer"
                   >
                     Book a Tour
                   </Button>
@@ -210,6 +212,8 @@ export const RentCalculatorDrawer = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     href={getPropertyWhatsappLink(propertyName)}
+                    data-cta-id="rent_calculator_talk_to_us"
+                    data-cta-context="rent_calculator_drawer"
                   >
                     Talk to us
                   </Button>

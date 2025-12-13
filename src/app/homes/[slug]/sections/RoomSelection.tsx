@@ -520,6 +520,8 @@ export const RoomSelection = ({
                             target="_blank"
                             rel="noopener noreferrer"
                             rightIcon={<ArrowRight />}
+                            data-cta-id="room_selection_book_tour"
+                            data-cta-context="room_selection"
                           >
                             Book a Tour
                           </Button>
@@ -533,6 +535,8 @@ export const RoomSelection = ({
                               property.fieldData.name
                             )}
                             leftIcon={<WhatsAppIcon />}
+                            data-cta-id="room_selection_talk_to_us"
+                            data-cta-context="room_selection"
                           >
                             Talk to us
                           </Button>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { submitHubSpotForm } from "@/lib/hubspot";
 import { Button } from "./Button";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
+import { useCTATracking } from "@/hooks/useCTATracking";
 
 const portalId = "45469632";
 const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
@@ -12,6 +13,7 @@ const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
 export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonText?: string }) => {
+  const { trackCTAClick } = useCTATracking();
   const [formData, setFormData] = useState({
     firstname: "",
     phone: "",
@@ -62,6 +64,18 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     e.preventDefault();
     setStatus("loading");
     setErrorMessage("");
+
+    // Track form submission
+    trackCTAClick({
+      cta_id: "form_get_started_submit",
+      cta_text: buttonText,
+      cta_type: "form_submit",
+      page_section: "owners_contact_form",
+    }, {
+      form_type: "owners_get_started",
+      has_property_address: !!formData.propertyAddress,
+      has_expected_rent: !!formData["Expected-Rent"],
+    });
 
     try {
       await submitHubSpotForm(portalId, formId, formData, {
@@ -261,6 +275,8 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         disabled={status === "loading"}
         className="w-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         size="lg"
+        data-cta-id="form_get_started_button"
+        data-cta-context="owners_contact_form"
       >
         {status === "loading" ? "Submitting..." : buttonText}
       </Button>

@@ -150,6 +150,8 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
                     size="md"
                     leftIcon={<WhatsAppIcon />}
                     className="rounded-full"
+                    data-cta-id="bottom_nav_chat_with_us"
+                    data-cta-context="bottom_navigation"
                   >
                     Chat With Us
                   </Button>
