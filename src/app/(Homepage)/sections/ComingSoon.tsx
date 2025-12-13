@@ -35,7 +35,7 @@ export const ComingSoon = ({
       {/* Top Section - Centered */}
       <div className="flex flex-col items-center text-center mb-12 px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="font-heading text-fluid-h2 text-white mb-6">
-        See what's <br className="hidden md:block" />
+          See what's<br className="md:hidden" /> <br className="hidden md:block" />
           <span className="font-zin-italic"> coming next</span>
         </h2>
 

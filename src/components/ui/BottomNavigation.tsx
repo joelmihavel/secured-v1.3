@@ -17,7 +17,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 
 const navLinks = [
   { name: "Rooms", href: "#rooms" },
-  { name: "Amenities", href: "#notes-from-designer" },
+  { name: "Amenities", href: "#amenities-heading" },
   { name: "Neighborhood", href: "#neighborhood" },
   { name: "How it Works", href: "#how-it-works" },
   { name: "FAQ", href: "#faq" },

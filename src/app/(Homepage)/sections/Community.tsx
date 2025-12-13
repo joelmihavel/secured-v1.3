@@ -395,7 +395,7 @@ export const Community = () => {
                     {/* Mobile: Tinder-style stacked cards */}
                     {isMobile && cards.length > 0 && (
                         <div className="absolute inset-x-4 inset-y-8 z-10 flex items-center justify-center">
-                            {cards.slice(currentCardIndex, currentCardIndex + 2).map((card, index) => (
+                            {cards.slice(currentCardIndex, currentCardIndex + 3).map((card, index) => (
                                 <motion.div
                                     key={card.id}
                                     className="absolute w-72 h-80"
@@ -403,8 +403,9 @@ export const Community = () => {
                                     animate={{
                                         scale: 1 - index * 0.05,
                                         y: index * 8,
-                                        rotate: card.rotation * 0.3,
-                                        zIndex: 2 - index,
+                                        x: index === 0 ? 0 : index === 1 ? 10 : -10, // Center, right, left
+                                        rotate: index === 0 ? card.rotation * 0.3 : card.rotation * 0.3 + (index * 5), // Subtle additional rotation for depth
+                                        zIndex: 3 - index, // Updated for 3 cards
                                     }}
                                     transition={{
                                         type: "tween",

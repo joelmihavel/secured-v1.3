@@ -61,7 +61,7 @@ export async function generateMetadata({
   const ogImage =
     property.fieldData["property-featured-photo"]?.url ||
     property.fieldData["property-thumbnail"]?.url ||
-    "/images/og-image.jpg";
+    `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.flent.in"}/images/og-image.jpg`;
 
   return {
     title,

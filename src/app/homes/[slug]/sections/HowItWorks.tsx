@@ -7,32 +7,32 @@ import { getPropertyWhatsappLink } from "@/constants";
 const steps = [
   {
     id: "01",
-    title: "Find Your Space",
-    description: "Explore the homes that feel right for you.",
+    title: "Find a home",
+    description: "Browse our curated collection of fully furnished homes. Filter by location, budget, and move-in date to find your perfect match.",
     image:
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "02",
-    title: "Book A Visit",
+    title: "Book a visit",
     description:
-      "Take a guided tour, confirm your choice, pay the token, and sign online.",
+      "Schedule a guided tour and see your chosen space in person. Confirm your choice, pay the token, and sign online.",
     image:
       "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "03",
-    title: "Move In, Stress-Free",
+    title: "Move in easy",
     description:
-      "Walk into a fully set up home, with only your suitcase left to unpack.",
+      "Walk into a completely set up home that's ready for you. Just bring your suitcase and start living immediately.",
     image:
       "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "04",
-    title: "Live the Flent Way",
+    title: "Live at Flent",
     description:
-      "24/7 resident support, flexible stays, easy extensions, and everyday convenience",
+      "Enjoy 24/7 resident support, flexible stay options, easy extensions, and everyday conveniences designed to make living simple.",
     image:
       "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80",
   },
@@ -83,7 +83,7 @@ export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
                 <span className="text-sm font-medium text-gray-500">
                   ({step.id})
                 </span>
-                <h3 className="text-xl font-heading text-text-main">
+                <h3 className="text-xl font-heading text-text-main whitespace-nowrap">
                   {step.title}
                 </h3>
               </div>

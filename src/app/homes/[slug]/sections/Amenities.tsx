@@ -19,13 +19,11 @@ export const Amenities = ({
   allImages,
   slug,
 }: AmenitiesProps) => {
-  if (
-    !property.fieldData["apply-discount"] &&
-    !property.fieldData["discount-end-date"] &&
-    !property.fieldData["discount"]
-  ) {
-    return null;
-  }
+  // Check if discount should be shown
+  const showDiscount = property.fieldData["apply-discount"] || 
+                       property.fieldData["discount-end-date"] || 
+                       property.fieldData["discount"];
+
   // Use property featured photo, fallback to random image logic
   const featuredPhoto = property.fieldData["property-featured-photo"]?.url;
 
@@ -62,48 +60,51 @@ export const Amenities = ({
 
   return (
     <OpenSection id="amenities" className="bg-bg-white">
-      {/* Top: Full-width Image with Text and CTA */}
-      <div className="w-full relative aspect-[16/9] md:aspect-[2.5/1] overflow-hidden">
-        <Image
-          src={bgImage}
-          alt="Property Amenity Background"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/50" /> {/* Dark Overlay */}
-        {/* Text and CTA Overlay */}
-        <div className="absolute inset-0 flex items-center">
-          <div className="max-w-7xl flex flex-col items-center mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="inline-flex items-center gap-2 bg-brand-pink/90 px-3 py-1 md:px-4 md:py-2 rounded-full mb-4">
-              <span className="text-xs md:text-sm font-medium text-text-main">
-                ✨ Holiday Offer
-              </span>
+      {/* Conditionally render discount banner - only if discount exists */}
+      {showDiscount && (
+        <div className="w-full relative aspect-[16/9] md:aspect-[2.5/1] overflow-hidden">
+          <Image
+            src={bgImage}
+            alt="Property Amenity Background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/50" /> {/* Dark Overlay */}
+          {/* Text and CTA Overlay */}
+          <div className="absolute inset-0 flex items-center">
+            <div className="max-w-7xl flex flex-col items-center mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="inline-flex items-center gap-2 bg-brand-pink/90 px-3 py-1 md:px-4 md:py-2 rounded-full mb-4">
+                <span className="text-xs md:text-sm font-medium text-text-main">
+                  ✨ Holiday Offer
+                </span>
+              </div>
+              <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
+                Get {property.fieldData["discount"]}% off if booked by{" "}
+                <br className="hidden md:block" />
+                {discountEndDate}
+              </h2>
+              <a
+                href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base"
+              >
+                Book a Tour
+                <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
+              </a>
             </div>
-            <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
-              Save {property.fieldData["discount"]}% month if{" "}
-              <br className="hidden md:block" />
-              booked by {discountEndDate}
-            </h2>
-            <a
-              href={`https://cal.com/flent/home-visit?property-name=${slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base"
-            >
-              Book a Tour
-              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-            </a>
           </div>
         </div>
-      </div>
+      )}
 
+      {/* Always render amenities content - no matter what */}
       {/* Bottom: Content Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-24">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showDiscount ? 'py-12 lg:py-24' : 'pt-8 pb-12 lg:pt-12 lg:pb-24'}`}>
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch mx-auto">
           {/* Amenities List (60%) */}
-          <div className="w-full lg:w-[60%]">
-            <h3 className="font-fluid-heading text-2xl md:text-fluid-h2 text-text-main mb-6 md:mb-8">
+          <div id="amenities-list" className="w-full lg:w-[60%]">
+            <h3 id="amenities-heading" className="font-fluid-heading text-2xl md:text-fluid-h2 text-text-main mb-6 md:mb-8">
               This home comes with
             </h3>
 

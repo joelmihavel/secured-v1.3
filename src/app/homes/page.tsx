@@ -47,16 +47,11 @@ export default async function PropertiesPage() {
       <OpenSection className="py-10  pb-0">
         <div className="container mx-auto px-4 text-center mt-24">
           <h1 className="text-fluid-h1 font-heading text-text-main mb-4">
-          Move in ready homes{" "}
-            <span className="font-zin-italic">
-              {" "}
-              <br className="hidden md:block" />
-              for you
-            </span>
+            Start your search here
           </h1>
           <p className="text-subtitle font-body font-medium max-w-2xl mx-auto">
-          Start your search here <br className="hidden md:block" />
-          Choose a location and move in date to see what's available
+          Choose a location and move in date to see what's available <br className="hidden md:block" />
+          
           </p>
         </div>
       </OpenSection>
