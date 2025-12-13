@@ -104,10 +104,28 @@ const CountUp: React.FC<CountUpProps> = ({ end, color, duration = 2 }) => {
 };
 
 export const Info = () => {
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const isInView = useInView(videoContainerRef, { margin: "0px" });
+
+  useEffect(() => {
+    if (isInView) {
+      desktopVideoRef.current?.play().catch(() => {});
+      mobileVideoRef.current?.play().catch(() => {});
+    } else {
+      desktopVideoRef.current?.pause();
+      mobileVideoRef.current?.pause();
+    }
+  }, [isInView]);
+
   return (
     <OpenSection className="bg-bg-white">
       {/* Video (Edge to Edge) */}
-      <div className="w-full bg-white overflow-hidden flex items-center justify-center relative md:aspect-[2.5/1] aspect-[16/9]">
+      <div
+        ref={videoContainerRef}
+        className="w-full bg-white overflow-hidden flex items-center justify-center relative md:aspect-[2.5/1] aspect-[16/9]"
+      >
         {/* Torn Paper Edge - Top */}
         <div className="absolute top-0 left-0 w-full h-8 md:h-16 z-20 -translate-y-2 pointer-events-none">
           <svg className="w-full h-full text-bg-white fill-current">
@@ -160,18 +178,18 @@ export const Info = () => {
         {/* Video cover image */}
         {/* desktop */}
         <video
+          ref={desktopVideoRef}
           src="https://res.cloudinary.com/djvdu4une/video/upload/v1764790071/Website_fold_horizontal__gb7eur.mp4"
           className="object-cover w-full h-full hidden md:block"
-          autoPlay
           muted
           loop
           playsInline
         />
         {/* mobile */}
         <video
+          ref={mobileVideoRef}
           src="https://res.cloudinary.com/djvdu4une/video/upload/v1764790400/Website_fold_mobile_version_2_xgwpny.mp4"
           className="object-cover w-full h-full block md:hidden"
-          autoPlay
           muted
           loop
           playsInline
