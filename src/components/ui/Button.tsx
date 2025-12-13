@@ -61,21 +61,21 @@ type ButtonProps = ButtonAsButton | ButtonAsLink;
 export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
     ({ className, variant = "primary", size = "md", leftIcon, rightIcon, children, pastelColor, href, "data-cta-id": dataCtaId, "data-cta-context": dataCtaContext, ...props }, ref) => {
         const { trackCTAClick } = useCTATracking();
-        
+
         // Create internal ref and callback to set ph-no-capture
         const internalRef = React.useRef<HTMLButtonElement | HTMLAnchorElement | null>(null);
-        
+
         // Callback ref to set ph-no-capture immediately
         const setPhNoCaptureRef = React.useCallback((element: HTMLButtonElement | HTMLAnchorElement | null) => {
             internalRef.current = element;
-            
+
             if (element && typeof window !== 'undefined') {
                 // Set both attribute (for noCaptureProp config) and class (default PostHog behavior)
                 // This prevents PostHog autocapture from tracking these elements
                 element.setAttribute('ph-no-capture', '');
                 element.classList.add('ph-no-capture');
             }
-            
+
             // Forward to external ref if provided
             if (ref) {
                 if (typeof ref === 'function') {
@@ -85,7 +85,7 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
                 }
             }
         }, [ref]);
-        
+
         // Backup: Also set in useEffect to ensure it's set even if callback ref is delayed
         useEffect(() => {
             if (typeof window === 'undefined') return;
@@ -189,10 +189,10 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
             const ctaText = element.textContent?.trim() || extractTextContent(children) || '';
             const ctaId = dataCtaId || element.getAttribute('data-cta-id') || generateCTAId(element, ctaText);
             const ctaContext = dataCtaContext || element.getAttribute('data-cta-context') || undefined;
-            
+
             // Determine CTA type and destination
             const isLink = 'href' in element;
-            const ctaType = isLink ? 'link' : (element.type === 'submit' ? 'form_submit' : 'button');
+            const ctaType = isLink ? 'link' : ((element as HTMLButtonElement).type === 'submit' ? 'form_submit' : 'button');
             const ctaDestination = isLink ? (element as HTMLAnchorElement).href : undefined;
 
             // Track the click
