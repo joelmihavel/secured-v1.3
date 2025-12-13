@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -35,6 +35,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [canHover, setCanHover] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia("(hover: hover)");
@@ -58,6 +59,33 @@ export const Navbar = ({ variant }: NavbarProps) => {
     const effectiveVariant = variant ?? (isPropertyDetail ? "hamburger" : "expanded");
     const showExpandedNav = effectiveVariant === "expanded";
 
+    // Close menu on outside click
+    useEffect(() => {
+        if (!isOpen) return; // Only listen when menu is open
+
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            
+            // Check if click is outside the menu container
+            // The menu button is inside the container, so it's already excluded
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(target)
+            ) {
+                setIsOpen(false);
+            }
+        };
+
+        // Small delay to prevent immediate close from the toggle click
+        const timeoutId = setTimeout(() => {
+            document.addEventListener('click', handleClickOutside);
+        }, 0);
+
+        return () => {
+            clearTimeout(timeoutId);
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [isOpen]);
 
     const handleWhatsAppClick = () => {
         const whatsappNumber = "+919876543210";
@@ -216,6 +244,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
     // Render hamburger menu
     const renderHamburgerMenu = () => (
         <div
+            ref={menuRef}
             className={cn(
                 "relative pointer-events-auto",
                 // For expanded variant, hide hamburger on desktop (lg+)

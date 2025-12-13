@@ -8,7 +8,7 @@ const steps = [
   {
     id: "01",
     title: "Find a home",
-    description: "Browse our curated collection of fully furnished homes. Filter by location, budget, and move-in date to find your perfect match.",
+    description: "Browse our curated collection of fully furnished homes and find the right fit for your location, timeline, and budget.",
     image:
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
   },
@@ -16,7 +16,7 @@ const steps = [
     id: "02",
     title: "Book a visit",
     description:
-      "Schedule a guided tour and see your chosen space in person. Confirm your choice, pay the token, and sign online.",
+      "Schedule a guided visit to experience the home you like. Confirm your choice, pay the token, and sign online with ease.",
     image:
       "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80",
   },
@@ -24,15 +24,15 @@ const steps = [
     id: "03",
     title: "Move in easy",
     description:
-      "Walk into a completely set up home that's ready for you. Just bring your suitcase and start living immediately.",
+      "Step into a completely set up home that's ready for you. Just bring your suitcase and start living.",
     image:
       "https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "04",
-    title: "Live at Flent",
+    title: "Live the flent way",
     description:
-      "Enjoy 24/7 resident support, flexible stay options, easy extensions, and everyday conveniences designed to make living simple.",
+      "Enjoy 24/7 resident support, flexible stay options, easy extensions, and everyday conveniences designed to make life simple.",
     image:
       "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=800&q=80",
   },

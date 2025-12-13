@@ -34,7 +34,7 @@ export const FAQ = () => {
                 {
                     id: 4,
                     question: "What does my fully furnished home include?",
-                    answer: "Apart from the furniture shown in the pictures, your home is fully set up with:\n\nKitchen\nEssential cookware, cutlery, pots, pans, and everyday kitchenware.\n\nAppliances\nMicrowave, grinder, and washing machine.\n\nLaundry and Cleaning\nDrying rack, laundry basket, and basic cleaning tools.\n\nOther Essentials\nPre-installed Wi-Fi router with extenders, water purifier, power backup, and extension cords."
+                    answer: "Beyond the furniture you see in the photos, your home is thoughtfully equipped with everything you need to move in comfortably:\n\nKitchen essentials\nA complete set of cookware, cutlery, pots, pans, and everyday kitchenware.\n\nAppliances\nMicrowave, grinder, and washing machine for daily convenience.\n\nLaundry and cleaning\nDrying rack, laundry basket, and essential cleaning tools.\n\nHome essentials\nPre installed Wi Fi router with extenders, water purifier, power backup, and extension cords."
                 }
             ]
         },
@@ -66,7 +66,7 @@ export const FAQ = () => {
                 {
                     id: 9,
                     question: "How often is the home professionally cleaned, and are regular cleaning services included or available at an additional cost?",
-                    answer: "Before you move in, your room is professionally prepared for you. Regular cleaning services are not included. However, residents can book deep cleaning through us at an additional cost. We also offer a complimentary full home deep clean every Diwali, and additional deep cleans are carried out during our periodic home revamps."
+                    answer: "Before you move in, your room is professionally prepared for you. Regular cleaning services are not included. However, residents can book deep cleaning through us at an additional cost. We also offer complimentary deep cleans periodically as part of our home upkeep and refresh cycles."
                 }
             ]
         },
