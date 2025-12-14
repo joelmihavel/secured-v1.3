@@ -128,8 +128,7 @@ export const Header = ({
             images={allImages}
             propertyName={property.fieldData.name}
             propertyStats={`${property.fieldData["property-bedrooms"]} BHK | ${property.fieldData["carpet-area"]
-              } Sq. Ft | ${property.fieldData["floor-number-new"] || "1st Floor"
-              }`}
+              } Sq. Ft | ${(property.fieldData["floor-number-new"] || "1st")} Floor`}
             photoCategories={photoCategories}
           />
         </div>

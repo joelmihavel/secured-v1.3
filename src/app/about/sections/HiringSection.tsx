@@ -9,8 +9,8 @@ export const HiringSection = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                 {/* Left Column: Heading */}
                 <div className="space-y-2">
-                    <h2 className="text-fluid-h2 text-brand-yellow ">
-                        Resumes don’t impress us.
+                    <h2 className="text-brand-yellow" style={{ fontSize: 'clamp(12px, 4vw + 10px, 3rem)' }}>
+                        <span className="whitespace-nowrap">Resumes don't impress us.</span>
                         <br />
                         <span className="font-zin-italic">Sisu does.</span>
                     </h2>

@@ -309,7 +309,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                                 {link.name}
                             </Button>
                         ))}
-                        <div className="pt-2 flex flex-col gap-2">
+                        <div className="flex flex-col gap-2">
                             <Button
                                 className="w-full"
                                 size="sm"
@@ -320,6 +320,18 @@ export const Navbar = ({ variant }: NavbarProps) => {
                                 }}
                             >
                                 Our Story
+                            </Button>
+                            <Button
+                                className="w-full"
+                                size="sm"
+                                variant="primary"
+                                pastelColor="violet"
+                                onClick={() => {
+                                    router.push('/owners');
+                                    setIsOpen(false);
+                                }}
+                            >
+                                For Owners
                             </Button>
                             <Button
                                 href={WHATSAPP_LINK}
