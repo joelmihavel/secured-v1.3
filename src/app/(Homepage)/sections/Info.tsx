@@ -179,7 +179,7 @@ export const Info = () => {
         {/* desktop */}
         <video
           ref={desktopVideoRef}
-          src="https://res.cloudinary.com/djvdu4une/video/upload/v1764790071/Website_fold_horizontal__gb7eur.mp4"
+          src="https://video.gumlet.io/6937b930eed47e91a76c4acd/69419d7f9c03c66ee7ce9353/download.mp4"
           className="object-cover w-full h-full hidden md:block"
           muted
           loop
@@ -188,7 +188,7 @@ export const Info = () => {
         {/* mobile */}
         <video
           ref={mobileVideoRef}
-          src="https://res.cloudinary.com/djvdu4une/video/upload/v1764790400/Website_fold_mobile_version_2_xgwpny.mp4"
+          src="https://video.gumlet.io/6937b930eed47e91a76c4acd/69419d98616d7c8c6a7b5465/download.mp4"
           className="object-cover w-full h-full block md:hidden"
           muted
           loop
