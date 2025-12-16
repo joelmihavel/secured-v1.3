@@ -313,7 +313,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                             <Button
                                 className="w-full"
                                 size="sm"
-                                variant="primary"
+                                variant="ghost"
                                 onClick={() => {
                                     router.push('/about');
                                     setIsOpen(false);
@@ -321,19 +321,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                             >
                                 Our Story
                             </Button>
-                            <Button
-                                className="w-full"
-                                size="sm"
-                                variant="primary"
-                                pastelColor="violet"
-                                onClick={() => {
-                                    router.push('/owners');
-                                    setIsOpen(false);
-                                }}
-                            >
-                                For Owners
-                            </Button>
-                            <Button
+                                 <Button
                                 href={WHATSAPP_LINK}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -346,6 +334,18 @@ export const Navbar = ({ variant }: NavbarProps) => {
                                 }}
                             >
                                 Contact Us
+                            </Button>
+                            <Button
+                                className="w-full"
+                                size="sm"
+                                variant="primary-rounded"
+                                pastelColor="violet"
+                                onClick={() => {
+                                    router.push('/owners');
+                                    setIsOpen(false);
+                                }}
+                            >
+                                For Owners
                             </Button>
                         </div>
                     </motion.div>
