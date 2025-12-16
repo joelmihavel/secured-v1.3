@@ -178,13 +178,13 @@ export const Header = ({
                 <span className="text-lg font-medium font-body">
                   {property.fieldData.available
                     ? "Available Now"
-                    : property.fieldData["available-from"]
-                      ? `Available from ${new Date(
-                        property.fieldData["available-from"]
-                      ).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}`
+                    // : property.fieldData["available-from"]
+                    //   ? `Available from ${new Date(
+                    //     property.fieldData["available-from"]
+                    //   ).toLocaleDateString("en-US", {
+                    //     month: "short",
+                    //     day: "numeric",
+                    //   })}`
                       : "Occupied"}
                 </span>
                 {property.fieldData["female-only"] && (
