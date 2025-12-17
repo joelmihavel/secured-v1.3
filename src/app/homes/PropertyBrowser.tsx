@@ -358,8 +358,7 @@ export const PropertyBrowser = ({
         id="homes"
         className="py-8 my-4"
         backgroundPattern="/patterns/intersecting-circles.svg"
-        patternMask="to-bottom"
-        patternOpacity={0.06}
+        patternOpacity={0.03}
       >
         <div className="max-w-5xl mx-auto">
           <SearchBar
