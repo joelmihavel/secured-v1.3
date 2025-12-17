@@ -180,9 +180,7 @@ export function trackCTAClick(
 
     posthog.capture('cta_clicked', eventProperties);
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Failed to track CTA click:', error);
-    }
+    console.error('Failed to track CTA click:', error);
   }
 }
 

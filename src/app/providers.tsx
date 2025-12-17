@@ -41,13 +41,13 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
       const initConfig = {
-        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
-        person_profiles: 'identified_only',
+        api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://ph.flent.in',
+        ui_host: 'https://us.posthog.com', // Required for toolbar to work with reverse proxy
+        person_profiles: 'identified_only' as const,
         capture_pageview: false,
-        capture_exceptions: true, // Enable automatic exception capturing
         autocapture: {
           noCaptureProp: "ph-no-capture",  // Enable ph-no-capture attribute support
-        },
+        } as any,
         // Use before_send hook to filter autocapture events for elements with ph-no-capture
         // This prevents duplicate events when we're already tracking CTAs with custom events
         before_send: (event: any) => {
@@ -72,7 +72,7 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
         // Note: PostHog automatically captures UTM params and click IDs (gclid, fbclid) from URL
       };
 
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, initConfig as any);
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, initConfig);
     }
   }, [])
 
