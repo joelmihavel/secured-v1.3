@@ -130,6 +130,8 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
       href={`/homes?location=${encodeURIComponent(slide.name)}`}
       className="block h-full w-full"
       draggable={false}
+      data-cta-id={`cta_neighborhood_${slide.name.toLowerCase().replace(/\s+/g, "_")}`}
+      data-cta-context="homepage_neighborhoods"
     >
       <div
         className={`relative flex flex-col rounded-2xl bg-white overflow-hidden shadow-xl w-full h-full`}

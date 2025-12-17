@@ -185,7 +185,7 @@ export const Header = ({
                     //     month: "short",
                     //     day: "numeric",
                     //   })}`
-                      : "Occupied"}
+                    : "Occupied"}
                 </span>
                 {property.fieldData["female-only"] && (
                   <span className="border border-white/40 text-white/90 px-3 py-0.5 rounded-full text-xs font-medium uppercase tracking-wider">
@@ -226,14 +226,26 @@ export const Header = ({
 
           {/* CTAs */}
           <div className="mt-12 flex flex-col gap-4 w-[80%] md: w-[100%]">
-            <Button variant="primary" size="lg" onClick={scrollToRooms} leftIcon={<DoorIcon />}>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={scrollToRooms}
+              leftIcon={<DoorIcon />}
+              data-cta-id="cta_show_available_rooms"
+            >
               Show Available Rooms
             </Button>
 
             {embedUrl && (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="white" className="!text-black" size="lg" leftIcon={<PlayIcon />}>
+                  <Button
+                    variant="white"
+                    className="!text-black"
+                    size="lg"
+                    leftIcon={<PlayIcon />}
+                    data-cta-id="cta_watch_a_video"
+                  >
                     Watch a Video
                   </Button>
                 </DialogTrigger>

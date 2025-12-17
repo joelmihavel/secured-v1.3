@@ -238,6 +238,7 @@ export const GridLightBox = ({
             variant="white"
             size="sm"
             leftIcon={<Expand />}
+            data-cta-id="cta_show_all_images"
             className="absolute bottom-4 right-4 z-20 rounded-full !text-[14px]"
           >
             Show all images
@@ -286,6 +287,7 @@ export const GridLightBox = ({
                   className="!text-xs md:hidden"
                   onClick={handleShare}
                   pastelColor="cyan"
+                  data-cta-id="cta_share"
                 >
                   Share
                 </Button>
@@ -297,6 +299,7 @@ export const GridLightBox = ({
                   className="!text-xs md:!text-sm hidden md:flex relative overflow-hidden min-w-[110px]"
                   onClick={handleCopyLink}
                   pastelColor="cyan"
+                  data-cta-id="cta_copy_link"
                 >
                   <AnimatePresence mode="wait" initial={false}>
                     {isCopied ? (

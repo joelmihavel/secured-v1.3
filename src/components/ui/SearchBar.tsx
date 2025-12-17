@@ -46,21 +46,21 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
     const handleLocationToggle = (locationId: string) => {
         const currentIds = filters.locationIds || [];
         const isSelected = currentIds.includes(locationId);
-        
+
         let newIds: string[];
         if (isSelected) {
             newIds = currentIds.filter(id => id !== locationId);
         } else {
             newIds = [...currentIds, locationId];
         }
-        
+
         setFilters({ ...filters, locationIds: newIds });
     };
 
     const getLocationDisplayText = () => {
         const selectedIds = filters.locationIds || [];
         if (selectedIds.length === 0) return "All Locations";
-        
+
         if (selectedIds.length === 1) {
             const location = locations.find(l => l.id === selectedIds[0]);
             return location ? location.fieldData.name : "1 Location Selected";
@@ -103,7 +103,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                     </PopoverTrigger>
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0 bg-white border-white/20" align="start">
                         <div className="max-h-[300px] overflow-y-auto p-1">
-                            <div 
+                            <div
                                 className={cn(
                                     "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
                                     (filters.locationIds?.length === 0) && "bg-gray-50"
@@ -118,17 +118,18 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                 </div>
                                 <span className="text-sm text-gray-700">All Locations</span>
                             </div>
-                            
+
                             {locations.map((loc) => {
                                 const isSelected = filters.locationIds?.includes(loc.id);
                                 return (
-                                    <div 
+                                    <div
                                         key={loc.id}
                                         className={cn(
                                             "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
                                             isSelected && "bg-gray-50"
                                         )}
                                         onClick={() => handleLocationToggle(loc.id)}
+                                        data-cta-id={`cta_search_location_${loc.fieldData.slug}`}
                                     >
                                         <div className={cn(
                                             "w-4 h-4 border rounded flex items-center justify-center transition-colors",
@@ -164,6 +165,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => setFilters({ ...filters, showAvailable: !filters.showAvailable })}
+                    data-cta-id="cta_search_available_toggle"
                 >
                     <div className="relative inline-flex items-center">
                         <input
@@ -180,6 +182,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => setFilters({ ...filters, femaleOnly: !filters.femaleOnly })}
+                    data-cta-id="cta_search_female_toggle"
                 >
                     <div className="relative inline-flex items-center">
                         <input

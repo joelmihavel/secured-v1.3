@@ -1,0 +1,47 @@
+cta_id,type,description,location,trigger_type
+cta_navbar_logo,implicit,Navbar Logo Home Link,Global,click
+cta_navbar_homes,implicit,Navbar Homes Link,Global,click
+cta_navbar_about,implicit,Navbar About Link,Global,click
+cta_navbar_owners,implicit,Navbar Owners Link,Global,click
+cta_navbar_menu_toggle,implicit,Mobile Menu Toggle,Global,click
+cta_navbar_back,implicit,Mobile Back Button,Global,click
+cta_footer_home,implicit,Footer Logo Link,Global,click
+cta_footer_privacy,implicit,Footer Privacy Policy,Global,click
+cta_footer_terms,implicit,Footer Terms of Use,Global,click
+cta_footer_refund,implicit,Footer Refund Policy,Global,click
+cta_footer_link,implicit,Footer Generic Link,Global,click
+hero_explore_homes,explicit,Homepage Hero Explore CTA,/,click
+cta_indiranagar,implicit,Neighborhood Card - Indiranagar,/,click
+cta_koramangala,implicit,Neighborhood Card - Koramangala,/,click
+cta_mg_road,implicit,Neighborhood Card - MG Road,/,click
+cta_bellandur,implicit,Neighborhood Card - Bellandur,/,click
+cta_haralur,implicit,Neighborhood Card - Haralur,/,click
+cta_hsr_layout,implicit,Neighborhood Card - HSR Layout,/,click
+cta_whitefield,implicit,Neighborhood Card - Whitefield,/,click
+cta_sarjapura_road,implicit,Neighborhood Card - Sarjapura Road,/,click
+cta_property_card,implicit,Property Listing Card,/,click
+cta_view_all_homes,implicit,View All Homes Link,/,click
+cta_homes_carousel_prev,implicit,Homes Carousel Previous,/,click
+cta_homes_carousel_next,implicit,Homes Carousel Next,/,click
+cta_search_location_toggle,implicit,Filter Location Toggle,/homes,click
+cta_search_available_toggle,implicit,Filter Availability Toggle,/homes,click
+cta_search_female_toggle,implicit,Filter Female Only Toggle,/homes,click
+cta_search_reset,implicit,Filter Reset,/homes,click
+cta_show_available_rooms,implicit,Header Show Available Rooms,/homes/[slug],click
+cta_watch_a_video,implicit,Header Watch a Video,/homes/[slug],click
+cta_header_book_tour,implicit,Property Header Scroll to Book,/homes/[slug],click
+cta_show_all_images,implicit,Open Photo Gallery (Button),/homes/[slug],click
+cta_share,implicit,Share Property,/homes/[slug],click
+cta_copy_link,implicit,Copy Property Link,/homes/[slug],click
+room_selection_book_tour,explicit,Room Book Tour Button,/homes/[slug],click
+room_selection_talk_to_us,explicit,Room Talk to Us Button,/homes/[slug],click
+cta_full_house_pricing,implicit,Full House Pricing Toggle,/homes/[slug],click
+cta_check_open_roles,implicit,Hiring Section Check Roles,/about,click
+form_get_started_submit,explicit,Owner Form Submit (Success),/owners,submit
+form_get_started_button,explicit,Owner Form Submit Button,/owners,click
+form_phone_subscribe_submit,implicit,Phone Subscription Submit,Global,submit
+cta_rent_calc_open,implicit,Open Rent Calculator,Global,click
+cta_rent_calc_close,implicit,Close Rent Calculator,Global,click
+cta_rent_calc_breakdown,implicit,Toggle Rent Breakdown,Global,click
+cta_whatsapp_redirect,implicit,WhatsApp Redirect (Auto-detected),Global,click
+cta_calcom_schedule,implicit,Cal.com Schedule Redirect (Auto-detected),Global,click
