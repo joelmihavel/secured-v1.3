@@ -195,13 +195,13 @@ export const Footer = () => {
                         © {new Date().getFullYear()} Flent. All rights reserved.
                     </p>
                     <div className="flex items-center space-x-6 text-text-main/60 text-sm">
-                        <Link href="/privacy-policy" className="hover:text-text-main transition-colors">
+                        <Link href="/privacy-policy" className="hover:text-text-main transition-colors" data-cta-id="footer_privacy">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms-of-use" className="hover:text-text-main transition-colors">
+                        <Link href="/terms-of-use" className="hover:text-text-main transition-colors" data-cta-id="footer_terms">
                             Terms of Service
                         </Link>
-                        <Link href="/refund-policy" className="hover:text-text-main transition-colors">
+                        <Link href="/refund-policy" className="hover:text-text-main transition-colors" data-cta-id="footer_refund">
                             Refund Policy
                         </Link>
                     </div>
