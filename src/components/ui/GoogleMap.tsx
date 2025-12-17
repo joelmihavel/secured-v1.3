@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  APIProvider,
   Map,
   Marker,
   InfoWindow,
@@ -158,8 +157,7 @@ const GoogleMap = ({
   const [selectedNeighbor, setSelectedNeighbor] = useState<number | null>(null);
 
   return (
-    <APIProvider apiKey={apiKey}>
-      <Map
+    <Map
         defaultCenter={{ lat: center[0], lng: center[1] }}
         defaultZoom={zoom}
         mapId="neighborhood-map"
@@ -233,7 +231,6 @@ const GoogleMap = ({
           ></InfoWindow>
         )}
       </Map>
-    </APIProvider>
   );
 };
 

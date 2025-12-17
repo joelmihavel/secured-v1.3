@@ -41,6 +41,7 @@ export const metadata: Metadata = {
 import { BreadcrumbProvider } from "@/context/BreadcrumbContext";
 import { ScrollRestoration } from "@/components/utils/ScrollRestoration";
 import { CSPostHogProvider } from "./providers";
+import { GoogleMapsProvider } from "./GoogleMapsProvider";
 
 // ... existing imports
 
@@ -408,12 +409,14 @@ export default function RootLayout({
 
 
         <CSPostHogProvider>
-          <BreadcrumbProvider>
-            <ScrollRestoration />
-            <Navbar />
-            {children}
-            <Footer />
-          </BreadcrumbProvider>
+          <GoogleMapsProvider>
+            <BreadcrumbProvider>
+              <ScrollRestoration />
+              <Navbar />
+              {children}
+              <Footer />
+            </BreadcrumbProvider>
+          </GoogleMapsProvider>
         </CSPostHogProvider>
       </body>
     </html>

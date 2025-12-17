@@ -1,47 +1,26 @@
 /// <reference types="@types/google.maps" />
 import { useEffect, useRef } from 'react';
-import { loadGoogleMapsAPI } from '@/lib/googleMapsLoader';
+import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
 interface UseGooglePlacesAutocompleteProps {
   onPlaceSelected: (place: any) => void;
-  apiKey: string;
   options?: any;
+  apiKey?: string; // Kept for backward compatibility but not used
 }
 
 export const useGooglePlacesAutocomplete = ({
   onPlaceSelected,
-  apiKey,
   options = {}
 }: UseGooglePlacesAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<any>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const placesLibrary = useMapsLibrary('places');
 
   useEffect(() => {
-    // Use the centralized loader to prevent duplicate script loading
-    loadGoogleMapsAPI(apiKey, ['places'])
-      .then(() => {
-        initAutocomplete();
-      })
-      .catch((error) => {
-        console.error('Failed to load Google Maps API:', error);
-      });
-
-    return () => {
-      // Cleanup
-      if (autocompleteRef.current && (window as any).google?.maps?.event) {
-        (window as any).google.maps.event.clearInstanceListeners(autocompleteRef.current);
-      }
-    };
-  }, [apiKey]);
-
-  const initAutocomplete = () => {
-    if (!inputRef.current || typeof window === 'undefined') return;
-
-    const google = (window as any).google;
-    if (!google?.maps?.places) return;
+    if (!placesLibrary || !inputRef.current) return;
 
     // Create autocomplete instance
-    autocompleteRef.current = new google.maps.places.Autocomplete(
+    autocompleteRef.current = new placesLibrary.Autocomplete(
       inputRef.current,
       {
         types: ['establishment', 'geocode'],
@@ -57,7 +36,14 @@ export const useGooglePlacesAutocomplete = ({
         onPlaceSelected(place);
       }
     });
-  };
+
+    return () => {
+      // Cleanup
+      if (autocompleteRef.current) {
+        google.maps.event.clearInstanceListeners(autocompleteRef.current);
+      }
+    };
+  }, [placesLibrary, options, onPlaceSelected]);
 
   return inputRef;
 };
