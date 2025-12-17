@@ -271,7 +271,7 @@ export const Info = () => {
                     }`}
                 >
                   <CountUp end={stat.value} color={stat.color} duration={2.5} />
-                  <p className="text-sm text-text-invert/80 font-heading leading-relaxed line-clamp-3">
+                  <p className="text-sm text-text-invert/80 font-heading leading-relaxed line-clamp-none sm:line-clamp-3">
                     {stat.label}
                   </p>
                 </motion.div>

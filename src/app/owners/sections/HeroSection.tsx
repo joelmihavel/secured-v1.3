@@ -61,7 +61,7 @@ export const HeroSection = ({
                         <h1 className="mb-6 text-fluid-h1 font-heading text-text-main">
                             <span className="font-bold">
                                 Guaranteed Rent
-                                <br className="hidden md:block" />
+                                <br />
                                 <span className="font-zin-italic">In 30 Days Or Less</span>
                             </span>
                         </h1>
