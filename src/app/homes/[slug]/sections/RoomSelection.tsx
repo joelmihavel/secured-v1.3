@@ -176,6 +176,8 @@ export const RoomSelection = ({
   const getAmenityIcon = (amenity: string) => {
     const iconMap: Record<string, React.ReactNode> = {
       "Attached Bathroom": <Bath className="w-[18px] h-[18px]" />,
+      "Dedicated Bathroom": <Bath className="w-[18px] h-[18px]" />,
+      "Shared Bathroom": <Bath className="w-[18px] h-[18px]" />,
       Balcony: <Wind className="w-[18px] h-[18px]" />,
       "Dedicated Workspace": <Laptop className="w-[18px] h-[18px]" />,
       "Queen Sized Bed": <Bed className="w-[18px] h-[18px]" />,
@@ -221,7 +223,9 @@ export const RoomSelection = ({
 
       // Calculate amenities list from room data
       const amenities = [];
-      if (room.fieldData.bathroom) amenities.push("Attached Bathroom");
+      const bathroomType = getWebflowOptionLabel(room.fieldData.bathroom);
+      if (bathroomType) amenities.push(bathroomType);
+
       if (room.fieldData.balcony) amenities.push("Balcony");
       if (room.fieldData["dedicated-workspace"])
         amenities.push("Dedicated Workspace");

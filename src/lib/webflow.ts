@@ -20,6 +20,11 @@ export const WEBFLOW_OPTION_MAP: Record<string, string> = {
   a90e206b628bdff99bc3f0d5e10b4ca5: "Non-Vegetarian",
   "429e0261dda90fba9da3135f0ce5e9a7": "Vegetarian",
   "6595b92f9526255b091e9f85": "Eggetarian", // Example ID
+
+  // Bathroom Type
+  "507f486b83cb14ed903e2be4cfdf6676": "Attached Bathroom",
+  "27b25f500b8ac59142facd5904f4ede0": "Dedicated Bathroom",
+  "24ba094369ba76921d7c1e652584e38b": "Shared Bathroom",
 };
 
 // Background Colour
