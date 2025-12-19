@@ -62,7 +62,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   koramangala: {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Koramangala.webp",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Sarjapur Road.webp",
     scheme: {
       bg: "bg-brick-red",
       text: "text-forest-green",
@@ -70,7 +70,7 @@ const NEIGHBORHOOD_CONFIG: Record<
     },
   },
   "sarjapura road": {
-    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Sarjapur Road.webp",
+    image: "/Neighbourhoods/Neighbourhood Illustrations Set 04_Koramangala.webp",
     scheme: {
       bg: "bg-ground-brown",
       text: "text-night-violet",
