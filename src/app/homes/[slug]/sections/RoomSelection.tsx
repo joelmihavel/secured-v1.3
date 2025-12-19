@@ -505,7 +505,7 @@ export const RoomSelection = ({
                             className="w-full"
                             onClick={() => {
                               setNotificationModalData({
-                                propertyId: property.id,
+                                propertyId: property.fieldData?.pid || property.id ,
                                 roomId: room.id,
                                 roomName: room.name,
                                 propertyName: property.fieldData.name,
@@ -724,7 +724,7 @@ export const RoomSelection = ({
                           className="w-full"
                           onClick={() => {
                             setNotificationModalData({
-                              propertyId: property.id,
+                              propertyId: property.fieldData?.pid || property.id,
                               roomId: "full_house",
                               roomName: "Full House",
                               propertyName: property.fieldData.name,

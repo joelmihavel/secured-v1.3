@@ -87,6 +87,7 @@ export interface Property extends WebflowItem {
     "6-month-lock-in"?: string;
     "3-month-lock-in"?: string;
     "no-lock-in"?: string;
+    "pid"?: string;
     "full-house-available"?: boolean;
     "floor-number-new"?: string;
     "ranking-order"?: number;
