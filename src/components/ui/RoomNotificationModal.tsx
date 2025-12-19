@@ -14,6 +14,7 @@ interface RoomNotificationModalProps {
     roomId: string;
     roomName?: string;
     propertyName?: string;
+    notificationType: "specific room" | "specific home" | "all homes" | "upcoming home";
 }
 
 export const RoomNotificationModal = ({
@@ -22,7 +23,8 @@ export const RoomNotificationModal = ({
     propertyId,
     roomId,
     propertyName = 'Property',
-    roomName = "Room"
+    roomName = "Room",
+    notificationType
 }: RoomNotificationModalProps) => {
     const propertyInterest = `${propertyName} _ ${roomName} || ${propertyId} _ ${roomId}`;
 
@@ -84,7 +86,10 @@ export const RoomNotificationModal = ({
                                 </div>
                                 <div className="mt-4">
                                     <PhoneSubscribeForm
-                                        propertyInterest={propertyInterest}
+                                        notificationType={notificationType}
+                                        propertyId={propertyId}
+                                        roomId={roomId}
+                                        propertyName={propertyName}
                                         placeholder="Enter your phone number"
                                         buttonText="Notify Me"
                                         className="max-w-full"

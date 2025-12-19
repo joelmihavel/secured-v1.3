@@ -3,10 +3,12 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
-import { submitInterestLeads } from "@/lib/hubspot";
 
-interface PhoneSubscribeFormProps {
-  propertyInterest?: string;
+export interface PhoneSubscribeFormProps {
+  notificationType: "specific room" | "specific home" | "all homes" | "upcoming home";
+  propertyId?: string;
+  propertyName?: string;
+  roomId?: string;
   placeholder?: string;
   buttonText?: string;
   className?: string;
@@ -17,7 +19,10 @@ interface FormData {
 }
 
 export const PhoneSubscribeForm = ({
-  propertyInterest = "all_properties",
+  notificationType,
+  propertyId,
+  propertyName,
+  roomId,
   placeholder = "+91 | Enter your phone number",
   buttonText = "Subscribe",
   className = "",
@@ -35,10 +40,22 @@ export const PhoneSubscribeForm = ({
   const handleFormSubmit = async (data: FormData) => {
     try {
       setSubmitStatus("idle");
-      await submitInterestLeads({
-        phone: data.phone,
-        Property_Interest: propertyInterest,
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: data.phone,
+          notification_type: notificationType,
+          property_id: propertyId,
+          property_name: propertyName,
+          room_id: roomId,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("Submission failed");
+      }
+
       setSubmitStatus("success");
       reset();
       // Reset success message after 3 seconds

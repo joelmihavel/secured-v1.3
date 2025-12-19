@@ -450,7 +450,9 @@ export const PropertyCard = ({
                             </div>
                             <div className="mt-4">
                               <PhoneSubscribeForm
-                                propertyInterest={property.fieldData.name}
+                                notificationType="upcoming home"
+                                propertyId={property.fieldData?.pid || property.id}
+                                propertyName={property.fieldData.name}
                                 placeholder="Enter your phone number"
                                 buttonText="Get Invite"
                                 className="max-w-full"

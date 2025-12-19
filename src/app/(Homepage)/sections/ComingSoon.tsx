@@ -75,7 +75,7 @@ export const ComingSoon = ({
         </h3>
 
         <PhoneSubscribeForm 
-          propertyInterest="all_properties" 
+          notificationType="all homes" 
           buttonText="Nudge Me"
         />
 
