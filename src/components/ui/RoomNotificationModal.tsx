@@ -84,7 +84,10 @@ export const RoomNotificationModal = ({
                                 </div>
                                 <div className="mt-4">
                                     <PhoneSubscribeForm
-                                        propertyInterest={propertyInterest}
+                                        notificationType="specific room"
+                                        propertyId={propertyId}
+                                        roomId={roomId}
+                                        propertyName={propertyName}
                                         placeholder="Enter your phone number"
                                         buttonText="Notify Me"
                                         className="max-w-full"
