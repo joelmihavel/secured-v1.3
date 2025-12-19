@@ -134,6 +134,7 @@ export const RoomSelection = ({
     roomId: string;
     roomName: string;
     propertyName: string;
+    notificationType: "specific room" | "specific home" | "all homes" | "upcoming home";
   } | null>(null);
   // Track selected lock-in period for each room
   const [roomLockIns, setRoomLockIns] = useState<Record<string, LockInPeriod>>(
@@ -232,7 +233,7 @@ export const RoomSelection = ({
       amenities.push("Queen Sized Bed"); // Default
 
       return {
-        id: room.id,
+        id: room.fieldData.name|| room.id,
         name: room.fieldData["room-name"] || room.fieldData.name,
         price: room.fieldData["room-rent"] || "0",
         type: "Private Room",
@@ -508,6 +509,7 @@ export const RoomSelection = ({
                                 roomId: room.id,
                                 roomName: room.name,
                                 propertyName: property.fieldData.name,
+                                notificationType: "specific room",
                               });
                               setIsNotificationModalOpen(true);
                             }}
@@ -726,6 +728,7 @@ export const RoomSelection = ({
                               roomId: "full_house",
                               roomName: "Full House",
                               propertyName: property.fieldData.name,
+                              notificationType: "specific home",
                             });
                             setIsNotificationModalOpen(true);
                           }}
@@ -764,6 +767,7 @@ export const RoomSelection = ({
           roomId={notificationModalData.roomId}
           roomName={notificationModalData.roomName}
           propertyName={notificationModalData.propertyName}
+          notificationType={notificationModalData.notificationType}
         />
       )}
     </OpenSection>
