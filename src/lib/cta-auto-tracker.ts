@@ -13,7 +13,7 @@
  * @see {@link docs/POSTHOG_ATTRIBUTION.md} Full Attribution Implementation Guide
  */
 
-import { trackCTAClick, generateCTAId, extractTextContent, isPostHogAvailable } from './posthog-tracking';
+import { trackCTAClick, trackEvent, generateCTAId, extractTextContent, isPostHogAvailable } from './posthog-tracking';
 
 /**
  * CTA patterns to detect
@@ -194,6 +194,24 @@ function trackCTAClickFromElement(element: HTMLElement, event: MouseEvent): void
   try {
     const metadata = extractCTAMetadata(element);
     trackCTAClick(metadata);
+
+    // Track specific "External URL Click" event
+    if (metadata.cta_type === 'link' && metadata.cta_destination) {
+      const url = metadata.cta_destination;
+      const isExternal = (url.startsWith('http') && !url.includes(window.location.hostname)) ||
+        url.startsWith('whatsapp:') ||
+        url.startsWith('mailto:') ||
+        url.startsWith('tel:');
+
+      if (isExternal) {
+        trackEvent('External URL Click', {
+          destination_url: metadata.cta_destination,
+          cta_text: metadata.cta_text,
+          cta_id: metadata.cta_id,
+          page_section: metadata.page_section
+        });
+      }
+    }
 
     // Mark as tracked to avoid duplicate tracking
     element.setAttribute('data-cta-tracked', 'true');

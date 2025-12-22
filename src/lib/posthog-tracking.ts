@@ -185,6 +185,51 @@ export function trackCTAClick(
 }
 
 /**
+ * Track a generic event to PostHog with full context
+ * 
+ * @param eventName - Name of the event
+ * @param properties - Event properties
+ */
+export function trackEvent(
+  eventName: string,
+  properties?: Record<string, any>
+): void {
+  if (!isPostHogAvailable()) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`PostHog is not available. Event '${eventName}' not tracked.`);
+    }
+    return;
+  }
+
+  try {
+    const pageContext = getPageContext();
+    const sessionContext = getSessionContext();
+    const deviceContext = getDeviceContext();
+
+    const eventProperties = {
+      // Page Context
+      ...pageContext,
+
+      // Session Context
+      ...sessionContext,
+
+      // Device Context
+      ...deviceContext,
+
+      // Timestamp
+      timestamp: new Date().toISOString(),
+
+      // Custom properties
+      ...properties,
+    };
+
+    posthog.capture(eventName, eventProperties);
+  } catch (error) {
+    console.error(`Failed to track event '${eventName}':`, error);
+  }
+}
+
+/**
  * Extract text content from a React element or DOM node
  */
 export function extractTextContent(element: React.ReactNode | HTMLElement | null): string {

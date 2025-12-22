@@ -7,6 +7,7 @@ import {
   useMap,
 } from "@vis.gl/react-google-maps";
 import { useState, useEffect, useRef } from "react";
+import { trackEvent } from "@/lib/posthog-tracking";
 
 interface GoogleMapProps {
   center: [number, number];
@@ -158,79 +159,86 @@ const GoogleMap = ({
 
   return (
     <Map
-        defaultCenter={{ lat: center[0], lng: center[1] }}
-        defaultZoom={zoom}
-        mapId="neighborhood-map"
-        style={{ width: "100%", height: "100%" }}
-        gestureHandling="cooperative"
-        disableDefaultUI={false}
-      >
-        {/* Marker for main property */}
+      defaultCenter={{ lat: center[0], lng: center[1] }}
+      defaultZoom={zoom}
+      mapId="neighborhood-map"
+      style={{ width: "100%", height: "100%" }}
+      gestureHandling="cooperative"
+      disableDefaultUI={false}
+    >
+      {/* Marker for main property */}
+      <Marker
+        position={{ lat: mainProperty.lat, lng: mainProperty.lng }}
+        title={mainProperty.name}
+        icon={"/images/map-marker-primary.svg"}
+      />
+
+      {/* Marker for selected place */}
+      {selectedPlace && (
         <Marker
-          position={{ lat: mainProperty.lat, lng: mainProperty.lng }}
-          title={mainProperty.name}
-          icon={"/images/map-marker-primary.svg"}
+          position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
+          title={selectedPlace.name}
+          icon={
+            typeof window !== "undefined" && window.google?.maps?.SymbolPath
+              ? {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: "#3b82f6",
+                fillOpacity: 1,
+                strokeColor: "#ffffff",
+                strokeWeight: 2,
+              }
+              : undefined
+          }
         />
+      )}
 
-        {/* Marker for selected place */}
-        {selectedPlace && (
-          <Marker
-            position={{ lat: selectedPlace.lat, lng: selectedPlace.lng }}
-            title={selectedPlace.name}
-            icon={
-              typeof window !== "undefined" && window.google?.maps?.SymbolPath
-                ? {
-                  path: window.google.maps.SymbolPath.CIRCLE,
-                  scale: 8,
-                  fillColor: "#3b82f6",
-                  fillOpacity: 1,
-                  strokeColor: "#ffffff",
-                  strokeWeight: 2,
-                }
-                : undefined
-            }
-          />
-        )}
+      {/* Directions from selected place to main property */}
+      {selectedPlace && (
+        <DirectionsRenderer
+          origin={selectedPlace}
+          destination={mainProperty}
+          onDirectionsResult={onDirectionsResult}
+        />
+      )}
 
-        {/* Directions from selected place to main property */}
-        {selectedPlace && (
-          <DirectionsRenderer
-            origin={selectedPlace}
-            destination={mainProperty}
-            onDirectionsResult={onDirectionsResult}
-          />
-        )}
+      {/* Markers for neighbors */}
+      {neighbors.map((neighbor, idx) => (
+        <Marker
+          key={idx}
+          position={{ lat: neighbor.lat, lng: neighbor.lng }}
+          title={neighbor.name}
+          onClick={() => {
+            setSelectedNeighbor(idx);
+            trackEvent('Google Maps Interaction', {
+              action: 'marker_click',
+              marker_name: neighbor.name,
+              marker_type: 'neighbor'
+            });
+          }}
+          icon={"/images/map-marker-secondary.svg"}
+        />
+      ))}
 
-        {/* Markers for neighbors */}
-        {neighbors.map((neighbor, idx) => (
-          <Marker
-            key={idx}
-            position={{ lat: neighbor.lat, lng: neighbor.lng }}
-            title={neighbor.name}
-            onClick={() => setSelectedNeighbor(idx)}
-            icon={"/images/map-marker-secondary.svg"}
-          />
-        ))}
-
-        {/* InfoWindow for selected neighbor */}
-        {selectedNeighbor !== null && neighbors[selectedNeighbor] && (
-          <InfoWindow
-            position={{
-              lat: neighbors[selectedNeighbor].lat,
-              lng: neighbors[selectedNeighbor].lng,
-            }}
-            onCloseClick={() => setSelectedNeighbor(null)}
-            headerContent={
-              <a
-                href={`/homes/${neighbors[selectedNeighbor].slug}`}
-                className="font-bold text-blue-600 hover:underline"
-              >
-                {neighbors[selectedNeighbor].name}
-              </a>
-            }
-          ></InfoWindow>
-        )}
-      </Map>
+      {/* InfoWindow for selected neighbor */}
+      {selectedNeighbor !== null && neighbors[selectedNeighbor] && (
+        <InfoWindow
+          position={{
+            lat: neighbors[selectedNeighbor].lat,
+            lng: neighbors[selectedNeighbor].lng,
+          }}
+          onCloseClick={() => setSelectedNeighbor(null)}
+          headerContent={
+            <a
+              href={`/homes/${neighbors[selectedNeighbor].slug}`}
+              className="font-bold text-blue-600 hover:underline"
+            >
+              {neighbors[selectedNeighbor].name}
+            </a>
+          }
+        ></InfoWindow>
+      )}
+    </Map>
   );
 };
 

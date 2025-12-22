@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState, useCallback } from "react";
 import { Property, Location } from "@/lib/webflow";
+import { trackEvent } from "@/lib/posthog-tracking";
 import { CardSection } from "@/components/layout/CardSection";
 import dynamic from "next/dynamic";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
@@ -66,6 +67,14 @@ export const Neighborhood = ({
         });
         // Clear previous directions info when new place is selected
         setDirectionsInfo(null);
+
+        // Track PostHog event
+        trackEvent('Google Maps Interaction', {
+          action: 'search_select',
+          place_name: place.name || place.formatted_address || "Selected Location",
+          place_lat: placeLat,
+          place_lng: placeLng
+        });
       }
     },
     []
