@@ -26,7 +26,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
-import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
+import { getAvailabilityDateForProperty, getAvailabilityDate } from "@/lib/get-availability-date";
+import { AVAILABLE_NOW_LABEL } from "@/constants";
 
 interface HeaderProps {
   rooms: Room[];
@@ -106,6 +107,44 @@ export const Header = ({
 
   // Scroll to rooms section
   const scrollToRooms = () => {
+    const availableRooms = rooms.filter((r) => r.fieldData.available);
+    let targetRoomId: string | undefined;
+
+    // Filter "Available Now" rooms using shared logic
+    const availableNow = availableRooms.filter((r) => 
+      getAvailabilityDate(r) === AVAILABLE_NOW_LABEL
+    );
+
+    if (availableNow.length > 0) {
+      // Prioritize the first "Available Now" room
+      targetRoomId = availableNow[0].id;
+    } else if (availableRooms.length > 0) {
+      // If no "Available Now", pick the earliest available one
+      const sortedByDate = [...availableRooms].sort((a, b) => {
+        const dateA = new Date(a.fieldData["available-from"] || 0).getTime();
+        const dateB = new Date(b.fieldData["available-from"] || 0).getTime();
+        return dateA - dateB;
+      });
+      targetRoomId = sortedByDate[0].id;
+    }
+
+    if (targetRoomId) {
+      const roomElement = document.getElementById(`room-${targetRoomId}`);
+      if (roomElement) {
+        // Offset for sticky header if exists, or just some padding
+        const yOffset = -100; 
+        const y = roomElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        
+        // Using scrollIntoView usually works well, but if we need offset we might use window.scrollTo
+        // For simplicity and smoother behavior with potentially different screen sizes, let's try standard scrollIntoView first
+        // If the user wants specific offset we can adjust. 
+        // Let's stick to scrollIntoView with center alignment to make sure it's visible
+        roomElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+    }
+
+    // Fallback to generic rooms section
     const roomsSection = document.getElementById("rooms");
     if (roomsSection) {
       roomsSection.scrollIntoView({ behavior: "smooth" });

@@ -1,5 +1,5 @@
 import { AVAILABLE_NOW_LABEL, OCCUPIED_LABEL } from "@/constants";
-import { Property, Room } from "./webflow"
+import {  Room } from "./webflow"
 
 
 export const getAvailabilityDate = (room: Room): string => {

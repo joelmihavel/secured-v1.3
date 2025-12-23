@@ -288,6 +288,7 @@ export const RoomSelection = ({
               {roomData.map((room) => (
                 <div
                   key={room.id}
+                  id={`room-${room.raw.id}`}
                   className="rounded-3xl flex flex-col lg:flex-row gap-6 md:gap-8"
                 >
                   {/* Left: Image Gallery */}
