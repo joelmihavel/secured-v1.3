@@ -48,6 +48,7 @@ import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
 import { getPropertyWhatsappLink } from "@/constants";
 import { LockInSlider } from "@/components/homes/LockInSlider";
 import { LockInPeriod } from "@/lib/property-utils";
+import { getAvailabilityDate } from "@/lib/get-availability-date";
 
 // Helper functions for lock-in period pricing
 // Note: CMS field naming is counterintuitive:
@@ -240,16 +241,7 @@ export const RoomSelection = ({
         lockIn: "11 months",
         sqFt: room.fieldData["area-sq-ft"] || 180,
         amenities,
-        status: room.fieldData.available
-          ? room.fieldData["available-from"]
-            ? `Available From ${new Date(
-              room.fieldData["available-from"]
-            ).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })}`
-            : "Available Now"
-          : "Occupied",
+        status: getAvailabilityDate(room),
         isOccupied: !room.fieldData.available,
         occupant: occupant
           ? {
