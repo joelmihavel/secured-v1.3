@@ -23,10 +23,7 @@ export const getAvailabilityDate = (room: Room): string => {
 }
 
 export const getAvailabilityDateForProperty = (rooms: Room[]): string => {
-    const roomsAvailable: string[] = []
-    rooms.forEach((room) => {
-        roomsAvailable.push(getAvailabilityDate(room))
-    })
+    const roomsAvailable = rooms.map(r => getAvailabilityDate(r))
 
     const uniqueRoomsAvailable = [...new Set(roomsAvailable)]
 
@@ -43,6 +40,10 @@ export const getAvailabilityDateForProperty = (rooms: Room[]): string => {
         if(filterAvailaleFromRoom.length === 1){
             return filterAvailaleFromRoom[0]
         }
+    }
+
+    if(uniqueRoomsAvailable.length === 3){
+        return AVAILABLE_NOW_LABEL
     }
 
     return uniqueRoomsAvailable.join(", ")
