@@ -4,3 +4,6 @@ export const getPropertyWhatsappLink = (name: string) => {
     name
   )}`;
 };
+
+export const OCCUPIED_LABEL = "Occupied";
+export const AVAILABLE_NOW_LABEL = "Available Now";

@@ -5,6 +5,7 @@ import {
   Property,
   Amenity,
   WEBFLOW_BACKGROUND_COLOUR_MAP,
+  Room,
 } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { FastAverageColor } from "fast-average-color";
@@ -25,8 +26,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
+import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
 
 interface HeaderProps {
+  rooms: Room[];
   property: Property;
   amenities: Amenity[];
   allImages: string[];
@@ -49,6 +52,7 @@ const BG_COLOR_MAP: Record<string, string> = {
 };
 
 export const Header = ({
+  rooms,
   property,
   allImages,
   photoCategories,
@@ -117,6 +121,8 @@ export const Header = ({
     TEXT_COLOR[backgroundColour2Class as keyof typeof TEXT_COLOR] ??
     "text-white";
 
+  const availableText = getAvailabilityDateForProperty(rooms);
+
   return (
     <OpenSection
       className={`h-full lg:h-[100vh] flex flex-col lg:flex-row overflow-hidden transition-colors duration-500`}
@@ -176,16 +182,7 @@ export const Header = ({
               <Calendar className="w-5 h-5 shrink-0" />
               <div className="flex items-center gap-3">
                 <span className="text-lg font-medium font-body">
-                  {property.fieldData.available
-                    ? "Available Now"
-                    // : property.fieldData["available-from"]
-                    //   ? `Available from ${new Date(
-                    //     property.fieldData["available-from"]
-                    //   ).toLocaleDateString("en-US", {
-                    //     month: "short",
-                    //     day: "numeric",
-                    //   })}`
-                    : "Occupied"}
+                 {availableText}
                 </span>
                 {property.fieldData["female-only"] && (
                   <span className="border border-white/40 text-white/90 px-3 py-0.5 rounded-full text-xs font-medium uppercase tracking-wider">

@@ -144,6 +144,7 @@ export default async function PropertyPage({
       )}
       <section id="overview">
         <Header
+        rooms={propertyRooms}
           property={property}
           amenities={propertyAmenities}
           allImages={allImages}
