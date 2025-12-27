@@ -234,7 +234,7 @@ export const RoomSelection = ({
       amenities.push("Queen Sized Bed"); // Default
 
       return {
-        id: room.fieldData.name|| room.id,
+        id: room.fieldData.name || room.id,
         name: room.fieldData["room-name"] || room.fieldData.name,
         price: room.fieldData["room-rent"] || "0",
         type: "Private Room",
@@ -498,7 +498,7 @@ export const RoomSelection = ({
                             className="w-full"
                             onClick={() => {
                               setNotificationModalData({
-                                propertyId: property.fieldData?.pid || property.id ,
+                                propertyId: property.fieldData?.pid || property.id,
                                 roomId: room.id,
                                 roomName: room.name,
                                 propertyName: property.fieldData.name,
@@ -580,7 +580,7 @@ export const RoomSelection = ({
                           Full House
                         </p>
                         <div className="flex items-baseline justify-center gap-1 mb-2">
-                          <span className="text-fluid-h3 font-heading text-text-main">
+                          <span className="text-fluid-h3 font-heading text-text-main font-zin">
                             ₹
                             {getPropertyDisplayRent(property).toLocaleString(
                               "en-IN"
