@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Property } from "@/lib/webflow";
+import { Property, Room, Occupant } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
 import Link from "next/link";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -8,9 +8,11 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 interface MoreOptionsProps {
     properties: Property[];
     currentPropertyId: string;
+    rooms?: Room[];
+    occupants?: Occupant[];
 }
 
-export const MoreOptions = ({ properties, currentPropertyId }: MoreOptionsProps) => {
+export const MoreOptions = ({ properties, currentPropertyId, rooms = [], occupants = [] }: MoreOptionsProps) => {
     const otherProperties = properties
         .filter(p => p.id !== currentPropertyId && p.fieldData.available)
         .slice(0, 3);
@@ -36,6 +38,8 @@ export const MoreOptions = ({ properties, currentPropertyId }: MoreOptionsProps)
                             <PropertyCard
                                 property={property}
                                 index={index}
+                                rooms={rooms}
+                                occupants={occupants}
                             />
                         </Link>
                     ))}

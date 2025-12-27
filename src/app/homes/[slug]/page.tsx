@@ -199,7 +199,12 @@ export default async function PropertyPage({
         <FAQ />
       </section>
 
-      <MoreOptions properties={properties} currentPropertyId={property.id} />
+      <MoreOptions 
+        properties={properties} 
+        currentPropertyId={property.id}
+        rooms={allRooms}
+        occupants={allOccupants}
+      />
 
       <BottomNavigation property={property} />
     </main>

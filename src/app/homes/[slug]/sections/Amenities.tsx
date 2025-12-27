@@ -80,7 +80,7 @@ export const Amenities = ({
                 </span>
               </div>
               <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
-                Get {property.fieldData["discount"]}% off if booked by{" "}
+                Get {property.fieldData["discount"]}% off on bookings made by{" "}
                 <br className="hidden md:block" />
                 {discountEndDate}
               </h2>

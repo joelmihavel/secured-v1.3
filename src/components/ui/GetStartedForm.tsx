@@ -65,6 +65,19 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     setStatus("loading");
     setErrorMessage("");
 
+    // Validate required fields
+    if (!formData.typeOfHome) {
+      setStatus("error");
+      setErrorMessage("Please select the type of home.");
+      return;
+    }
+
+    if (!formData.isVacant) {
+      setStatus("error");
+      setErrorMessage("Please indicate if your property is vacant right now.");
+      return;
+    }
+
     // Track form submission
     trackCTAClick({
       cta_id: "form_get_started_submit",
@@ -200,13 +213,14 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           htmlFor="typeOfHome"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
-          Type of Home
+          Type of Home <span className="text-red-500">*</span>
         </label>
         <select
           id="typeOfHome"
           name="typeOfHome"
           value={formData.typeOfHome}
           onChange={handleChange}
+          required
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
         >
           <option value="">Select type of home</option>
@@ -236,7 +250,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Is your property vacant right now?
+          Is your property vacant right now? <span className="text-red-500">*</span>
         </label>
         <div className="flex gap-4">
           <label className="flex items-center">
@@ -246,6 +260,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
               value="Yes"
               checked={formData.isVacant === "Yes"}
               onChange={handleChange}
+              required
               className="mr-2"
             />
             <span>Yes</span>
