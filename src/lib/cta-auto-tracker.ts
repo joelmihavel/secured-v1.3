@@ -13,7 +13,7 @@
  * @see {@link docs/POSTHOG_ATTRIBUTION.md} Full Attribution Implementation Guide
  */
 
-import { trackCTAClick, trackEvent, generateCTAId, extractTextContent, isPostHogAvailable } from './posthog-tracking';
+import { trackEvent, generateCTAId, extractTextContent, isPostHogAvailable } from './posthog-tracking';
 
 /**
  * CTA patterns to detect
@@ -193,7 +193,8 @@ function trackCTAClickFromElement(element: HTMLElement, event: MouseEvent): void
 
   try {
     const metadata = extractCTAMetadata(element);
-    trackCTAClick(metadata);
+
+    // trackCTAClick(metadata); // Removed to allow autocapture and prevent duplicates
 
     // Track specific "External URL Click" event
     if (metadata.cta_type === 'link' && metadata.cta_destination) {
@@ -243,8 +244,8 @@ function processElement(element: HTMLElement): void {
 
   // Add ph-no-capture to prevent PostHog autocapture from tracking this element
   // Set both attribute (for noCaptureProp config) and class (default behavior)
-  element.setAttribute('ph-no-capture', '');
-  element.classList.add('ph-no-capture');
+  // element.setAttribute('ph-no-capture', '');
+  // element.classList.add('ph-no-capture');
 
   // Attach click listener
   const clickHandler = (e: MouseEvent) => {

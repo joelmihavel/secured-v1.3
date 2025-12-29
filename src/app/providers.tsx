@@ -45,30 +45,6 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
         ui_host: 'https://us.posthog.com', // Required for toolbar to work with reverse proxy
         person_profiles: 'identified_only' as const,
         capture_pageview: false,
-        autocapture: {
-          noCaptureProp: "ph-no-capture",  // Enable ph-no-capture attribute support
-        } as any,
-        // Use before_send hook to filter autocapture events for elements with ph-no-capture
-        // This prevents duplicate events when we're already tracking CTAs with custom events
-        before_send: (event: any) => {
-          // Block autocapture events for elements that have ph-no-capture attribute/class
-          if (event.event === '$autocapture' && event.properties) {
-            const target = event.properties.$event_type === 'click' ? event.properties.$elements?.[0] : null;
-            if (target) {
-              const hasPhNoCapture = target.attributes?.some((attr: any) =>
-                attr.attr === 'ph-no-capture' || (attr.attr === 'class' && attr.value?.includes('ph-no-capture'))
-              );
-
-              if (hasPhNoCapture) {
-                // Return null to prevent the autocapture event from being sent
-                // We're already tracking this with our custom cta_clicked event
-                return null;
-              }
-            }
-          }
-
-          return event;
-        },
         // Note: PostHog automatically captures UTM params and click IDs (gclid, fbclid) from URL
       };
 
