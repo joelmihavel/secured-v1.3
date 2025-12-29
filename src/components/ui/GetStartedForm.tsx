@@ -66,13 +66,13 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     setErrorMessage("");
 
     // Validate required fields
-    if (!formData.typeOfHome) {
+    if (!formData.typeofhome) {
       setStatus("error");
       setErrorMessage("Please select the type of home.");
       return;
     }
 
-    if (!formData.isVacant) {
+    if (!formData.is_property_vacant_now) {
       setStatus("error");
       setErrorMessage("Please indicate if your property is vacant right now.");
       return;
