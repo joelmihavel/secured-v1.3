@@ -18,10 +18,10 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     firstname: "",
     phone: "",
     email: "",
-    propertyAddress: "",
-    typeOfHome: "",
-    "Expected-Rent": "",
-    isVacant: "",
+    landlord_lead_property_address: "",
+    typeofhome: "",
+    expected_rent: "",
+    is_property_vacant_now: "",
   });
 
   const [status, setStatus] = useState<
@@ -34,7 +34,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     if (place.formatted_address) {
       setFormData((prev) => ({
         ...prev,
-        propertyAddress: place.formatted_address || "",
+        landlord_lead_property_address: place.formatted_address || "",
       }));
     }
   };
@@ -86,8 +86,8 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
       page_section: "owners_contact_form",
     }, {
       form_type: "owners_get_started",
-      has_property_address: !!formData.propertyAddress,
-      has_expected_rent: !!formData["Expected-Rent"],
+      has_property_address: !!formData.landlord_lead_property_address,
+      has_expected_rent: !!formData.expected_rent,
     });
 
     try {
@@ -101,10 +101,10 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         firstname: "",
         phone: "",
         email: "",
-        propertyAddress: "",
-        typeOfHome: "",
-        "Expected-Rent": "",
-        isVacant: "",
+        landlord_lead_property_address: "",
+        typeofhome: "",
+        expected_rent: "",
+        is_property_vacant_now: "",
       });
     } catch (error) {
       setStatus("error");
@@ -191,7 +191,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
 
       <div>
         <label
-          htmlFor="propertyAddress"
+          htmlFor="landlord_lead_property_address"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
           Property Address
@@ -199,9 +199,9 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         <input
           ref={autocompleteRef}
           type="text"
-          id="propertyAddress"
-          name="propertyAddress"
-          value={formData.propertyAddress}
+          id="landlord_lead_property_address"
+          name="landlord_lead_property_address"
+          value={formData.landlord_lead_property_address}
           onChange={handleChange}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
           placeholder="Start typing your property address"
@@ -210,15 +210,15 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
 
       <div>
         <label
-          htmlFor="typeOfHome"
+          htmlFor="typeofhome"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
           Type of Home <span className="text-red-500">*</span>
         </label>
         <select
-          id="typeOfHome"
-          name="typeOfHome"
-          value={formData.typeOfHome}
+          id="typeofhome"
+          name="typeofhome"
+          value={formData.typeofhome}
           onChange={handleChange}
           required
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
@@ -232,16 +232,16 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
 
       <div>
         <label
-          htmlFor="Expected-Rent"
+          htmlFor="expected_rent"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
           Expected Rent
         </label>
         <input
           type="text"
-          id="Expected-Rent"
-          name="Expected-Rent"
-          value={formData["Expected-Rent"]}
+          id="expected_rent"
+          name="expected_rent"
+          value={formData.expected_rent}
           onChange={handleChange}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
           placeholder="Expected Rent"
@@ -256,9 +256,9 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           <label className="flex items-center">
             <input
               type="radio"
-              name="isVacant"
+              name="is_property_vacant_now"
               value="Yes"
-              checked={formData.isVacant === "Yes"}
+              checked={formData.is_property_vacant_now === "Yes"}
               onChange={handleChange}
               required
               className="mr-2"
@@ -268,9 +268,9 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           <label className="flex items-center">
             <input
               type="radio"
-              name="isVacant"
+              name="is_property_vacant_now"
               value="No"
-              checked={formData.isVacant === "No"}
+              checked={formData.is_property_vacant_now === "No"}
               onChange={handleChange}
               className="mr-2"
             />
