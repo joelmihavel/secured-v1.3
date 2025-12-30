@@ -63,6 +63,49 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
 
+        {/* Google Tag Manager */}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-NN5V7MMT');
+          `}
+        </Script>
+
+        {/* Google Tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-16885482628"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-16885482628');
+          `}
+        </Script>
+
+        {/* Whatsapp Conversion Pixel */}
+        <Script id="whatsapp-conversion" strategy="afterInteractive">
+          {`
+            function gtag_report_conversion(url) {
+              var callback = function () {
+                if (typeof(url) != 'undefined') {
+                  window.location = url;
+                }
+              };
+              gtag('event', 'conversion', {
+                  'send_to': 'AW-16885482628/LlGRCKmzrsgaEISJ0PM-',
+                  'event_callback': callback
+              });
+              return false;
+            }
+          `}
+        </Script>
+
         {/* WAX Attribution Tracking Script */}
         <Script
           id="wax-attribution-tracking"
@@ -237,6 +280,18 @@ export default function RootLayout({
                   button.target = '_blank';
                   button.rel = 'noopener noreferrer';
                   button.setAttribute('aria-label', 'Chat with us on WhatsApp');
+                  
+                  // Conversion Tracking
+                  button.onclick = function(e) {
+                      e.preventDefault(); // Prevent default since gtag_report_conversion handles navigation
+                      // Check if global function exists
+                      if (typeof window.gtag_report_conversion === 'function') {
+                          return window.gtag_report_conversion(this.href);
+                      } else {
+                          // Fallback if script hasn't loaded
+                          window.location.href = this.href;
+                      }
+                  };
                   
                   // Add WhatsApp icon SVG
                   button.innerHTML = \`
