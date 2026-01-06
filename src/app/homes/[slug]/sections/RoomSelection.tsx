@@ -527,7 +527,7 @@ export const RoomSelection = ({
                           <Button
                             size="md"
                             variant="ghost"
-                            className="w-full bg-white"
+                            className="w-full bg-white rounded-l-none rounded-r-full"
                             target="_blank"
                             rel="noopener noreferrer"
                             href={getPropertyWhatsappLink(
