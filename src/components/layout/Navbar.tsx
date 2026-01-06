@@ -32,6 +32,9 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ variant }: NavbarProps) => {
+    const pathname = usePathname();
+    if (pathname.startsWith("/flent-secure")) return null;
+
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [canHover, setCanHover] = useState(false);
@@ -46,7 +49,6 @@ export const Navbar = ({ variant }: NavbarProps) => {
         return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
-    const pathname = usePathname();
     const router = useRouter();
     const isHome = pathname === "/";
     const isPropertyDetail = pathname.startsWith('/homes/') && pathname.split('/').length === 3;
@@ -65,7 +67,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
 
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
-            
+
             // Check if click is outside the menu container
             // The menu button is inside the container, so it's already excluded
             if (
@@ -321,7 +323,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                             >
                                 Our Story
                             </Button>
-                                 <Button
+                            <Button
                                 href={WHATSAPP_LINK}
                                 target="_blank"
                                 rel="noopener noreferrer"
