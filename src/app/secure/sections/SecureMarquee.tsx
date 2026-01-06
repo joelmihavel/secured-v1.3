@@ -25,7 +25,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
     const topContent = (
         <>
             {[...Array(8)].map((_, i) => (
-                <span key={i} className={`text-xl sm:text-2xl md:text-4xl lg:text-fluid-h1 font-heading ${topTextColor} tracking-tighter shrink-0`}>
+                <span key={i} className={`text-fluid-h1 font-heading ${topTextColor} tracking-tighter shrink-0`}>
                     {data.top}
                 </span>
             ))}
@@ -35,7 +35,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
     const bottomContent = (
         <>
             {[...Array(8)].map((_, i) => (
-                <span key={i} className={`text-xl sm:text-2xl md:text-4xl lg:text-fluid-h1 font-heading ${bottomTextColor} tracking-tighter shrink-0 drop-shadow-sm`}>
+                <span key={i} className={`text-fluid-h1 font-heading ${bottomTextColor} tracking-tighter shrink-0 drop-shadow-sm`}>
                     {data.bottom}
                 </span>
             ))}

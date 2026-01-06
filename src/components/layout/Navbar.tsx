@@ -14,26 +14,35 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useBreadcrumb } from "@/context/BreadcrumbContext";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
+    { name: "Flent Secure", href: "/secure", sectionId: "" },
 ];
 
-type NavbarVariant = "hamburger" | "expanded";
+type NavbarVariant = "hamburger" | "expanded" | "secure";
 
 interface NavbarProps {
     /**
      * Variant 1 (hamburger) - Used in property detail pages as well as on all pages on mobile
      * Variant 2 (expanded) - Used on Homepage, About, Homes listing, Owners pages (desktop only)
+     * Variant 3 (secure) - Used on Flent Secure pages with specific tabs
      */
     variant?: NavbarVariant;
+    activeTab?: string;
+    onTabChange?: (tab: string) => void;
 }
 
-export const Navbar = ({ variant }: NavbarProps) => {
+export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     const pathname = usePathname();
-    if (pathname.startsWith("/flent-secure")) return null;
+    const isSecurePath = pathname.startsWith("/secure");
+
+    // If it's a secure path BUT variant is not secure, it means it's the global Navbar in layout.tsx.
+    // We hide it because the secure page provides its own Navbar instance with the correct variant and state.
+    if (isSecurePath && variant !== "secure") return null;
 
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
@@ -135,6 +144,25 @@ export const Navbar = ({ variant }: NavbarProps) => {
 
     // Render left section based on variant and page
     const renderLeftSection = () => {
+        if (variant === "secure") {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => router.push('/')}
+                    className="bg-white rounded-full shadow-lg border border-text-main h-11 md:h-14 px-3.5 md:px-6 flex items-center pointer-events-auto hover:bg-gray-100"
+                >
+                    <Image
+                        src="/images/flentinbengaluru.svg"
+                        alt="Flent"
+                        width={72}
+                        height={24}
+                        className="h-[18px] md:h-6 w-auto"
+                        priority
+                    />
+                </Button>
+            );
+        }
+
         if (effectiveVariant === "hamburger" && isPropertyDetail) {
             // Property detail page with hamburger variant: Show expandable breadcrumbs
             return (
@@ -240,6 +268,34 @@ export const Navbar = ({ variant }: NavbarProps) => {
                     priority
                 />
             </Button>
+        );
+    };
+
+    const renderSecureTabs = () => {
+        if (variant !== "secure" || !activeTab || !onTabChange) return null;
+
+        return (
+            <div className={cn(
+                "flex items-center bg-white rounded-full shadow-lg border border-text-main p-1 h-11 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
+                isOpen ? "w-0 opacity-0 pointer-events-none md:w-auto md:opacity-100 md:pointer-events-auto" : "w-auto opacity-100"
+            )}>
+                <Tabs value={activeTab} onValueChange={onTabChange}>
+                    <TabsList className="bg-gray-100 p-1 rounded-full h-full border-none flex items-center">
+                        <TabsTrigger
+                            value="tenant"
+                            className="rounded-full px-3 md:px-5 lg:px-7 py-1 md:py-2.5 data-[state=active]:bg-black data-[state=active]:text-white transition-all text-xs md:text-sm font-semibold h-full"
+                        >
+                            <span className="hidden md:inline">For </span>Tenant
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="landlord"
+                            className="rounded-full px-3 md:px-5 lg:px-7 py-1 md:py-2.5 data-[state=active]:bg-black data-[state=active]:text-white transition-all text-xs md:text-sm font-semibold h-full"
+                        >
+                            <span className="hidden md:inline">For </span>Landlord
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
         );
     };
 
@@ -383,11 +439,18 @@ export const Navbar = ({ variant }: NavbarProps) => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 md:px-6 lg:px-8 pt-3.5 md:pt-6 pb-2 pointer-events-none">
-            <div className="max-w-12xl mx-auto flex items-start justify-between h-16 md:h-20">
+        <nav className={cn(
+            "fixed top-0 left-0 right-0 z-50 pt-3.5 md:pt-6 pb-2 pointer-events-none",
+            variant === "secure" ? "px-4 md:px-8 lg:px-12" : "px-3 sm:px-4 md:px-6 lg:px-8"
+        )}>
+            <div className={cn(
+                "mx-auto flex items-start justify-between h-16 md:h-20",
+                variant === "secure" ? "max-w-7xl" : "max-w-12xl"
+            )}>
                 {renderLeftSection()}
 
                 <div className="flex justify-end gap-2 md:gap-3 items-start">
+                    {renderSecureTabs()}
                     {renderExpandedNav()}
                     {renderHamburgerMenu()}
                 </div>
