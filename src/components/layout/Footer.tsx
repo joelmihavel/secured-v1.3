@@ -35,7 +35,7 @@ const TEAM_ITEMS = [
 
 export const Footer = () => {
     const pathname = usePathname();
-    if (pathname && pathname.startsWith("/secure")) return null;
+    if (pathname && pathname.startsWith("/secured")) return null;
 
     const marqueeItems = pathname === "/about" ? TEAM_ITEMS : TWEET_ITEMS;
 

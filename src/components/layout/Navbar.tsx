@@ -20,7 +20,7 @@ import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
-    { name: "Flent Secure", href: "/secure", sectionId: "" },
+    { name: "Flent Secure", href: "/secured", sectionId: "" },
 ];
 
 type NavbarVariant = "hamburger" | "expanded" | "secure";
@@ -38,7 +38,7 @@ interface NavbarProps {
 
 export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     const pathname = usePathname();
-    const isSecurePath = pathname.startsWith("/secure");
+    const isSecurePath = pathname.startsWith("/secured");
 
     // If it's a secure path BUT variant is not secure, it means it's the global Navbar in layout.tsx.
     // We hide it because the secure page provides its own Navbar instance with the correct variant and state.
