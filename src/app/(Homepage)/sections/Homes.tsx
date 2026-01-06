@@ -36,7 +36,37 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
     }
 
     const sortedProperties = [...properties].sort((a, b) => {
-        // Check if property has images
+        // 1. Ranking Order (Ascending)
+        // If one has ranking and other doesn't, the one with ranking comes first
+        const rankA = a.fieldData["ranking-order"];
+        const rankB = b.fieldData["ranking-order"];
+
+        if (rankA !== undefined && rankB !== undefined) {
+            return rankA - rankB;
+        }
+        if (rankA !== undefined) return -1;
+        if (rankB !== undefined) return 1;
+
+        // 2. Availability Date (Earliest first)
+        const dateAStr = a.fieldData["available-from"];
+        const dateBStr = b.fieldData["available-from"];
+        const dateA = dateAStr ? new Date(dateAStr).getTime() : Infinity; // No date means far future/unknown? Or treat as available now if 'available'? 
+        // Actually, if date is missing but available=true, it's usually "Available Now".
+        // Let's refine: "Earliest available first".
+        
+        // Interpretation:
+        // Properties can be "Available Now" (often implied if available=true and no future date) or available from a future date.
+        // We want "Available Now" / earliest dates at the top.
+        
+        const now = Date.now();
+        const effectiveDateA = dateAStr ? new Date(dateAStr).getTime() : (a.fieldData.available ? 0 : Infinity);
+        const effectiveDateB = dateBStr ? new Date(dateBStr).getTime() : (b.fieldData.available ? 0 : Infinity);
+
+        if (effectiveDateA !== effectiveDateB) {
+            return effectiveDateA - effectiveDateB;
+        }
+
+        // 3. Properties with images
         const hasImagesA = Boolean(
             a.fieldData["property-thumbnail"]?.url ||
             a.fieldData["property-featured-photo"]?.url ||
@@ -48,34 +78,9 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
             b.fieldData["property-photos"]?.some(p => p.url)
         );
 
-        // Check if property has occupants with companies
-        const getCompanyCount = (property: Property) => {
-            const propertyRoomIds = property.fieldData.rooms || [];
-            const propertyRooms = rooms.filter(r => propertyRoomIds.includes(r.id));
-            const companies = new Set<string>();
-            propertyRooms.forEach(room => {
-                if (room.fieldData.occupant) {
-                    const occupant = occupants.find(o => o.id === room.fieldData.occupant);
-                    if (occupant && occupant.fieldData.company) {
-                        companies.add(occupant.fieldData.company);
-                    }
-                }
-            });
-            return companies.size;
-        };
-
-        const companiesA = getCompanyCount(a);
-        const companiesB = getCompanyCount(b);
-
-        // Prioritize properties with both images and companies
-        if (hasImagesA && companiesA > 0 && (!hasImagesB || companiesB === 0)) return -1;
-        if (hasImagesB && companiesB > 0 && (!hasImagesA || companiesA === 0)) return 1;
-
-        // Then prioritize by images
-        if (hasImagesA !== hasImagesB) return hasImagesA ? -1 : 1;
-
-        // Then prioritize by number of companies
-        if (companiesA !== companiesB) return companiesB - companiesA;
+        if (hasImagesA !== hasImagesB) {
+            return hasImagesA ? -1 : 1;
+        }
 
         return 0;
     }).filter(property => {
