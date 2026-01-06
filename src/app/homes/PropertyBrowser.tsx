@@ -349,6 +349,45 @@ export const PropertyBrowser = ({
       }
 
       return true;
+    }).sort((a, b) => {
+      // 1. Ranking Order (Ascending)
+      const rankA = a.fieldData["ranking-order"];
+      const rankB = b.fieldData["ranking-order"];
+
+      if (rankA !== undefined && rankB !== undefined) {
+          return rankA - rankB;
+      }
+      if (rankA !== undefined) return -1;
+      if (rankB !== undefined) return 1;
+
+      // 2. Availability Date (Earliest first)
+      const dateAStr = a.fieldData["available-from"];
+      const dateBStr = b.fieldData["available-from"];
+      
+      const effectiveDateA = dateAStr ? new Date(dateAStr).getTime() : (a.fieldData.available ? 0 : Infinity);
+      const effectiveDateB = dateBStr ? new Date(dateBStr).getTime() : (b.fieldData.available ? 0 : Infinity);
+
+      if (effectiveDateA !== effectiveDateB) {
+          return effectiveDateA - effectiveDateB;
+      }
+
+      // 3. Properties with images
+      const hasImagesA = Boolean(
+          a.fieldData["property-thumbnail"]?.url ||
+          a.fieldData["property-featured-photo"]?.url ||
+          a.fieldData["property-photos"]?.some(p => p.url)
+      );
+      const hasImagesB = Boolean(
+          b.fieldData["property-thumbnail"]?.url ||
+          b.fieldData["property-featured-photo"]?.url ||
+          b.fieldData["property-photos"]?.some(p => p.url)
+      );
+
+      if (hasImagesA !== hasImagesB) {
+          return hasImagesA ? -1 : 1;
+      }
+
+      return 0;
     });
   }, [properties, filters]);
 
