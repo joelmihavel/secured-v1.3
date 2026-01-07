@@ -8,7 +8,7 @@ import styles from "./TopBanner.module.css";
 const MarqueeItem = () => (
   <div className={styles["marquee-css__item"]}>
     <p className={styles["marquee-css__item-p"]}>
-      Already renting?
+      Paying rent in India?
     </p>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ const MarqueeItem = () => (
       />
     </svg>
     <p className={styles["marquee-css__item-p"]}>
-      Get 1% back on every future rent payment
+      Get 1% back if you pay via Secured
     </p>
     <svg
       xmlns="http://www.w3.org/2000/svg"
