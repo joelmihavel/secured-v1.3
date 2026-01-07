@@ -494,10 +494,10 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                         href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
                         target="_blank"
                         rel="noopener noreferrer"
-                        variant="primary"
+                        variant="primary-rounded"
+                        pastelColor="orange"
                         size="sm"
-                        className="md:hidden rounded-full bg-black text-white border-none font-bold text-xs px-4 h-11"
-                        style={{ backgroundColor: 'black', color: 'white' }}
+                        className="md:hidden font-bold text-xs px-4 h-11"
                     >
                         Get App
                     </Button>
