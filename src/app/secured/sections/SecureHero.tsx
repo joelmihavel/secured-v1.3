@@ -45,7 +45,7 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
                 {data.subtext}
             </p>
             {/* CTA Button Group */}
-            <div className="flex items-center gap-3 w-full max-w-md mb-6">
+            <div className="flex flex-col gap-3 w-full max-w-md mb-6">
                 <Button
                     href="#download"
                     variant="primary-rounded"
@@ -55,11 +55,11 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
                 >
                     {data.cta}
                 </Button>
+                {/* Tagline */}
+                <p className="text-hero-tagline text-gray-400 font-body opacity-80 text-center text-sm md:text-xs">
+                    {data.tagline}
+                </p>
             </div>
-            {/* Tagline */}
-            <p className="text-hero-tagline text-gray-400 font-body opacity-80">
-                {data.tagline}
-            </p>
         </div>
     );
 
