@@ -303,14 +303,14 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     <div className="relative z-10 overflow-hidden block">
                                         <div className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-data-[state=active]:-translate-y-full">
                                             {/* Default State (Black Text) */}
-                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-text-main py-0.5 whitespace-nowrap">
+                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap">
                                                 <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
                                             </span>
                                             {/* Active State (White Text) - Positioned absolutely via flex column trick above, but let's be safer with absolute here? 
                                                 Actually, flex-col with height auto and duplicate content works if container is constrained. 
                                                 But standard translate up reveals next element.
                                             */}
-                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-white py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
+                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
                                                 <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
                                             </span>
                                         </div>

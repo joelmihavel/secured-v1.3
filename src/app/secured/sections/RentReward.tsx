@@ -73,7 +73,7 @@ export const RentReward = ({ data, variant = "tenant" }: RentRewardProps) => {
                     {/* Eyebrow */}
                     {data.eyebrow && (
                         <p
-                            className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-400 font-medium mb-6"
+                            className="text-[20px] uppercase tracking-[0.2em] text-gray-400 font-medium mb-6"
                             dangerouslySetInnerHTML={{ __html: data.eyebrow }}
                         />
                     )}
