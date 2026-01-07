@@ -8,7 +8,7 @@ export const TENANT_CONTENT = {
         subtext: "Because habits like yours should be rewarded, not overlooked.",
         cta: "Request an Invite",
         tagline: "This isn't for average renters, really..",
-        lottie: "/secure-lotties/Fold1/tenantfold.json",
+        lottie: "/secure-lotties/Fold1/Scene-1.json",
         themeColor: "orange",
         layoutReverse: false
     },
