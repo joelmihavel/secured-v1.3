@@ -299,11 +299,11 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1 relative z-20">
-                                        <span className="hidden lg:inline">I'm a&nbsp;</span>{label}
+                                        <span className="hidden lg:inline">I'm a&nbsp;</span>{label.toLowerCase()}
                                     </span>
                                 </TabsPrimitive.Trigger>
                             );
