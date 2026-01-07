@@ -276,8 +276,8 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "hidden md:flex items-center bg-transparent pointer-events-auto transition-all duration-300",
-                isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
+                "hidden md:flex items-center bg-transparent pointer-events-auto",
+                isOpen && "invisible"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
                     <TabsList className="bg-gray-50 p-1 gap-1 h-auto rounded-full border border-black/5 shadow-sm flex items-center relative">
@@ -290,16 +290,24 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "relative h-9 rounded-full px-5 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
-                                        isActive ? "text-text-main" : "text-gray-500 hover:text-gray-900"
+                                        "relative h-9 rounded-full px-5 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 transition-none",
+                                        isActive ? "text-text-main" : "text-gray-500"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
-                                            style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                            style={{ 
+                                                backgroundColor: 'var(--color-pastel-orange)',
+                                                willChange: 'transform'
+                                            }}
+                                            transition={{ 
+                                                type: "spring", 
+                                                stiffness: 400, 
+                                                damping: 30,
+                                                mass: 0.8
+                                            }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1 relative z-20">
