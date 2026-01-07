@@ -275,12 +275,12 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "hidden md:flex items-center gap-2 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto overflow-hidden transition-all duration-300",
+                "hidden md:flex items-center bg-transparent pointer-events-auto transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
-                    <TabsList className="bg-transparent p-0 gap-2 h-full border-none flex items-center">
-                        {['tenant', 'landlord'].map((tabValue, index) => {
+                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
+                        {['tenant', 'landlord'].map((tabValue) => {
                             const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
                             const isActive = activeTab === tabValue;
                             
@@ -288,16 +288,22 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 <TabsTrigger
                                     key={tabValue}
                                     value={tabValue}
-                                    style={isActive ? { backgroundColor: 'var(--color-pastel-orange)' } : undefined}
                                     className={cn(
-                                        "h-10 rounded-full px-5 transition-all duration-200 font-heading font-bold tracking-wide text-sm border-2",
-                                        isActive 
-                                            ? "border-text-main text-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] hover:shadow-[0px_2px_0px_0px_rgba(21,16,46,1)] hover:translate-y-[2px]"
-                                            : "bg-transparent border-transparent text-text-main/60 hover:bg-gray-100 hover:text-text-main shadow-none"
+                                        "relative h-10 rounded-full px-6 transition-colors duration-200 font-heading font-bold tracking-wide text-sm z-10",
+                                        "data-[state=active]:bg-transparent data-[state=active]:shadow-none",
+                                        isActive ? "text-text-main" : "text-gray-500 hover:text-gray-700"
                                     )}
                                 >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="secure-tab-pill"
+                                            className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
+                                            style={{ backgroundColor: 'var(--color-pastel-orange)' }}
+                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        />
+                                    )}
                                     <span className="flex items-center gap-1">
-                                        <span className="hidden lg:inline">I&apos;m a&nbsp;</span>{label}
+                                        <span className="hidden lg:inline">I'm a&nbsp;</span>{label}
                                     </span>
                                 </TabsTrigger>
                             );
@@ -438,11 +444,11 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         if (!showExpandedNav) return null;
 
         return (
-            <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
+            <div className="hidden lg:flex items-center gap-0.5 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
+                <Button variant="ghost" size="sm" className="rounded-full px-2.5" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
+                <Button variant="ghost" size="sm" className="rounded-full px-2.5" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
                 <Button
