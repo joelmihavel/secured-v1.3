@@ -276,7 +276,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-10 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
+                "hidden md:flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-10 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none md:w-auto md:opacity-100 md:pointer-events-auto" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange}>

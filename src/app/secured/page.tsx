@@ -48,7 +48,7 @@ export default function FlentSecurePage() {
 
             <SecureFooter />
             <DesktopFloatingQR />
-            <MobileFloatingButton />
+            <MobileFloatingButton activeTab={activeTab} onTabChange={setActiveTab} />
         </main>
     );
 }
