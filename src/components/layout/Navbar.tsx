@@ -504,8 +504,8 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                         rel="noopener noreferrer"
                         variant="primary"
                         size="sm"
-                        className="md:hidden rounded-full bg-black text-white border-none font-bold text-xs px-4 h-11"
-                        style={{ backgroundColor: 'black', color: 'white' }}
+                        className="md:hidden rounded-full bg-black text-white border border-white font-bold text-xs px-4 h-11 mr-2"
+                        style={{ backgroundColor: 'black', color: 'white', borderColor: 'white' }}
                     >
                         Get App
                     </Button>
