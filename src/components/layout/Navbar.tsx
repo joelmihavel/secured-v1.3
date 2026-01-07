@@ -489,12 +489,12 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
             variant === "secure" ? "px-4 md:px-8 lg:px-12" : "px-3 sm:px-4 md:px-6 lg:px-8"
         )}>
             <div className={cn(
-                "mx-auto flex items-start justify-between h-16 md:h-20",
+                "mx-auto flex items-center justify-between h-16 md:h-20",
                 variant === "secure" ? "max-w-7xl" : "max-w-12xl"
             )}>
                 {renderLeftSection()}
 
-                <div className="flex justify-end gap-2 md:gap-3 items-start">
+                <div className="flex justify-end gap-2 md:gap-3 items-center">
                     {renderSecureTabs()}
                     {renderExpandedNav()}
                     {/* Mobile Get App Button - Only for secured page */}
