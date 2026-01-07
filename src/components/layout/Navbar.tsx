@@ -14,7 +14,8 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useBreadcrumb } from "@/context/BreadcrumbContext";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList } from "@/components/ui/tabs";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
 
@@ -275,23 +276,22 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "flex items-center bg-transparent pointer-events-auto transition-all duration-300",
+                "hidden md:flex items-center bg-transparent pointer-events-auto transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
-                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-11 md:h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
+                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
                         {['tenant', 'landlord'].map((tabValue) => {
                             const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
                             const isActive = activeTab === tabValue;
                             
                             return (
-                                <TabsTrigger
+                                <TabsPrimitive.Trigger
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "relative h-9 md:h-10 rounded-full px-4 md:px-6 transition-colors duration-200 font-heading font-bold tracking-wide text-xs md:text-sm z-10",
-                                        "data-[state=active]:bg-transparent data-[state=active]:shadow-none",
-                                        isActive ? "text-text-main" : "text-gray-500 hover:text-gray-700"
+                                        "relative h-10 rounded-full px-6 transition-colors duration-300 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                                        isActive ? "text-text-main" : "text-gray-500 hover:text-gray-900"
                                     )}
                                 >
                                     {isActive && (
@@ -299,13 +299,13 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
                                         />
                                     )}
-                                    <span className="flex items-center gap-1">
+                                    <span className="flex items-center gap-1 relative z-20">
                                         <span className="hidden lg:inline">I'm a&nbsp;</span>{label}
                                     </span>
-                                </TabsTrigger>
+                                </TabsPrimitive.Trigger>
                             );
                         })}
                     </TabsList>
@@ -444,14 +444,13 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         if (!showExpandedNav) return null;
 
         return (
-            <div className="hidden lg:flex items-center gap-0.5 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button variant="ghost" size="sm" className="rounded-full px-2.5" onClick={() => router.push('/homes')}>
+            <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
-                <Button variant="ghost" size="sm" className="rounded-full px-2.5" onClick={() => router.push('/about')}>
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
-                <div className="w-0.5" />
                 <Button
                     variant="primary"
                     size="sm"
