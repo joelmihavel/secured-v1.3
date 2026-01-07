@@ -445,10 +445,24 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent" onClick={() => router.push('/homes')}>
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="rounded-full hover:bg-transparent" 
+                    onClick={() => router.push('/homes')}
+                    whileHover={{ scale: 1, y: 0 }}
+                    whileTap={{ scale: 1, y: 0 }}
+                >
                     All Homes
                 </Button>
-                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent" onClick={() => router.push('/about')}>
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="rounded-full hover:bg-transparent" 
+                    onClick={() => router.push('/about')}
+                    whileHover={{ scale: 1, y: 0 }}
+                    whileTap={{ scale: 1, y: 0 }}
+                >
                     Our Story
                 </Button>
                 <Button
