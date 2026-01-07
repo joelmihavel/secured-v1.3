@@ -20,7 +20,6 @@ import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
-    { name: "Secured", href: "/secured", sectionId: "" },
 ];
 
 type NavbarVariant = "hamburger" | "expanded" | "secure";
@@ -276,46 +275,31 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "hidden md:flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-10 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
-                isOpen ? "w-0 opacity-0 pointer-events-none md:w-auto md:opacity-100 md:pointer-events-auto" : "w-auto opacity-100"
+                "hidden md:flex items-center gap-2 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto overflow-hidden transition-all duration-300",
+                isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
             )}>
-                <Tabs value={activeTab} onValueChange={onTabChange}>
-                    <TabsList className="bg-gray-100 p-1 rounded-xl h-full border-none flex items-center gap-0">
+                <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
+                    <TabsList className="bg-transparent p-0 gap-2 h-full border-none flex items-center">
                         {['tenant', 'landlord'].map((tabValue, index) => {
                             const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
-                            const isFirst = index === 0;
-                            const isLast = index === 1; // Since there are only 2 items
-
+                            const isActive = activeTab === tabValue;
+                            
                             return (
                                 <TabsTrigger
                                     key={tabValue}
                                     value={tabValue}
+                                    style={isActive ? { backgroundColor: 'var(--color-pastel-orange)' } : undefined}
                                     className={cn(
-                                        "group relative overflow-hidden px-4 md:px-7 py-1 md:py-2.5 transition-all h-full shadow-sm border border-transparent data-[state=active]:border-black/10 data-[state=active]:bg-transparent data-[state=active]:text-inherit",
-                                        isFirst && "rounded-l-lg rounded-r-none border-r-0",
-                                        isLast && "rounded-r-lg rounded-l-none border-l-0"
+                                        "h-10 rounded-full px-5 transition-all duration-200 font-heading font-bold tracking-wide text-sm border-2",
+                                        isActive 
+                                            ? "border-text-main text-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] hover:shadow-[0px_2px_0px_0px_rgba(21,16,46,1)] hover:translate-y-[2px]"
+                                            : "bg-transparent border-transparent text-text-main/60 hover:bg-gray-100 hover:text-text-main shadow-none"
                                     )}
                                 >
-                                    {/* Background Animation */}
-                                    <div className="absolute inset-0 bg-[#ff9a6d] translate-y-[175%] rotate-12 group-data-[state=active]:translate-y-0 group-data-[state=active]:rotate-0 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] z-0 origin-bottom" />
-
-                                    {/* Text Animation Container */}
-                                    <div className="relative z-10 overflow-hidden block">
-                                        <div className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-data-[state=active]:-translate-y-full">
-                                            {/* Default State (Black Text) */}
-                                            <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap">
-                                                <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
-                                            </span>
-                                            {/* Active State (White Text) - Positioned absolutely via flex column trick above, but let's be safer with absolute here? 
-                                                Actually, flex-col with height auto and duplicate content works if container is constrained. 
-                                                But standard translate up reveals next element.
-                                            */}
-                                            <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
-                                                <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
-                                            </span>
-                                        </div>
-                                    </div>
-                        </TabsTrigger>
+                                    <span className="flex items-center gap-1">
+                                        <span className="hidden lg:inline">I&apos;m a&nbsp;</span>{label}
+                                    </span>
+                                </TabsTrigger>
                             );
                         })}
                     </TabsList>
@@ -422,6 +406,18 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 className="w-full"
                                 size="sm"
                                 variant="primary-rounded"
+                                pastelColor="orange"
+                                onClick={() => {
+                                    router.push('/secured');
+                                    setIsOpen(false);
+                                }}
+                            >
+                                Secured
+                            </Button>
+                            <Button
+                                className="w-full"
+                                size="sm"
+                                variant="primary-rounded"
                                 pastelColor="violet"
                                 onClick={() => {
                                     router.push('/owners');
@@ -442,13 +438,23 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         if (!showExpandedNav) return null;
 
         return (
-            <div className="hidden lg:flex items-center gap-3 bg-white rounded-full shadow-lg border border-text-main h-14 px-3 pointer-events-auto">
-                <Button variant="ghost" size="sm" onClick={() => router.push('/homes')}>
+            <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
                 <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    pastelColor="orange"
+                    className="rounded-full"
+                    onClick={() => router.push('/secured')}
+                >
+                    Secured
+                </Button>
+                <div className="w-1" /> {/* Spacer between Secured and For Owners */}
                 <Button
                     variant="primary"
                     size="sm"
@@ -483,4 +489,3 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         </nav>
     );
 };
-
