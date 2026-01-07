@@ -39,7 +39,8 @@ export const MobileFloatingButton = ({ activeTab, onTabChange }: MobileFloatingB
                     variant="primary"
                     pastelColor="violet"
                     size="sm"
-                    className="rounded-full px-5 py-2.5 font-bold text-xs"
+                    className="rounded-full px-5 py-2.5 font-bold text-xs bg-black text-white border-none"
+                    style={{ backgroundColor: 'black', color: 'white', borderColor: 'transparent' }}
                 >
                     Get App
                 </Button>
