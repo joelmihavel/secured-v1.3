@@ -22,7 +22,7 @@ const MarqueeItem = () => (
       />
     </svg>
     <p className={styles["marquee-css__item-p"]}>
-      Earn 1% on every future rent payment
+      Get 1% back on every future rent payment
     </p>
     <svg
       xmlns="http://www.w3.org/2000/svg"

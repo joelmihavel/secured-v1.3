@@ -50,7 +50,7 @@ export const SecureFAQ = ({ category }: SecureFAQProps) => {
                 <div className="text-center mb-12">
                     <span className="inline-block px-3 py-1 rounded-full border border-gray-200 text-xs font-semibold mb-4">FAQs</span>
                     <h2 className="text-fluid-h2 font-heading text-black mb-2">
-                        Good Renters ask <br /> <span className="font-zin-italic">important questions</span>
+                        You got questions? <br /> <span className="font-zin-italic">We got answers</span>
                     </h2>
                 </div>
 
