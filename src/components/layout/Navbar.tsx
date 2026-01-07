@@ -497,18 +497,20 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 <div className="flex justify-end gap-2 md:gap-3 items-start">
                     {renderSecureTabs()}
                     {renderExpandedNav()}
-                    {/* Mobile Get App Button */}
-                    <Button
-                        href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        variant="primary"
-                        size="sm"
-                        className="md:hidden rounded-full bg-black text-white border border-white font-bold text-xs px-4 h-11 mr-2"
-                        style={{ backgroundColor: 'black', color: 'white', borderColor: 'white' }}
-                    >
-                        Get App
-                    </Button>
+                    {/* Mobile Get App Button - Only for secured page */}
+                    {variant === "secure" && (
+                        <Button
+                            href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="primary"
+                            size="sm"
+                            className="md:hidden rounded-full bg-black text-white border border-white font-bold text-xs px-4 h-11 mr-2"
+                            style={{ backgroundColor: 'black', color: 'white', borderColor: 'white' }}
+                        >
+                            Get App
+                        </Button>
+                    )}
                     {renderHamburgerMenu()}
                 </div>
             </div>
