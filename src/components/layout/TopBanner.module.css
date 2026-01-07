@@ -1,6 +1,6 @@
 .marquee-css {
-  color: #202020;
-  background-color: #ff9a6d;
+  color: var(--color-text-main);
+  background-color: var(--color-pastel-violet);
   width: 100%;
   display: flex;
   position: fixed;
@@ -42,7 +42,7 @@
 
 .diamond-separator {
   font-size: 0.8em; /* Adjust size of diamond */
-  color: #202020;
+  color: var(--color-text-main);
   display: inline-block;
   transform: translateY(-1px); /* Fine tune alignment */
 }
