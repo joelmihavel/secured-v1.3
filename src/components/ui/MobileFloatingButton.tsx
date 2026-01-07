@@ -36,9 +36,10 @@ export const MobileFloatingButton = ({ activeTab, onTabChange }: MobileFloatingB
                     href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
                     target="_blank"
                     rel="noopener noreferrer"
-                    variant="primary-rounded"
+                    variant="primary"
+                    pastelColor="violet"
                     size="sm"
-                    className="bg-black text-white px-5 py-2.5 font-bold text-xs shadow-xl"
+                    className="rounded-full px-5 py-2.5 font-bold text-xs"
                 >
                     Get App
                 </Button>
