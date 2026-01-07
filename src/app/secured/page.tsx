@@ -23,7 +23,7 @@ export default function FlentSecurePage() {
 
             {/* Sections changing based on tab */}
             {/* Using key to force re-render when tab changes for animation */}
-            <div key={activeTab} className="animate-in fade-in duration-500">
+            <div className="animate-in fade-in duration-500">
                 <section id="overview">
                     <SecureHero data={content.hero} />
                 </section>

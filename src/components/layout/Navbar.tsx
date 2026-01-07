@@ -14,8 +14,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useBreadcrumb } from "@/context/BreadcrumbContext";
-import { Tabs, TabsList } from "@/components/ui/tabs";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
 
@@ -274,50 +272,48 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     const renderSecureTabs = () => {
         if (variant !== "secure" || !activeTab || !onTabChange) return null;
 
+        const tabs = [
+            { value: 'tenant', label: 'Tenants' },
+            { value: 'landlord', label: 'Landlords' }
+        ];
+
         return (
             <div className={cn(
-                "hidden md:flex items-center bg-transparent pointer-events-auto",
-                isOpen && "invisible"
+                "hidden md:flex items-center bg-transparent pointer-events-auto z-40",
+                (isOpen || isHovered) && "opacity-0 pointer-events-none"
             )}>
-                <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
-                    <TabsList className="bg-gray-50 p-1 gap-1 h-auto rounded-full border border-black/5 shadow-sm flex items-center relative">
-                        {['tenant', 'landlord'].map((tabValue) => {
-                            const label = tabValue === 'tenant' ? 'Tenants' : 'Landlords';
-                            const isActive = activeTab === tabValue;
-                            
-                            return (
-                                <TabsPrimitive.Trigger
-                                    key={tabValue}
-                                    value={tabValue}
-                                    className={cn(
-                                        "relative h-9 rounded-full px-5 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 transition-none",
-                                        isActive ? "text-text-main" : "text-gray-500"
-                                    )}
-                                >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="secure-tab-pill"
-                                            className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
-                                            style={{ 
-                                                backgroundColor: 'var(--color-pastel-orange)',
-                                                willChange: 'transform'
-                                            }}
-                                            transition={{ 
-                                                type: "spring", 
-                                                stiffness: 400, 
-                                                damping: 30,
-                                                mass: 0.8
-                                            }}
-                                        />
-                                    )}
-                                    <span className="flex items-center gap-1 relative z-20">
-                                        <span className="hidden lg:inline">{label}</span>
-                                    </span>
-                                </TabsPrimitive.Trigger>
-                            );
-                        })}
-                    </TabsList>
-                </Tabs>
+                <div className="bg-gray-50 p-1 h-auto rounded-full border border-black/5 shadow-sm relative grid grid-cols-2">
+                    {/* Sliding pill - uses translateX for GPU-accelerated animation */}
+                    <motion.div
+                        className="absolute top-1 bottom-1 left-1 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full pointer-events-none"
+                        style={{ 
+                            backgroundColor: 'var(--color-pastel-orange)',
+                            width: 'calc(50% - 4px)',
+                        }}
+                        initial={false}
+                        animate={{ 
+                            x: activeTab === 'tenant' ? 0 : 'calc(100% + 4px)'
+                        }}
+                        transition={{ 
+                            type: "spring", 
+                            stiffness: 380, 
+                            damping: 30,
+                        }}
+                    />
+                    {/* Tab buttons - grid ensures equal widths */}
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.value}
+                            onClick={() => onTabChange(tab.value)}
+                            className={cn(
+                                "relative h-9 rounded-full px-6 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                                activeTab === tab.value ? "text-text-main" : "text-gray-500"
+                            )}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
             </div>
         );
     };
@@ -327,7 +323,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         <div
             ref={menuRef}
             className={cn(
-                "relative pointer-events-auto",
+                "relative pointer-events-auto h-11 w-11 md:h-14 md:w-14 flex-shrink-0 z-50",
                 // For expanded variant, hide hamburger on desktop (lg+)
                 showExpandedNav && "lg:hidden"
             )}
@@ -336,7 +332,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         >
             <div className="absolute -inset-4 bg-transparent z-[-1]" />
             <motion.div
-                className="bg-white shadow-lg border border-text-main flex flex-col items-start overflow-hidden"
+                className="absolute right-0 top-0 bg-white shadow-lg border border-text-main flex flex-col items-start overflow-hidden origin-top-right z-50"
                 initial="collapsed"
                 variants={{
                     collapsed: {
@@ -505,8 +501,12 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                             rel="noopener noreferrer"
                             variant="primary"
                             size="sm"
-                            className="md:hidden rounded-full bg-black text-white border border-white font-bold text-xs px-4 h-11 mr-2"
-                            style={{ backgroundColor: 'black', color: 'white', borderColor: 'white' }}
+                            className="md:hidden pointer-events-auto rounded-full px-5"
+                            style={{ 
+                                backgroundColor: 'black', 
+                                color: 'white',
+                                borderColor: 'white'
+                            }}
                         >
                             Get App
                         </Button>
