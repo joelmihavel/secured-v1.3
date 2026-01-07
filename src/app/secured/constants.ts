@@ -1,4 +1,6 @@
 
+export const APP_STORE_LINK = "https://apps.apple.com/in/app/secured-by-flent/id6757275258";
+
 export const TENANT_CONTENT = {
     hero: {
         heading: "Earn <span class='relative inline-block px-1 font-zin-italic'>1% back<svg class='absolute bottom-1 left-0 w-full h-3 text-brand-orange -z-10' viewBox='0 0 100 10' preserveAspectRatio='none'><path d='M0 5 Q 50 10 100 5' stroke='currentColor' stroke-width='12' opacity='0.6' /></svg></span>",
@@ -20,7 +22,7 @@ export const TENANT_CONTENT = {
             { icon: "check_circle", title: "Zero Security Deposits", comingSoon: false },
             { icon: "design_services", title: "Home Design @ Zero Service Fee", comingSoon: true }
         ],
-        lottie: "/secure-lotties/Fold2/tenant_fold_2.json"
+        lottie: "/secure-lotties/Fold2/Tenant-Fold-2 v2.json"
     },
     marquee: {
         top: "Welcome to the right side of renting",
@@ -99,14 +101,14 @@ export const LANDLORD_CONTENT = {
         top: "High Value Property",
         bottom: "Needs High Value Protection",
         topTextColor: "text-text-main",
-        topBgColor: "bg-white",
-        bottomTextColor: "text-text-main",
-        bottomBgColor: "bg-brand-orange"
+        topBgColor: "bg-brand-orange",
+        bottomTextColor: "text-brand-orange",
+        bottomBgColor: "bg-ground-brown"
     },
     valueProp: {
         heading: "Tenant or Not. Get paid on time,<br/>every month.",
         subtext: "No questions-asked coverage up to ₹1.5 lakh",
-        cta: "Request an Invite",
+        cta: "Secure my Rental Income",
         ctaTagline: "Simple | Compliant | No Workarounds",
         lottie: "/secure-lotties/Fold3/landlordfold3.json",
         cards: [

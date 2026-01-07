@@ -43,7 +43,7 @@ export const SecureFooter = () => {
 
                             {/* Stat 3 */}
                             <div>
-                                <p className="text-fluid-h2 font-zin font-extrabold text-white mb-1">INR 27 Cr</p>
+                                <p className="text-fluid-h2 font-zin font-extrabold text-white mb-1">INR 21 Cr</p>
                                 <p className="text-subtitle-sm text-white/50 font-body">Raised since inception</p>
                             </div>
                         </div>
@@ -136,13 +136,13 @@ export const SecureFooter = () => {
                         {/* Right Column - Links */}
                         <div className="flex flex-col gap-6 md:gap-8 text-left md:text-right">
                             <Link
-                                href="/explore"
+                                href="https://www.flent.in/"
                                 className="text-fluid-h3 font-body font-medium hover:opacity-70 transition-opacity"
                             >
                                 Explore
                             </Link>
                             <Link
-                                href="/contact"
+                                href="https://wa.me/918904695925?text=Curious+to+know+more+about+Flent%E2%80%94tell+me+everything%21+%5BWAX-UK6N%5D"
                                 className="text-fluid-h3 font-body font-medium hover:opacity-70 transition-opacity"
                             >
                                 Contact

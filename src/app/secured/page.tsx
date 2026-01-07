@@ -10,16 +10,8 @@ import { GetStarted } from "./sections/GetStarted";
 import { AppDownload } from "./sections/AppDownload";
 import { SecureFAQ } from "./sections/SecureFAQ";
 import { SecureFooter } from "./sections/SecureFooter";
-import { BottomNavigation } from "@/components/ui/BottomNavigation";
-import { WHATSAPP_LINK } from "@/constants";
-
-const secureNavLinks = [
-    { name: "Benefits", href: "#rent-reward" },
-    { name: "Features", href: "#features" },
-    { name: "Steps", href: "#get-started" },
-    { name: "Download", href: "#download" },
-    { name: "FAQ", href: "#faq" },
-];
+import { DesktopFloatingQR } from "@/components/ui/DesktopFloatingQR";
+import { MobileFloatingButton } from "@/components/ui/MobileFloatingButton";
 
 export default function FlentSecurePage() {
     const [activeTab, setActiveTab] = useState<string>("tenant");
@@ -55,12 +47,8 @@ export default function FlentSecurePage() {
             </div>
 
             <SecureFooter />
-            <BottomNavigation
-                customLinks={secureNavLinks}
-                customWhatsappLink={WHATSAPP_LINK}
-                showAtId="rent-reward"
-                showChat={false}
-            />
+            <DesktopFloatingQR />
+            <MobileFloatingButton />
         </main>
     );
 }

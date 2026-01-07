@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Lottie from "lottie-react";
 import { OpenSection } from "@/components/layout/OpenSection";
+import { Button } from "@/components/ui/Button";
 
 interface ValuePropCard {
     title: string;
@@ -83,9 +84,15 @@ export const ValueProp = ({ data, variant = "tenant" }: ValuePropProps) => {
 
                 {/* CTA Section */}
                 <div className="flex flex-col items-center">
-                    <button className="w-full max-w-sm bg-brand-orange text-text-main font-heading font-semibold text-base md:text-lg py-4 px-8 rounded-2xl border-2 border-brand-orange hover:bg-brand-orange/90 transition-all text-center shadow-lg shadow-brand-orange/20">
+                    <Button
+                        href="#download"
+                        variant="primary-rounded"
+                        pastelColor="orange"
+                        size="lg"
+                        className="w-full max-w-sm text-base md:text-lg"
+                    >
                         {data.cta}
-                    </button>
+                    </Button>
                     {data.ctaTagline && (
                         <p className="mt-4 text-xs md:text-sm text-gray-400 font-body">
                             {data.ctaTagline}

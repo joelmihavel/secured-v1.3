@@ -20,7 +20,7 @@ import { WHATSAPP_LINK } from "@/constants";
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
-    { name: "Flent Secure", href: "/secured", sectionId: "" },
+    { name: "Secured", href: "/secured", sectionId: "" },
 ];
 
 type NavbarVariant = "hamburger" | "expanded" | "secure";
@@ -276,23 +276,48 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "flex items-center bg-white rounded-full shadow-lg border border-text-main p-1 h-11 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
+                "flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-11 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none md:w-auto md:opacity-100 md:pointer-events-auto" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange}>
-                    <TabsList className="bg-gray-100 p-1 rounded-full h-full border-none flex items-center">
-                        <TabsTrigger
-                            value="tenant"
-                            className="rounded-full px-3 md:px-5 lg:px-7 py-1 md:py-2.5 data-[state=active]:bg-black data-[state=active]:text-white transition-all text-xs md:text-sm font-semibold h-full"
-                        >
-                            <span className="hidden md:inline">For </span>Tenant
+                    <TabsList className="bg-gray-100 p-1 rounded-xl h-full border-none flex items-center gap-0">
+                        {['tenant', 'landlord'].map((tabValue, index) => {
+                            const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
+                            const isFirst = index === 0;
+                            const isLast = index === 1; // Since there are only 2 items
+
+                            return (
+                                <TabsTrigger
+                                    key={tabValue}
+                                    value={tabValue}
+                                    className={cn(
+                                        "group relative overflow-hidden px-4 md:px-7 py-2 md:py-2.5 transition-all h-full shadow-sm border border-transparent data-[state=active]:border-black/10 data-[state=active]:bg-transparent data-[state=active]:text-inherit",
+                                        isFirst && "rounded-l-lg rounded-r-none border-r-0",
+                                        isLast && "rounded-r-lg rounded-l-none border-l-0"
+                                    )}
+                                >
+                                    {/* Background Animation */}
+                                    <div className="absolute inset-0 bg-[#ff9a6d] translate-y-[175%] rotate-12 group-data-[state=active]:translate-y-0 group-data-[state=active]:rotate-0 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] z-0 origin-bottom" />
+
+                                    {/* Text Animation Container */}
+                                    <div className="relative z-10 overflow-hidden block">
+                                        <div className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-data-[state=active]:-translate-y-full">
+                                            {/* Default State (Black Text) */}
+                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-text-main py-0.5 whitespace-nowrap">
+                                                <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
+                                            </span>
+                                            {/* Active State (White Text) - Positioned absolutely via flex column trick above, but let's be safer with absolute here? 
+                                                Actually, flex-col with height auto and duplicate content works if container is constrained. 
+                                                But standard translate up reveals next element.
+                                            */}
+                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-white py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
+                                                <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
+                                            </span>
+                                        </div>
+                                    </div>
                         </TabsTrigger>
-                        <TabsTrigger
-                            value="landlord"
-                            className="rounded-full px-3 md:px-5 lg:px-7 py-1 md:py-2.5 data-[state=active]:bg-black data-[state=active]:text-white transition-all text-xs md:text-sm font-semibold h-full"
-                        >
-                            <span className="hidden md:inline">For </span>Landlord
-                        </TabsTrigger>
+                            );
+                        })}
                     </TabsList>
                 </Tabs>
             </div>
@@ -440,7 +465,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
     return (
         <nav className={cn(
-            "fixed top-0 left-0 right-0 z-50 pt-3.5 md:pt-6 pb-2 pointer-events-none",
+            "fixed top-[var(--top-banner-height,0px)] left-0 right-0 z-50 pt-3.5 md:pt-6 pb-2 pointer-events-none transition-[top] duration-200",
             variant === "secure" ? "px-4 md:px-8 lg:px-12" : "px-3 sm:px-4 md:px-6 lg:px-8"
         )}>
             <div className={cn(

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useInView } from "framer-motion";
 import { IconBrandApple, IconBrandAndroid } from "@tabler/icons-react";
 import { OpenSection } from "@/components/layout/OpenSection";
+import { Button } from "@/components/ui/Button";
 
 export const AppDownload = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -78,8 +79,8 @@ export const AppDownload = () => {
             <div className="max-w-7xl mx-auto  px-4 md:px-8 lg:px-12 pb-12 md:pb-24">
                 <div className="bg-[#121212] rounded-3xl pt-12 p-8 md:p-12 relative overflow-hidden">
 
-                    {/* Flent Logo Icon using Image */}
-                    <div className="absolute top-6 right-6 md:top-8 md:right-8">
+                    {/* Flent Logo Icon using Image - REMOVED */}
+                    {/* <div className="absolute top-6 right-6 md:top-8 md:right-8">
                         <Image
                             src="/secure-lotties/AppDownloadAssets/AppDownload_FlentLogo.png"
                             alt="Flent Logo"
@@ -87,11 +88,16 @@ export const AppDownload = () => {
                             height={48}
                             className="w-10 h-10 md:w-12 md:h-12"
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="grid md:grid-cols-[auto,1fr] gap-8 md:gap-16 items-center">
+                    <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center justify-center">
                         {/* QR Code */}
-                        <div className="bg-bg-white p-4 rounded-2xl w-fit mx-auto md:mx-0">
+                        <a 
+                            href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-bg-white p-4 rounded-2xl w-fit mx-auto md:mx-0 flex-shrink-0 cursor-pointer hover:scale-105 transition-transform"
+                        >
                             <Image
                                 src="/secure-lotties/AppDownloadAssets/AppDownload_QR.png"
                                 alt="Scan QR Code"
@@ -99,28 +105,32 @@ export const AppDownload = () => {
                                 height={160}
                                 className="w-32 h-32 md:w-40 md:h-40"
                             />
-                        </div>
+                        </a>
 
                         {/* Text and Buttons */}
-                        <div className="text-center md:text-left space-y-6">
-                            <div className="space-y-2">
+                        <div className="text-center md:text-left space-y-6 max-w-xl">
+                            <div className="space-y-4">
                                 <h3 className="text-text-invert text-fluid-h2 font-heading font-medium leading-tight">
-                                    Get the Flent app to make renting <br className="hidden md:block" /> simpler, faster, and stress-free.
+                                    Make your rent work <br className="hidden md:block" /> for you
                                 </h3>
                                 <p className="text-text-invert/60 text-subtitle">
                                     Scan the QR or tap below to download and get started.
                                 </p>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2">
-                                <button className="flex items-center justify-center gap-3 bg-brand-orange hover:bg-brand-orange/80 text-text-main px-6 py-4 rounded-xl font-medium transition-colors w-full sm:w-auto">
-                                    <IconBrandApple className="w-6 h-6" />
-                                    <span>Download on App Store</span>
-                                </button>
-                                <button className="flex items-center justify-center gap-3 bg-pastel-orange hover:bg-pastel-orange/80 text-text-main px-6 py-4 rounded-xl font-medium transition-colors w-full sm:w-auto">
-                                    <IconBrandAndroid className="w-6 h-6" />
-                                    <span>Download On Play Store (Coming Soon)</span>
-                                </button>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start pt-2 px-4 sm:px-0">
+                                <Button
+                                    href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    variant="primary-rounded"
+                                    size="lg"
+                                    className="w-full sm:w-auto bg-brand-orange border-black text-black hover:bg-brand-orange/90 shadow-[0px_4px_0px_0px_rgba(21,16,46,0.1)] px-6"
+                                    leftIcon={<IconBrandApple className="w-5 h-5 flex-shrink-0" />}
+                                    style={{ color: "black", borderColor: "black" }}
+                                >
+                                    <span className="whitespace-normal text-center leading-tight">Download on App Store</span>
+                                </Button>
                             </div>
                         </div>
                     </div>

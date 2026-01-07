@@ -25,7 +25,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
     const topContent = (
         <>
             {[...Array(8)].map((_, i) => (
-                <span key={i} className={`text-fluid-h1 font-heading ${topTextColor} tracking-tighter shrink-0`}>
+                <span key={i} className={`text-xl sm:text-2xl md:text-4xl lg:text-fluid-h1 font-heading ${topTextColor} tracking-tight shrink-0`}>
                     {data.top}
                 </span>
             ))}
@@ -35,7 +35,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
     const bottomContent = (
         <>
             {[...Array(8)].map((_, i) => (
-                <span key={i} className={`text-fluid-h1 font-heading ${bottomTextColor} tracking-tighter shrink-0 drop-shadow-sm`}>
+                <span key={i} className={`text-xl sm:text-2xl md:text-4xl lg:text-fluid-h1 font-heading ${bottomTextColor} tracking-tight shrink-0 drop-shadow-sm`}>
                     {data.bottom}
                 </span>
             ))}
@@ -56,7 +56,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
                     <motion.div
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
-                        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 md:space-x-24 py-6 md:py-8 shrink-0 pr-12 md:pr-24"
                     >
                         {topContent}
@@ -64,7 +64,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
                     <motion.div
                         initial={{ x: 0 }}
                         animate={{ x: "-100%" }}
-                        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 md:space-x-24 py-6 md:py-8 shrink-0 pr-12 md:pr-24"
                     >
                         {topContent}
@@ -82,7 +82,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
                     <motion.div
                         initial={{ x: "-100%" }}
                         animate={{ x: "0%" }}
-                        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 md:space-x-24 py-6 md:py-8 shrink-0 pl-12 md:pl-24"
                     >
                         {bottomContent}
@@ -90,7 +90,7 @@ export const SecureMarquee = ({ data }: SecureMarqueeProps) => {
                     <motion.div
                         initial={{ x: "-100%" }}
                         animate={{ x: "0%" }}
-                        transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
                         className="whitespace-nowrap flex items-center space-x-12 md:space-x-24 py-6 md:py-8 shrink-0 pl-12 md:pl-24"
                     >
                         {bottomContent}

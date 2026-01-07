@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Lottie from "lottie-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { IconArrowRight } from "@tabler/icons-react";
+import { Button } from "@/components/ui/Button";
 
 interface SecureHeroProps {
     data: {
@@ -28,7 +29,7 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
     }, [data.lottie]);
 
     const TextContent = (
-        <div className="w-full flex flex-col items-start text-left relative z-10 max-w-xl mx-auto lg:mx-0">
+        <div className="w-full flex flex-col items-start text-left relative z-10 max-w-xl mx-auto">
             {/* Main Heading */}
             <h1
                 className="text-hero-h1 font-heading font-medium text-text-main mb-4"
@@ -45,12 +46,15 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
             </p>
             {/* CTA Button Group */}
             <div className="flex items-center gap-3 w-full max-w-md mb-6">
-                <button className="flex-[4] bg-brand-orange text-text-main font-heading font-semibold text-hero-body py-4 md:py-5 px-6 md:px-8 rounded-2xl border-2 border-brand-orange hover:bg-brand-orange/90 transition-all text-center shadow-lg shadow-brand-orange/20">
+                <Button
+                    href="#download"
+                    variant="primary-rounded"
+                    pastelColor={data.themeColor as any}
+                    size="lg"
+                    className="flex-[4] w-full text-base md:text-lg"
+                >
                     {data.cta}
-                </button>
-                <button className="flex-1 aspect-square bg-brand-orange text-text-main rounded-2xl border-2 border-brand-orange hover:bg-brand-orange/90 transition-all flex items-center justify-center shadow-lg shadow-brand-orange/20">
-                    <IconArrowRight className="w-6 h-6 md:w-7 md:h-7" />
-                </button>
+                </Button>
             </div>
             {/* Tagline */}
             <p className="text-hero-tagline text-gray-400 font-body opacity-80">
@@ -82,15 +86,15 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
             <div className="absolute inset-0 z-0 bg-gradient-to-t from-pastel-orange/40 via-pastel-orange/10 to-white" />
 
             {/* Main Content Container */}
-            <div className={`flex flex-col-reverse ${data.layoutReverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-stretch justify-between w-full h-full relative z-10 overflow-hidden`}>
+            <div className={`flex flex-col-reverse ${data.layoutReverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-stretch justify-center w-full h-full relative z-10 overflow-hidden mx-auto max-w-7xl`}>
 
-                {/* Lottie Container - 50% height on mobile, 60% Width on desktop */}
-                <div className="w-full lg:w-[60%] h-1/2 lg:h-full flex items-end justify-center">
+                {/* Lottie Container - 50% height on mobile, 50% Width on desktop */}
+                <div className="w-full lg:w-1/2 h-1/2 lg:h-full flex items-end justify-center lg:flex-1">
                     {LottieContent}
                 </div>
 
-                {/* Content Container - 50% height on mobile, 40% Width on desktop */}
-                <div className={`w-full lg:w-[40%] h-1/2 lg:h-full flex items-center pt-48 pb-6 lg:py-0 ${data.layoutReverse ? 'lg:justify-end lg:pl-12' : 'lg:justify-start lg:pr-12'} px-4 md:px-8 lg:px-0`}>
+                {/* Content Container - 50% height on mobile, 50% Width on desktop */}
+                <div className={`w-full lg:w-1/2 h-1/2 lg:h-full flex items-center pt-48 pb-6 lg:py-0 justify-center px-4 md:px-8 lg:px-0 lg:flex-1`}>
                     {TextContent}
                 </div>
 
