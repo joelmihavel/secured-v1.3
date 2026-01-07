@@ -275,11 +275,11 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "hidden md:flex items-center bg-transparent pointer-events-auto transition-all duration-300",
+                "flex items-center bg-transparent pointer-events-auto transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
-                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
+                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-11 md:h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
                         {['tenant', 'landlord'].map((tabValue) => {
                             const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
                             const isActive = activeTab === tabValue;
@@ -289,7 +289,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "relative h-10 rounded-full px-6 transition-colors duration-200 font-heading font-bold tracking-wide text-sm z-10",
+                                        "relative h-9 md:h-10 rounded-full px-4 md:px-6 transition-colors duration-200 font-heading font-bold tracking-wide text-xs md:text-sm z-10",
                                         "data-[state=active]:bg-transparent data-[state=active]:shadow-none",
                                         isActive ? "text-text-main" : "text-gray-500 hover:text-gray-700"
                                     )}
@@ -299,7 +299,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1">
@@ -451,6 +451,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 <Button variant="ghost" size="sm" className="rounded-full px-2.5" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
+                <div className="w-0.5" />
                 <Button
                     variant="primary"
                     size="sm"
