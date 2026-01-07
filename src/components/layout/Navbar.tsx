@@ -299,7 +299,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1 relative z-20">
@@ -445,10 +445,10 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
+                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
+                <Button variant="ghost" size="sm" className="rounded-full hover:bg-transparent" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
                 <Button
