@@ -280,9 +280,9 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 isOpen ? "w-0 opacity-0 pointer-events-none" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange} className="h-full flex items-center">
-                    <TabsList className="bg-gray-100/80 p-1 gap-0 h-14 rounded-full border border-black/5 shadow-sm flex items-center relative">
+                    <TabsList className="bg-gray-50 p-1 gap-1 h-auto rounded-full border border-black/5 shadow-sm flex items-center relative">
                         {['tenant', 'landlord'].map((tabValue) => {
-                            const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
+                            const label = tabValue === 'tenant' ? 'Tenants' : 'Landlords';
                             const isActive = activeTab === tabValue;
                             
                             return (
@@ -290,7 +290,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "relative h-10 rounded-full px-6 transition-colors duration-300 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                                        "relative h-9 rounded-full px-5 transition-colors duration-300 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
                                         isActive ? "text-text-main" : "text-gray-500 hover:text-gray-900"
                                     )}
                                 >
@@ -299,11 +299,11 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1 relative z-20">
-                                        <span className="hidden lg:inline">I'm a&nbsp;</span>{label.toLowerCase()}
+                                        <span className="hidden lg:inline">{label}</span>
                                     </span>
                                 </TabsPrimitive.Trigger>
                             );
@@ -445,24 +445,10 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="rounded-full hover:bg-transparent" 
-                    onClick={() => router.push('/homes')}
-                    whileHover={{ scale: 1, y: 0 }}
-                    whileTap={{ scale: 1, y: 0 }}
-                >
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
-                <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="rounded-full hover:bg-transparent" 
-                    onClick={() => router.push('/about')}
-                    whileHover={{ scale: 1, y: 0 }}
-                    whileTap={{ scale: 1, y: 0 }}
-                >
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
                 <Button

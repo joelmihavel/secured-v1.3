@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList } from "@/components/ui/tabs";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "@/lib/utils";
 
 interface MobileFloatingButtonProps {
@@ -51,41 +52,34 @@ export const MobileFloatingButton = ({ activeTab, onTabChange }: MobileFloatingB
                     transition={{ type: "spring", stiffness: 300, damping: 30, delay: 0.1 }}
                     className="pointer-events-auto"
                 >
-                    <div className="flex items-center bg-white rounded-full shadow-xl border-none p-1 h-10 overflow-hidden">
+                    <div className="flex items-center bg-white rounded-full shadow-xl border-none p-1 h-auto overflow-hidden">
                         <Tabs value={activeTab} onValueChange={onTabChange}>
-                            <TabsList className="bg-gray-100 p-1 rounded-full h-full border-none flex items-center gap-0">
-                                {['tenant', 'landlord'].map((tabValue, index) => {
-                                    const label = tabValue === 'tenant' ? 'Tenant' : 'Landlord';
-                                    const isFirst = index === 0;
-                                    const isLast = index === 1;
+                            <TabsList className="bg-gray-50 p-1 gap-1 h-auto rounded-full border border-black/5 shadow-sm flex items-center relative">
+                                {['tenant', 'landlord'].map((tabValue) => {
+                                    const label = tabValue === 'tenant' ? 'Tenants' : 'Landlords';
+                                    const isActive = activeTab === tabValue;
 
                                     return (
-                                        <TabsTrigger
+                                        <TabsPrimitive.Trigger
                                             key={tabValue}
                                             value={tabValue}
                                             className={cn(
-                                                "group relative overflow-hidden px-4 py-1 transition-all h-full shadow-sm border border-transparent data-[state=active]:border-black/10 data-[state=active]:bg-transparent data-[state=active]:text-inherit",
-                                                isFirst && "rounded-l-full rounded-r-none border-r-0",
-                                                isLast && "rounded-r-full rounded-l-none border-l-0"
+                                                "relative h-9 rounded-full px-5 transition-colors duration-300 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                                                isActive ? "text-text-main" : "text-gray-500 hover:text-gray-900"
                                             )}
                                         >
-                                            {/* Background Animation */}
-                                            <div className="absolute inset-0 bg-[#ff9a6d] translate-y-[175%] rotate-12 group-data-[state=active]:translate-y-0 group-data-[state=active]:rotate-0 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] z-0 origin-bottom" />
-
-                                            {/* Text Animation Container */}
-                                            <div className="relative z-10 overflow-hidden block">
-                                                <div className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-data-[state=active]:-translate-y-full">
-                                                    {/* Default State (Black Text) */}
-                                                    <span className="flex items-center gap-1 text-[11px] font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap">
-                                                        <span>I&apos;m a&nbsp;</span>{label}
-                                                    </span>
-                                                    {/* Active State (Black Text) */}
-                                                    <span className="flex items-center gap-1 text-[11px] font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
-                                                        <span>I&apos;m a&nbsp;</span>{label}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </TabsTrigger>
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId="secure-mobile-tab-pill"
+                                                    className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
+                                                    style={{ backgroundColor: 'var(--color-pastel-orange)' }}
+                                                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                                                />
+                                            )}
+                                            <span className="flex items-center gap-1 relative z-20">
+                                                {label}
+                                            </span>
+                                        </TabsPrimitive.Trigger>
                                     );
                                 })}
                             </TabsList>
