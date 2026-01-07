@@ -290,7 +290,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "relative h-9 rounded-full px-5 transition-colors duration-300 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
+                                        "relative h-9 rounded-full px-5 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
                                         isActive ? "text-text-main" : "text-gray-500 hover:text-gray-900"
                                     )}
                                 >
@@ -299,7 +299,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                             layoutId="secure-tab-pill"
                                             className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
                                             style={{ backgroundColor: 'var(--color-pastel-orange)' }}
-                                            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                                            transition={{ type: "spring", stiffness: 500, damping: 35 }}
                                         />
                                     )}
                                     <span className="flex items-center gap-1 relative z-20">
@@ -489,6 +489,18 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 <div className="flex justify-end gap-2 md:gap-3 items-start">
                     {renderSecureTabs()}
                     {renderExpandedNav()}
+                    {/* Mobile Get App Button */}
+                    <Button
+                        href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="primary"
+                        size="sm"
+                        className="md:hidden rounded-full bg-black text-white border-none font-bold text-xs px-4 h-11"
+                        style={{ backgroundColor: 'black', color: 'white' }}
+                    >
+                        Get App
+                    </Button>
                     {renderHamburgerMenu()}
                 </div>
             </div>

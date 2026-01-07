@@ -16,6 +16,7 @@ export const MobileFloatingButton = ({ activeTab, onTabChange }: MobileFloatingB
     // We want the controls to be visible on mobile always (since navbar toggle is hidden)
     // or maybe keep the animation but default to visible?
     // User asked for "Get App" to be bottom left and Toggle to be bottom right.
+    // UPDATE: "Get App" moved to Navbar top right. Toggle centered at bottom.
     
     // If we want it always visible, we don't need the scroll listener for visibility.
     // However, the original button had a scroll listener. 
@@ -23,30 +24,9 @@ export const MobileFloatingButton = ({ activeTab, onTabChange }: MobileFloatingB
     // I'll make it always visible for now as it replaces primary navigation (Toggle).
 
     return (
-        <div className="md:hidden fixed bottom-6 left-4 right-4 z-50 flex items-end justify-between pointer-events-none gap-2">
+        <div className="md:hidden fixed bottom-6 left-4 right-4 z-50 flex items-end justify-center pointer-events-none gap-2">
             
-            {/* Get App Button - Bottom Left */}
-            <motion.div
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="pointer-events-auto shadow-2xl rounded-full"
-            >
-                <Button
-                    href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="primary"
-                    pastelColor="violet"
-                    size="sm"
-                    className="rounded-full px-5 py-2.5 font-bold text-xs bg-black text-white border-none"
-                    style={{ backgroundColor: 'black', color: 'white', borderColor: 'transparent' }}
-                >
-                    Get App
-                </Button>
-            </motion.div>
-
-            {/* Tenant/Landlord Toggle - Bottom Right */}
+            {/* Tenant/Landlord Toggle - Bottom Center */}
             {activeTab && onTabChange && (
                 <motion.div
                     initial={{ y: 100, opacity: 0 }}
