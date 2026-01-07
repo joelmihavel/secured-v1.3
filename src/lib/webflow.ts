@@ -158,6 +158,7 @@ export interface Room extends WebflowItem {
     "security-deposit"?: number; // 6-month lock-in deposit
     "9-month-security-deposit"?: number;
     "11-month-security-deposit"?: number;
+    "ranking-order"?: number;
   };
 }
 
