@@ -276,7 +276,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className={cn(
-                "flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-11 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
+                "flex items-center bg-white rounded-2xl shadow-lg border-none p-1 h-10 md:h-14 pointer-events-auto overflow-hidden transition-all duration-300",
                 isOpen ? "w-0 opacity-0 pointer-events-none md:w-auto md:opacity-100 md:pointer-events-auto" : "w-auto opacity-100"
             )}>
                 <Tabs value={activeTab} onValueChange={onTabChange}>
@@ -291,7 +291,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     key={tabValue}
                                     value={tabValue}
                                     className={cn(
-                                        "group relative overflow-hidden px-4 md:px-7 py-2 md:py-2.5 transition-all h-full shadow-sm border border-transparent data-[state=active]:border-black/10 data-[state=active]:bg-transparent data-[state=active]:text-inherit",
+                                        "group relative overflow-hidden px-4 md:px-7 py-1 md:py-2.5 transition-all h-full shadow-sm border border-transparent data-[state=active]:border-black/10 data-[state=active]:bg-transparent data-[state=active]:text-inherit",
                                         isFirst && "rounded-l-lg rounded-r-none border-r-0",
                                         isLast && "rounded-r-lg rounded-l-none border-l-0"
                                     )}
@@ -303,14 +303,14 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                     <div className="relative z-10 overflow-hidden block">
                                         <div className="flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] group-data-[state=active]:-translate-y-full">
                                             {/* Default State (Black Text) */}
-                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap">
+                                            <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap">
                                                 <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
                                             </span>
                                             {/* Active State (White Text) - Positioned absolutely via flex column trick above, but let's be safer with absolute here? 
                                                 Actually, flex-col with height auto and duplicate content works if container is constrained. 
                                                 But standard translate up reveals next element.
                                             */}
-                                            <span className="flex items-center gap-1 text-sm md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
+                                            <span className="flex items-center gap-1 text-[11px] md:text-sm font-bold font-heading tracking-wide text-black py-0.5 whitespace-nowrap absolute top-full left-0 w-full">
                                                 <span className="hidden md:inline">I&apos;m a&nbsp;</span>{label}
                                             </span>
                                         </div>
