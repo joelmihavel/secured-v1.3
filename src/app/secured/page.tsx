@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TENANT_CONTENT, LANDLORD_CONTENT } from "./constants";
 import { Navbar } from "@/components/layout/Navbar";
 import { SecureHero } from "./sections/SecureHero";
@@ -12,14 +12,35 @@ import { SecureFAQ } from "./sections/SecureFAQ";
 import { SecureFooter } from "./sections/SecureFooter";
 import { DesktopFloatingQR } from "@/components/ui/DesktopFloatingQR";
 import { MobileFloatingButton } from "@/components/ui/MobileFloatingButton";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function FlentSecurePage() {
-    const [activeTab, setActiveTab] = useState<string>("tenant");
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const landlordParam = searchParams.get("landlord");
+
+    const [activeTab, setActiveTab] = useState<"tenant" | "landlord">("tenant");
+
+    useEffect(() => {
+        if (landlordParam === "true") {
+            setActiveTab("landlord");
+        } else {
+            setActiveTab("tenant");
+        }
+    }, [landlordParam]);
+
     const content = activeTab === "tenant" ? TENANT_CONTENT : LANDLORD_CONTENT;
 
     return (
         <main className="bg-white-white min-h-screen">
-            <Navbar variant="secure" activeTab={activeTab} onTabChange={setActiveTab} />
+            <Navbar
+                variant="secure"
+                activeTab={activeTab}
+                onTabChange={(tab) => {
+                    router.replace(`/secured?landlord=${tab === "landlord"}`);
+                }}
+            />
 
             {/* Sections changing based on tab */}
             {/* Using key to force re-render when tab changes for animation */}
@@ -48,7 +69,12 @@ export default function FlentSecurePage() {
 
             <SecureFooter />
             <DesktopFloatingQR />
-            <MobileFloatingButton activeTab={activeTab} onTabChange={setActiveTab} />
+            <MobileFloatingButton
+                activeTab={activeTab}
+                onTabChange={(tab) => {
+                    router.replace(`/secured?landlord=${tab === "landlord"}`);
+                }}
+            />
         </main>
     );
 }
