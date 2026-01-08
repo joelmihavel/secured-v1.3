@@ -282,37 +282,37 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 "hidden md:flex items-center bg-transparent pointer-events-auto z-40",
                 (isOpen || isHovered) && "opacity-0 pointer-events-none"
             )}>
-                <div className="bg-gray-50 p-1 h-auto rounded-full border border-black/5 shadow-sm relative grid grid-cols-2">
-                    {/* Sliding pill - uses translateX for GPU-accelerated animation */}
-                    <motion.div
-                        className="absolute top-1 bottom-1 left-1 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full pointer-events-none"
-                        style={{ 
-                            backgroundColor: 'var(--color-pastel-orange)',
-                            width: 'calc(50% - 4px)',
-                        }}
-                        initial={false}
-                        animate={{ 
-                            x: activeTab === 'tenant' ? 0 : 'calc(100% + 4px)'
-                        }}
-                        transition={{ 
-                            type: "spring", 
-                            stiffness: 380, 
-                            damping: 30,
-                        }}
-                    />
+                <div className="bg-gray-50 p-1 h-auto rounded-full border border-black/5 shadow-sm relative grid grid-cols-2 isolate">
                     {/* Tab buttons - grid ensures equal widths */}
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.value}
-                            onClick={() => onTabChange(tab.value)}
-                            className={cn(
-                                "relative h-9 rounded-full px-6 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2",
-                                activeTab === tab.value ? "text-text-main" : "text-gray-500"
-                            )}
-                        >
-                            {tab.label}
-                        </button>
-                    ))}
+                    {tabs.map((tab) => {
+                        const isActive = activeTab === tab.value;
+                        return (
+                            <button
+                                key={tab.value}
+                                onClick={() => onTabChange(tab.value)}
+                                className={cn(
+                                    "relative h-9 rounded-full px-6 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 transition-colors duration-200",
+                                    isActive ? "text-text-main" : "text-gray-500 hover:text-gray-700"
+                                )}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="secure-tab-pill"
+                                        className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
+                                        style={{
+                                            backgroundColor: 'var(--color-pastel-orange)',
+                                        }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 200,
+                                            damping: 25,
+                                        }}
+                                    />
+                                )}
+                                <span className="relative z-10">{tab.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -502,8 +502,8 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                             variant="primary"
                             size="sm"
                             className="md:hidden pointer-events-auto rounded-full px-5"
-                            style={{ 
-                                backgroundColor: 'black', 
+                            style={{
+                                backgroundColor: 'black',
                                 color: 'white',
                                 borderColor: 'white'
                             }}

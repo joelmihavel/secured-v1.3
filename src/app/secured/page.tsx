@@ -14,13 +14,29 @@ import { DesktopFloatingQR } from "@/components/ui/DesktopFloatingQR";
 import { MobileFloatingButton } from "@/components/ui/MobileFloatingButton";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function FlentSecurePage() {
+// Separate component to handle search params and main logic
+function SecurePageContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const landlordParam = searchParams.get("landlord");
 
     const [activeTab, setActiveTab] = useState<"tenant" | "landlord">("tenant");
+
+    const handleTabChange = (tab: string) => {
+        const newTab = tab as "tenant" | "landlord";
+        setActiveTab(newTab);
+        // Defer URL update to prevent frame drops during the switcher animation
+        setTimeout(() => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (newTab === "landlord") {
+                params.set("landlord", "true");
+            } else {
+                params.delete("landlord");
+            }
+            router.replace(`/secured?${params.toString()}`, { scroll: false });
+        }, 10);
+    };
 
     useEffect(() => {
         if (landlordParam === "true") {
@@ -30,16 +46,15 @@ export default function FlentSecurePage() {
         }
     }, [landlordParam]);
 
-    const content = activeTab === "tenant" ? TENANT_CONTENT : LANDLORD_CONTENT;
+    const deferredTab = React.useDeferredValue(activeTab);
+    const content = deferredTab === "tenant" ? TENANT_CONTENT : LANDLORD_CONTENT;
 
     return (
         <main className="bg-white-white min-h-screen">
             <Navbar
                 variant="secure"
                 activeTab={activeTab}
-                onTabChange={(tab) => {
-                    router.replace(`/secured?landlord=${tab === "landlord"}`);
-                }}
+                onTabChange={handleTabChange}
             />
 
             {/* Sections changing based on tab */}
@@ -49,11 +64,11 @@ export default function FlentSecurePage() {
                     <SecureHero data={content.hero} />
                 </section>
                 <section id="rent-reward">
-                    <RentReward data={content.rentReward} variant={activeTab as "tenant" | "landlord"} />
+                    <RentReward data={content.rentReward} variant={deferredTab as "tenant" | "landlord"} />
                 </section>
                 <SecureMarquee data={content.marquee} />
                 <section id="features">
-                    <ValueProp data={content.valueProp} variant={activeTab as "tenant" | "landlord"} />
+                    <ValueProp data={content.valueProp} variant={deferredTab as "tenant" | "landlord"} />
                 </section>
                 <section id="get-started">
                     <GetStarted data={content.getStarted} />
@@ -63,7 +78,7 @@ export default function FlentSecurePage() {
                 </section>
                 <SecureMarquee data={content.marquee} />
                 <section id="faq">
-                    <SecureFAQ category={activeTab as "tenant" | "landlord"} />
+                    <SecureFAQ key={deferredTab} category={deferredTab as "tenant" | "landlord"} />
                 </section>
             </div>
 
@@ -71,10 +86,16 @@ export default function FlentSecurePage() {
             <DesktopFloatingQR />
             <MobileFloatingButton
                 activeTab={activeTab}
-                onTabChange={(tab) => {
-                    router.replace(`/secured?landlord=${tab === "landlord"}`);
-                }}
+                onTabChange={handleTabChange}
             />
         </main>
+    );
+}
+
+export default function FlentSecurePage() {
+    return (
+        <React.Suspense fallback={<div className="min-h-screen bg-white" />}>
+            <SecurePageContent />
+        </React.Suspense>
     );
 }
