@@ -39,7 +39,7 @@ export const HeroSection = ({
     },
 }: Partial<HeroSectionProps> = {}) => {
     const handleWhatsAppClick = () => {
-        const whatsappNumber = "+919876543210";
+        const whatsappNumber = "918904695925";
         const whatsappMessage = "Hi! I'm interested in listing my property with Flent.";
         const encodedMessage = encodeURIComponent(whatsappMessage);
         const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodedMessage}`;

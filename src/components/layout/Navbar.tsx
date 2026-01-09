@@ -97,7 +97,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     }, [isOpen]);
 
     const handleWhatsAppClick = () => {
-        const whatsappNumber = "+919876543210";
+        const whatsappNumber = "918904695925";
         const whatsappMessage = "Hi! I'm interested in learning more about Flent.";
         const encodedMessage = encodeURIComponent(whatsappMessage);
         const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodedMessage}`;
