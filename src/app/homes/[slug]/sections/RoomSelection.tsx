@@ -158,8 +158,8 @@ export const RoomSelection = ({
   };
 
   const handleFullHousePricingClick = () => {
-    const breakdown = getPropertyRentBreakdown(property);
     const lockIn: LockInPeriod = property.fieldData["6-month-lock-in"] ? 6 : 11;
+    const breakdown = getPropertyRentBreakdown(property, lockIn);
     setCalculatorData({
       title: "Full House",
       image: property.fieldData["property-thumbnail"]?.url || "",
