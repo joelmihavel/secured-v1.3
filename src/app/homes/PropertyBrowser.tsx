@@ -382,7 +382,7 @@ export const PropertyBrowser = ({
               return (
                 <Link
                   key={property.id}
-                  href={`/homes/${property.fieldData.slug}`}
+                  href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
                   className="block h-full"
                 >
                   <PropertyCard
