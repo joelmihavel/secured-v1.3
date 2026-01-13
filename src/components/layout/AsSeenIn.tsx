@@ -18,7 +18,7 @@ const PRESS_ARTICLES = [
         id: 2,
         logo: "/logos/realtycom.svg",
         alt: "ET Realty",
-        title: "Flent raises INR 6.5 Cr to build a new standard of renting",
+        title: "Flent raises INR 21 Cr to build a new standard of renting",
         link: "https://realty.economictimes.indiatimes.com/news/startups/prop-tech-startup-flent-raises-21-crore/126425396"
     },
     {
