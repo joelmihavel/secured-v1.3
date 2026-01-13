@@ -40,8 +40,6 @@ export default async function PropertiesPage() {
     getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
   ]);
 
-  console.log(properties);
-
   return (
     <main className="bg-bg-white">
       <OpenSection className="py-10  pb-0">
