@@ -15,7 +15,12 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const navLinks = [
+interface NavLink {
+  name: string;
+  href: string;
+}
+
+const defaultPropertyNavLinks: NavLink[] = [
   { name: "Rooms", href: "#rooms" },
   { name: "Amenities", href: "#amenities-heading" },
   { name: "Neighborhood", href: "#neighborhood" },
@@ -23,23 +28,48 @@ const navLinks = [
   { name: "FAQ", href: "#faq" },
 ];
 
-export const BottomNavigation: React.FC<{ property: Property }> = ({
+interface BottomNavigationProps {
+  property?: Property;
+  customLinks?: NavLink[];
+  customWhatsappLink?: string;
+  showAtId?: string;
+  showChat?: boolean;
+}
+
+export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   property,
+  customLinks,
+  customWhatsappLink,
+  showAtId = "rooms",
+  showChat = true
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("Rooms");
   const [showMobileNav, setShowMobileNav] = useState(false);
+
+  const navLinks = customLinks || defaultPropertyNavLinks;
+  const [activeSection, setActiveSection] = useState(navLinks[0]?.name || "");
+
+  const finalWhatsappLink = customWhatsappLink
+    ? customWhatsappLink
+    : (property ? getPropertyWhatsappLink(property.fieldData.name) : WHATSAPP_LINK);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
 
-      // Check if user has scrolled to the rooms section for mobile nav visibility
-      const roomsSection = document.getElementById("rooms");
-      if (roomsSection) {
-        const roomsTop = roomsSection.offsetTop;
-        setShowMobileNav(window.scrollY >= roomsTop - 100);
+      // Show mobile nav after scrolling 100px or reaching the trigger section
+      const triggerSection = document.getElementById(showAtId);
+      let isTriggered = window.scrollY > 100; // Default: show after 100px scroll
+
+      if (triggerSection) {
+        const triggerRect = triggerSection.getBoundingClientRect();
+        const triggerTop = triggerRect.top + window.scrollY;
+        if (window.scrollY >= triggerTop - 100) {
+          isTriggered = true;
+        }
       }
+
+      setShowMobileNav(isTriggered);
 
       for (const link of navLinks) {
         const element = document.querySelector(link.href) as HTMLElement;
@@ -59,7 +89,7 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
     window.addEventListener("scroll", handleScroll);
     handleScroll(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [navLinks, showAtId]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
     e.preventDefault();
@@ -96,7 +126,8 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
       <AnimatePresence>
         {showMobileNav && (
           <motion.div
-            className="md:hidden fixed bottom-6 left-0 right-0 z-50 px-4 flex justify-center pointer-events-none"
+            key="mobile-bottom-nav"
+            className="md:hidden fixed bottom-6 left-0 right-0 z-[100] px-4 flex justify-center pointer-events-none"
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
@@ -142,19 +173,21 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
                   </div>
 
                   {/* Right: CTA */}
-                  <Button
-                    href={getPropertyWhatsappLink(property.fieldData.name)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="secondary"
-                    size="md"
-                    leftIcon={<WhatsAppIcon />}
-                    className="rounded-full"
-                    data-cta-id="bottom_nav_chat_with_us"
-                    data-cta-context="bottom_navigation"
-                  >
-                    Chat With Us
-                  </Button>
+                  {showChat && (
+                    <Button
+                      href={finalWhatsappLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="secondary"
+                      size="md"
+                      leftIcon={<WhatsAppIcon />}
+                      className="rounded-full"
+                      data-cta-id="bottom_nav_chat_with_us"
+                      data-cta-context="bottom_navigation"
+                    >
+                      Chat With Us
+                    </Button>
+                  )}
                 </div>
 
                 {/* Expanded Content: Other Links */}
@@ -215,7 +248,6 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
                 variant="ghost"
                 size="sm"
                 onClick={(e) => {
-                  // Use the same reliable scrolling logic for desktop too
                   handleLinkClick(e, link.href);
                 }}
               >
@@ -224,17 +256,19 @@ export const BottomNavigation: React.FC<{ property: Property }> = ({
             ))}
 
             {/* Chat With Us Button */}
-            <Button
-              href={getPropertyWhatsappLink(property.fieldData.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="secondary"
-              size="md"
-              leftIcon={<WhatsAppIcon />}
-              className="rounded-full"
-            >
-              Chat With Us
-            </Button>
+            {showChat && (
+              <Button
+                href={finalWhatsappLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+                size="md"
+                leftIcon={<WhatsAppIcon />}
+                className="rounded-full"
+              >
+                Chat With Us
+              </Button>
+            )}
           </div>
         </div>
       </motion.nav>

@@ -80,30 +80,27 @@ export interface RentBreakdown {
     gst: number | null;
     totalRent: number | null;
     deposit: number | null;
+    lockInDiscount?: number;
 }
 
 export type LockInPeriod = 6 | 9 | 11;
 
 export const getRoomRentBreakdown = (room: Room, lockIn: LockInPeriod = 11): RentBreakdown => {
-    const baseRent = room.fieldData["base-rent"] ?? null;
+    // Base rent is always the price for 6 months (highest price / valid base)
+    const baseRent = Number(room.fieldData["room-rent"]) || null;
+
+    // Calculate discounts based on lock-in
+    let lockInDiscount = 0;
+    if (lockIn === 9) lockInDiscount = 1000;
+    if (lockIn === 11) lockInDiscount = 2000;
+
     const maintenance = room.fieldData["maintenance"] ?? null;
     const furnishing = room.fieldData["furnishing-cost"] ?? null;
     const convenience = room.fieldData["convenience-fee"] ?? null;
     const gst = room.fieldData["gst"] ?? null;
 
-    // Get rent based on lock-in period
-    // CMS field mapping (counterintuitive naming):
-    // - room-rent = 6 month price (highest - most flexibility)
-    // - 3-month-cost-2 = 9 month price (middle)
-    // - 6-month-cost-2 = 11 month price (lowest - longest commitment)
-    let totalRent: number | null = null;
-    if (lockIn === 6) {
-        totalRent = Number(room.fieldData["room-rent"]) || null;
-    } else if (lockIn === 9) {
-        totalRent = Number(room.fieldData["3-month-cost-2"]) || Number(room.fieldData["room-rent"]) || null;
-    } else {
-        totalRent = Number(room.fieldData["6-month-cost-2"]) || Number(room.fieldData["room-rent"]) || null;
-    }
+    // Total Rent = Base Rent - Discount
+    const totalRent = baseRent ? baseRent - lockInDiscount : null;
 
     // Get deposit based on lock-in period
     let deposit: number | null = null;
@@ -122,7 +119,8 @@ export const getRoomRentBreakdown = (room: Room, lockIn: LockInPeriod = 11): Ren
         convenience,
         gst,
         totalRent,
-        deposit
+        deposit,
+        lockInDiscount
     };
 };
 
@@ -136,19 +134,28 @@ export const getPropertyDisplayRent = (property: Property): number => {
     }
 };
 
-export const getPropertyRentBreakdown = (property: Property): RentBreakdown => {
-    // Determine the full house rent based on available lock-in fields
-    const totalRent = getPropertyDisplayRent(property);
+export const getPropertyRentBreakdown = (property: Property, lockIn: LockInPeriod = 11): RentBreakdown => {
+    // Base rent is the 6-month lock-in price (highest price)
+    // Fallback to whatever display rent logic if 6-month field is missing, but typically we want the base.
+    const baseRent = Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+
+    // Calculate discounts based on lock-in
+    let lockInDiscount = 0;
+    if (lockIn === 9) lockInDiscount = 1000;
+    if (lockIn === 11) lockInDiscount = 2000;
+
+    const totalRent = baseRent - lockInDiscount;
 
     // Property doesn't have breakdown fields in the interface.
     return {
-        baseRent: totalRent, // Assuming total rent is the base for full house if no breakdown
+        baseRent: baseRent,
         maintenance: null,
         furnishing: null,
         convenience: null,
         gst: null,
         totalRent,
-        deposit: null // No field available
+        deposit: null, // No field available
+        lockInDiscount
     };
 };
 
@@ -163,3 +170,44 @@ export const formatCurrency = (amount: number | null | undefined) => {
     }).format(amount);
 };
 
+
+export const sortProperties = (a: Property, b: Property): number => {
+    // 1. Ranking Order (Ascending)
+    const rankA = a.fieldData["ranking-order"];
+    const rankB = b.fieldData["ranking-order"];
+
+    if (rankA !== undefined && rankB !== undefined) {
+        return rankA - rankB;
+    }
+    if (rankA !== undefined) return -1;
+    if (rankB !== undefined) return 1;
+
+    // 2. Availability Date (Earliest first)
+    const dateAStr = a.fieldData["available-from"];
+    const dateBStr = b.fieldData["available-from"];
+
+    const effectiveDateA = dateAStr ? new Date(dateAStr).getTime() : (a.fieldData.available ? 0 : Infinity);
+    const effectiveDateB = dateBStr ? new Date(dateBStr).getTime() : (b.fieldData.available ? 0 : Infinity);
+
+    if (effectiveDateA !== effectiveDateB) {
+        return effectiveDateA - effectiveDateB;
+    }
+
+    // 3. Properties with images
+    const hasImagesA = Boolean(
+        a.fieldData["property-thumbnail"]?.url ||
+        a.fieldData["property-featured-photo"]?.url ||
+        a.fieldData["property-photos"]?.some(p => p.url)
+    );
+    const hasImagesB = Boolean(
+        b.fieldData["property-thumbnail"]?.url ||
+        b.fieldData["property-featured-photo"]?.url ||
+        b.fieldData["property-photos"]?.some(p => p.url)
+    );
+
+    if (hasImagesA !== hasImagesB) {
+        return hasImagesA ? -1 : 1;
+    }
+
+    return 0;
+};

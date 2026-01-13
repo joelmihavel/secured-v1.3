@@ -1,0 +1,63 @@
+.marquee-css {
+  color: var(--color-text-main);
+  background-color: var(--color-pastel-violet);
+  width: 100%;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 60;
+  font-family: var(--font-plus-jakarta-sans), sans-serif; /* Use project font */
+}
+
+.marquee-css__list {
+  flex: none;
+  align-items: center;
+  display: flex;
+  position: relative;
+}
+
+.marquee-css__item {
+  grid-column-gap: 1em;
+  grid-row-gap: 1em;
+  flex: 0;
+  align-items: center;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  padding-right: 1em;
+  display: flex;
+}
+
+.marquee-css__item-p {
+  white-space: nowrap;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  line-height: 1;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5em; /* Spacing for the diamond */
+}
+
+.diamond-separator {
+  font-size: 0.8em; /* Adjust size of diamond */
+  color: var(--color-text-main);
+  display: inline-block;
+  transform: translateY(-1px); /* Fine tune alignment */
+}
+
+.marquee-css__item-svg {
+  width: 1em;
+  height: 1em;
+}
+
+@keyframes translateX { 
+	to {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: translateX 30s linear infinite;
+}

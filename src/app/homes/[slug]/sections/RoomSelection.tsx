@@ -158,8 +158,8 @@ export const RoomSelection = ({
   };
 
   const handleFullHousePricingClick = () => {
-    const breakdown = getPropertyRentBreakdown(property);
     const lockIn: LockInPeriod = property.fieldData["6-month-lock-in"] ? 6 : 11;
+    const breakdown = getPropertyRentBreakdown(property, lockIn);
     setCalculatorData({
       title: "Full House",
       image: property.fieldData["property-thumbnail"]?.url || "",
@@ -527,7 +527,7 @@ export const RoomSelection = ({
                           <Button
                             size="md"
                             variant="ghost"
-                            className="w-full bg-white"
+                            className="w-full bg-white rounded-l-none rounded-r-full"
                             target="_blank"
                             rel="noopener noreferrer"
                             href={getPropertyWhatsappLink(

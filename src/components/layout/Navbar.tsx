@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { IconMenu2 as Menu, IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
@@ -21,17 +21,27 @@ const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
 ];
 
-type NavbarVariant = "hamburger" | "expanded";
+type NavbarVariant = "hamburger" | "expanded" | "secure";
 
 interface NavbarProps {
     /**
      * Variant 1 (hamburger) - Used in property detail pages as well as on all pages on mobile
      * Variant 2 (expanded) - Used on Homepage, About, Homes listing, Owners pages (desktop only)
+     * Variant 3 (secure) - Used on Flent Secure pages with specific tabs
      */
     variant?: NavbarVariant;
+    activeTab?: string;
+    onTabChange?: (tab: string) => void;
 }
 
-export const Navbar = ({ variant }: NavbarProps) => {
+const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
+    const pathname = usePathname();
+    const isSecurePath = pathname.startsWith("/secured");
+
+    // If it's a secure path BUT variant is not secure, it means it's the global Navbar in layout.tsx.
+    // We hide it because the secure page provides its own Navbar instance with the correct variant and state.
+    if (isSecurePath && variant !== "secure") return null;
+
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [canHover, setCanHover] = useState(false);
@@ -46,8 +56,8 @@ export const Navbar = ({ variant }: NavbarProps) => {
         return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
-    const pathname = usePathname();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const isHome = pathname === "/";
     const isPropertyDetail = pathname.startsWith('/homes/') && pathname.split('/').length === 3;
     const { neighborhoodName, neighborhoodId } = useBreadcrumb();
@@ -65,7 +75,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
 
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
-            
+
             // Check if click is outside the menu container
             // The menu button is inside the container, so it's already excluded
             if (
@@ -88,7 +98,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
     }, [isOpen]);
 
     const handleWhatsAppClick = () => {
-        const whatsappNumber = "+919876543210";
+        const whatsappNumber = "918904695925";
         const whatsappMessage = "Hi! I'm interested in learning more about Flent.";
         const encodedMessage = encodeURIComponent(whatsappMessage);
         const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodedMessage}`;
@@ -133,6 +143,25 @@ export const Navbar = ({ variant }: NavbarProps) => {
 
     // Render left section based on variant and page
     const renderLeftSection = () => {
+        if (variant === "secure") {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => router.push('/')}
+                    className="bg-white rounded-full shadow-lg border border-text-main h-11 md:h-14 px-3.5 md:px-6 flex items-center pointer-events-auto hover:bg-gray-100"
+                >
+                    <Image
+                        src="/images/flentinbengaluru.svg"
+                        alt="Flent"
+                        width={72}
+                        height={24}
+                        className="h-[18px] md:h-6 w-auto"
+                        priority
+                    />
+                </Button>
+            );
+        }
+
         if (effectiveVariant === "hamburger" && isPropertyDetail) {
             // Property detail page with hamburger variant: Show expandable breadcrumbs
             return (
@@ -146,7 +175,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                     }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                    <Button variant="ghost" size="sm" onClick={() => router.push('/homes')}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push(`/homes?${searchParams.toString()}`)}>
                         <ArrowLeft />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
@@ -241,12 +270,61 @@ export const Navbar = ({ variant }: NavbarProps) => {
         );
     };
 
+    const renderSecureTabs = () => {
+        if (variant !== "secure" || !activeTab || !onTabChange) return null;
+
+        const tabs = [
+            { value: 'tenant', label: 'Tenants' },
+            { value: 'landlord', label: 'Landlords' }
+        ];
+
+        return (
+            <div className={cn(
+                "hidden md:flex items-center bg-transparent pointer-events-auto z-40",
+                (isOpen || isHovered) && "opacity-0 pointer-events-none"
+            )}>
+                <div className="bg-gray-50 p-1 h-auto rounded-full border border-black/5 shadow-sm relative grid grid-cols-2 isolate">
+                    {/* Tab buttons - grid ensures equal widths */}
+                    {tabs.map((tab) => {
+                        const isActive = activeTab === tab.value;
+                        return (
+                            <button
+                                key={tab.value}
+                                onClick={() => onTabChange(tab.value)}
+                                className={cn(
+                                    "relative h-9 rounded-full px-6 font-heading font-bold tracking-wide text-sm z-10 flex items-center justify-center cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 transition-colors duration-200",
+                                    isActive ? "text-text-main" : "text-gray-500 hover:text-gray-700"
+                                )}
+                            >
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="secure-tab-pill"
+                                        className="absolute inset-0 bg-pastel-orange border-2 border-text-main shadow-[0px_4px_0px_0px_rgba(21,16,46,1)] rounded-full -z-10"
+                                        style={{
+                                            backgroundColor: 'var(--color-pastel-orange)',
+                                        }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 200,
+                                            damping: 25,
+                                        }}
+                                    />
+                                )}
+                                <span className="relative z-10">{tab.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        );
+    };
+
     // Render hamburger menu
     const renderHamburgerMenu = () => (
         <div
             ref={menuRef}
             className={cn(
-                "relative pointer-events-auto",
+                "relative pointer-events-auto h-11 w-11 md:h-14 md:w-14 flex-shrink-0 z-50",
                 // For expanded variant, hide hamburger on desktop (lg+)
                 showExpandedNav && "lg:hidden"
             )}
@@ -255,7 +333,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
         >
             <div className="absolute -inset-4 bg-transparent z-[-1]" />
             <motion.div
-                className="bg-white shadow-lg border border-text-main flex flex-col items-start overflow-hidden"
+                className="absolute right-0 top-0 bg-white shadow-lg border border-text-main flex flex-col items-start overflow-hidden origin-top-right z-50"
                 initial="collapsed"
                 variants={{
                     collapsed: {
@@ -321,7 +399,7 @@ export const Navbar = ({ variant }: NavbarProps) => {
                             >
                                 Our Story
                             </Button>
-                                 <Button
+                            <Button
                                 href={WHATSAPP_LINK}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -334,6 +412,18 @@ export const Navbar = ({ variant }: NavbarProps) => {
                                 }}
                             >
                                 Contact Us
+                            </Button>
+                            <Button
+                                className="w-full"
+                                size="sm"
+                                variant="primary-rounded"
+                                pastelColor="orange"
+                                onClick={() => {
+                                    router.push('/secured');
+                                    setIsOpen(false);
+                                }}
+                            >
+                                Secured
                             </Button>
                             <Button
                                 className="w-full"
@@ -359,13 +449,23 @@ export const Navbar = ({ variant }: NavbarProps) => {
         if (!showExpandedNav) return null;
 
         return (
-            <div className="hidden lg:flex items-center gap-3 bg-white rounded-full shadow-lg border border-text-main h-14 px-3 pointer-events-auto">
-                <Button variant="ghost" size="sm" onClick={() => router.push('/homes')}>
+            <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
+                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
                     All Homes
                 </Button>
                 <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
                     Our Story
                 </Button>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    pastelColor="orange"
+                    className="rounded-full"
+                    onClick={() => router.push('/secured')}
+                >
+                    Secured
+                </Button>
+                <div className="w-1" /> {/* Spacer between Secured and For Owners */}
                 <Button
                     variant="primary"
                     size="sm"
@@ -381,16 +481,49 @@ export const Navbar = ({ variant }: NavbarProps) => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-4 md:px-6 lg:px-8 pt-3.5 md:pt-6 pb-2 pointer-events-none">
-            <div className="max-w-12xl mx-auto flex items-start justify-between h-16 md:h-20">
+        <nav className={cn(
+            "fixed top-[var(--top-banner-height,0px)] left-0 right-0 z-50 pt-3.5 md:pt-6 pb-2 pointer-events-none transition-[top] duration-200",
+            variant === "secure" ? "px-4 md:px-8 lg:px-12" : "px-3 sm:px-4 md:px-6 lg:px-8"
+        )}>
+            <div className={cn(
+                "mx-auto flex items-center justify-between h-16 md:h-20",
+                variant === "secure" ? "max-w-7xl" : "max-w-12xl"
+            )}>
                 {renderLeftSection()}
 
-                <div className="flex justify-end gap-2 md:gap-3 items-start">
+                <div className="flex justify-end gap-2 md:gap-3 items-center">
+                    {renderSecureTabs()}
                     {renderExpandedNav()}
+                    {/* Mobile Get App Button - Only for secured page */}
+                    {variant === "secure" && (
+                        <Button
+                            href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="primary"
+                            size="sm"
+                            className="md:hidden pointer-events-auto rounded-full px-5"
+                            style={{
+                                backgroundColor: 'black',
+                                color: 'white',
+                                borderColor: 'white'
+                            }}
+                        >
+                            Get App
+                        </Button>
+                    )}
                     {renderHamburgerMenu()}
                 </div>
             </div>
         </nav>
+    );
+};
+
+export const Navbar = (props: NavbarProps) => {
+    return (
+        <Suspense fallback={null}>
+            <NavbarContent {...props} />
+        </Suspense>
     );
 };
 

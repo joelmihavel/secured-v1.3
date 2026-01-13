@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
+import { sortProperties } from "@/lib/property-utils";
 import { CardSection } from "@/components/layout/CardSection";
 import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
 import { Button } from "@/components/ui/Button";
@@ -35,54 +36,17 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
         return null;
     }
 
-    const sortedProperties = [...properties].sort((a, b) => {
-        // Check if property has images
-        const hasImagesA = Boolean(
-            a.fieldData["property-thumbnail"]?.url ||
-            a.fieldData["property-featured-photo"]?.url ||
-            a.fieldData["property-photos"]?.some(p => p.url)
-        );
-        const hasImagesB = Boolean(
-            b.fieldData["property-thumbnail"]?.url ||
-            b.fieldData["property-featured-photo"]?.url ||
-            b.fieldData["property-photos"]?.some(p => p.url)
-        );
-
-        // Check if property has occupants with companies
-        const getCompanyCount = (property: Property) => {
-            const propertyRoomIds = property.fieldData.rooms || [];
-            const propertyRooms = rooms.filter(r => propertyRoomIds.includes(r.id));
-            const companies = new Set<string>();
-            propertyRooms.forEach(room => {
-                if (room.fieldData.occupant) {
-                    const occupant = occupants.find(o => o.id === room.fieldData.occupant);
-                    if (occupant && occupant.fieldData.company) {
-                        companies.add(occupant.fieldData.company);
-                    }
-                }
-            });
-            return companies.size;
-        };
-
-        const companiesA = getCompanyCount(a);
-        const companiesB = getCompanyCount(b);
-
-        // Prioritize properties with both images and companies
-        if (hasImagesA && companiesA > 0 && (!hasImagesB || companiesB === 0)) return -1;
-        if (hasImagesB && companiesB > 0 && (!hasImagesA || companiesA === 0)) return 1;
-
-        // Then prioritize by images
-        if (hasImagesA !== hasImagesB) return hasImagesA ? -1 : 1;
-
-        // Then prioritize by number of companies
-        if (companiesA !== companiesB) return companiesB - companiesA;
-
-        return 0;
-    }).filter(property => {
+    const sortedProperties = [...properties].sort(sortProperties).filter(property => {
         // Only show properties that are available or have an available-from date
         // + properties available from today + 30 days
         const availableFrom = property.fieldData["available-from"];
         const availableFromDate = availableFrom ? new Date(availableFrom) : null;
+
+        if(property.fieldData.available && availableFromDate === null){
+            return true;
+        }
+
+
         const today = new Date();
         const todayPlus30Days = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
         return property.fieldData.available && (availableFromDate && availableFromDate <= todayPlus30Days);

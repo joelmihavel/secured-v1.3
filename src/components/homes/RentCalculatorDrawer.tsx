@@ -167,10 +167,19 @@ export const RentCalculatorDrawer = ({
                         <span>Convenience</span>
                         <span>{formatCurrency(breakdown.convenience)}</span>
                       </div>
-                      <div className="flex justify-between text-sm text-text-main/80 pb-4 border-b border-gray-100">
+                      <div className={cn(
+                        "flex justify-between text-sm text-text-main/80",
+                        (!breakdown.lockInDiscount || breakdown.lockInDiscount <= 0) && "pb-4 border-b border-gray-100"
+                      )}>
                         <span>GST</span>
                         <span>{formatCurrency(breakdown.gst)}</span>
                       </div>
+                      {(breakdown.lockInDiscount || 0) > 0 && (
+                        <div className="flex justify-between text-sm text-emerald-500 font-medium pb-4 border-b border-gray-100">
+                          <span>Lock-in Discount</span>
+                          <span>- {formatCurrency(breakdown.lockInDiscount)}</span>
+                        </div>
+                      )}
                       <div className="flex justify-between text-sm md:text-base font-bold text-text-main pt-2">
                         <span>Total Rent</span>
                         <span>{formatCurrency(breakdown.totalRent)}</span>
@@ -274,10 +283,10 @@ export const RentCalculatorDrawer = ({
                           index % 4 === 0
                             ? "bg-gray-100 text-gray-700"
                             : index % 4 === 1
-                            ? "bg-pastel-red/30 text-text-main"
-                            : index % 4 === 2
-                            ? "bg-pastel-green/30 text-text-main"
-                            : "bg-pastel-violet/30 text-text-main"
+                              ? "bg-pastel-red/30 text-text-main"
+                              : index % 4 === 2
+                                ? "bg-pastel-green/30 text-text-main"
+                                : "bg-pastel-violet/30 text-text-main"
                         )}
                       >
                         {addon.name}{" "}

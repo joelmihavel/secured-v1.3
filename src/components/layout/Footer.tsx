@@ -35,6 +35,8 @@ const TEAM_ITEMS = [
 
 export const Footer = () => {
     const pathname = usePathname();
+    if (pathname && pathname.startsWith("/secured")) return null;
+
     const marqueeItems = pathname === "/about" ? TEAM_ITEMS : TWEET_ITEMS;
 
     return (
@@ -119,7 +121,10 @@ export const Footer = () => {
                                     { label: "All Homes", href: "/homes" },
                                     { label: "Our Story", href: "/about" },
                                     { label: "For Owners", href: "/owners" },
-                                    { label: "Careers", href: "/about#team" }
+                                    { label: "Careers", 
+                                        href: "https://empty-bite-b73.notion.site/Flent-Hiring-Guide-42ffc8b1ff6648869f4c45f85ec5a1b8",
+                                        external: true
+                                    }
                                 ].map((item) => (
                                     <li key={item.label}>
                                         <Link

@@ -81,9 +81,6 @@ export const Header = ({
       // Fallback: use as-is
       embedUrl = videoUrl;
     }
-    console.log("Transformed embed URL:", embedUrl);
-  } else {
-    console.log("No video URL found in property data");
   }
 
   useEffect(() => {

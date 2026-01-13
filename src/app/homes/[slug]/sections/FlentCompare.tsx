@@ -43,19 +43,19 @@ type CompareItem = {
 };
 
 const withFlentItems: CompareItem[] = [
-    { text: "Fully Furnished Designer Home", icon: Armchair, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
-    { text: "24/7 Resident Support", icon: Headphones, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
-    { text: "Quick Issue Resolution", icon: Zap, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-pink)", borderColor: "var(--color-brand-pink)" },
-    { text: "Complete Appliances", icon: Plug, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
-    { text: "Fully Equipped Kitchen", icon: Utensils, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
-    { text: "Routine Maintenance", icon: Wrench, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
-    { text: "Dedicated Workspace", icon: Laptop, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-pink)", borderColor: "var(--color-brand-pink)" },
-    { text: "Power Backup", icon: BatteryCharging, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
-    { text: "Minimal Deposit", icon: Wallet, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
-    { text: "Zero Brokerage", icon: BadgeCheck, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
-    { text: "No Landlord Interference", icon: Shield, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-pink)", borderColor: "var(--color-brand-pink)" },
-    { text: "Flatmate Matching", icon: Users, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
-    { text: "Guaranteed Deposit Return", icon: CircleDollarSign, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
+    { text: "Fully Furnished Designer Home", icon: Armchair, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
+    { text: "24/7 Resident Support", icon: Headphones, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
+    { text: "Quick Issue Resolution", icon: Zap, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
+    { text: "Complete Appliances", icon: Plug, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-pink)", borderColor: "var(--color-brand-pink)" },
+    { text: "Fully Equipped Kitchen", icon: Utensils, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
+    { text: "Routine Maintenance", icon: Wrench, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
+    { text: "Dedicated Workspace", icon: Laptop, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
+    { text: "Power Backup", icon: BatteryCharging, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
+    { text: "Minimal Deposit", icon: Wallet, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
+    { text: "Zero Brokerage", icon: BadgeCheck, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
+    { text: "No Landlord Interference", icon: Shield, bgColor: "var(--color-ground-brown)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
+    { text: "Flatmate Matching", icon: Users, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
+    { text: "Guaranteed Deposit Return", icon: CircleDollarSign, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
 ];
 
 const withoutFlentItems: CompareItem[] = [

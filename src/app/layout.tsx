@@ -45,6 +45,8 @@ import { GoogleMapsProvider } from "./GoogleMapsProvider";
 
 // ... existing imports
 
+import { TopBanner } from "@/components/layout/TopBanner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +57,7 @@ export default function RootLayout({
       <body
         className={`${zin.variable} ${plusJakartaSans.variable} antialiased font-body bg-bg-white overscroll-none`}
       >
+        <TopBanner />
         {/* HubSpot Tracking Code */}
         <Script
           type="text/javascript"
@@ -258,8 +261,8 @@ export default function RootLayout({
 
                 // Create floating WhatsApp button
                 function createFloatingWhatsAppButton() {
-                  // Check path
-                  if (window.location.pathname.startsWith('/homes/')) {
+                  // Check path - exclude /homes/ and /secured
+                  if (window.location.pathname.startsWith('/homes/') || window.location.pathname.startsWith('/secured')) {
                     const existing = document.querySelector('.whatsapp-float');
                     if (existing) existing.remove();
                     return;

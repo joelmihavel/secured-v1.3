@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
+import { sortProperties } from "@/lib/property-utils";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { OpenSection } from "@/components/layout/OpenSection";
@@ -349,7 +350,7 @@ export const PropertyBrowser = ({
       }
 
       return true;
-    });
+    }).sort(sortProperties);
   }, [properties, filters]);
 
   return (
@@ -381,7 +382,7 @@ export const PropertyBrowser = ({
               return (
                 <Link
                   key={property.id}
-                  href={`/homes/${property.fieldData.slug}`}
+                  href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
                   className="block h-full"
                 >
                   <PropertyCard
