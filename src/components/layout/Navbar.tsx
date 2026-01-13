@@ -482,7 +482,7 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
     return (
         <nav className={cn(
-            "fixed top-[var(--top-banner-height,0px)] left-0 right-0 z-50 pt-3.5 md:pt-6 pb-2 pointer-events-none transition-[top] duration-200",
+            "fixed top-[var(--top-banner-height,0px)] left-0 right-0 z-50 pt-1 md:pt-2 pb-2 pointer-events-none transition-[top] duration-200",
             variant === "secure" ? "px-4 md:px-8 lg:px-12" : "px-3 sm:px-4 md:px-6 lg:px-8"
         )}>
             <div className={cn(
