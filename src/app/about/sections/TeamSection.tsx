@@ -201,13 +201,7 @@ const useGroupedColumns = (items: typeof TEAM_MEMBERS, columnCount: number) => {
         const columns: (typeof TEAM_MEMBERS)[] = Array.from({ length: columnCount }, () => []);
 
         items.forEach((item, index) => {
-            let columnIndex;
-            // Special case: put index 25 in column 4 (index 3) instead of column 2
-            if (index === 25 && columnCount === 4) {
-                columnIndex = 3; // Column 4 (0-indexed)
-            } else {
-                columnIndex = index % columnCount;
-            }
+            const columnIndex = index % columnCount;
             columns[columnIndex].push(item);
         });
 
