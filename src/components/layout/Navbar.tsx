@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { IconMenu2 as Menu, IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
@@ -57,6 +57,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     }, []);
 
     const router = useRouter();
+    const searchParams = useSearchParams();
     const isHome = pathname === "/";
     const isPropertyDetail = pathname.startsWith('/homes/') && pathname.split('/').length === 3;
     const { neighborhoodName, neighborhoodId } = useBreadcrumb();
@@ -174,7 +175,7 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                     }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                    <Button variant="ghost" size="sm" onClick={() => router.push('/homes')}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push(`/homes?${searchParams.toString()}`)}>
                         <ArrowLeft />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
