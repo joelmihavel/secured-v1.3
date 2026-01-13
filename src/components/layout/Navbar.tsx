@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -34,7 +34,7 @@ interface NavbarProps {
     onTabChange?: (tab: string) => void;
 }
 
-export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
+const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     const pathname = usePathname();
     const isSecurePath = pathname.startsWith("/secured");
 
@@ -518,3 +518,12 @@ export const Navbar = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         </nav>
     );
 };
+
+export const Navbar = (props: NavbarProps) => {
+    return (
+        <Suspense fallback={null}>
+            <NavbarContent {...props} />
+        </Suspense>
+    );
+};
+
