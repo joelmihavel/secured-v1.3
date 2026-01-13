@@ -276,10 +276,16 @@ export default function RootLayout({
                   const attribution = getAttributionData();
                   const waxCode = attribution?.sessionCode || '';
 
+                  // Determine WhatsApp link based on page
+                  const isOwnersPage = window.location.pathname === '/owners';
+                  const defaultWhatsAppLink = 'https://wa.me/918904695925?text=Curious%20to%20know%20more%20about%20Flent%E2%80%94tell%20me%20everything%21';
+                  const ownersWhatsAppLink = 'https://wa.me/918904695925?text=Hi%2C%20I’m%20a%20homeowner.%20How%20can%20Flent%20help%3F';
+                  const whatsappHref = isOwnersPage ? ownersWhatsAppLink : defaultWhatsAppLink;
+
                   // Create button element
                   const button = document.createElement('a');
                   button.className = 'whatsapp-float';
-                  button.href = 'https://wa.me/918904695925?text=Curious%20to%20know%20more%20about%20Flent%E2%80%94tell%20me%20everything%21';
+                  button.href = whatsappHref;
                   button.target = '_blank';
                   button.rel = 'noopener noreferrer';
                   button.setAttribute('aria-label', 'Chat with us on WhatsApp');
