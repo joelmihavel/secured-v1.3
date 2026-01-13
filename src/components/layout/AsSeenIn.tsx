@@ -11,29 +11,29 @@ const PRESS_ARTICLES = [
         id: 1,
         logo: "/logos/yourstory.svg",
         alt: "YourStory",
-        title: "Co-living gets a new identity with Flent’s move-in ready rental homes",
-        link: "https://yourstory.com/2024/09/renting-flent-startup-premium-rental-housing-bangalore-tenants"
+        title: "Co-living gets a new identity with Flent's move-in ready rental homes",
+        link: "https://yourstory.com/2026/01/proptech-startup-flent-raises-rs-21-cr-to-expand-premium-housing-rental-platform"
     },
     {
         id: 2,
         logo: "/logos/realtycom.svg",
         alt: "ET Realty",
         title: "Flent raises INR 6.5 Cr to build a new standard of renting",
-        link: "https://realty.economictimes.indiatimes.com/news/startups/flent-raises-rs-6-5-crore-in-pre-seed-funding/113668105"
+        link: "https://realty.economictimes.indiatimes.com/news/startups/prop-tech-startup-flent-raises-21-crore/126425396"
     },
     {
         id: 3,
         logo: "/logos/entracker.svg",
         alt: "Entrackr",
         title: "This startup helps homeowners with guaranteed rental income in 21 days",
-        link: "https://entrackr.com/2024/09/proptech-startup-flent-raises-rs-6-5-cr-in-pre-seed-round/"
+        link: "https://entrackr.com/snippets/proptech-startup-flent-raises-25-mn-in-pre-series-a-round-10977803"
     },
     {
         id: 4,
         logo: "/logos/inc42.svg",
         alt: "Inc42",
         title: "This startup is forever changing how affluent India rents a home",
-        link: "https://inc42.com/buzz/proptech-startup-flent-bags-funding-to-ease-renting-for-working-professionals/"
+        link: "https://inc42.com/buzz/proptech-startup-flent-bags-inr-21-cr-to-launch-operations-in-mumbai-gurugram/"
     }
 ];
 

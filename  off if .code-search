@@ -1,0 +1,9 @@
+# Query:  off if 
+# ContextLines: 1
+
+1 result - 1 file
+
+src/app/homes/[slug]/sections/Amenities.tsx:
+  82                <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
+  83:                 Get {property.fieldData["discount"]}% off on bookings made by{" "}
+  84                  <br className="hidden md:block" />
