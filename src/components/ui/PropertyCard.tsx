@@ -15,6 +15,7 @@ import {
   IconUsers as Users,
   IconBuilding as Building2,
   IconX,
+  IconMap,
 } from "@tabler/icons-react";
 import { Property, Room, Occupant } from "@/lib/webflow";
 import { Button } from "@/components/ui/Button";
@@ -378,8 +379,44 @@ export const PropertyCard = ({
                 </span>
               </div>
 
-              {/* Get Launch Invite Button */}
-              <div className="mt-auto pt-3">
+              {/* Buttons Wrapper */}
+              <div className="mt-auto pt-1 flex flex-col gap-3">
+                {/* View on Maps Button */}
+                {(() => {
+                  const lat = property.fieldData["map-latitude"];
+                  const lng = property.fieldData["map-longitude"];
+                  const hasCoordinates = lat && lng && 
+                    parseFloat(lat) !== 0 && parseFloat(lng) !== 0;
+                  
+                  if (!hasCoordinates) return null;
+                  
+                  const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                  
+                  return (
+                    <motion.a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98, y: 0 }}
+                      className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem] inline-flex items-center justify-center font-bold transition-colors duration-200 cursor-pointer font-heading tracking-wide whitespace-nowrap px-3 py-3 text-button-link gap-2 border border-text-main shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[-1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[-3px] active:translate-y-[3px]"
+                      style={{
+                        backgroundColor: "#ffffff",
+                        borderColor: "var(--color-text-main)",
+                        color: "var(--color-text-main)",
+                      }}
+                      data-cta-id="view-on-maps-coming-soon"
+                      data-cta-context="coming-soon-section"
+                    >
+                      <span className="flex items-center justify-center flex-shrink-0 w-5 h-5 [&>svg]:w-5 [&>svg]:h-5">
+                        <IconMap size={18} />
+                      </span>
+                      <span className="flex-shrink-0">View on Maps</span>
+                    </motion.a>
+                  );
+                })()}
+
+                {/* Get Launch Invite Button */}
                 <DialogPrimitive.Root
                   open={isDialogOpen}
                   onOpenChange={setIsDialogOpen}
@@ -388,7 +425,7 @@ export const PropertyCard = ({
                     variant="primary"
                     pastelColor="violet"
                     size="md"
-                    className="w-full rounded-full"
+                    className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem]"
                     onClick={() => setIsDialogOpen(true)}
                   >
                     Get Launch Invite
