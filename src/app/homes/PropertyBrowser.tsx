@@ -304,6 +304,14 @@ export const PropertyBrowser = ({
     [locations]
   );
 
+  // Sort locations alphabetically A -> Z
+  const sortedLocations = useMemo(
+    () => [...locations].sort((a, b) =>
+      a.fieldData.name.localeCompare(b.fieldData.name)
+    ),
+    [locations]
+  );
+
   const filteredProperties = useMemo(() => {
     return properties.filter((property) => {
       // do not show upcoming properties
@@ -363,7 +371,7 @@ export const PropertyBrowser = ({
       >
         <div className="max-w-5xl mx-auto">
           <SearchBar
-            locations={locations}
+            locations={sortedLocations}
             filters={filters}
             setFilters={setFilters}
           />
