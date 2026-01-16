@@ -281,7 +281,7 @@ export const PropertyCard = ({
         {/* Location Tag in Top Right */}
         {locationName && (
           <div
-            className={`absolute top-3 md:top-4 right-3 md:right-4 z-10 px-2 md:px-4 py-1 md:py-2 rounded-t-[1rem] ${locationColors.bg} ${locationColors.text} flex items-center gap-1 md:gap-1`}
+            className={`absolute top-3 md:top-4 right-3 md:right-4 z-10 px-2 md:px-4 py-1 md:py-2 rounded-t-[1rem] border border-text-main ${locationColors.bg} ${locationColors.text} flex items-center gap-1 md:gap-1`}
           >
             <MapPin size={12} className="md:w-[14px] md:h-[14px]" />
             <span className="text-subtitle-sm font-medium font-body">

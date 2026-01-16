@@ -12,10 +12,15 @@ export interface PhoneSubscribeFormProps {
   placeholder?: string;
   buttonText?: string;
   className?: string;
+  useEmail?: boolean; // If true, use email field; if false (default), use phone field
 }
 
-interface FormData {
+interface PhoneFormData {
   phone: string;
+}
+
+interface EmailFormData {
+  email: string;
 }
 
 export const PhoneSubscribeForm = ({
@@ -23,33 +28,37 @@ export const PhoneSubscribeForm = ({
   propertyId,
   propertyName,
   roomId,
-  placeholder = "+91 | Enter your phone number",
+  placeholder,
   buttonText = "Subscribe",
   className = "",
+  useEmail = false,
 }: PhoneSubscribeFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<FormData>();
+  const defaultPlaceholder = useEmail 
+    ? "Enter your email address" 
+    : "+91 | Enter your phone number";
+  
+  const phoneForm = useForm<PhoneFormData>();
+  const emailForm = useForm<EmailFormData>();
+  
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
 
-  const handleFormSubmit = async (data: FormData) => {
+  const handlePhoneSubmit = async (data: PhoneFormData) => {
     try {
       setSubmitStatus("idle");
+      const requestBody = {
+        phone: data.phone,
+        notification_type: notificationType,
+        property_id: propertyId,
+        property_name: propertyName,
+        room_id: roomId,
+      };
+      
       const response = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: data.phone,
-          notification_type: notificationType,
-          property_id: propertyId,
-          property_name: propertyName,
-          room_id: roomId,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -57,26 +66,108 @@ export const PhoneSubscribeForm = ({
       }
 
       setSubmitStatus("success");
-      reset();
-      // Reset success message after 3 seconds
+      phoneForm.reset();
       setTimeout(() => setSubmitStatus("idle"), 3000);
     } catch (error) {
       console.error("Form submission error:", error);
       setSubmitStatus("error");
-      // Reset error message after 3 seconds
       setTimeout(() => setSubmitStatus("idle"), 3000);
     }
   };
 
+  const handleEmailSubmit = async (data: EmailFormData) => {
+    try {
+      setSubmitStatus("idle");
+      const requestBody = {
+        email: data.email,
+        notification_type: notificationType,
+        property_id: propertyId,
+        property_name: propertyName,
+        room_id: roomId,
+      };
+      
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        throw new Error("Submission failed");
+      }
+
+      setSubmitStatus("success");
+      emailForm.reset();
+      setTimeout(() => setSubmitStatus("idle"), 3000);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      setSubmitStatus("error");
+      setTimeout(() => setSubmitStatus("idle"), 3000);
+    }
+  };
+
+  if (useEmail) {
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = emailForm;
+    
+    return (
+      <form
+        onSubmit={handleSubmit(handleEmailSubmit)}
+        className={`max-w-md mx-auto mb-4 ${className}`}
+      >
+        <div className="flex flex-col md:flex-row gap-4">
+          <input
+            type="email"
+            placeholder={placeholder || defaultPlaceholder}
+            {...register("email", {
+              required: "Email address is required",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "Please enter a valid email address",
+              },
+            })}
+            className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
+            disabled={isSubmitting}
+          />
+          <Button
+            type="submit"
+            size="md"
+            variant="primary"
+            disabled={isSubmitting}
+            className="w-full md:w-auto"
+          >
+            {isSubmitting ? "Subscribing..." : buttonText}
+          </Button>
+        </div>
+        {errors.email && (
+          <p className="text-red-300 text-sm mt-2 text-center">
+            {errors.email.message}
+          </p>
+        )}
+        {submitStatus === "success" && (
+          <p className="text-green-300 text-sm mt-2 text-center">
+            Successfully subscribed! We&apos;ll notify you about new homes.
+          </p>
+        )}
+        {submitStatus === "error" && (
+          <p className="text-red-300 text-sm mt-2 text-center">
+            Something went wrong. Please try again.
+          </p>
+        )}
+      </form>
+    );
+  }
+
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = phoneForm;
+  
   return (
     <form
-      onSubmit={handleSubmit(handleFormSubmit)}
+      onSubmit={handleSubmit(handlePhoneSubmit)}
       className={`max-w-md mx-auto mb-4 ${className}`}
     >
-      <div className="flex flex-col md:flex-row gap-2">
+      <div className="flex flex-col md:flex-row gap-4">
         <input
           type="tel"
-          placeholder={placeholder}
+          placeholder={placeholder || defaultPlaceholder}
           {...register("phone", {
             required: "Phone number is required",
             pattern: {
@@ -84,7 +175,7 @@ export const PhoneSubscribeForm = ({
               message: "Please enter a valid phone number",
             },
           })}
-          className="flex-1 px-6 py-3 rounded-full border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
+          className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
           disabled={isSubmitting}
         />
         <Button

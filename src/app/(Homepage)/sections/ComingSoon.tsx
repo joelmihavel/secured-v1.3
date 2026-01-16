@@ -77,6 +77,7 @@ export const ComingSoon = ({
         <PhoneSubscribeForm 
           notificationType="all homes" 
           buttonText="Nudge Me"
+          useEmail={true}
         />
 
         <div className="mb-16"></div>
