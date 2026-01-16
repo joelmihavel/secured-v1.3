@@ -177,6 +177,13 @@ export interface Occupant extends WebflowItem {
   };
 }
 
+export class WebflowFetchError extends Error {
+  constructor(message: string, public readonly collectionId: string) {
+    super(message);
+    this.name = 'WebflowFetchError';
+  }
+}
+
 export async function getCollectionItems<T extends WebflowItem>(
   collectionId: string
 ): Promise<T[]> {
@@ -185,37 +192,35 @@ export async function getCollectionItems<T extends WebflowItem>(
   const limit = 100; // Webflow API limit
   let total = 0;
 
-  try {
-    do {
-      const url = `https://api.webflow.com/v2/collections/${collectionId}/items?limit=${limit}&offset=${offset}`;
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${WEBFLOW_API_TOKEN}`,
-        },
-        next: { revalidate: 3600 },
-      };
+  do {
+    const url = `https://api.webflow.com/v2/collections/${collectionId}/items?limit=${limit}&offset=${offset}`;
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${WEBFLOW_API_TOKEN}`,
+      },
+      // Reduced to 5 minutes to minimize stale cache issues
+      next: { revalidate: 300 },
+    };
 
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        throw new Error(
-          `Error fetching collection items: ${response.statusText}`
-        );
-      }
-      const data = await response.json();
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      // Throw error instead of returning empty array - prevents caching bad results
+      throw new WebflowFetchError(
+        `Error fetching collection ${collectionId}: ${response.status} ${response.statusText}`,
+        collectionId
+      );
+    }
+    const data = await response.json();
 
-      if (data.items) {
-        allItems = allItems.concat(data.items as T[]);
-      }
+    if (data.items) {
+      allItems = allItems.concat(data.items as T[]);
+    }
 
-      total = data.pagination?.total || 0;
-      offset += limit;
-    } while (offset < total);
+    total = data.pagination?.total || 0;
+    offset += limit;
+  } while (offset < total);
 
-    return allItems;
-  } catch (error) {
-    console.error("Failed to fetch Webflow items:", error);
-    return [];
-  }
+  return allItems;
 }

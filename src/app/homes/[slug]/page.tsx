@@ -22,6 +22,7 @@ import { BreadcrumbSetter } from "@/components/utils/BreadcrumbSetter";
 import { Amenities } from "./sections/Amenities";
 import { HowItWorks } from "./sections/HowItWorks";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 const baseTitle = "Flent | India's New Standard of Renting";
 const baseDescription =
@@ -40,44 +41,53 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
-  const property = properties.find((p) => p.fieldData.slug === slug);
 
-  if (!property) {
+  try {
+    const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
+    const property = properties.find((p) => p.fieldData.slug === slug);
+
+    if (!property) {
+      return {
+        title: baseTitle,
+        description: baseDescription,
+      };
+    }
+
+    const propertyName = property.fieldData.name;
+    const title = `${propertyName} | ${baseTitle}`;
+    const description =
+      property.fieldData["property-description"] ||
+      property.fieldData["property-long-description"] ||
+      baseDescription;
+
+    // Use property featured photo or thumbnail for OG image
+    const ogImage =
+      property.fieldData["property-featured-photo"]?.url ||
+      property.fieldData["property-thumbnail"]?.url ||
+      `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.flent.in"}/images/og-image.jpg`;
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        images: ogImage,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: ogImage,
+      },
+    };
+  } catch {
+    // On API failure, return default metadata (don't block rendering)
     return {
       title: baseTitle,
       description: baseDescription,
     };
   }
-
-  const propertyName = property.fieldData.name;
-  const title = `${propertyName} | ${baseTitle}`;
-  const description =
-    property.fieldData["property-description"] ||
-    property.fieldData["property-long-description"] ||
-    baseDescription;
-
-  // Use property featured photo or thumbnail for OG image
-  const ogImage =
-    property.fieldData["property-featured-photo"]?.url ||
-    property.fieldData["property-thumbnail"]?.url ||
-    `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.flent.in"}/images/og-image.jpg`;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: ogImage,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: ogImage,
-    },
-  };
 }
 
 export default async function PropertyPage({
@@ -98,7 +108,7 @@ export default async function PropertyPage({
   const property = properties.find((p) => p.fieldData.slug === slug);
 
   if (!property) {
-    return <div>Property not found</div>;
+    notFound();
   }
 
   const location = locations.find((l) => l.id === property.fieldData.location);
