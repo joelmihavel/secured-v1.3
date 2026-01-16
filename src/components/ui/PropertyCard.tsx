@@ -23,6 +23,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { PhoneSubscribeForm } from "@/components/ui/PhoneSubscribeForm";
 import { cn } from "@/lib/utils";
 import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
+import { useDebugMode } from "@/hooks/useDebugMode";
 
 interface PropertyCardProps {
   property: Property;
@@ -107,6 +108,7 @@ export const PropertyCard = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const isDebugMode = useDebugMode();
 
   // Build array of all available images
   const images = [
@@ -278,6 +280,22 @@ export const PropertyCard = ({
           setCurrentImageIndex(0);
         }}
       >
+        {/* Debug Info Badge */}
+        {isDebugMode && (
+          <div
+            className="absolute top-3 md:top-4 left-3 md:left-4 z-10 px-2 py-1 rounded bg-black/80 text-white text-[10px] font-mono cursor-pointer hover:bg-black active:bg-green-700 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const pid = property.fieldData.pid || "";
+              navigator.clipboard.writeText(pid);
+            }}
+            title="Click to copy"
+          >
+            PID: {property.fieldData.pid || "N/A"}
+          </div>
+        )}
+
         {/* Location Tag in Top Right */}
         {locationName && (
           <div

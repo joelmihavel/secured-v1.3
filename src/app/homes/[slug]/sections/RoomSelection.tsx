@@ -49,6 +49,7 @@ import { getPropertyWhatsappLink } from "@/constants";
 import { LockInSlider } from "@/components/homes/LockInSlider";
 import { LockInPeriod } from "@/lib/property-utils";
 import { getAvailabilityDate } from "@/lib/get-availability-date";
+import { useDebugMode } from "@/hooks/useDebugMode";
 
 // Helper functions for lock-in period pricing
 // Note: CMS field naming is counterintuitive:
@@ -121,6 +122,7 @@ export const RoomSelection = ({
   photoCategories,
   slug,
 }: RoomSelectionProps) => {
+  const isDebugMode = useDebugMode();
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [calculatorData, setCalculatorData] = useState<{
     title: string;
@@ -309,6 +311,18 @@ export const RoomSelection = ({
                     <div>
                       {room.isOccupied ? (
                         <div className="text-center mb-6 md:mb-8 px-4 py-12 md:py-16 bg-ground-brown/12 rounded-2xl relative">
+                          {isDebugMode && (
+                            <div
+                              className="absolute top-2 left-2 px-2 py-1 rounded bg-black/80 text-white text-[10px] font-mono cursor-pointer hover:bg-black active:bg-green-700 transition-colors"
+                              onClick={() => {
+                                const rid = room.raw.fieldData.name || "";
+                                navigator.clipboard.writeText(rid);
+                              }}
+                              title="Click to copy"
+                            >
+                              RID: {room.raw.fieldData.name || "N/A"}
+                            </div>
+                          )}
                           <p className="text-sm font-medium text-text-main/70 mb-2">
                             {room.name}
                           </p>
@@ -378,6 +392,18 @@ export const RoomSelection = ({
                         </div>
                       ) : (
                         <div className="text-center mb-6 md:mb-8 bg-ground-brown/12 rounded-2xl px-4 py-12 md:py-16 relative">
+                          {isDebugMode && (
+                            <div
+                              className="absolute top-2 left-2 px-2 py-1 rounded bg-black/80 text-white text-[10px] font-mono cursor-pointer hover:bg-black active:bg-green-700 transition-colors"
+                              onClick={() => {
+                                const rid = room.raw.fieldData.name || "";
+                                navigator.clipboard.writeText(rid);
+                              }}
+                              title="Click to copy"
+                            >
+                              RID: {room.raw.fieldData.name || "N/A"}
+                            </div>
+                          )}
                           <p className="text-sm font-medium text-text-main/70 mb-2">
                             {room.name}
                           </p>

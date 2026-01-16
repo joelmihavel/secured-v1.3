@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/Button";
 import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
+import { useDebugMode } from "@/hooks/useDebugMode";
 
 interface HeaderProps {
   rooms: Room[];
@@ -58,6 +59,7 @@ export const Header = ({
   photoCategories,
   locationName,
 }: HeaderProps) => {
+  const isDebugMode = useDebugMode();
   const [bgColorName, setBgColorName] = useState<string>("ground-brown");
 
   const videoUrl =
@@ -153,6 +155,20 @@ export const Header = ({
 
         {/* Content Container */}
         <div className="relative z-10">
+          {/* Debug Badge */}
+          {isDebugMode && (
+            <div
+              className="inline-block mb-4 px-2 py-1 rounded bg-black/80 text-white text-[10px] font-mono cursor-pointer hover:bg-black active:bg-green-700 transition-colors"
+              onClick={() => {
+                const pid = property.fieldData.pid || "";
+                navigator.clipboard.writeText(pid);
+              }}
+              title="Click to copy"
+            >
+              PID: {property.fieldData.pid || "N/A"}
+            </div>
+          )}
+
           {/* Title */}
           <h1
             className={`text-fluid-h1 font-heading mb-8 leading-tight font-zin  ${textColor}`}
