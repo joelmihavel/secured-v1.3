@@ -86,8 +86,8 @@ export interface RentBreakdown {
 export type LockInPeriod = 6 | 9 | 11;
 
 export const getRoomRentBreakdown = (room: Room, lockIn: LockInPeriod = 11): RentBreakdown => {
-    // Base rent is always the price for 6 months (highest price / valid base)
-    const baseRent = Number(room.fieldData["room-rent"]) || null;
+    // Base rent from HubSpot response
+    const baseRent = room.fieldData["base-rent"] ?? null;
 
     // Calculate discounts based on lock-in
     let lockInDiscount = 0;
@@ -99,8 +99,10 @@ export const getRoomRentBreakdown = (room: Room, lockIn: LockInPeriod = 11): Ren
     const convenience = room.fieldData["convenience-fee"] ?? null;
     const gst = room.fieldData["gst"] ?? null;
 
-    // Total Rent = Base Rent - Discount
-    const totalRent = baseRent ? baseRent - lockInDiscount : null;
+    // Total Rent = Base Rent + Maintenance + Furnishing + Convenience + GST - Discount
+    const totalRent = baseRent !== null
+        ? (baseRent + (maintenance ?? 0) + (furnishing ?? 0) + (convenience ?? 0) + (gst ?? 0) - lockInDiscount)
+        : null;
 
     // Get deposit based on lock-in period
     let deposit: number | null = null;
