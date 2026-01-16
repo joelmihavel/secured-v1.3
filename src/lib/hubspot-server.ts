@@ -10,7 +10,8 @@ const NOTIFICATION_REQUEST_OBJECT_TYPE_ID = process.env.HUBSPOT_NOTIFICATION_OBJ
 const CONTACT_TO_NOTIFICATION_ASSOCIATION_ID = process.env.HUBSPOT_CONTACT_TO_NOTIFICATION_ID 
 
 export interface NotificationRequestData {
-  phone: string
+  phone?: string
+  email?: string
   notification_type: 'specific room' | 'specific home' | 'all homes' | 'upcoming home'
   property_id?: string
   property_name?: string
@@ -19,8 +20,12 @@ export interface NotificationRequestData {
 
 export async function handleNotificationRequest(data: NotificationRequestData) {
   try {
-    // 1. Search for Contact
-    const contactId = await getOrCreateContact(data.phone)
+    if (!data.phone && !data.email) {
+      throw new Error('Either phone or email is required')
+    }
+    
+    // 1. Search for Contact (prefer email if both provided)
+    const contactId = await getOrCreateContact(data.email || data.phone!, data.email ? 'email' : 'phone')
 
     // 2. Create Notification Request Custom Object
     const notificationId = await createNotificationObject(data)
@@ -35,21 +40,21 @@ export async function handleNotificationRequest(data: NotificationRequestData) {
   }
 }
 
-async function getOrCreateContact(phone: string): Promise<string> {
+async function getOrCreateContact(value: string, type: 'phone' | 'email'): Promise<string> {
   const publicObjectSearchRequest = {
     filterGroups: [
       {
         filters: [
           {
-            propertyName: 'phone',
+            propertyName: type,
             operator: 'EQ' as any,
-            value: phone,
+            value: value,
           },
         ],
       },
     ],
     sorts: ['createdate'],
-    properties: ['firstname', 'lastname', 'phone'],
+    properties: ['firstname', 'lastname', 'phone', 'email'],
     limit: 1,
   }
 
@@ -65,7 +70,7 @@ async function getOrCreateContact(phone: string): Promise<string> {
     // Create new contact
     const createContactRequest = {
       properties: {
-        phone: phone,
+        [type]: value,
         // firstname: '', // Optional: Add default placeholder if needed
         // lastname: '',
       },
