@@ -6,7 +6,6 @@ import {
   IconLayoutGrid as Grid,
   IconX as X,
   IconChevronLeft as ChevronLeft,
-  IconChevronRight as ChevronRight,
   IconCopy as Copy,
   IconCheck as Check,
   IconShare as Share,
@@ -66,8 +65,6 @@ export const GridLightBox = ({
   const [api, setApi] = useState<CarouselApi>();
   const [isInfoVisible, setIsInfoVisible] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [isImageViewerMode, setIsImageViewerMode] = useState(false);
   const lastScrollY = useRef(0);
 
   // Copy link to clipboard (desktop)
@@ -136,104 +133,17 @@ export const GridLightBox = ({
     () =>
       photoCategories
         ? [...photoCategories].sort((a, b) => {
-            // Ensure "Common Areas" always comes first if it exists
-            if (a.name === "Common Areas") return -1;
-            if (b.name === "Common Areas") return 1;
-            return a.name.localeCompare(b.name, undefined, {
-              numeric: true,
-              sensitivity: "base",
-            });
-          })
+          // Ensure "Common Areas" always comes first if it exists
+          if (a.name === "Common Areas") return -1;
+          if (b.name === "Common Areas") return 1;
+          return a.name.localeCompare(b.name, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          });
+        })
         : [],
     [photoCategories]
   );
-
-  // Get current images based on active tab
-  const getCurrentImages = (): string[] => {
-    if (activeTab === "all") {
-      return images;
-    }
-    const category = sortedCategories.find(
-      (cat) => cat.name.toLowerCase().replace(/\s+/g, "-") === activeTab
-    );
-    return category?.images || images;
-  };
-
-  // Handle image click
-  const handleImageClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setIsImageViewerMode(true);
-  };
-
-  // Close image viewer
-  const closeImageViewer = () => {
-    setIsImageViewerMode(false);
-    setSelectedImageIndex(null);
-  };
-
-  // Navigate to next image
-  const goToNextImage = () => {
-    if (selectedImageIndex === null) return;
-    const currentImages = getCurrentImages();
-    const nextIndex = (selectedImageIndex + 1) % currentImages.length;
-    setSelectedImageIndex(nextIndex);
-  };
-
-  // Navigate to previous image
-  const goToPrevImage = () => {
-    if (selectedImageIndex === null) return;
-    const currentImages = getCurrentImages();
-    const prevIndex = selectedImageIndex === 0 
-      ? currentImages.length - 1 
-      : selectedImageIndex - 1;
-    setSelectedImageIndex(prevIndex);
-  };
-
-  // Reset image viewer when drawer closes or tab changes
-  React.useEffect(() => {
-    if (!isOpen) {
-      setIsImageViewerMode(false);
-      setSelectedImageIndex(null);
-    }
-  }, [isOpen]);
-
-  // Reset image viewer when tab changes - if in viewer mode, reset to first image of new tab
-  React.useEffect(() => {
-    if (isImageViewerMode) {
-      // Reset to first image (index 0) of the new tab
-      setSelectedImageIndex(0);
-    }
-  }, [activeTab, isImageViewerMode]);
-
-  // Keyboard navigation
-  React.useEffect(() => {
-    if (!isImageViewerMode) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (selectedImageIndex === null) return;
-      
-      const currentImages = getCurrentImages();
-
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        const prevIndex = selectedImageIndex === 0 
-          ? currentImages.length - 1 
-          : selectedImageIndex - 1;
-        setSelectedImageIndex(prevIndex);
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        const nextIndex = (selectedImageIndex + 1) % currentImages.length;
-        setSelectedImageIndex(nextIndex);
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        setIsImageViewerMode(false);
-        setSelectedImageIndex(null);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isImageViewerMode, selectedImageIndex, activeTab, images, sortedCategories]);
 
   // Create array of all tab values for navigation
   const allTabs = React.useMemo(
@@ -492,32 +402,66 @@ export const GridLightBox = ({
             </div>
           </div>
 
-          {/* Carousel Content or Image Viewer */}
-          {!isImageViewerMode ? (
-            <Carousel
-              setApi={setApi}
-              className="w-full flex-1 min-h-0 [&>div]:h-full"
-            >
-              <CarouselContent className="-ml-0 h-full">
-                {/* All Photos Slide */}
-                <CarouselItem className="pl-0 h-full">
+          {/* Carousel Content */}
+          <Carousel
+            setApi={setApi}
+            className="w-full flex-1 min-h-0 [&>div]:h-full"
+          >
+            <CarouselContent className="-ml-0 h-full">
+              {/* All Photos Slide */}
+              <CarouselItem className="pl-0 h-full">
+                <div
+                  className="p-4 md:p-6 overflow-y-auto h-full pb-4"
+                  onScroll={handleScroll}
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                    {images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow"
+                      >
+                        <Image
+                          src={img}
+                          alt={`${propertyName} - ${idx + 1}`}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover/item:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Notice Banner */}
+                  <div className="mt-4 md:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 flex items-start gap-2 md:gap-3">
+                    <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 border-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-blue-500 text-[10px] md:text-xs font-bold">
+                        i
+                      </span>
+                    </div>
+                    <p className="text-xs md:text-sm text-gray-700">
+                      No surprises — the property looks just like it does in
+                      these photos.
+                    </p>
+                  </div>
+                </div>
+              </CarouselItem>
+
+              {/* Category Slides */}
+              {sortedCategories.map((category, idx) => (
+                <CarouselItem key={idx} className="pl-0 h-full">
                   <div
                     className="p-4 md:p-6 overflow-y-auto h-full pb-4"
                     onScroll={handleScroll}
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                      {images.map((img, idx) => (
+                      {category.images.map((img, imgIdx) => (
                         <div
-                          key={idx}
-                          className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow cursor-pointer"
-                          onClick={() => {
-                            setSelectedImageIndex(idx);
-                            setIsImageViewerMode(true);
-                          }}
+                          key={imgIdx}
+                          className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow"
                         >
                           <Image
                             src={img}
-                            alt={`${propertyName} - ${idx + 1}`}
+                            alt={`${category.name} - ${imgIdx + 1}`}
                             fill
                             className="object-cover transition-transform duration-500 group-hover/item:scale-105"
                             loading="lazy"
@@ -540,132 +484,9 @@ export const GridLightBox = ({
                     </div>
                   </div>
                 </CarouselItem>
-
-                {/* Category Slides */}
-                {sortedCategories.map((category, idx) => (
-                  <CarouselItem key={idx} className="pl-0 h-full">
-                    <div
-                      className="p-4 md:p-6 overflow-y-auto h-full pb-4"
-                      onScroll={handleScroll}
-                    >
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                        {category.images.map((img, imgIdx) => {
-                          return (
-                            <div
-                              key={imgIdx}
-                              className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow cursor-pointer"
-                              onClick={() => {
-                                // Use the index within this category, not global index
-                                setSelectedImageIndex(imgIdx);
-                                setIsImageViewerMode(true);
-                              }}
-                            >
-                              <Image
-                                src={img}
-                                alt={`${category.name} - ${imgIdx + 1}`}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover/item:scale-105"
-                                loading="lazy"
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Notice Banner */}
-                      <div className="mt-4 md:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4 flex items-start gap-2 md:gap-3">
-                        <div className="w-4 h-4 md:w-5 md:h-5 rounded-full border-2 border-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <span className="text-blue-500 text-[10px] md:text-xs font-bold">
-                            i
-                          </span>
-                        </div>
-                        <p className="text-xs md:text-sm text-gray-700">
-                          No surprises — the property looks just like it does in
-                          these photos.
-                        </p>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          ) : (
-            /* Image Viewer Mode */
-            <div className="w-full flex-1 min-h-0 relative bg-black">
-              {/* Close Button - Top Right */}
-              <button
-                onClick={closeImageViewer}
-                className="absolute top-6 right-6 z-20 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-                aria-label="Close image viewer"
-              >
-                <X className="w-5 h-5 md:w-6 md:h-6" />
-              </button>
-
-              {/* Image Container */}
-              <div className="relative w-full h-full flex items-center justify-center p-4 md:p-8">
-                {selectedImageIndex !== null && (() => {
-                  const currentImages = getCurrentImages();
-                  const currentImage = currentImages[selectedImageIndex];
-                  
-                  return currentImage ? (
-                    <motion.div
-                      key={selectedImageIndex}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
-                      className="relative w-full h-full max-w-7xl"
-                    >
-                      <Image
-                        src={currentImage}
-                        alt={`${propertyName} - Image ${selectedImageIndex + 1}`}
-                        fill
-                        className="object-contain"
-                        priority
-                      />
-                    </motion.div>
-                  ) : null;
-                })()}
-
-                {/* Navigation Buttons */}
-                {selectedImageIndex !== null && (() => {
-                  const currentImages = getCurrentImages();
-                  const hasMultipleImages = currentImages.length > 1;
-                  
-                  return hasMultipleImages ? (
-                    <>
-                      {/* Previous Button */}
-                      <Button
-                        variant="white"
-                        size="sm"
-                        leftIcon={<ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />}
-                        onClick={goToPrevImage}
-                        className="absolute left-4 md:left-8 z-10 rounded-full"
-                        data-cta-id="cta_image_prev"
-                        aria-label="Previous image"
-                      />
-
-                      {/* Next Button */}
-                      <Button
-                        variant="white"
-                        size="sm"
-                        rightIcon={<ChevronRight className="w-4 h-4 md:w-5 md:h-5" />}
-                        onClick={goToNextImage}
-                        className="absolute right-4 md:right-8 z-10 rounded-full"
-                        data-cta-id="cta_image_next"
-                        aria-label="Next image"
-                      />
-
-                      {/* Image Counter */}
-                      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-10 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm text-white text-xs md:text-sm">
-                        {selectedImageIndex + 1} / {currentImages.length}
-                      </div>
-                    </>
-                  ) : null;
-                })()}
-              </div>
-            </div>
-          )}
+              ))}
+            </CarouselContent>
+          </Carousel>
         </DrawerContent>
       </div>
     </Drawer>

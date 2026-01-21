@@ -17,6 +17,7 @@ export interface PhoneSubscribeFormProps {
 
 interface PhoneFormData {
   phone: string;
+  name: string;
 }
 
 interface EmailFormData {
@@ -49,6 +50,7 @@ export const PhoneSubscribeForm = ({
       setSubmitStatus("idle");
       const requestBody = {
         phone: data.phone,
+        name: data.name,
         notification_type: notificationType,
         property_id: propertyId,
         property_name: propertyName,
@@ -164,30 +166,50 @@ export const PhoneSubscribeForm = ({
       onSubmit={handleSubmit(handlePhoneSubmit)}
       className={`max-w-md mx-auto mb-4 ${className}`}
     >
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col gap-4">
         <input
-          type="tel"
-          placeholder={placeholder || defaultPlaceholder}
-          {...register("phone", {
-            required: "Phone number is required",
-            pattern: {
-              value: /^[0-9+\-\s()]+$/,
-              message: "Please enter a valid phone number",
+          type="text"
+          placeholder="Enter your name"
+          {...register("name", {
+            required: "Name is required",
+            minLength: {
+              value: 2,
+              message: "Name must be at least 2 characters",
             },
           })}
-          className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
+          className="flex-1 px-6 py-3 rounded-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
           disabled={isSubmitting}
         />
-        <Button
-          type="submit"
-          size="md"
-          variant="primary"
-          disabled={isSubmitting}
-          className="w-full md:w-auto"
-        >
-          {isSubmitting ? "Subscribing..." : buttonText}
-        </Button>
+        <div className="flex flex-col md:flex-row gap-4">
+          <input
+            type="tel"
+            placeholder={placeholder || defaultPlaceholder}
+            {...register("phone", {
+              required: "Phone number is required",
+              pattern: {
+                value: /^[0-9+\-\s()]+$/,
+                message: "Please enter a valid phone number",
+              },
+            })}
+            className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
+            disabled={isSubmitting}
+          />
+          <Button
+            type="submit"
+            size="md"
+            variant="primary"
+            disabled={isSubmitting}
+            className="w-full md:w-auto"
+          >
+            {isSubmitting ? "Subscribing..." : buttonText}
+          </Button>
+        </div>
       </div>
+      {errors.name && (
+        <p className="text-red-300 text-sm mt-2 text-center">
+          {errors.name.message}
+        </p>
+      )}
       {errors.phone && (
         <p className="text-red-300 text-sm mt-2 text-center">
           {errors.phone.message}
