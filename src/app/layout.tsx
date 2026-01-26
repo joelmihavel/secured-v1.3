@@ -123,10 +123,7 @@ export default function RootLayout({
                   // Use Cloudflare Pages URL (or your custom domain if configured)
                   apiUrl: 'https://flent-attribution-api.pages.dev/api/attrib/click',
                   calComUrls: [
-                    'cal.com/flent/reserve',
-                    'cal.com/flent/home-visit',
-                    'https://cal.com/flent/reserve',
-                    'https://cal.com/flent/home-visit'
+                    'cal.com/'
                   ],
                   storageKey: 'wax_attribution',
                   debug: false

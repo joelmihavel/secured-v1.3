@@ -541,7 +541,7 @@ export const RoomSelection = ({
                           <Button
                             size="md"
                             className="w-full"
-                            href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                            href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             rightIcon={<ArrowRight />}
@@ -706,7 +706,7 @@ export const RoomSelection = ({
                         <Button
                           size="md"
                           className="w-full"
-                          href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                          href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           rightIcon={<ArrowRight />}

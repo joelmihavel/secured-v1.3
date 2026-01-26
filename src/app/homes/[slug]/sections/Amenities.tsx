@@ -85,7 +85,7 @@ export const Amenities = ({
                 {discountEndDate}
               </h2>
               <a
-                href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base"

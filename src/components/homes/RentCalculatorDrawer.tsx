@@ -206,7 +206,7 @@ export const RentCalculatorDrawer = ({
                   <Button
                     size="md"
                     className="w-full"
-                    href={`https://cal.com/flent/home-visit?property-name=${slug}`}
+                    href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     data-cta-id="rent_calculator_book_tour"
