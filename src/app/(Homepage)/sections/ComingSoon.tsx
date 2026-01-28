@@ -6,6 +6,7 @@ import { Property, Location, Room, Occupant } from "@/lib/webflow";
 import { CardSection } from "@/components/layout/CardSection";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { PhoneSubscribeForm } from "@/components/ui/PhoneSubscribeForm";
+import { useSectionViewTracking } from "@/hooks/useSectionViewTracking";
 
 interface ComingSoonProps {
   properties?: Property[];
@@ -24,8 +25,18 @@ export const ComingSoon = ({
     (p) => p.fieldData["is-upcoming"]
   );
 
+  // Track section visibility
+  const sectionRef = useSectionViewTracking({
+    sectionId: 'coming-soon',
+    sectionName: 'Upcoming Homes',
+    additionalProperties: {
+      property_count: comingSoonProperties.length,
+    },
+  });
+
   return (
     <CardSection
+      ref={sectionRef}
       id="coming-soon"
       className="bg-ground-brown"
       backgroundPattern="/patterns/endless-clouds.svg"

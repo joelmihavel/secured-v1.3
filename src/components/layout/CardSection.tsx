@@ -26,7 +26,7 @@ const paddingYMap: Record<PaddingSize, string> = {
     large: 'py-8 md:py-16',
 };
 
-export const CardSection = ({
+export const CardSection = React.forwardRef<HTMLElement, CardSectionProps>(({
     children,
     className,
     id,
@@ -35,7 +35,7 @@ export const CardSection = ({
     paddingY = 'large',
     patternOpacity = 0.1,
     patternMask = 'none',
-}: CardSectionProps) => {
+}, ref) => {
     const maskImage = patternMask === 'to-bottom'
         ? 'linear-gradient(to bottom, transparent 40%, black 60%)'
         : patternMask === 'to-top'
@@ -43,7 +43,7 @@ export const CardSection = ({
             : undefined;
 
     return (
-        <section className="relative" id={id}>
+        <section className="relative" id={id} ref={ref}>
             <div
                 className={cn(
                     "max-w-[95vw] mx-auto rounded-2xl md:rounded-[4rem] relative overflow-hidden shadow-sm",
@@ -70,4 +70,6 @@ export const CardSection = ({
             </div>
         </section>
     );
-};
+});
+
+CardSection.displayName = "CardSection";

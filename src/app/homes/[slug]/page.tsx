@@ -191,6 +191,10 @@ export default async function PropertyPage({
         />
       </section>
 
+      <section id="faq">
+        <FAQ />
+      </section>
+
       <section id="flent-compare">
         <FlentCompare />
       </section>
@@ -203,10 +207,6 @@ export default async function PropertyPage({
 
       <section id="reviews">
         <Rating reviews={reviews} />
-      </section>
-
-      <section id="faq">
-        <FAQ />
       </section>
 
       <MoreOptions 
