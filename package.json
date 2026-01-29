@@ -41,6 +41,7 @@
     "react-dom": "19.2.0",
     "react-hook-form": "^7.68.0",
     "react-leaflet": "^5.0.0",
+    "react-phone-number-input": "^3.4.14",
     "react-tweet": "^3.2.2",
     "svg-path-commander": "^2.1.11",
     "tailwind-merge": "^3.4.0",
