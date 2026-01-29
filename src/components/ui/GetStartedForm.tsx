@@ -5,8 +5,6 @@ import { submitHubSpotForm } from "@/lib/hubspot";
 import { Button } from "./Button";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
 import { useCTATracking } from "@/hooks/useCTATracking";
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
-import "react-phone-number-input/style.css";
 
 const portalId = "45469632";
 const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
@@ -30,7 +28,6 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [addressSelectedFromDropdown, setAddressSelectedFromDropdown] = useState(false);
 
   // Handle place selection from autocomplete
   const handlePlaceSelected = (place: { formatted_address?: string }) => {
@@ -39,17 +36,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         ...prev,
         landlord_lead_property_address: place.formatted_address || "",
       }));
-      setAddressSelectedFromDropdown(true);
     }
-  };
-
-  // Handle address input change - reset dropdown selection flag if user manually edits
-  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      landlord_lead_property_address: e.target.value,
-    }));
-    setAddressSelectedFromDropdown(false);
   };
 
   // Initialize Google Places Autocomplete
@@ -79,30 +66,6 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     setErrorMessage("");
 
     // Validate required fields
-    if (!formData.landlord_lead_property_address) {
-      setStatus("error");
-      setErrorMessage("Please enter your property address.");
-      return;
-    }
-
-    if (!addressSelectedFromDropdown) {
-      setStatus("error");
-      setErrorMessage("Please select your property address from the dropdown suggestions.");
-      return;
-    }
-
-    if (!formData.phone) {
-      setStatus("error");
-      setErrorMessage("Please enter your phone number.");
-      return;
-    }
-
-    if (!isValidPhoneNumber(formData.phone)) {
-      setStatus("error");
-      setErrorMessage("Please enter a valid phone number.");
-      return;
-    }
-
     if (!formData.typeofhome) {
       setStatus("error");
       setErrorMessage("Please select the type of home.");
@@ -143,7 +106,6 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         expected_rent: "",
         is_property_vacant_now: "",
       });
-      setAddressSelectedFromDropdown(false);
     } catch (error) {
       setStatus("error");
       setErrorMessage(
@@ -196,16 +158,14 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         >
           Your Phone Number <span className="text-red-500">*</span>
         </label>
-        <PhoneInput
-          international
-          defaultCountry="IN"
+        <input
+          type="tel"
           id="phone"
           name="phone"
+          required
           value={formData.phone}
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, phone: value || "" }))
-          }
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent [&_.PhoneInputInput]:border-none [&_.PhoneInputInput]:outline-none [&_.PhoneInputInput]:bg-transparent [&_.PhoneInputInput]:w-full"
+          onChange={handleChange}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
           placeholder="Your Phone Number"
         />
       </div>
@@ -234,16 +194,15 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           htmlFor="landlord_lead_property_address"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
-          Property Address <span className="text-red-500">*</span>
+          Property Address
         </label>
         <input
           ref={autocompleteRef}
           type="text"
           id="landlord_lead_property_address"
           name="landlord_lead_property_address"
-          required
           value={formData.landlord_lead_property_address}
-          onChange={handleAddressChange}
+          onChange={handleChange}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
           placeholder="Start typing your property address"
         />
