@@ -460,7 +460,7 @@ export const GridLightBox = ({
             </AnimatePresence>
 
             {/* Tabs */}
-            <div className="overflow-x-auto md:overflow-visible mx-2 md:mx-4 scroll-smooth scrollbar-hide">
+            <div className="overflow-x-auto md:overflow-visible mx-2 md:mx-4 scroll-smooth hide-scrollbar">
               <Tabs
                 value={activeTab}
                 onValueChange={handleTabChange}

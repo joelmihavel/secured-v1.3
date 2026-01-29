@@ -262,7 +262,7 @@ export const RoomSelection = ({
     });
 
   return (
-    <OpenSection id="rooms" className="py-16 px-4 md:py-32 md:px-24">
+    <OpenSection id="rooms" className="py-10 px-4 md:py-32 md:px-24">
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-fluid-h2 text-text-main mb-4 md:mb-6">
           Take a room or the entire house,

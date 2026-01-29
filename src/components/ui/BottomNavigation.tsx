@@ -161,7 +161,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 >
                   {/* Left: Section Selector */}
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full transition-colors">
-                    <span className="font-heading text-fuild-medium text-text-main whitespace-nowrap">
+                    <span className="font-heading text-fluid-medium text-text-main whitespace-nowrap">
                       {activeSection}
                     </span>
                     <motion.div
