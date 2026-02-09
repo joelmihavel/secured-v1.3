@@ -82,12 +82,12 @@ export const ComingSoon = ({
       {/* Newsletter Section */}
       <div className=" rounded-[2rem] py-12 px-2 text-center relative z-10">
         <h3 className="font-heading text-fluid-h3 text-white mb-8">
-        Want a text from us every time we launch a home?
+        Want an email from us every time we launch a home?
         </h3>
 
         <PhoneSubscribeForm 
           notificationType="all homes" 
-          buttonText="Nudge Me"
+          buttonText="Notify Me"
           useEmail={true}
         />
 

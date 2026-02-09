@@ -5,6 +5,7 @@ import { z } from 'zod'
 const subscribeSchema = z.object({
   phone: z.string().optional(),
   email: z.string().email('Please enter a valid email address').optional(),
+  name: z.string().optional(),
   notification_type: z.enum(['specific room', 'specific home', 'all homes', 'upcoming home']),
   property_id: z.string().optional(),
   property_name: z.string().optional(),
@@ -26,11 +27,12 @@ export async function POST(request: Request) {
       )
     }
 
-    const { phone, email, notification_type, property_id, property_name, room_id } = result.data
+    const { phone, email, name, notification_type, property_id, property_name, room_id } = result.data
 
     await handleNotificationRequest({
       phone,
       email,
+      name,
       notification_type,
       property_id,
       property_name,
