@@ -247,7 +247,7 @@ export const RentCalculatorDrawer = ({
                     leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                     data-cta-id="rent_calculator_talk_to_us"
                     data-cta-context="rent_calculator_drawer"
-                    onClick={(e) => {
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                       if (!isMobile) {
                         e.preventDefault();
                         openChat(getPropertyWhatsappLink(propertyName));
