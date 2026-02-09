@@ -6,6 +6,8 @@ import {
   IconChevronDown as ChevronDown,
   IconChevronLeft as ChevronLeft,
   IconInfoCircle as Info,
+  IconPhone as PhoneIcon,
+  IconBrandWhatsapp as WhatsAppIcon,
 } from "@tabler/icons-react";
 import {
   RentBreakdown,
@@ -18,12 +20,15 @@ import { Room } from "@/lib/webflow";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { LockInSlider } from "@/components/homes/LockInSlider";
+import { useCTATracking } from "@/hooks/useCTATracking";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getPropertyWhatsappLink } from "@/constants";
+import { useMobile } from "@/hooks/useMobile";
+import { openChat } from "@/lib/open-chat";
 
 interface RentCalculatorDrawerProps {
   isOpen: boolean;
@@ -48,6 +53,8 @@ export const RentCalculatorDrawer = ({
   slug,
   propertyName,
 }: RentCalculatorDrawerProps) => {
+  const isMobile = useMobile();
+  const { trackCTAClick } = useCTATracking();
   const [isBreakdownVisible, setIsBreakdownVisible] = useState(true);
   const [selectedLockIn, setSelectedLockIn] =
     useState<LockInPeriod>(initialLockIn);
@@ -76,7 +83,15 @@ export const RentCalculatorDrawer = ({
             {/* Header */}
             <div
               className="flex items-center gap-1.5 md:gap-2 mb-6 md:mb-8 cursor-pointer w-fit"
-              onClick={onClose}
+              onClick={() => {
+                trackCTAClick({
+                  cta_id: "rent_calculator_back",
+                  cta_text: "Back to Apartment",
+                  cta_type: "button",
+                  page_section: "rent_calculator_drawer",
+                });
+                onClose();
+              }}
             >
               <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
               <span className="text-xs md:text-sm font-medium">
@@ -134,7 +149,15 @@ export const RentCalculatorDrawer = ({
                 <div>
                   <div
                     className="flex items-center justify-between mb-4 cursor-pointer select-none"
-                    onClick={() => setIsBreakdownVisible(!isBreakdownVisible)}
+                    onClick={() => {
+                      trackCTAClick({
+                        cta_id: "rent_calculator_breakdown_toggle",
+                        cta_text: isBreakdownVisible ? "Hide Breakdown" : "Show Breakdown",
+                        cta_type: "button",
+                        page_section: "rent_calculator_drawer",
+                      });
+                      setIsBreakdownVisible(!isBreakdownVisible);
+                    }}
                   >
                     <h3 className="text-base md:text-lg font-medium text-text-main">
                       Rent Breakdown
@@ -221,10 +244,17 @@ export const RentCalculatorDrawer = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     href={getPropertyWhatsappLink(propertyName)}
+                    leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                     data-cta-id="rent_calculator_talk_to_us"
                     data-cta-context="rent_calculator_drawer"
+                    onClick={(e) => {
+                      if (!isMobile) {
+                        e.preventDefault();
+                        openChat(getPropertyWhatsappLink(propertyName));
+                      }
+                    }}
                   >
-                    Talk to us
+                    {!isMobile ? "Get a Call Back" : "Talk to us"}
                   </Button>
                 </div>
               </div>

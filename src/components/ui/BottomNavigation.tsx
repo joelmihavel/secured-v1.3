@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconChevronUp as ChevronUp } from "@tabler/icons-react";
+import { IconChevronUp as ChevronUp, IconPhone as PhoneIcon } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { getPropertyWhatsappLink, WHATSAPP_LINK } from "@/constants";
 import { Property } from "@/lib/webflow";
+import { useMobile } from "@/hooks/useMobile";
+import { useCTATracking } from "@/hooks/useCTATracking";
+import { openChat } from "@/lib/open-chat";
 
 // WhatsApp Icon Component
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -43,6 +46,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   showAtId = "rooms",
   showChat = true
 }) => {
+  const isMobile = useMobile();
+  const { trackCTAClick } = useCTATracking();
   const [isOpen, setIsOpen] = useState(false);
   const [showMobileNav, setShowMobileNav] = useState(false);
 
@@ -157,7 +162,15 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 {/* Header / Collapsed View */}
                 <div
                   className="flex items-center justify-between p-2 gap-1 w-full cursor-pointer"
-                  onClick={() => setIsOpen(!isOpen)}
+                  onClick={() => {
+                    trackCTAClick({
+                      cta_id: "bottom_nav_toggle",
+                      cta_text: isOpen ? "Collapse Navigation" : "Expand Navigation",
+                      cta_type: "button",
+                      page_section: "bottom_navigation",
+                    });
+                    setIsOpen(!isOpen);
+                  }}
                 >
                   {/* Left: Section Selector */}
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full transition-colors">
@@ -180,12 +193,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                       rel="noopener noreferrer"
                       variant="secondary"
                       size="md"
-                      leftIcon={<WhatsAppIcon />}
+                      leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                       className="rounded-full"
-                      data-cta-id="bottom_nav_chat_with_us"
+                      data-cta-id="chat_with_us_mobile"
                       data-cta-context="bottom_navigation"
                     >
-                      Chat With Us
+                      {!isMobile ? "Get a Call Back" : "Chat With Us"}
                     </Button>
                   )}
                 </div>
@@ -204,7 +217,16 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                       {navLinks.map((link) => (
                         <div
                           key={link.name}
-                          onClick={(e) => handleLinkClick(e, link.href)}
+                          onClick={(e) => {
+                            trackCTAClick({
+                              cta_id: `bottom_nav_section_${link.name.toLowerCase().replace(/\s+/g, '_')}`,
+                              cta_text: link.name,
+                              cta_type: "button",
+                              cta_destination: link.href,
+                              page_section: "bottom_navigation",
+                            });
+                            handleLinkClick(e, link.href);
+                          }}
                           className={cn(
                             "w-full flex items-center justify-between px-3 py-3 rounded-full cursor-pointer transition-colors duration-200 hover:bg-ground-brown/5",
                             activeSection === link.name && "bg-black/5"
@@ -263,10 +285,18 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 rel="noopener noreferrer"
                 variant="secondary"
                 size="md"
-                leftIcon={<WhatsAppIcon />}
+                leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                 className="rounded-full"
+                data-cta-id="chat_with_us_desktop"
+                data-cta-context="bottom_navigation"
+                onClick={(e) => {
+                  if (!isMobile) {
+                    e.preventDefault();
+                    openChat(finalWhatsappLink);
+                  }
+                }}
               >
-                Chat With Us
+                {!isMobile ? "Get a Call Back" : "Chat With Us"}
               </Button>
             )}
           </div>

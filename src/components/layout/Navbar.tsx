@@ -16,6 +16,7 @@ import {
 import { useBreadcrumb } from "@/context/BreadcrumbContext";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
+import { useCTATracking } from "@/hooks/useCTATracking";
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
@@ -58,6 +59,7 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { trackCTAClick } = useCTATracking();
     const isHome = pathname === "/";
     const isPropertyDetail = pathname.startsWith('/homes/') && pathname.split('/').length === 3;
     const { neighborhoodName, neighborhoodId } = useBreadcrumb();
@@ -205,7 +207,16 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                                 <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                                             ) : (
                                                 <span
-                                                    onClick={() => router.push(crumb.href)}
+                                                    onClick={() => {
+                                                        trackCTAClick({
+                                                            cta_id: `navbar_breadcrumb_${crumb.label.toLowerCase().replace(/\s+/g, '_')}`,
+                                                            cta_text: crumb.label,
+                                                            cta_type: "link",
+                                                            cta_destination: crumb.href,
+                                                            page_section: "navbar",
+                                                        });
+                                                        router.push(crumb.href);
+                                                    }}
                                                     className="cursor-pointer hover:text-foreground transition-colors"
                                                 >
                                                     {crumb.label}

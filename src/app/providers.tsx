@@ -12,7 +12,7 @@
  * @see {@link docs/POSTHOG_ATTRIBUTION.md} Full Attribution Implementation Guide
  */
 'use client'
-import posthog from 'posthog-js'
+import posthog, { CaptureResult } from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from "next/navigation"
@@ -45,7 +45,32 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
         ui_host: 'https://us.posthog.com', // Required for toolbar to work with reverse proxy
         person_profiles: 'identified_only' as const,
         capture_pageview: false,
+        capture_pageleave: true,
         // Note: PostHog automatically captures UTM params and click IDs (gclid, fbclid) from URL
+        autocapture: {
+          // Respect ph-no-capture attribute to prevent duplicate events on tracked CTAs
+          css_selector_allowlist: undefined,
+          dom_event_allowlist: undefined,
+          element_allowlist: undefined,
+        },
+        // Safety net: filter autocapture events for elements already tracked by our CTA system
+        before_send: (cr: CaptureResult | null) => {
+          if (!cr) return null;
+          if (cr.event === '$autocapture') {
+            const elements = cr.properties?.$elements;
+            if (Array.isArray(elements) && elements.length > 0) {
+              const targetEl = elements[0];
+              // Drop autocapture if the element has ph-no-capture attribute or class
+              if (
+                targetEl?.attributes?.['ph-no-capture'] !== undefined ||
+                targetEl?.attr_class?.includes('ph-no-capture')
+              ) {
+                return null;
+              }
+            }
+          }
+          return cr;
+        },
       };
 
       posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, initConfig);
