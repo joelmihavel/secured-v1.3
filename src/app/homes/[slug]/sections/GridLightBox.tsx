@@ -10,6 +10,7 @@ import {
   IconCheck as Check,
   IconShare as Share,
   IconMessageCircle as MessageCircle,
+  IconPhone as PhoneIcon,
   IconHome as Home,
   IconArrowsMaximize as Expand,
 } from "@tabler/icons-react";
@@ -31,6 +32,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { getPropertyWhatsappLink } from "@/constants";
+import { useMobile } from "@/hooks/useMobile";
+import { openChat } from "@/lib/open-chat";
 
 export interface PhotoCategory {
   name: string;
@@ -58,6 +61,7 @@ export const GridLightBox = ({
   status,
   isOccupied,
 }: GridLightBoxProps) => {
+  const isMobile = useMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
     defaultTab.toLowerCase().replace(/\s+/g, "-")
@@ -335,11 +339,20 @@ export const GridLightBox = ({
                   href={getPropertyWhatsappLink(propertyName)}
                   variant="primary-rounded"
                   size="sm"
-                  leftIcon={<MessageCircle />}
-
+                  leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
+                  onClick={(e) => {
+                    if (!isMobile) {
+                      e.preventDefault();
+                      openChat(getPropertyWhatsappLink(propertyName));
+                    }
+                  }}
                 >
-                  <span className="hidden sm:inline">Chat with Us</span>
-                  <span className="sm:hidden">Chat</span>
+                  <span className="hidden sm:inline">
+                    {!isMobile ? "Get a Call Back" : "Chat with Us"}
+                  </span>
+                  <span className="sm:hidden">
+                    {!isMobile ? "Get a Call Back" : "Chat"}
+                  </span>
                 </Button>
               </div>
             </div>

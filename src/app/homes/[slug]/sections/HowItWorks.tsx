@@ -1,8 +1,13 @@
+"use client";
+
 import React from "react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { getPropertyWhatsappLink } from "@/constants";
+import { useMobile } from "@/hooks/useMobile";
+import { IconPhone as PhoneIcon, IconMessageCircle as MessageCircle } from "@tabler/icons-react";
+import { openChat } from "@/lib/open-chat";
 
 const steps = [
   {
@@ -43,6 +48,7 @@ interface HowItWorksProps {
 }
 
 export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
+  const isMobile = useMobile();
   return (
     <OpenSection id="how-it-works" className="py-20">
       <div className="container mx-auto px-4 md:px-20">
@@ -63,8 +69,15 @@ export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
             rel="noopener noreferrer"
             variant="secondary"
             className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8"
+            leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
+            onClick={(e) => {
+              if (!isMobile) {
+                e.preventDefault();
+                openChat(getPropertyWhatsappLink(propertyName));
+              }
+            }}
           >
-            Talk to Us <span>→</span>
+            {!isMobile ? "Get a Call Back" : "Talk to Us"} <span>→</span>
           </Button>
         </div>
 

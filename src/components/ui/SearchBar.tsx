@@ -5,6 +5,7 @@ import { IconSearch as Search, IconCalendar as Calendar, IconChevronDown as Chev
 import { Location } from "@/lib/webflow";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useCTATracking } from "@/hooks/useCTATracking";
 
 export interface SearchFilters {
     minBudget: number;
@@ -22,6 +23,7 @@ interface SearchBarProps {
 }
 
 export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) => {
+    const { trackCTAClick } = useCTATracking();
     const [open, setOpen] = useState(false);
 
     const handleBudgetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -108,7 +110,16 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                     "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
                                     (filters.locationIds?.length === 0) && "bg-gray-50"
                                 )}
-                                onClick={() => setFilters({ ...filters, locationIds: [] })}
+                                onClick={() => {
+                                    trackCTAClick({
+                                        cta_id: "cta_search_all_locations",
+                                        cta_text: "All Locations",
+                                        cta_type: "button",
+                                        page_section: "search_bar",
+                                    });
+                                    setFilters({ ...filters, locationIds: [] });
+                                }}
+                                data-cta-id="cta_search_all_locations"
                             >
                                 <div className={cn(
                                     "w-4 h-4 border rounded flex items-center justify-center transition-colors",
@@ -128,7 +139,15 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                             "flex items-center gap-2 px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-100 transition-colors",
                                             isSelected && "bg-gray-50"
                                         )}
-                                        onClick={() => handleLocationToggle(loc.id)}
+                                        onClick={() => {
+                                            trackCTAClick({
+                                                cta_id: `cta_search_location_${loc.fieldData.slug}`,
+                                                cta_text: loc.fieldData.name,
+                                                cta_type: "button",
+                                                page_section: "search_bar",
+                                            });
+                                            handleLocationToggle(loc.id);
+                                        }}
                                         data-cta-id={`cta_search_location_${loc.fieldData.slug}`}
                                     >
                                         <div className={cn(
@@ -164,7 +183,15 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
             <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 mt-4 lg:mt-0 lg:flex-shrink-0">
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
-                    onClick={() => setFilters({ ...filters, showAvailable: !filters.showAvailable })}
+                    onClick={() => {
+                        trackCTAClick({
+                            cta_id: "cta_search_available_toggle",
+                            cta_text: "Show Available",
+                            cta_type: "button",
+                            page_section: "search_bar",
+                        });
+                        setFilters({ ...filters, showAvailable: !filters.showAvailable });
+                    }}
                     data-cta-id="cta_search_available_toggle"
                 >
                     <div className="relative inline-flex items-center">
@@ -181,7 +208,15 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
 
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
-                    onClick={() => setFilters({ ...filters, femaleOnly: !filters.femaleOnly })}
+                    onClick={() => {
+                        trackCTAClick({
+                            cta_id: "cta_search_female_toggle",
+                            cta_text: "Show only Female",
+                            cta_type: "button",
+                            page_section: "search_bar",
+                        });
+                        setFilters({ ...filters, femaleOnly: !filters.femaleOnly });
+                    }}
                     data-cta-id="cta_search_female_toggle"
                 >
                     <div className="relative inline-flex items-center">

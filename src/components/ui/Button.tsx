@@ -217,10 +217,10 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
                     ref={setPhNoCaptureRef as React.Ref<HTMLAnchorElement>}
                     href={href}
                     {...commonProps}
-                    onClick={handleClick}
                     data-cta-id={dataCtaId}
                     data-cta-context={dataCtaContext}
                     {...(props as Omit<HTMLMotionProps<"a">, keyof BaseButtonProps>)}
+                    onClick={handleClick}
                 >
                     {content}
                 </motion.a>
@@ -231,10 +231,10 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
             <motion.button
                 ref={setPhNoCaptureRef as React.Ref<HTMLButtonElement>}
                 {...commonProps}
-                onClick={handleClick}
                 data-cta-id={dataCtaId}
                 data-cta-context={dataCtaContext}
                 {...(props as Omit<HTMLMotionProps<"button">, keyof BaseButtonProps>)}
+                onClick={handleClick}
             >
                 {content}
             </motion.button>

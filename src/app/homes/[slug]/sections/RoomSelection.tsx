@@ -22,6 +22,7 @@ import {
   IconInfoCircle as Info,
   IconChevronDown as ChevronDown,
   IconArrowRight as ArrowRight,
+  IconPhone as PhoneIcon,
 } from "@tabler/icons-react";
 
 // WhatsApp Icon Component
@@ -50,6 +51,8 @@ import { LockInSlider } from "@/components/homes/LockInSlider";
 import { LockInPeriod } from "@/lib/property-utils";
 import { getAvailabilityDate } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
+import { useMobile } from "@/hooks/useMobile";
+import { openChat } from "@/lib/open-chat";
 
 // Helper functions for lock-in period pricing
 // Note: CMS field naming is counterintuitive:
@@ -122,6 +125,7 @@ export const RoomSelection = ({
   photoCategories,
   slug,
 }: RoomSelectionProps) => {
+  const isMobile = useMobile();
   const isDebugMode = useDebugMode();
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [calculatorData, setCalculatorData] = useState<{
@@ -559,11 +563,17 @@ export const RoomSelection = ({
                             href={getPropertyWhatsappLink(
                               property.fieldData.name
                             )}
-                            leftIcon={<WhatsAppIcon />}
+                            leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                             data-cta-id="room_selection_talk_to_us"
                             data-cta-context="room_selection"
+                            onClick={(e) => {
+                              if (!isMobile) {
+                                e.preventDefault();
+                                openChat(getPropertyWhatsappLink(property.fieldData.name));
+                              }
+                            }}
                           >
-                            Talk to us
+                            {!isMobile ? "Get a Call Back" : "Talk to us"}
                           </Button>
                         </>
                       )}
@@ -722,9 +732,15 @@ export const RoomSelection = ({
                           href={getPropertyWhatsappLink(
                             property.fieldData.name
                           )}
-                          leftIcon={<WhatsAppIcon />}
+                          leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
+                          onClick={(e) => {
+                            if (!isMobile) {
+                              e.preventDefault();
+                              openChat(getPropertyWhatsappLink(property.fieldData.name));
+                            }
+                          }}
                         >
-                          Talk to us
+                          {!isMobile ? "Get a Call Back" : "Talk to us"}
                         </Button>
                       </>
                     ) : (
