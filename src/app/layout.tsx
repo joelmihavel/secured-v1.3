@@ -46,6 +46,8 @@ import { GoogleMapsProvider } from "./GoogleMapsProvider";
 // ... existing imports
 
 import { TopBanner } from "@/components/layout/TopBanner";
+import SuperchatWidget from "@/components/SuperchatWidget";
+import { SuperchatProvider } from "@/context/SuperchatContext";
 
 export default function RootLayout({
   children,
@@ -256,8 +258,16 @@ export default function RootLayout({
                   });
                 }
 
-                // Create floating WhatsApp button
+                // Create floating WhatsApp button (mobile only - Superchat SDK handles desktop)
                 function createFloatingWhatsAppButton() {
+                  // Skip on desktop - Superchat SDK handles chat
+                  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+                  if (isDesktop) {
+                    const existing = document.querySelector('.whatsapp-float');
+                    if (existing) existing.remove();
+                    return;
+                  }
+
                   // Check path - exclude /homes/ and /secured
                   if (window.location.pathname.startsWith('/homes/') || window.location.pathname.startsWith('/secured')) {
                     const existing = document.querySelector('.whatsapp-float');
@@ -432,6 +442,12 @@ export default function RootLayout({
                   // Create floating WhatsApp button
                   createFloatingWhatsAppButton();
 
+                  // Handle viewport changes (mobile <-> desktop)
+                  const desktopMediaQuery = window.matchMedia('(min-width: 768px)');
+                  desktopMediaQuery.addEventListener('change', () => {
+                    createFloatingWhatsAppButton();
+                  });
+
                   // Enhance Cal.com and WhatsApp links
                   enhanceWhatsAppLinks();
                   appendWaxToCalComLinks();
@@ -468,17 +484,19 @@ export default function RootLayout({
           }}
         />
 
-
-        <CSPostHogProvider>
-          <GoogleMapsProvider>
-            <BreadcrumbProvider>
-              <ScrollRestoration />
-              <Navbar />
-              {children}
-              <Footer />
-            </BreadcrumbProvider>
-          </GoogleMapsProvider>
-        </CSPostHogProvider>
+        <SuperchatProvider>
+          <SuperchatWidget />
+          <CSPostHogProvider>
+            <GoogleMapsProvider>
+              <BreadcrumbProvider>
+                <ScrollRestoration />
+                <Navbar />
+                {children}
+                <Footer />
+              </BreadcrumbProvider>
+            </GoogleMapsProvider>
+          </CSPostHogProvider>
+        </SuperchatProvider>
       </body>
     </html>
   );
