@@ -566,7 +566,7 @@ export const RoomSelection = ({
                             leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                             data-cta-id="room_selection_talk_to_us"
                             data-cta-context="room_selection"
-                            onClick={(e) => {
+                            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                               if (!isMobile) {
                                 e.preventDefault();
                                 openChat(getPropertyWhatsappLink(property.fieldData.name));
@@ -733,7 +733,7 @@ export const RoomSelection = ({
                             property.fieldData.name
                           )}
                           leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
-                          onClick={(e) => {
+                          onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                             if (!isMobile) {
                               e.preventDefault();
                               openChat(getPropertyWhatsappLink(property.fieldData.name));

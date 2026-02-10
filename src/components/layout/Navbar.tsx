@@ -382,7 +382,7 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 size="sm"
                                 className="w-full"
                                 disabled={!link.href}
-                                onClick={(e) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     if (link.href) {
                                         if (!isHome && link.sectionId) {
                                             e.preventDefault();

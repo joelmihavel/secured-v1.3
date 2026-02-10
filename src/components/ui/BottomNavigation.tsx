@@ -269,7 +269,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 key={link.name}
                 variant="ghost"
                 size="sm"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   handleLinkClick(e, link.href);
                 }}
               >
@@ -289,7 +289,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 className="rounded-full"
                 data-cta-id="chat_with_us_desktop"
                 data-cta-context="bottom_navigation"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   if (!isMobile) {
                     e.preventDefault();
                     openChat(finalWhatsappLink);

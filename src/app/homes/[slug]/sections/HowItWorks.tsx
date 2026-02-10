@@ -70,7 +70,7 @@ export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
             variant="secondary"
             className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8"
             leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
               if (!isMobile) {
                 e.preventDefault();
                 openChat(getPropertyWhatsappLink(propertyName));

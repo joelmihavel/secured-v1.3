@@ -235,7 +235,7 @@ export const GridLightBox = ({
 
           {/* Show All Button - Floating on the main image */}
           <Button
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
               setIsOpen(true);
             }}
@@ -340,7 +340,7 @@ export const GridLightBox = ({
                   variant="primary-rounded"
                   size="sm"
                   leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     if (!isMobile) {
                       e.preventDefault();
                       openChat(getPropertyWhatsappLink(propertyName));
