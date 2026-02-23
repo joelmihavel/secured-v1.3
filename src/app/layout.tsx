@@ -287,15 +287,13 @@ export default function RootLayout({
                   button.rel = 'noopener noreferrer';
                   button.setAttribute('aria-label', 'Chat with us on WhatsApp');
                   
-                  // Conversion Tracking
+                  // Conversion: open in new tab only (same user gesture), then fire conversion
                   button.onclick = function(e) {
-                      e.preventDefault(); // Prevent default since gtag_report_conversion handles navigation
-                      // Check if global function exists
-                      if (typeof window.gtag_report_conversion === 'function') {
-                          return window.gtag_report_conversion(this.href);
-                      } else {
-                          // Fallback if script hasn't loaded
-                          window.location.href = this.href;
+                      e.preventDefault();
+                      var href = this.href;
+                      window.open(href, '_blank', 'noopener,noreferrer');
+                      if (window.gtag) {
+                          window.gtag('event', 'conversion', { 'send_to': 'AW-16885482628/LlGRCKmzrsgaEISJ0PM-' });
                       }
                   };
                   
@@ -326,6 +324,8 @@ export default function RootLayout({
                         justify-content: center;
                         box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
                         z-index: 9999;
+                        pointer-events: auto;
+                        cursor: pointer;
                         transition: background 0.3s;
                         text-decoration: none;
                       }
