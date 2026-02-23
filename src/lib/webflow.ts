@@ -200,7 +200,7 @@ export async function getCollectionItems<T extends WebflowItem>(
         accept: "application/json",
         authorization: `Bearer ${WEBFLOW_API_TOKEN}`,
       },
-      next: { revalidate: 3600 },
+      next: { revalidate: 3600 }, // 60 minutes
     };
 
     const response = await fetch(url, options);

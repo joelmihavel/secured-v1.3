@@ -46,8 +46,6 @@ import { GoogleMapsProvider } from "./GoogleMapsProvider";
 // ... existing imports
 
 import { TopBanner } from "@/components/layout/TopBanner";
-import SuperchatWidget from "@/components/SuperchatWidget";
-import { SuperchatProvider } from "@/context/SuperchatContext";
 
 export default function RootLayout({
   children,
@@ -258,16 +256,8 @@ export default function RootLayout({
                   });
                 }
 
-                // Create floating WhatsApp button (mobile only - Superchat SDK handles desktop)
+                // Create floating WhatsApp button (black circle, white WhatsApp icon; WAX-enhanced)
                 function createFloatingWhatsAppButton() {
-                  // Skip on desktop - Superchat SDK handles chat
-                  const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-                  if (isDesktop) {
-                    const existing = document.querySelector('.whatsapp-float');
-                    if (existing) existing.remove();
-                    return;
-                  }
-
                   // Check path - exclude /homes/ and /secured
                   if (window.location.pathname.startsWith('/homes/') || window.location.pathname.startsWith('/secured')) {
                     const existing = document.querySelector('.whatsapp-float');
@@ -316,45 +306,51 @@ export default function RootLayout({
                     </svg>
                   \`;
 
-                  // Add styles
-                  const style = document.createElement('style');
-                  style.textContent = \`
-                    .whatsapp-float {
-                      position: fixed;
-                      width: 60px;
-                      height: 60px;
-                      bottom: 24px;
-                      right: 24px;
-                      background: #000;
-                      color: #fff;
-                      border-radius: 50%;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
-                      z-index: 9999;
-                      transition: background 0.3s;
-                      text-decoration: none;
-                    }
-                    .whatsapp-float:hover {
-                      background: #222;
-                    }
-                    @media (max-width: 600px) {
+                  // Inject styles once (black circle, white WhatsApp icon)
+                  const styleId = 'whatsapp-float-styles';
+                  if (!document.getElementById(styleId)) {
+                    const style = document.createElement('style');
+                    style.id = styleId;
+                    style.textContent = \`
                       .whatsapp-float {
-                        width: 48px;
-                        height: 48px;
-                        bottom: 16px;
-                        right: 16px;
+                        position: fixed;
+                        width: 60px;
+                        height: 60px;
+                        bottom: 24px;
+                        right: 24px;
+                        background: #000;
+                        color: #fff;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+                        z-index: 9999;
+                        transition: background 0.3s;
+                        text-decoration: none;
+                      }
+                      .whatsapp-float:hover {
+                        background: #222;
                       }
                       .whatsapp-float svg {
-                        width: 24px;
-                        height: 24px;
+                        color: #fff;
                       }
-                    }
-                  \`;
+                      @media (max-width: 600px) {
+                        .whatsapp-float {
+                          width: 48px;
+                          height: 48px;
+                          bottom: 16px;
+                          right: 16px;
+                        }
+                        .whatsapp-float svg {
+                          width: 24px;
+                          height: 24px;
+                        }
+                      }
+                    \`;
+                    document.head.appendChild(style);
+                  }
 
-                  // Append to document
-                  document.head.appendChild(style);
                   document.body.appendChild(button);
 
                   // Enhance the floating button with WAX code if available
@@ -484,19 +480,16 @@ export default function RootLayout({
           }}
         />
 
-        <SuperchatProvider>
-          <SuperchatWidget />
-          <CSPostHogProvider>
-            <GoogleMapsProvider>
-              <BreadcrumbProvider>
-                <ScrollRestoration />
-                <Navbar />
-                {children}
-                <Footer />
-              </BreadcrumbProvider>
-            </GoogleMapsProvider>
-          </CSPostHogProvider>
-        </SuperchatProvider>
+        <CSPostHogProvider>
+          <GoogleMapsProvider>
+            <BreadcrumbProvider>
+              <ScrollRestoration />
+              <Navbar />
+              {children}
+              <Footer />
+            </BreadcrumbProvider>
+          </GoogleMapsProvider>
+        </CSPostHogProvider>
       </body>
     </html>
   );
