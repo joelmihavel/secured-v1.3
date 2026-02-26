@@ -6,7 +6,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 
-
+// Trigger Vercel deploy
 const zin = localFont({
   src: "../../font/ZinDisplayCondensed.otf",
   variable: "--font-zin",
