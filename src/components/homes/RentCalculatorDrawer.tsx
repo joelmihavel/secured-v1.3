@@ -14,9 +14,10 @@ import {
   ADD_ONS,
   formatCurrency,
   getRoomRentBreakdown,
+  getPropertyRentBreakdown,
   LockInPeriod,
 } from "@/lib/property-utils";
-import { Room } from "@/lib/webflow";
+import { Property, Room } from "@/lib/webflow";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { LockInSlider } from "@/components/homes/LockInSlider";
@@ -37,7 +38,8 @@ interface RentCalculatorDrawerProps {
   image: string;
   lockInPeriod: LockInPeriod;
   breakdown: RentBreakdown;
-  room?: Room; // Optional room for recalculating breakdown
+  room?: Room;
+  property?: Property;
   slug: string;
   propertyName: string;
 }
@@ -50,6 +52,7 @@ export const RentCalculatorDrawer = ({
   lockInPeriod: initialLockIn,
   breakdown: initialBreakdown,
   room,
+  property,
   slug,
   propertyName,
 }: RentCalculatorDrawerProps) => {
@@ -66,11 +69,12 @@ export const RentCalculatorDrawer = ({
     setBreakdown(initialBreakdown);
   }, [initialLockIn, initialBreakdown]);
 
-  // Handle lock-in change within drawer
   const handleLockInChange = (lockIn: LockInPeriod) => {
     setSelectedLockIn(lockIn);
     if (room) {
       setBreakdown(getRoomRentBreakdown(room, lockIn));
+    } else if (property) {
+      setBreakdown(getPropertyRentBreakdown(property, lockIn));
     }
   };
 

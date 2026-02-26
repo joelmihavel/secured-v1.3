@@ -133,7 +133,8 @@ export const RoomSelection = ({
     image: string;
     lockInPeriod: LockInPeriod;
     breakdown: RentBreakdown;
-    room: Room;
+    room?: Room;
+    isFullHouse?: boolean;
   } | null>(null);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [notificationModalData, setNotificationModalData] = useState<{
@@ -164,14 +165,14 @@ export const RoomSelection = ({
   };
 
   const handleFullHousePricingClick = () => {
-    const lockIn: LockInPeriod = property.fieldData["6-month-lock-in"] ? 6 : 11;
+    const lockIn: LockInPeriod = 11;
     const breakdown = getPropertyRentBreakdown(property, lockIn);
     setCalculatorData({
       title: "Full House",
       image: property.fieldData["property-thumbnail"]?.url || "",
       lockInPeriod: lockIn,
       breakdown,
-      room: undefined as unknown as Room, // Full house doesn't have a room, but we need to satisfy the type
+      isFullHouse: true,
     });
     setIsCalculatorOpen(true);
   };
@@ -789,6 +790,7 @@ export const RoomSelection = ({
           lockInPeriod={calculatorData.lockInPeriod}
           breakdown={calculatorData.breakdown}
           room={calculatorData.room}
+          property={calculatorData.isFullHouse ? property : undefined}
           slug={slug}
           propertyName={property.fieldData.name}
         />

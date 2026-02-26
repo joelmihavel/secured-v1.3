@@ -216,7 +216,7 @@ export default async function PropertyPage({
         occupants={allOccupants}
       />
 
-      <BottomNavigation property={property} />
+      <BottomNavigation property={property} showCallButton />
     </main>
   );
 }

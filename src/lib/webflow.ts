@@ -99,6 +99,14 @@ export interface Property extends WebflowItem {
     "apply-discount"?: boolean;
     discount?: number;
     "discount-end-date"?: string;
+    "base-rent"?: number;
+    "maintenance"?: number;
+    "convenience-fee"?: number;
+    "furnishing-fee"?: number;
+    "gst"?: number;
+    "security-deposit"?: number;
+    "security-deposit-9-month"?: number;
+    "security-deposit-11-month"?: number;
   };
 }
 

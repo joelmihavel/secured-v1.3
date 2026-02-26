@@ -31,12 +31,15 @@ const defaultPropertyNavLinks: NavLink[] = [
   { name: "FAQ", href: "#faq" },
 ];
 
+const CALL_PHONE_NUMBER = "tel:+918123659925";
+
 interface BottomNavigationProps {
   property?: Property;
   customLinks?: NavLink[];
   customWhatsappLink?: string;
   showAtId?: string;
   showChat?: boolean;
+  showCallButton?: boolean;
 }
 
 export const BottomNavigation: React.FC<BottomNavigationProps> = ({
@@ -44,7 +47,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   customLinks,
   customWhatsappLink,
   showAtId = "rooms",
-  showChat = true
+  showChat = true,
+  showCallButton = false,
 }) => {
   const isMobile = useMobile();
   const { trackCTAClick } = useCTATracking();
@@ -127,7 +131,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
   return (
     <>
-      {/* Mobile Navigation (Expandable Menu) */}
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {showMobileNav && (
           <motion.div
@@ -138,113 +142,143 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            <motion.div
-              className="bg-white shadow-2xl border border-black pointer-events-auto overflow-hidden mx-auto"
-              initial="closed"
-              animate={isOpen ? "open" : "closed"}
-              variants={{
-                open: {
-                  height: "auto",
-                  width: "340px",
-                  borderRadius: "24px",
-                },
-                closed: {
-                  height: "68px",
-                  width: "fit-content",
-                  minWidth: "90vw",
-                  borderRadius: "34px",
-                },
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              style={{ maxWidth: "calc(100vw - 32px)" }}
-            >
-              <div className="flex flex-col w-full">
-                {/* Header / Collapsed View */}
-                <div
-                  className="flex items-center justify-between p-2 gap-1 w-full cursor-pointer"
-                  onClick={() => {
-                    trackCTAClick({
-                      cta_id: "bottom_nav_toggle",
-                      cta_text: isOpen ? "Collapse Navigation" : "Expand Navigation",
-                      cta_type: "button",
-                      page_section: "bottom_navigation",
-                    });
-                    setIsOpen(!isOpen);
-                  }}
+            {showCallButton ? (
+              /* Two-button layout: Call Us + Chat with us */
+              <div className="w-full pointer-events-auto flex items-center gap-3 bg-white p-3 rounded-[2rem] shadow-2xl border border-text-main">
+                <Button
+                  href={CALL_PHONE_NUMBER}
+                  variant="primary"
+                  size="md"
+                  leftIcon={<PhoneIcon />}
+                  className="shrink-0 rounded-full px-5"
+                  style={{ backgroundColor: "white", color: "var(--color-text-main)", borderColor: "var(--color-text-main)" }}
+                  data-cta-id="call_us_mobile"
+                  data-cta-context="bottom_navigation"
                 >
-                  {/* Left: Section Selector */}
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full transition-colors">
-                    <span className="font-heading text-fluid-medium text-text-main whitespace-nowrap">
-                      {activeSection}
-                    </span>
-                    <motion.div
-                      animate={{ rotate: isOpen ? 180 : 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                      <ChevronUp className="w-5 h-5 text-text-main" />
-                    </motion.div>
+                  Call Us
+                </Button>
+                {showChat && (
+                  <Button
+                    href={finalWhatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="primary"
+                    size="md"
+                    leftIcon={<WhatsAppIcon className="w-5 h-5" />}
+                    className="flex-1 rounded-full"
+                    data-cta-id="chat_with_us_mobile"
+                    data-cta-context="bottom_navigation"
+                  >
+                    Chat with us
+                  </Button>
+                )}
+              </div>
+            ) : (
+              /* Expandable section nav layout (original) */
+              <motion.div
+                className="bg-white shadow-2xl border border-black pointer-events-auto overflow-hidden mx-auto"
+                initial="closed"
+                animate={isOpen ? "open" : "closed"}
+                variants={{
+                  open: {
+                    height: "auto",
+                    width: "340px",
+                    borderRadius: "24px",
+                  },
+                  closed: {
+                    height: "68px",
+                    width: "fit-content",
+                    minWidth: "90vw",
+                    borderRadius: "34px",
+                  },
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                style={{ maxWidth: "calc(100vw - 32px)" }}
+              >
+                <div className="flex flex-col w-full">
+                  <div
+                    className="flex items-center justify-between p-2 gap-1 w-full cursor-pointer"
+                    onClick={() => {
+                      trackCTAClick({
+                        cta_id: "bottom_nav_toggle",
+                        cta_text: isOpen ? "Collapse Navigation" : "Expand Navigation",
+                        cta_type: "button",
+                        page_section: "bottom_navigation",
+                      });
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-full transition-colors">
+                      <span className="font-heading text-fluid-medium text-text-main whitespace-nowrap">
+                        {activeSection}
+                      </span>
+                      <motion.div
+                        animate={{ rotate: isOpen ? 180 : 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <ChevronUp className="w-5 h-5 text-text-main" />
+                      </motion.div>
+                    </div>
+
+                    {showChat && (
+                      <Button
+                        href={finalWhatsappLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="secondary"
+                        size="md"
+                        leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
+                        className="rounded-full"
+                        data-cta-id="chat_with_us_mobile"
+                        data-cta-context="bottom_navigation"
+                      >
+                        {!isMobile ? "Get a Call Back" : "Chat With Us"}
+                      </Button>
+                    )}
                   </div>
 
-                  {/* Right: CTA */}
-                  {showChat && (
-                    <Button
-                      href={finalWhatsappLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="secondary"
-                      size="md"
-                      leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
-                      className="rounded-full"
-                      data-cta-id="chat_with_us_mobile"
-                      data-cta-context="bottom_navigation"
-                    >
-                      {!isMobile ? "Get a Call Back" : "Chat With Us"}
-                    </Button>
-                  )}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="px-2 pb-2 flex flex-col"
+                      >
+                        <div className="h-px bg-gray-100 w-full my-2 mx-2" />
+                        {navLinks.map((link) => (
+                          <div
+                            key={link.name}
+                            onClick={(e) => {
+                              trackCTAClick({
+                                cta_id: `bottom_nav_section_${link.name.toLowerCase().replace(/\s+/g, '_')}`,
+                                cta_text: link.name,
+                                cta_type: "button",
+                                cta_destination: link.href,
+                                page_section: "bottom_navigation",
+                              });
+                              handleLinkClick(e, link.href);
+                            }}
+                            className={cn(
+                              "w-full flex items-center justify-between px-3 py-3 rounded-full cursor-pointer transition-colors duration-200 hover:bg-ground-brown/5",
+                              activeSection === link.name && "bg-black/5"
+                            )}
+                          >
+                            <span className="font-heading text-button-link text-text-main font-bold tracking-wide">
+                              {link.name}
+                            </span>
+                            {activeSection === link.name && (
+                              <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
+                            )}
+                          </div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-
-                {/* Expanded Content: Other Links */}
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="px-2 pb-2 flex flex-col"
-                    >
-                      <div className="h-px bg-gray-100 w-full my-2 mx-2" />
-                      {navLinks.map((link) => (
-                        <div
-                          key={link.name}
-                          onClick={(e) => {
-                            trackCTAClick({
-                              cta_id: `bottom_nav_section_${link.name.toLowerCase().replace(/\s+/g, '_')}`,
-                              cta_text: link.name,
-                              cta_type: "button",
-                              cta_destination: link.href,
-                              page_section: "bottom_navigation",
-                            });
-                            handleLinkClick(e, link.href);
-                          }}
-                          className={cn(
-                            "w-full flex items-center justify-between px-3 py-3 rounded-full cursor-pointer transition-colors duration-200 hover:bg-ground-brown/5",
-                            activeSection === link.name && "bg-black/5"
-                          )}
-                        >
-                          <span className="font-heading text-button-link text-text-main font-bold tracking-wide">
-                            {link.name}
-                          </span>
-                          {activeSection === link.name && (
-                            <div className="w-2 h-2 rounded-full bg-black flex-shrink-0" />
-                          )}
-                        </div>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

@@ -136,27 +136,43 @@ export const getPropertyDisplayRent = (property: Property): number => {
     }
 };
 
+export const getPropertyRentForLockIn = (property: Property, lockIn: LockInPeriod): number => {
+    if (lockIn === 6) return Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+    if (lockIn === 9) return Number(property.fieldData["3-month-lock-in"]) || Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+    return Number(property.fieldData["no-lock-in"]) || Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+};
+
 export const getPropertyRentBreakdown = (property: Property, lockIn: LockInPeriod = 11): RentBreakdown => {
-    // Base rent is the 6-month lock-in price (highest price)
-    // Fallback to whatever display rent logic if 6-month field is missing, but typically we want the base.
-    const baseRent = Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+    const baseRent = property.fieldData["base-rent"] ?? null;
+    const maintenance = property.fieldData["maintenance"] ?? null;
+    const furnishing = property.fieldData["furnishing-fee"] ?? null;
+    const convenience = property.fieldData["convenience-fee"] ?? null;
+    const gst = property.fieldData["gst"] ?? null;
 
-    // Calculate discounts based on lock-in
-    let lockInDiscount = 0;
-    if (lockIn === 9) lockInDiscount = 1000;
-    if (lockIn === 11) lockInDiscount = 2000;
+    const totalRent = getPropertyRentForLockIn(property, lockIn);
 
-    const totalRent = baseRent - lockInDiscount;
+    // CMS slugs differ from Room: security-deposit-9-month vs 9-month-security-deposit
+    let deposit: number | null = null;
+    if (lockIn === 6) {
+        deposit = property.fieldData["security-deposit"] ?? null;
+    } else if (lockIn === 9) {
+        deposit = property.fieldData["security-deposit-9-month"] ?? null;
+    } else {
+        deposit = property.fieldData["security-deposit-11-month"] ?? null;
+    }
 
-    // Property doesn't have breakdown fields in the interface.
+    // Lock-in discount = difference between 6-month rent (highest) and the selected lock-in rent
+    const sixMonthRent = Number(property.fieldData["6-month-lock-in"]) || getPropertyDisplayRent(property);
+    const lockInDiscount = Math.max(0, sixMonthRent - totalRent);
+
     return {
-        baseRent: baseRent,
-        maintenance: null,
-        furnishing: null,
-        convenience: null,
-        gst: null,
+        baseRent,
+        maintenance,
+        furnishing,
+        convenience,
+        gst,
         totalRent,
-        deposit: null, // No field available
+        deposit,
         lockInDiscount
     };
 };

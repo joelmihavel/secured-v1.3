@@ -259,7 +259,7 @@ export default function RootLayout({
                 // Create floating WhatsApp button (black circle, white WhatsApp icon; WAX-enhanced)
                 function createFloatingWhatsAppButton() {
                   // Check path - exclude /homes/ and /secured
-                  if (window.location.pathname.startsWith('/homes/') || window.location.pathname.startsWith('/secured')) {
+                  if (window.location.pathname.startsWith('/homes/') || window.location.pathname.startsWith('/secured') || window.location.pathname.startsWith('/collections/')) {
                     const existing = document.querySelector('.whatsapp-float');
                     if (existing) existing.remove();
                     return;
