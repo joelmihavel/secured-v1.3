@@ -33,7 +33,7 @@ const marqueeContent = (
         className="inline-flex items-center gap-2 whitespace-nowrap text-sm font-semibold text-brand-yellow"
       >
         <DiamondIcon className="w-3 h-3 shrink-0" />
-        Book now and get up to ₹9,000 OFF
+        Book now and get up to ₹9,200 OFF
         <DiamondIcon className="w-3 h-3 shrink-0" />
         Offer Valid till 5th March
       </span>
