@@ -32,6 +32,20 @@ interface PropertyCardProps {
   variant?: "default" | "coming-soon";
   rooms?: Room[];
   occupants?: Occupant[];
+  /**
+   * TEMPORARY: HSR campaign ribbon toggle.
+   *
+   * When true, renders a static forest-green ribbon just below the property
+   * image with the copy "7 rent days entirely ON US". Only set to true from
+   * the HSR campaign grid (src/app/collections/hsr-layout/HSRPropertyGrid.tsx).
+   *
+   * To remove when the campaign ends or discounting is rearchitected:
+   * 1. Delete this prop and its default from the component signature.
+   * 2. Remove `showCampaignRibbon` from all call sites (currently only
+   *    HSRPropertyGrid).
+   * 3. Delete the ribbon JSX block guarded by this prop.
+   */
+  showCampaignRibbon?: boolean;
 }
 
 // Inline CompanyPill Component
@@ -104,6 +118,7 @@ export const PropertyCard = ({
   variant = "default",
   rooms = [],
   occupants = [],
+  showCampaignRibbon = false,
 }: PropertyCardProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -339,6 +354,14 @@ export const PropertyCard = ({
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* HSR campaign ribbon – see showCampaignRibbon on PropertyCardProps.
+            Remove this block when the campaign ends or discounting is reworked. */}
+        {showCampaignRibbon && !isOccupied && (
+          <div className="bg-forest-green text-white text-center py-2 text-xs md:text-sm font-heading font-bold">
+            7 rent days entirely ON US
+          </div>
+        )}
 
         {/* Content Section */}
         <div className="p-4 md:p-6 flex flex-col gap-2 md:gap-3 bg-white flex-grow">

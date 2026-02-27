@@ -1,21 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Lottie from "lottie-react";
+import { useLottieData } from "@/hooks/useLottieData";
 
 export const CampaignListBanner = () => {
-  const [lottieData, setLottieData] = useState<object | null>(null);
-
-  useEffect(() => {
-    fetch("/campaign-lotties/hsr-list.json")
-      .then((res) => res.json())
-      .then(setLottieData)
-      .catch(console.error);
-  }, []);
+  const lottieData = useLottieData("/campaign-lotties/list-16-9.json");
 
   return (
-    <section className="px-4 py-4 bg-bg-white">
-      <div className="w-full overflow-hidden rounded-xl border border-text-main">
+    <section className="bg-bg-white">
+      <div className="w-full overflow-hidden rounded-tr-[2rem] rounded-br-[2rem] border border-text-main">
         {lottieData ? (
           <Lottie
             animationData={lottieData}

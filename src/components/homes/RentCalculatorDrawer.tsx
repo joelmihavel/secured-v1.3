@@ -7,8 +7,8 @@ import {
   IconChevronLeft as ChevronLeft,
   IconInfoCircle as Info,
   IconPhone as PhoneIcon,
-  IconBrandWhatsapp as WhatsAppIcon,
 } from "@tabler/icons-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import {
   RentBreakdown,
   ADD_ONS,
@@ -186,16 +186,16 @@ export const RentCalculatorDrawer = ({
                         <span>Building Maintenance</span>
                         <span>{formatCurrency(breakdown.maintenance)}</span>
                       </div>
-                      <div className="flex justify-between text-sm text-text-main/80">
+                      <div className="flex justify-between text-xs md:text-sm text-text-main/80">
                         <span>Furnishing</span>
                         <span>{formatCurrency(breakdown.furnishing)}</span>
                       </div>
-                      <div className="flex justify-between text-sm text-text-main/80">
+                      <div className="flex justify-between text-xs md:text-sm text-text-main/80">
                         <span>Convenience</span>
                         <span>{formatCurrency(breakdown.convenience)}</span>
                       </div>
                       <div className={cn(
-                        "flex justify-between text-sm text-text-main/80",
+                        "flex justify-between text-xs md:text-sm text-text-main/80",
                         (!breakdown.lockInDiscount || breakdown.lockInDiscount <= 0) && "pb-4 border-b border-gray-100"
                       )}>
                         <span>GST</span>

@@ -6,7 +6,15 @@ import { motion, useInView } from "framer-motion";
 import { IconPlayerPlay as Play } from "@tabler/icons-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 
-const stats = [
+export interface InfoStat {
+  value: string;
+  label: string;
+  color?: string;
+  bgColor?: string;
+  rotation?: number;
+}
+
+const defaultStats: InfoStat[] = [
   {
     value: "10%",
     label: "Homes qualify our evaluation criteria",
@@ -30,6 +38,23 @@ const stats = [
     rotation: -1,
   },
 ];
+
+const defaultHeading = (
+  <>
+    A lot goes in <br className="hidden md:block" />
+    before you walk <br className="hidden md:block" />
+    into <span className="font-zin-italic">that home</span>
+  </>
+);
+
+interface InfoProps {
+  heading?: React.ReactNode;
+  stats?: InfoStat[];
+  showVideo?: boolean;
+  showHeading?: boolean;
+  showStats?: boolean;
+  rightColumn?: React.ReactNode;
+}
 
 // CountUp component for animating numbers
 interface CountUpProps {
@@ -103,7 +128,18 @@ const CountUp: React.FC<CountUpProps> = ({ end, color, duration = 2 }) => {
   );
 };
 
-export const Info = () => {
+export const Info = ({
+  heading,
+  stats,
+  showVideo = true,
+  showHeading,
+  showStats,
+  rightColumn,
+}: InfoProps) => {
+  const displayHeading = heading ?? defaultHeading;
+  const displayStats = stats ?? defaultStats;
+  const shouldShowHeading = showHeading ?? true;
+  const shouldShowStats = showStats ?? true;
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
@@ -122,6 +158,7 @@ export const Info = () => {
   return (
     <OpenSection className="bg-bg-white">
       {/* Video (Edge to Edge) */}
+      {showVideo && (
       <div
         ref={videoContainerRef}
         className="w-full bg-white overflow-hidden flex items-center justify-center relative md:aspect-[2.5/1] aspect-[16/9]"
@@ -241,42 +278,60 @@ export const Info = () => {
           </svg>
         </div>
       </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* Heading */}
-          <div className="lg:col-span-5 text-center lg:text-left">
-            <h2 className="font-heading text-text-main leading-[1.1] text-4xl md:text-5xl lg:text-6xl tracking-tight font-bold">
-              A lot goes in <br className="hidden md:block" />
-              before you walk <br className="hidden md:block" />
-              into <span className="font-zin-italic">that home</span>
-            </h2>
-          </div>
+          {shouldShowHeading && (
+            <div className="lg:col-span-5 text-center lg:text-left">
+              <h2 className="font-heading text-text-main leading-[1.1] text-4xl md:text-5xl lg:text-6xl tracking-tight font-bold">
+                {displayHeading}
+              </h2>
+            </div>
+          )}
 
           {/* Stats */}
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-12">
-              {stats.map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20, rotate: stat.rotation }}
-                  whileInView={{ opacity: 1, y: 0, rotate: stat.rotation }}
-                  whileHover={{ scale: 1.05, rotate: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                  className={`flex flex-col gap-4 items-center justify-center text-center ${stat.bgColor
-                    } rounded-3xl p-8 shadow-lg aspect-[2/1] md:aspect-auto ${index === 2
-                      ? "col-span-2 md:col-span-1 mx-auto max-w-md md:max-w-none"
-                      : ""
-                    }`}
-                >
-                  <CountUp end={stat.value} color={stat.color} duration={2.5} />
-                  <p className="text-sm text-text-invert/80 font-heading leading-relaxed line-clamp-none sm:line-clamp-3">
-                    {stat.label}
-                  </p>
-                </motion.div>
+            {rightColumn ??
+              (shouldShowStats && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-12">
+                  {displayStats.map((stat, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{
+                        opacity: 0,
+                        y: 20,
+                        rotate: stat.rotation ?? 0,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                        rotate: stat.rotation ?? 0,
+                      }}
+                      whileHover={{ scale: 1.05, rotate: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.2 }}
+                      className={`flex flex-col gap-4 items-center justify-center text-center ${
+                        stat.bgColor ?? "bg-ground-brown"
+                      } rounded-3xl p-8 shadow-lg aspect-[2/1] md:aspect-auto ${
+                        index === 2
+                          ? "col-span-2 md:col-span-1 mx-auto max-w-md md:max-w-none"
+                          : ""
+                      }`}
+                    >
+                      <CountUp
+                        end={stat.value}
+                        color={stat.color ?? "text-white"}
+                        duration={2.5}
+                      />
+                      <p className="text-sm text-text-invert/80 font-heading leading-relaxed line-clamp-none sm:line-clamp-3">
+                        {stat.label}
+                      </p>
+                    </motion.div>
+                  ))}
+                </div>
               ))}
-            </div>
           </div>
         </div>
       </div>

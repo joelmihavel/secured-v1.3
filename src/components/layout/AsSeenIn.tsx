@@ -43,9 +43,43 @@ export const AsSeenIn = () => {
     return (
         <OpenSection className="bg-bg-white pt-12 pb-4">
             <div className="container mx-auto px-4 text-center">
-                <span className="text-sm font-medium text-gray-500 mb-6 md:mb-8 block uppercase tracking-wider">The press has noticed too</span>
+                <span className="text-sm font-medium text-gray-500 mb-6 md:mb-8 block uppercase tracking-wider">
+                    The press has noticed too
+                </span>
 
-                <div className="grid grid-cols-2 gap-4 md:flex md:flex-wrap md:gap-8 justify-center items-start">
+                {/* Mobile: infinite auto-scrolling strip */}
+                <div className="md:hidden relative overflow-hidden">
+                    <motion.div
+                        className="flex gap-8 w-max"
+                        animate={{ x: ["0%", "-50%"] }}
+                        transition={{
+                            repeat: Infinity,
+                            repeatType: "loop",
+                            duration: 20,
+                            ease: "linear",
+                        }}
+                    >
+                        {[...PRESS_ARTICLES, ...PRESS_ARTICLES].map((article) => (
+                            <Link
+                                key={`${article.id}-mobile`}
+                                href={article.link}
+                                target="_blank"
+                                className="flex items-center justify-center min-w-[9rem]"
+                            >
+                                <Image
+                                    src={article.logo}
+                                    alt={article.alt}
+                                    width={160}
+                                    height={80}
+                                    className="h-12 w-auto object-contain"
+                                />
+                            </Link>
+                        ))}
+                    </motion.div>
+                </div>
+
+                {/* Desktop: existing hover layout */}
+                <div className="hidden md:flex md:flex-wrap md:gap-8 justify-center items-start">
                     {PRESS_ARTICLES.map((article) => (
                         <Link
                             key={article.id}
@@ -58,7 +92,7 @@ export const AsSeenIn = () => {
                             <motion.div
                                 className="h-16 md:h-32 flex items-center justify-center mb-2 md:mb-6"
                                 animate={{
-                                    y: hoveredId === article.id ? -16 : 0
+                                    y: hoveredId === article.id ? -16 : 0,
                                 }}
                                 transition={{ duration: 0.5, ease: "easeOut" }}
                             >
@@ -76,7 +110,7 @@ export const AsSeenIn = () => {
                                 className="hidden md:block md:absolute top-24 left-1/2 -translate-x-1/2 w-56 pt-4 pointer-events-none"
                                 initial={{ opacity: 0 }}
                                 animate={{
-                                    opacity: hoveredId === article.id ? 1 : 0
+                                    opacity: hoveredId === article.id ? 1 : 0,
                                 }}
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.075 }}
                             >

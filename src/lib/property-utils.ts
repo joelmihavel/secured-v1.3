@@ -189,6 +189,26 @@ export const formatCurrency = (amount: number | null | undefined) => {
 };
 
 
+export function getDiscountSavings(property: Property, allRooms: Room[]): number {
+    if (!property.fieldData["apply-discount"] || !property.fieldData["discount"]) {
+        return 0;
+    }
+
+    const propertyRoomIds = property.fieldData.rooms || [];
+    const propertyRooms = allRooms.filter((r) => propertyRoomIds.includes(r.id));
+
+    if (propertyRooms.length === 0) return 0;
+
+    const highestRoomRent = Math.max(
+        ...propertyRooms.map((r) => Number(r.fieldData["room-rent"]) || 0)
+    );
+
+    if (highestRoomRent === 0) return 0;
+
+    const discountPercent = Number(property.fieldData["discount"]) || 0;
+    return Math.round(highestRoomRent * (discountPercent / 100));
+}
+
 export const sortProperties = (a: Property, b: Property): number => {
     // 1. Ranking Order (Ascending)
     const rankA = a.fieldData["ranking-order"];

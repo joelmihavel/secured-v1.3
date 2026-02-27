@@ -9,5 +9,7 @@ export const getPropertyWhatsappLink = (name: string) => {
   )}`;
 };
 
+export const DEMAND_OPS_PHONE = "tel:+918123659925";
+
 export const OCCUPIED_LABEL = "Occupied";
 export const AVAILABLE_NOW_LABEL = "Available Now";

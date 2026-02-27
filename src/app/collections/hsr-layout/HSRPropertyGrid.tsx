@@ -3,38 +3,37 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Property, Room, Occupant } from "@/lib/webflow";
+import { getDiscountSavings } from "@/lib/property-utils";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
+import { Info, InfoStat } from "@/app/(Homepage)/sections/Info";
 
-const INITIAL_VISIBLE = 3;
+const INITIAL_VISIBLE = 4;
 const LOAD_MORE_COUNT = 3;
+
+const HSR_INFO_STATS: InfoStat[] = [
+  {
+    value: "450+",
+    label: "Tenants trust and love us! <3",
+    bgColor: "bg-brick-red",
+    color: "text-white",
+    rotation: -2,
+  },
+  {
+    value: "200+",
+    label: "Items in all homes.\nStart living immediately!",
+    bgColor: "bg-forest-green",
+    color: "text-white",
+    rotation: 3,
+  },
+];
 
 interface HSRPropertyGridProps {
   properties: Property[];
   rooms: Room[];
   occupants: Occupant[];
   listBanner?: React.ReactNode;
-}
-
-function getDiscountSavings(property: Property, allRooms: Room[]): number {
-  if (!property.fieldData["apply-discount"] || !property.fieldData["discount"]) {
-    return 0;
-  }
-
-  const propertyRoomIds = property.fieldData.rooms || [];
-  const propertyRooms = allRooms.filter((r) => propertyRoomIds.includes(r.id));
-
-  if (propertyRooms.length === 0) return 0;
-
-  const highestRoomRent = Math.max(
-    ...propertyRooms.map((r) => Number(r.fieldData["room-rent"]) || 0)
-  );
-
-  if (highestRoomRent === 0) return 0;
-
-  const discountPercent = Number(property.fieldData["discount"]) || 0;
-  return Math.round(highestRoomRent * (discountPercent / 100));
 }
 
 export const HSRPropertyGrid = ({
@@ -62,6 +61,7 @@ export const HSRPropertyGrid = ({
             locationName="HSR Layout"
             rooms={rooms}
             occupants={occupants}
+            showCampaignRibbon
           />
           {savings > 0 && (
             <div className="bg-pastel-green border border-t-0 border-text-main rounded-b-xl px-4 py-2 text-center -mt-px">
@@ -85,13 +85,19 @@ export const HSRPropertyGrid = ({
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {visibleProperties.length > 0 && renderPropertyCard(visibleProperties[0])}
-          {visibleProperties.length > 0 && listBanner && (
+          {visibleProperties[0] && renderPropertyCard(visibleProperties[0])}
+          {visibleProperties[0] && listBanner && (
             <div className="col-span-1 md:col-span-2 w-full">
               {listBanner}
             </div>
           )}
-          {visibleProperties.slice(1).map((property) => renderPropertyCard(property))}
+          {visibleProperties[1] && renderPropertyCard(visibleProperties[1])}
+          {visibleProperties.length > 1 && (
+            <div className="col-span-1 md:col-span-2 w-full">
+              <Info showHeading={false} showVideo={false} stats={HSR_INFO_STATS} />
+            </div>
+          )}
+          {visibleProperties.slice(2).map((property) => renderPropertyCard(property))}
         </div>
 
         {hasMore && (
