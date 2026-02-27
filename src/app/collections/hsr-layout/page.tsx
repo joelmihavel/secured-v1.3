@@ -51,14 +51,12 @@ export default async function HSRLayoutCampaignPage() {
     (l) => l.fieldData.slug === HSR_LAYOUT_SLUG
   );
 
-  const hsrProperties = properties
-    .filter(
-      (p) =>
-        hsrLocation &&
-        p.fieldData.location === hsrLocation.id &&
-        !p.fieldData["is-upcoming"]
-    )
-    .sort(sortProperties);
+  const hsrProperties = properties.filter(
+    (p) =>
+      hsrLocation &&
+      p.fieldData.location === hsrLocation.id &&
+      !p.fieldData["is-upcoming"]
+  );
 
   const availableProperties = hsrProperties.filter(
     (p) => p.fieldData.available === true

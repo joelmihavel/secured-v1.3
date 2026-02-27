@@ -10,22 +10,32 @@ import {
 } from "@tabler/icons-react";
 
 export const HSRHowItWorks = () => {
-  const formatDate = (date: Date, showToday = false): string => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const checkDate = new Date(date);
-    checkDate.setHours(0, 0, 0, 0);
+  const getOrdinal = (day: number): string => {
+    const j = day % 10;
+    const k = day % 100;
+    if (j === 1 && k !== 11) return `${day}st`;
+    if (j === 2 && k !== 12) return `${day}nd`;
+    if (j === 3 && k !== 13) return `${day}rd`;
+    return `${day}th`;
+  };
 
+  const formatDate = (date: Date): string => {
     const monthNames = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
 
-    if (showToday && checkDate.getTime() === today.getTime()) {
-      return `Today (${monthNames[date.getMonth()]} ${date.getDate()})`;
-    }
-
-    return `${monthNames[date.getMonth()]} ${date.getDate()}`;
+    return `${getOrdinal(date.getDate())} ${monthNames[date.getMonth()]}`;
   };
 
   const addDays = (date: Date, days: number): Date => {
@@ -47,7 +57,7 @@ export const HSRHowItWorks = () => {
     {
       title: (
         <div className="text-2xl md:text-5xl font-zin font-light tracking-tight">
-          {formatDate(dates.day1, true)}
+          Day 1 ({formatDate(dates.day1)})
         </div>
       ),
       content: (
@@ -81,14 +91,13 @@ export const HSRHowItWorks = () => {
               <Cash className="w-8 h-8 text-text-main" />
             </div>
             <h3 className="text-2xl md:text-3xl font-heading font-bold text-text-main">
-              Token Time
+              Pay Your Token
             </h3>
           </div>
           <div className="px-6 md:px-8 pb-6 md:pb-8">
             <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-              Yes, tokens again. But good ones. Make your chosen Flent property
-              yours. Start packing that suitcase, &apos;cause we&apos;re drafting your rent
-              agreement.
+              Yes, tokens again. But good ones. Make your chosen Flent property yours.
+              Start packing that suitcase, &apos;cause we&apos;re drafting your rent agreement.
             </p>
           </div>
         </div>
@@ -107,14 +116,13 @@ export const HSRHowItWorks = () => {
               <Home className="w-8 h-8 text-text-main" />
             </div>
             <h3 className="text-2xl md:text-3xl font-heading font-bold text-text-main">
-              It&apos;s TIME
+              It&apos;s Time To Move In!
             </h3>
           </div>
           <div className="px-6 md:px-8 pb-6 md:pb-8">
             <p className="text-base md:text-lg font-body text-text-main/80 leading-relaxed">
-              As soon as we receive your refundable deposit and your first
-              month&apos;s rent, the red carpet&apos;s rolled out for you. Now, you can
-              officially move in.
+              As soon as we receive your refundable deposit and your first month&apos;s rent,
+              the red carpet&apos;s rolled out for you. Now, you can officially move in!
             </p>
           </div>
         </div>

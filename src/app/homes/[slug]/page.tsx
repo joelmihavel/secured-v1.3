@@ -96,14 +96,15 @@ export default async function PropertyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
-  const locations = await getCollectionItems<Location>(COLLECTIONS.LOCATIONS);
-  const reviews = await getCollectionItems<Review>(COLLECTIONS.REVIEWS);
-  const allAmenities = await getCollectionItems<Amenity>(COLLECTIONS.AMENITIES);
-  const allRooms = await getCollectionItems<Room>(COLLECTIONS.ROOMS);
-  const allOccupants = await getCollectionItems<Occupant>(
-    COLLECTIONS.OCCUPANTS
-  );
+  const [properties, locations, reviews, allAmenities, allRooms, allOccupants] =
+    await Promise.all([
+      getCollectionItems<Property>(COLLECTIONS.PROPERTIES),
+      getCollectionItems<Location>(COLLECTIONS.LOCATIONS),
+      getCollectionItems<Review>(COLLECTIONS.REVIEWS),
+      getCollectionItems<Amenity>(COLLECTIONS.AMENITIES),
+      getCollectionItems<Room>(COLLECTIONS.ROOMS),
+      getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
+    ]);
 
   const property = properties.find((p) => p.fieldData.slug === slug);
 
