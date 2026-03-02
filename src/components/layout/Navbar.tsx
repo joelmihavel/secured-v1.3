@@ -489,14 +489,14 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                         {index === 2 && <div className="w-1" />}
                         {"path" in link ? (
                             <Button
-                                variant={link.pastelColor ? "primary" : "ghost"}
+                                variant={"pastelColor" in link && link.pastelColor ? "primary" : "ghost"}
                                 size="sm"
                                 className="rounded-full"
-                                pastelColor={link.pastelColor}
+                                pastelColor={"pastelColor" in link ? link.pastelColor : undefined}
                                 data-cta-id={link.ctaId}
                                 data-cta-context="navbar"
                                 onClick={() => router.push(link.path)}
-                                rightIcon={link.showRightIcon ? <ArrowRight /> : undefined}
+                                rightIcon={"showRightIcon" in link && link.showRightIcon ? <ArrowRight /> : undefined}
                             >
                                 {link.name}
                             </Button>
