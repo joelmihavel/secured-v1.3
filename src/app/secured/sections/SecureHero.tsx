@@ -4,6 +4,7 @@ import Lottie from "lottie-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { IconArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
+import { CTA_IDS } from "@/lib/cta-ids";
 import { motion } from "framer-motion";
 
 
@@ -71,6 +72,8 @@ export const SecureHero = ({ data }: SecureHeroProps) => {
                     pastelColor={data.themeColor as any}
                     size="lg"
                     className="flex-[4] w-full text-base md:text-lg"
+                    data-cta-id={CTA_IDS.SECURED_HERO_DOWNLOAD}
+                    data-cta-context="secured_hero"
                 >
                     {data.cta}
                 </Button>

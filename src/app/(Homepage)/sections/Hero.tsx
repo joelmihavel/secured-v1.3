@@ -5,8 +5,9 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Property } from "@/lib/webflow";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { CTA_IDS } from "@/lib/cta-ids";
 import Marquee from "@/components/ui/image-tiles";
+import Image from "next/image";
 
 interface HeroProps {
     properties?: Property[];
@@ -91,7 +92,7 @@ export const Hero = ({ properties = [] }: HeroProps) => {
                         variant="primary" 
                         size="lg" 
                         onClick={() => router.push("/homes")}
-                        data-cta-id="hero_explore_homes"
+                        data-cta-id={CTA_IDS.HERO_EXPLORE_HOMES}
                         data-cta-context="hero"
                     >
                         Explore Homes

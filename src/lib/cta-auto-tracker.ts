@@ -42,18 +42,15 @@ const CTA_PATTERNS = {
 };
 
 /**
- * Check if an element matches a CTA pattern
+ * Check if an element matches a CTA pattern.
+ * Note: Does NOT check data-cta-tracked here—processElement uses that to avoid
+ * attaching duplicate listeners. At click time we need to extract metadata regardless.
  */
 function matchesCTAPattern(element: HTMLElement): {
   isCTA: boolean;
   type?: 'button' | 'link' | 'form_submit';
   destination?: string;
 } {
-  // Skip if already tracked
-  if (element.hasAttribute('data-cta-tracked')) {
-    return { isCTA: false };
-  }
-
   // Check for explicit data-cta-id attribute (always track)
   if (element.hasAttribute('data-cta-id')) {
     const href = (element as HTMLAnchorElement).href;
@@ -237,8 +234,15 @@ function processElement(element: HTMLElement): void {
     return;
   }
 
-  // Skip if already processed
+  // Skip if already processed (avoid duplicate listeners)
   if (element.hasAttribute('data-cta-tracked')) {
+    return;
+  }
+
+  // Skip elements already tracked by our Button component (they set ph-no-capture
+  // and call trackCTAClick in their own onClick). Attaching our listener here would
+  // cause duplicate cta_clicked events.
+  if (isButtonTrackedElement(element)) {
     return;
   }
 
@@ -246,13 +250,23 @@ function processElement(element: HTMLElement): void {
   element.setAttribute('ph-no-capture', '');
   element.classList.add('ph-no-capture');
 
-  // Attach click listener
   const clickHandler = (e: MouseEvent) => {
     trackCTAClickFromElement(element, e);
   };
 
   element.addEventListener('click', clickHandler, { once: false });
   element.setAttribute('data-cta-tracked', 'true');
+}
+
+/**
+ * True if this element is a Button component that already tracks clicks (has both
+ * data-cta-id and ph-no-capture). We skip these in processElement to avoid double-tracking.
+ */
+function isButtonTrackedElement(element: HTMLElement): boolean {
+  return (
+    element.hasAttribute('data-cta-id') &&
+    element.hasAttribute('ph-no-capture')
+  );
 }
 
 /**

@@ -6,6 +6,7 @@ import { IconPhone as PhoneIcon } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
 import { WHATSAPP_LINK, DEMAND_OPS_PHONE } from "@/constants";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 const SCROLL_THRESHOLD_PX = 100;
 const SPRING_TRANSITION = { type: "spring" as const, stiffness: 300, damping: 30 };
@@ -86,7 +87,7 @@ export const CampaignBottomNav = () => {
                 leftIcon={<PhoneIcon />}
                 className="shrink-0 rounded-[10rem] px-5"
                 style={{ backgroundColor: "white", color: "var(--color-text-main)", borderColor: "var(--color-text-main)" }}
-                data-cta-id="campaign_call_us"
+                data-cta-id={CTA_IDS.CAMPAIGN_CALL_US}
               >
                 Call Us
               </Button>
@@ -98,7 +99,7 @@ export const CampaignBottomNav = () => {
                 rel="noopener noreferrer"
                 leftIcon={<WhatsAppIcon className="w-5 h-5" />}
                 className="flex-1 rounded-[10rem]"
-                data-cta-id="campaign_chat_with_us"
+                data-cta-id={CTA_IDS.CAMPAIGN_CHAT_WITH_US}
               >
                 Chat with us
               </Button>

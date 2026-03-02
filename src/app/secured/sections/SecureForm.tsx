@@ -2,6 +2,7 @@
 import React from "react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 export const SecureForm = () => {
     return (
@@ -42,7 +43,7 @@ export const SecureForm = () => {
                         </div>
                     </div>
 
-                    <Button variant="primary" size="lg" className="w-full mt-4 bg-black text-white hover:bg-gray-900 border-none py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                    <Button variant="primary" size="lg" className="w-full mt-4 bg-black text-white hover:bg-gray-900 border-none py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all" data-cta-id={CTA_IDS.SECURED_FORM_INVITE} data-cta-context="secured_form">
                         Get Your Invite →
                     </Button>
                     <p className="text-[10px] text-center text-gray-400 uppercase tracking-wider font-medium mt-2">Limited slots available for this month</p>

@@ -17,6 +17,15 @@ import { useBreadcrumb } from "@/context/BreadcrumbContext";
 import { cn } from "@/lib/utils";
 import { WHATSAPP_LINK } from "@/constants";
 import { useCTATracking } from "@/hooks/useCTATracking";
+import { CTA_IDS, navbarBreadcrumbCtaId } from "@/lib/cta-ids";
+
+/** Single config for main nav links (All Homes, Our Story, Secured, For Owners). Used by both hamburger and expanded nav. */
+const NAV_MENU_LINKS = [
+  { name: "All Homes", href: "/homes", sectionId: "", ctaId: CTA_IDS.NAVBAR_HOMES },
+  { name: "Our Story", path: "/about", ctaId: CTA_IDS.NAVBAR_ABOUT },
+  { name: "Secured", path: "/secured", ctaId: CTA_IDS.NAVBAR_SECURED, pastelColor: "orange" as const },
+  { name: "For Owners", path: "/owners", ctaId: CTA_IDS.NAVBAR_OWNERS, pastelColor: "violet" as const, showRightIcon: true },
+] as const;
 
 const defaultNavLinks = [
     { name: "All Homes", href: "/homes", sectionId: "" },
@@ -151,6 +160,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                     variant="ghost"
                     onClick={() => router.push('/')}
                     className="bg-white rounded-full shadow-lg border border-text-main h-11 md:h-14 px-3.5 md:px-6 flex items-center pointer-events-auto hover:bg-gray-100"
+                    data-cta-id={CTA_IDS.NAVBAR_LOGO_SECURE}
+                    data-cta-context="navbar"
                 >
                     <Image
                         src="/images/flentinbengaluru.svg"
@@ -177,10 +188,10 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                     }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                    <Button variant="ghost" size="sm" onClick={() => router.push(`/homes?${searchParams.toString()}`)}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push(`/homes?${searchParams.toString()}`)} data-cta-id={CTA_IDS.NAVBAR_BACK} data-cta-context="navbar">
                         <ArrowLeft />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/')} data-cta-id={CTA_IDS.NAVBAR_LOGO} data-cta-context="navbar">
                         <Image
                             src="/images/flentinbengaluru.svg"
                             alt="Flent"
@@ -209,7 +220,7 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                                 <span
                                                     onClick={() => {
                                                         trackCTAClick({
-                                                            cta_id: `navbar_breadcrumb_${crumb.label.toLowerCase().replace(/\s+/g, '_')}`,
+                                                            cta_id: navbarBreadcrumbCtaId(crumb.label),
                                                             cta_text: crumb.label,
                                                             cta_type: "link",
                                                             cta_destination: crumb.href,
@@ -246,10 +257,10 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                     }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 >
-                    <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/')} data-cta-id={CTA_IDS.NAVBAR_BACK} data-cta-context="navbar">
                         <ArrowLeft />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => router.push('/')}>
+                    <Button variant="ghost" size="sm" onClick={() => router.push('/')} data-cta-id={CTA_IDS.NAVBAR_LOGO} data-cta-context="navbar">
                         <Image
                             src="/images/flentinbengaluru.svg"
                             alt="Flent"
@@ -268,6 +279,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                 variant="ghost"
                 onClick={() => router.push('/')}
                 className="bg-white rounded-full shadow-lg border border-text-main h-11 md:h-14 px-3.5 md:px-6 flex items-center pointer-events-auto hover:bg-gray-100"
+                data-cta-id={CTA_IDS.NAVBAR_LOGO}
+                data-cta-context="navbar"
             >
                 <Image
                     src="/images/flentinbengaluru.svg"
@@ -382,6 +395,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 size="sm"
                                 className="w-full"
                                 disabled={!link.href}
+                                data-cta-id={CTA_IDS.NAVBAR_HOMES}
+                                data-cta-context="navbar"
                                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     if (link.href) {
                                         if (!isHome && link.sectionId) {
@@ -403,6 +418,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 className="w-full"
                                 size="sm"
                                 variant="ghost"
+                                data-cta-id={CTA_IDS.NAVBAR_ABOUT}
+                                data-cta-context="navbar"
                                 onClick={() => {
                                     router.push('/about');
                                     setIsOpen(false);
@@ -417,6 +434,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 className="w-full"
                                 size="sm"
                                 variant="ghost"
+                                data-cta-id={CTA_IDS.NAVBAR_CONTACT_US}
+                                data-cta-context="navbar"
                                 onClick={() => {
                                     handleWhatsAppClick();
                                     setIsOpen(false);
@@ -429,6 +448,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 size="sm"
                                 variant="primary-rounded"
                                 pastelColor="orange"
+                                data-cta-id={CTA_IDS.NAVBAR_SECURED}
+                                data-cta-context="navbar"
                                 onClick={() => {
                                     router.push('/secured');
                                     setIsOpen(false);
@@ -441,6 +462,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 size="sm"
                                 variant="primary-rounded"
                                 pastelColor="violet"
+                                data-cta-id={CTA_IDS.NAVBAR_OWNERS}
+                                data-cta-context="navbar"
                                 onClick={() => {
                                     router.push('/owners');
                                     setIsOpen(false);
@@ -461,32 +484,36 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
 
         return (
             <div className="hidden lg:flex items-center gap-1 bg-white rounded-full shadow-lg border border-text-main h-14 px-2 pointer-events-auto">
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/homes')}>
-                    All Homes
-                </Button>
-                <Button variant="ghost" size="sm" className="rounded-full" onClick={() => router.push('/about')}>
-                    Our Story
-                </Button>
-                <Button
-                    variant="primary"
-                    size="sm"
-                    pastelColor="orange"
-                    className="rounded-full"
-                    onClick={() => router.push('/secured')}
-                >
-                    Secured
-                </Button>
-                <div className="w-1" /> {/* Spacer between Secured and For Owners */}
-                <Button
-                    variant="primary"
-                    size="sm"
-                    pastelColor="violet"
-                    className="rounded-full"
-                    onClick={() => router.push('/owners')}
-                    rightIcon={<ArrowRight />}
-                >
-                    For Owners
-                </Button>
+                {NAV_MENU_LINKS.map((link, index) => (
+                    <React.Fragment key={link.ctaId}>
+                        {index === 2 && <div className="w-1" />}
+                        {"path" in link ? (
+                            <Button
+                                variant={link.pastelColor ? "primary" : "ghost"}
+                                size="sm"
+                                className="rounded-full"
+                                pastelColor={link.pastelColor}
+                                data-cta-id={link.ctaId}
+                                data-cta-context="navbar"
+                                onClick={() => router.push(link.path)}
+                                rightIcon={link.showRightIcon ? <ArrowRight /> : undefined}
+                            >
+                                {link.name}
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="rounded-full"
+                                data-cta-id={link.ctaId}
+                                data-cta-context="navbar"
+                                onClick={() => router.push(link.href)}
+                            >
+                                {link.name}
+                            </Button>
+                        )}
+                    </React.Fragment>
+                ))}
             </div>
         );
     };
@@ -514,6 +541,8 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                             variant="primary"
                             size="sm"
                             className="md:hidden pointer-events-auto rounded-full px-5"
+                            data-cta-id={CTA_IDS.SECURED_GET_APP}
+                            data-cta-context="navbar"
                             style={{
                                 backgroundColor: 'black',
                                 color: 'white',

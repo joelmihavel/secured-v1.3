@@ -5,6 +5,7 @@ import { IconArrowRight as ArrowRight } from "@tabler/icons-react";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface HeroSectionProps {
     badge?: string;
@@ -76,6 +77,8 @@ export const HeroSection = ({
                                     variant="primary"
                                     size="lg"
                                     href={buttons.primary.url}
+                                    data-cta-id={CTA_IDS.OWNERS_HERO_CTA}
+                                    data-cta-context="owners_hero"
                                     onClick={(e: React.MouseEvent<HTMLElement>) => {
                                         if (!buttons.primary) return;
                                         

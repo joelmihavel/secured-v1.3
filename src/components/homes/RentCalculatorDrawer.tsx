@@ -29,7 +29,8 @@ import {
 } from "@/components/ui/popover";
 import { getPropertyWhatsappLink } from "@/constants";
 import { useMobile } from "@/hooks/useMobile";
-import { openChat } from "@/lib/open-chat";
+import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface RentCalculatorDrawerProps {
   isOpen: boolean;
@@ -58,6 +59,7 @@ export const RentCalculatorDrawer = ({
 }: RentCalculatorDrawerProps) => {
   const isMobile = useMobile();
   const { trackCTAClick } = useCTATracking();
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName));
   const [isBreakdownVisible, setIsBreakdownVisible] = useState(true);
   const [selectedLockIn, setSelectedLockIn] =
     useState<LockInPeriod>(initialLockIn);
@@ -89,7 +91,7 @@ export const RentCalculatorDrawer = ({
               className="flex items-center gap-1.5 md:gap-2 mb-6 md:mb-8 cursor-pointer w-fit"
               onClick={() => {
                 trackCTAClick({
-                  cta_id: "rent_calculator_back",
+                  cta_id: CTA_IDS.RENT_CALCULATOR_BACK,
                   cta_text: "Back to Apartment",
                   cta_type: "button",
                   page_section: "rent_calculator_drawer",
@@ -155,7 +157,7 @@ export const RentCalculatorDrawer = ({
                     className="flex items-center justify-between mb-4 cursor-pointer select-none"
                     onClick={() => {
                       trackCTAClick({
-                        cta_id: "rent_calculator_breakdown_toggle",
+                        cta_id: CTA_IDS.RENT_CALCULATOR_BREAKDOWN_TOGGLE,
                         cta_text: isBreakdownVisible ? "Hide Breakdown" : "Show Breakdown",
                         cta_type: "button",
                         page_section: "rent_calculator_drawer",
@@ -236,7 +238,7 @@ export const RentCalculatorDrawer = ({
                     href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-cta-id="rent_calculator_book_tour"
+                    data-cta-id={CTA_IDS.RENT_CALCULATOR_BOOK_TOUR}
                     data-cta-context="rent_calculator_drawer"
                   >
                     Book a Tour
@@ -245,18 +247,10 @@ export const RentCalculatorDrawer = ({
                     size="md"
                     variant="ghost"
                     className="w-full bg-white"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={getPropertyWhatsappLink(propertyName)}
+                    {...whatsAppCta}
                     leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
-                    data-cta-id="rent_calculator_talk_to_us"
+                    data-cta-id={CTA_IDS.RENT_CALCULATOR_TALK_TO_US}
                     data-cta-context="rent_calculator_drawer"
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                      if (!isMobile) {
-                        e.preventDefault();
-                        openChat(getPropertyWhatsappLink(propertyName));
-                      }
-                    }}
                   >
                     {!isMobile ? "Get a Call Back" : "Talk to us"}
                   </Button>

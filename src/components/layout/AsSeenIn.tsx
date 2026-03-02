@@ -59,9 +59,9 @@ export const AsSeenIn = () => {
                             ease: "linear",
                         }}
                     >
-                        {[...PRESS_ARTICLES, ...PRESS_ARTICLES].map((article) => (
+                        {[...PRESS_ARTICLES, ...PRESS_ARTICLES].map((article, index) => (
                             <Link
-                                key={`${article.id}-mobile`}
+                                key={`as-seen-in-mobile-${index}`}
                                 href={article.link}
                                 target="_blank"
                                 className="flex items-center justify-center min-w-[9rem]"

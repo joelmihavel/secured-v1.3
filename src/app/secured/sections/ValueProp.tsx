@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Lottie from "lottie-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface ValuePropCard {
     title: string;
@@ -90,6 +91,8 @@ export const ValueProp = ({ data, variant = "tenant" }: ValuePropProps) => {
                         pastelColor="orange"
                         size="lg"
                         className="w-full max-w-sm text-base md:text-lg"
+                        data-cta-id={CTA_IDS.SECURED_VALUE_PROP_DOWNLOAD}
+                        data-cta-context="secured_value_prop"
                     >
                         {data.cta}
                     </Button>

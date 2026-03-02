@@ -5,6 +5,7 @@ import { submitHubSpotForm } from "@/lib/hubspot";
 import { Button } from "./Button";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
 import { useCTATracking } from "@/hooks/useCTATracking";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 const portalId = "45469632";
 const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
@@ -80,7 +81,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
 
     // Track form submission
     trackCTAClick({
-      cta_id: "form_get_started_submit",
+      cta_id: CTA_IDS.FORM_GET_STARTED_SUBMIT,
       cta_text: buttonText,
       cta_type: "form_submit",
       page_section: "owners_contact_form",
@@ -125,7 +126,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         <p className="text-body font-body text-gray-600 mb-6">
           We&apos;ve received your information and will get back to you shortly.
         </p>
-        <Button onClick={() => setStatus("idle")}>Submit Another</Button>
+        <Button onClick={() => setStatus("idle")} data-cta-id={CTA_IDS.FORM_SUBMIT_ANOTHER} data-cta-context="owners_contact_form">Submit Another</Button>
       </div>
     );
   }
@@ -290,7 +291,7 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         disabled={status === "loading"}
         className="w-full hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
         size="lg"
-        data-cta-id="form_get_started_button"
+        data-cta-id={CTA_IDS.FORM_GET_STARTED_BUTTON}
         data-cta-context="owners_contact_form"
       >
         {status === "loading" ? "Submitting..." : buttonText}

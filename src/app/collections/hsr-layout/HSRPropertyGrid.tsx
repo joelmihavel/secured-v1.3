@@ -8,6 +8,7 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
 import { Info, InfoStat } from "@/app/(Homepage)/sections/Info";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 const INITIAL_VISIBLE = 4;
 const LOAD_MORE_COUNT = 3;
@@ -106,7 +107,7 @@ export const HSRPropertyGrid = ({
               variant="primary"
               size="md"
               onClick={() => setVisibleCount((c) => c + LOAD_MORE_COUNT)}
-              data-cta-id="campaign-view-more"
+              data-cta-id={CTA_IDS.CAMPAIGN_VIEW_MORE}
               data-cta-context="campaign-properties"
             >
               View more

@@ -7,7 +7,8 @@ import Image from "next/image";
 import { getPropertyWhatsappLink } from "@/constants";
 import { useMobile } from "@/hooks/useMobile";
 import { IconPhone as PhoneIcon, IconMessageCircle as MessageCircle } from "@tabler/icons-react";
-import { openChat } from "@/lib/open-chat";
+import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 const steps = [
   {
@@ -49,6 +50,7 @@ interface HowItWorksProps {
 
 export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
   const isMobile = useMobile();
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName));
   return (
     <OpenSection id="how-it-works" className="py-20">
       <div className="container mx-auto px-4 md:px-20">
@@ -64,18 +66,12 @@ export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
             </h2>
           </div>
           <Button
-            href={getPropertyWhatsappLink(propertyName)}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...whatsAppCta}
             variant="secondary"
             className="mt-6 md:mt-0 flex items-center gap-2 rounded-full px-8"
             leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
-            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              if (!isMobile) {
-                e.preventDefault();
-                openChat(getPropertyWhatsappLink(propertyName));
-              }
-            }}
+            data-cta-id={CTA_IDS.HOW_IT_WORKS_TALK_TO_US}
+            data-cta-context="how_it_works"
           >
             {!isMobile ? "Get a Call Back" : "Talk to Us"} <span>→</span>
           </Button>

@@ -6,6 +6,7 @@ import { Location } from "@/lib/webflow";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useCTATracking } from "@/hooks/useCTATracking";
+import { CTA_IDS, searchLocationCtaId } from "@/lib/cta-ids";
 
 export interface SearchFilters {
     minBudget: number;
@@ -112,14 +113,14 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                 )}
                                 onClick={() => {
                                     trackCTAClick({
-                                        cta_id: "cta_search_all_locations",
+                                        cta_id: CTA_IDS.CTA_SEARCH_ALL_LOCATIONS,
                                         cta_text: "All Locations",
                                         cta_type: "button",
                                         page_section: "search_bar",
                                     });
                                     setFilters({ ...filters, locationIds: [] });
                                 }}
-                                data-cta-id="cta_search_all_locations"
+                                data-cta-id={CTA_IDS.CTA_SEARCH_ALL_LOCATIONS}
                             >
                                 <div className={cn(
                                     "w-4 h-4 border rounded flex items-center justify-center transition-colors",
@@ -141,14 +142,14 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                         )}
                                         onClick={() => {
                                             trackCTAClick({
-                                                cta_id: `cta_search_location_${loc.fieldData.slug}`,
+                                                cta_id: searchLocationCtaId(loc.fieldData.slug),
                                                 cta_text: loc.fieldData.name,
                                                 cta_type: "button",
                                                 page_section: "search_bar",
                                             });
                                             handleLocationToggle(loc.id);
                                         }}
-                                        data-cta-id={`cta_search_location_${loc.fieldData.slug}`}
+                                        data-cta-id={searchLocationCtaId(loc.fieldData.slug)}
                                     >
                                         <div className={cn(
                                             "w-4 h-4 border rounded flex items-center justify-center transition-colors",
@@ -185,14 +186,14 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => {
                         trackCTAClick({
-                            cta_id: "cta_search_available_toggle",
+                            cta_id: CTA_IDS.CTA_SEARCH_AVAILABLE_TOGGLE,
                             cta_text: "Show Available",
                             cta_type: "button",
                             page_section: "search_bar",
                         });
                         setFilters({ ...filters, showAvailable: !filters.showAvailable });
                     }}
-                    data-cta-id="cta_search_available_toggle"
+                    data-cta-id={CTA_IDS.CTA_SEARCH_AVAILABLE_TOGGLE}
                 >
                     <div className="relative inline-flex items-center">
                         <input
@@ -210,14 +211,14 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => {
                         trackCTAClick({
-                            cta_id: "cta_search_female_toggle",
+                            cta_id: CTA_IDS.CTA_SEARCH_FEMALE_TOGGLE,
                             cta_text: "Show only Female",
                             cta_type: "button",
                             page_section: "search_bar",
                         });
                         setFilters({ ...filters, femaleOnly: !filters.femaleOnly });
                     }}
-                    data-cta-id="cta_search_female_toggle"
+                    data-cta-id={CTA_IDS.CTA_SEARCH_FEMALE_TOGGLE}
                 >
                     <div className="relative inline-flex items-center">
                         <input

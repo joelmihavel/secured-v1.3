@@ -6,6 +6,7 @@ import { useInView } from "framer-motion";
 import { IconBrandApple, IconBrandAndroid } from "@tabler/icons-react";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 export const AppDownload = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -128,6 +129,8 @@ export const AppDownload = () => {
                                     className="w-full sm:w-auto bg-brand-orange border-black text-black hover:bg-brand-orange/90 shadow-[0px_4px_0px_0px_rgba(21,16,46,0.1)] px-6"
                                     leftIcon={<IconBrandApple className="w-5 h-5 flex-shrink-0" />}
                                     style={{ color: "black", borderColor: "black" }}
+                                    data-cta-id={CTA_IDS.SECURED_APP_STORE}
+                                    data-cta-context="secured_app_download"
                                 >
                                     <span className="whitespace-normal text-center leading-tight">Download on App Store</span>
                                 </Button>

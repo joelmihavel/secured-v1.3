@@ -28,6 +28,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface HeaderProps {
   rooms: Room[];
@@ -241,7 +242,7 @@ export const Header = ({
               size="lg"
               onClick={scrollToMaps}
               leftIcon={<IconMap />}
-              data-cta-id="scroll_to_maps"
+              data-cta-id={CTA_IDS.SCROLL_TO_MAPS}
             >
               View on Maps
             </Button>
@@ -254,7 +255,7 @@ export const Header = ({
                     className="!text-black"
                     size="lg"
                     leftIcon={<PlayIcon />}
-                    data-cta-id="cta_watch_a_video"
+                    data-cta-id={CTA_IDS.CTA_WATCH_A_VIDEO}
                   >
                     Watch a Video
                   </Button>
