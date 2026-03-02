@@ -33,7 +33,8 @@ import { Button } from "@/components/ui/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { getPropertyWhatsappLink } from "@/constants";
 import { useMobile } from "@/hooks/useMobile";
-import { openChat } from "@/lib/open-chat";
+import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 export interface PhotoCategory {
   name: string;
@@ -62,6 +63,7 @@ export const GridLightBox = ({
   isOccupied,
 }: GridLightBoxProps) => {
   const isMobile = useMobile();
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName));
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
     defaultTab.toLowerCase().replace(/\s+/g, "-")
@@ -242,7 +244,7 @@ export const GridLightBox = ({
             variant="white"
             size="sm"
             leftIcon={<Expand />}
-            data-cta-id="cta_show_all_images"
+            data-cta-id={CTA_IDS.CTA_SHOW_ALL_IMAGES}
             className="absolute bottom-4 right-4 z-20 rounded-full !text-[14px]"
           >
             Show all images
@@ -291,7 +293,7 @@ export const GridLightBox = ({
                   className="!text-xs md:hidden"
                   onClick={handleShare}
                   pastelColor="cyan"
-                  data-cta-id="cta_share"
+                  data-cta-id={CTA_IDS.CTA_SHARE}
                 >
                   Share
                 </Button>
@@ -303,7 +305,7 @@ export const GridLightBox = ({
                   className="!text-xs md:!text-sm hidden md:flex relative overflow-hidden min-w-[110px]"
                   onClick={handleCopyLink}
                   pastelColor="cyan"
-                  data-cta-id="cta_copy_link"
+                  data-cta-id={CTA_IDS.CTA_COPY_LINK}
                 >
                   <AnimatePresence mode="wait" initial={false}>
                     {isCopied ? (
@@ -334,18 +336,12 @@ export const GridLightBox = ({
                   </AnimatePresence>
                 </Button>
                 <Button
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={getPropertyWhatsappLink(propertyName)}
+                  {...whatsAppCta}
                   variant="primary-rounded"
                   size="sm"
                   leftIcon={!isMobile ? <PhoneIcon /> : <MessageCircle />}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    if (!isMobile) {
-                      e.preventDefault();
-                      openChat(getPropertyWhatsappLink(propertyName));
-                    }
-                  }}
+                  data-cta-id={CTA_IDS.LIGHTBOX_CHAT_WITH_US}
+                  data-cta-context="lightbox"
                 >
                   <span className="hidden sm:inline">
                     {!isMobile ? "Get a Call Back" : "Chat with Us"}

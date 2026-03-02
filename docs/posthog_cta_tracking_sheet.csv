@@ -1,0 +1,60 @@
+event,cta_id,device,location,description
+cta_clicked,hero_explore_homes,desktop and mobile,/,Homepage hero: Explore Homes CTA
+cta_clicked,cta_neighborhood_*,desktop and mobile,/,Neighborhood card click (slug in id e.g. cta_neighborhood_indiranagar)
+cta_clicked,view-on-maps-coming-soon,desktop and mobile,/,Property card: View on Maps (coming soon)
+cta_clicked,property_get_launch_invite,desktop and mobile,/,Property card: Get Launch Invite button
+cta_clicked,cta_search_all_locations,desktop and mobile,/homes,Search: All Locations filter
+cta_clicked,cta_search_location_*,desktop and mobile,/homes,Search: Location filter (slug in id)
+cta_clicked,cta_search_available_toggle,desktop and mobile,/homes,Search: Show Available toggle
+cta_clicked,cta_search_female_toggle,desktop and mobile,/homes,Search: Female only toggle
+cta_clicked,scroll_to_maps,desktop and mobile,/homes/[slug],Property header: View on Maps scroll
+cta_clicked,cta_watch_a_video,desktop and mobile,/homes/[slug],Property header: Watch a Video
+cta_clicked,cta_show_all_images,desktop and mobile,/homes/[slug],Photo gallery: Show all images
+cta_clicked,cta_share,desktop and mobile,/homes/[slug],Photo gallery: Share property
+cta_clicked,cta_copy_link,desktop and mobile,/homes/[slug],Photo gallery: Copy link
+cta_clicked,lightbox_chat_with_us,desktop and mobile,/homes/[slug],Photo gallery: Chat with us / Get a Call Back
+cta_clicked,room_understand_rent,desktop and mobile,/homes/[slug],Room card: Understand Your Rent
+cta_clicked,room_get_notified,desktop and mobile,/homes/[slug],Room card: Get notified (occupied room)
+cta_clicked,room_selection_book_tour,desktop and mobile,/homes/[slug],Room card: Book a Tour
+cta_clicked,room_selection_talk_to_us,desktop and mobile,/homes/[slug],Room card: Talk to us / Get a Call Back
+cta_clicked,full_house_see_pricing,desktop and mobile,/homes/[slug],Full house tab: See Pricing
+cta_clicked,full_house_book_tour,desktop and mobile,/homes/[slug],Full house tab: Book a Tour
+cta_clicked,full_house_talk_to_us,desktop and mobile,/homes/[slug],Full house tab: Talk to us / Get a Call Back
+cta_clicked,full_house_get_notified,desktop and mobile,/homes/[slug],Full house tab: Get notified (occupied)
+cta_clicked,how_it_works_talk_to_us,desktop and mobile,/homes/[slug],How it Works: Talk to Us / Get a Call Back
+cta_clicked,navbar_logo,desktop and mobile,Global,Navbar: Logo click to home
+cta_clicked,navbar_logo_secure,desktop and mobile,/secured,Navbar (secured): Logo to home
+cta_clicked,navbar_back,desktop and mobile,Global,Navbar: Back arrow
+cta_clicked,navbar_homes,desktop and mobile,Global,Navbar: All Homes link
+cta_clicked,navbar_about,desktop and mobile,Global,Navbar: Our Story link
+cta_clicked,navbar_contact_us,desktop and mobile,Global,Navbar: Contact Us (WhatsApp)
+cta_clicked,navbar_secured,desktop and mobile,Global,Navbar: Secured link
+cta_clicked,navbar_owners,desktop and mobile,Global,Navbar: For Owners link
+cta_clicked,navbar_breadcrumb_*,desktop and mobile,/homes/[slug],Navbar: Breadcrumb link (label in id)
+cta_clicked,secured_get_app,mobile,/secured,Navbar: Get App (App Store) on secured page
+cta_clicked,footer_privacy,desktop and mobile,Global,Footer: Privacy Policy link
+cta_clicked,footer_terms,desktop and mobile,Global,Footer: Terms of Service link
+cta_clicked,footer_refund,desktop and mobile,Global,Footer: Refund Policy link
+cta_clicked,call_us_mobile,mobile,Global,Bottom nav: Call Us (two-button layout)
+cta_clicked,chat_with_us_mobile,mobile,Global,Bottom nav: Chat with us (two-button or expandable bar)
+cta_clicked,chat_with_us_desktop,desktop,Global,Bottom nav: Chat With Us / Get a Call Back
+cta_clicked,bottom_nav_toggle,mobile,Global,Bottom nav: Expand/collapse section list
+cta_clicked,bottom_nav_section_*,desktop and mobile,Global,Bottom nav: Section link (e.g. Rooms Amenities; name in id)
+cta_clicked,rent_calculator_back,desktop and mobile,Global,Rent calculator: Back to Apartment
+cta_clicked,rent_calculator_breakdown_toggle,desktop and mobile,Global,Rent calculator: Show/Hide breakdown
+cta_clicked,rent_calculator_book_tour,desktop and mobile,Global,Rent calculator: Book a Tour
+cta_clicked,rent_calculator_talk_to_us,desktop and mobile,Global,Rent calculator: Talk to us / Get a Call Back
+cta_clicked,form_get_started_button,desktop and mobile,/owners,Owners form: Get Started button click
+cta_clicked,form_get_started_submit,desktop and mobile,/owners,Owners form: Form submitted successfully
+cta_clicked,form_submit_another,desktop and mobile,/owners,Owners form: Submit Another (after success)
+cta_clicked,owners_hero_cta,desktop and mobile,/owners,Owners hero: Primary CTA (Get Started / scroll to contact)
+cta_clicked,cta_check_open_roles,desktop and mobile,/about,About: Check Open Roles (Notion hiring link)
+cta_clicked,phone_subscribe_submit,desktop and mobile,Global,Phone subscribe form: Subscribe button
+cta_clicked,email_subscribe_submit,desktop and mobile,Global,Email subscribe form: Subscribe button
+cta_clicked,secured_hero_download,desktop and mobile,/secured,Secured hero: Download CTA (scroll to #download)
+cta_clicked,secured_value_prop_download,desktop and mobile,/secured,Secured value prop: Download CTA
+cta_clicked,secured_app_store,desktop and mobile,/secured,Secured app download: Download on App Store
+cta_clicked,secured_form_invite,desktop and mobile,/secured,Secured form: Get Your Invite submit
+cta_clicked,campaign_call_us,mobile,/collections/hsr,Campaign bottom nav: Call Us
+cta_clicked,campaign_chat_with_us,mobile,/collections/hsr,Campaign bottom nav: Chat with us
+cta_clicked,campaign-view-more,desktop and mobile,/collections/hsr,Campaign: View more properties

@@ -7,6 +7,7 @@ import { IconBrandInstagram as Instagram, IconBrandTwitter as Twitter, IconBrand
 import Marquee from "@/components/ui/image-tiles";
 import { usePathname } from "next/navigation";
 import { CardSection } from "@/components/layout/CardSection";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 const TWEET_ITEMS = [
     { src: "/tweet-images/tweet_1.webp", alt: "Tweet 1", url: "https://x.com/kaashvisaxena/status/1792521732768571898?s=20" },
@@ -200,13 +201,13 @@ export const Footer = () => {
                         © {new Date().getFullYear()} Flent. All rights reserved.
                     </p>
                     <div className="flex items-center space-x-6 text-text-main/60 text-sm">
-                        <Link href="/privacy-policy" className="hover:text-text-main transition-colors" data-cta-id="footer_privacy">
+                        <Link href="/privacy-policy" className="hover:text-text-main transition-colors" data-cta-id={CTA_IDS.FOOTER_PRIVACY}>
                             Privacy Policy
                         </Link>
-                        <Link href="/terms-of-use" className="hover:text-text-main transition-colors" data-cta-id="footer_terms">
+                        <Link href="/terms-of-use" className="hover:text-text-main transition-colors" data-cta-id={CTA_IDS.FOOTER_TERMS}>
                             Terms of Service
                         </Link>
-                        <Link href="/refund-policy" className="hover:text-text-main transition-colors" data-cta-id="footer_refund">
+                        <Link href="/refund-policy" className="hover:text-text-main transition-colors" data-cta-id={CTA_IDS.FOOTER_REFUND}>
                             Refund Policy
                         </Link>
                     </div>

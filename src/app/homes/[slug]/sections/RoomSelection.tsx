@@ -46,7 +46,8 @@ import { LockInPeriod } from "@/lib/property-utils";
 import { getAvailabilityDate } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
 import { useMobile } from "@/hooks/useMobile";
-import { openChat } from "@/lib/open-chat";
+import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 // Helper functions for lock-in period pricing
 // Note: CMS field naming is counterintuitive:
@@ -120,6 +121,7 @@ export const RoomSelection = ({
   slug,
 }: RoomSelectionProps) => {
   const isMobile = useMobile();
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(property.fieldData.name));
   const isDebugMode = useDebugMode();
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [calculatorData, setCalculatorData] = useState<{
@@ -462,6 +464,8 @@ export const RoomSelection = ({
                             <Button
                               variant="outline"
                               className="bg-ground-brown/12 border-text-main text-text-main hover:bg-text-main/5 rounded-lg py-2 px-6 text-sm h-auto"
+                              data-cta-id={CTA_IDS.ROOM_UNDERSTAND_RENT}
+                              data-cta-context="room_selection"
                               onClick={() =>
                                 handleRoomPricingClick(
                                   room,
@@ -521,6 +525,8 @@ export const RoomSelection = ({
                             size="md"
                             variant="white"
                             className="w-full"
+                            data-cta-id={CTA_IDS.ROOM_GET_NOTIFIED}
+                            data-cta-context="room_selection"
                             onClick={() => {
                               setNotificationModalData({
                                 propertyId: property.fieldData?.pid || property.id,
@@ -544,7 +550,7 @@ export const RoomSelection = ({
                             target="_blank"
                             rel="noopener noreferrer"
                             rightIcon={<ArrowRight />}
-                            data-cta-id="room_selection_book_tour"
+                            data-cta-id={CTA_IDS.ROOM_SELECTION_BOOK_TOUR}
                             data-cta-context="room_selection"
                           >
                             Book a Tour
@@ -553,20 +559,10 @@ export const RoomSelection = ({
                             size="md"
                             variant="ghost"
                             className="w-full bg-white rounded-l-none rounded-r-full"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={getPropertyWhatsappLink(
-                              property.fieldData.name
-                            )}
+                            {...whatsAppCta}
                             leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
-                            data-cta-id="room_selection_talk_to_us"
+                            data-cta-id={CTA_IDS.ROOM_SELECTION_TALK_TO_US}
                             data-cta-context="room_selection"
-                            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                              if (!isMobile) {
-                                e.preventDefault();
-                                openChat(getPropertyWhatsappLink(property.fieldData.name));
-                              }
-                            }}
                           >
                             {!isMobile ? "Get a Call Back" : "Talk to us"}
                           </Button>
@@ -641,6 +637,8 @@ export const RoomSelection = ({
                           <Button
                             variant="outline"
                             className="bg-transparent border-text-main text-text-main hover:bg-text-main/5 rounded-lg py-2 px-6 text-sm h-auto"
+                            data-cta-id={CTA_IDS.FULL_HOUSE_SEE_PRICING}
+                            data-cta-context="room_selection"
                             onClick={handleFullHousePricingClick}
                           >
                             See Pricing
@@ -715,25 +713,19 @@ export const RoomSelection = ({
                           target="_blank"
                           rel="noopener noreferrer"
                           rightIcon={<ArrowRight />}
+                          data-cta-id={CTA_IDS.FULL_HOUSE_BOOK_TOUR}
+                          data-cta-context="room_selection"
                         >
                           Book a Tour
                         </Button>
                         <Button
-                          target="_blank"
-                          rel="noopener noreferrer"
                           size="md"
                           variant="ghost"
                           className="w-full bg-white"
-                          href={getPropertyWhatsappLink(
-                            property.fieldData.name
-                          )}
+                          {...whatsAppCta}
                           leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
-                          onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                            if (!isMobile) {
-                              e.preventDefault();
-                              openChat(getPropertyWhatsappLink(property.fieldData.name));
-                            }
-                          }}
+                          data-cta-id={CTA_IDS.FULL_HOUSE_TALK_TO_US}
+                          data-cta-context="room_selection"
                         >
                           {!isMobile ? "Get a Call Back" : "Talk to us"}
                         </Button>
@@ -752,6 +744,8 @@ export const RoomSelection = ({
                           size="md"
                           variant="white"
                           className="w-full"
+                          data-cta-id={CTA_IDS.FULL_HOUSE_GET_NOTIFIED}
+                          data-cta-context="room_selection"
                           onClick={() => {
                             setNotificationModalData({
                               propertyId: property.fieldData?.pid || property.id,

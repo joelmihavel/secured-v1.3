@@ -21,6 +21,7 @@ import { Property, Room, Occupant } from "@/lib/webflow";
 import { Button } from "@/components/ui/Button";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { PhoneSubscribeForm } from "@/components/ui/PhoneSubscribeForm";
+import { CTA_IDS } from "@/lib/cta-ids";
 import { cn } from "@/lib/utils";
 import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
@@ -446,7 +447,7 @@ export const PropertyCard = ({
                         borderColor: "var(--color-text-main)",
                         color: "var(--color-text-main)",
                       }}
-                      data-cta-id="view-on-maps-coming-soon"
+                      data-cta-id={CTA_IDS.VIEW_ON_MAPS_COMING_SOON}
                       data-cta-context="coming-soon-section"
                     >
                       <span className="flex items-center justify-center flex-shrink-0 w-5 h-5 [&>svg]:w-5 [&>svg]:h-5">
@@ -467,6 +468,8 @@ export const PropertyCard = ({
                     pastelColor="violet"
                     size="md"
                     className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem]"
+                    data-cta-id={CTA_IDS.PROPERTY_GET_LAUNCH_INVITE}
+                    data-cta-context="property_card"
                     onClick={() => setIsDialogOpen(true)}
                   >
                     Get Launch Invite

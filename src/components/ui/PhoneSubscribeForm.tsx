@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 export interface PhoneSubscribeFormProps {
   notificationType: "specific room" | "specific home" | "all homes" | "upcoming home";
@@ -136,6 +137,8 @@ export const PhoneSubscribeForm = ({
             variant="primary"
             disabled={isSubmitting}
             className="w-full md:w-auto"
+            data-cta-id={CTA_IDS.EMAIL_SUBSCRIBE_SUBMIT}
+            data-cta-context="email_subscribe_form"
           >
             {isSubmitting ? "Subscribing..." : buttonText}
           </Button>
@@ -200,6 +203,8 @@ export const PhoneSubscribeForm = ({
             variant="primary"
             disabled={isSubmitting}
             className="w-full md:w-auto"
+            data-cta-id={CTA_IDS.PHONE_SUBSCRIBE_SUBMIT}
+            data-cta-context="phone_subscribe_form"
           >
             {isSubmitting ? "Subscribing..." : buttonText}
           </Button>

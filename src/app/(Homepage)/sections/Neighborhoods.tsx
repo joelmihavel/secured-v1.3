@@ -6,6 +6,7 @@ import { type Location, type Property } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { motion } from "framer-motion";
 import { FlexibleCarousel, useCarouselParallax } from "@/components/ui/flexible-carousel";
+import { neighborhoodCtaId } from "@/lib/cta-ids";
 
 // --- Configuration ---
 // Neighborhood to image mapping with matching color schemes
@@ -130,7 +131,7 @@ const NeighborhoodCard = ({ slide }: { slide: NeighborhoodItem }) => {
       href={`/homes?location=${encodeURIComponent(slide.name)}`}
       className="block h-full w-full"
       draggable={false}
-      data-cta-id={`cta_neighborhood_${slide.name.toLowerCase().replace(/\s+/g, "_")}`}
+      data-cta-id={neighborhoodCtaId(slide.name)}
       data-cta-context="homepage_neighborhoods"
     >
       <div

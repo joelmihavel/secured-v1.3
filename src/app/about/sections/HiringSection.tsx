@@ -2,6 +2,7 @@ import React from "react";
 import { CardSection } from "@/components/layout/CardSection";
 import { Button } from "@/components/ui/Button";
 import { IconArrowRight as ArrowRight } from "@tabler/icons-react";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 export const HiringSection = () => {
     return (
@@ -33,6 +34,8 @@ export const HiringSection = () => {
                             href="https://empty-bite-b73.notion.site/Flent-Hiring-Guide-42ffc8b1ff6648869f4c45f85ec5a1b8"
                             target="_blank"
                             rel="noopener noreferrer"
+                            data-cta-id={CTA_IDS.CTA_CHECK_OPEN_ROLES}
+                            data-cta-context="hiring_section"
                         >
                             CHECK OPEN ROLES
                         </Button>

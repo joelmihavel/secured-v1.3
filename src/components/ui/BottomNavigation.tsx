@@ -10,7 +10,8 @@ import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Property } from "@/lib/webflow";
 import { useMobile } from "@/hooks/useMobile";
 import { useCTATracking } from "@/hooks/useCTATracking";
-import { openChat } from "@/lib/open-chat";
+import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
+import { CTA_IDS, bottomNavSectionCtaId } from "@/lib/cta-ids";
 
 interface NavLink {
   name: string;
@@ -53,6 +54,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   const finalWhatsappLink = customWhatsappLink
     ? customWhatsappLink
     : (property ? getPropertyWhatsappLink(property.fieldData.name) : WHATSAPP_LINK);
+
+  const whatsAppCta = useWhatsAppCta(finalWhatsappLink);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -144,7 +147,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                   leftIcon={<PhoneIcon />}
                   className="shrink-0 rounded-full px-5"
                   style={{ backgroundColor: "white", color: "var(--color-text-main)", borderColor: "var(--color-text-main)" }}
-                  data-cta-id="call_us_mobile"
+                  data-cta-id={CTA_IDS.CALL_US_MOBILE}
                   data-cta-context="bottom_navigation"
                 >
                   Call Us
@@ -158,7 +161,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                     size="md"
                     leftIcon={<WhatsAppIcon className="w-5 h-5" />}
                     className="flex-1 rounded-full"
-                    data-cta-id="chat_with_us_mobile"
+                    data-cta-id={CTA_IDS.CHAT_WITH_US_MOBILE}
                     data-cta-context="bottom_navigation"
                   >
                     Chat with us
@@ -192,7 +195,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                     className="flex items-center justify-between p-2 gap-1 w-full cursor-pointer"
                     onClick={() => {
                       trackCTAClick({
-                        cta_id: "bottom_nav_toggle",
+                        cta_id: CTA_IDS.BOTTOM_NAV_TOGGLE,
                         cta_text: isOpen ? "Collapse Navigation" : "Expand Navigation",
                         cta_type: "button",
                         page_section: "bottom_navigation",
@@ -214,14 +217,12 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 
                     {showChat && (
                       <Button
-                        href={finalWhatsappLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        {...whatsAppCta}
                         variant="secondary"
                         size="md"
                         leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                         className="rounded-full"
-                        data-cta-id="chat_with_us_mobile"
+                        data-cta-id={CTA_IDS.CHAT_WITH_US_MOBILE}
                         data-cta-context="bottom_navigation"
                       >
                         {!isMobile ? "Get a Call Back" : "Chat With Us"}
@@ -244,7 +245,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                             key={link.name}
                             onClick={(e) => {
                               trackCTAClick({
-                                cta_id: `bottom_nav_section_${link.name.toLowerCase().replace(/\s+/g, '_')}`,
+                                cta_id: bottomNavSectionCtaId(link.name),
                                 cta_text: link.name,
                                 cta_type: "button",
                                 cta_destination: link.href,
@@ -295,6 +296,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 key={link.name}
                 variant="ghost"
                 size="sm"
+                data-cta-id={bottomNavSectionCtaId(link.name)}
+                data-cta-context="bottom_navigation"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   handleLinkClick(e, link.href);
                 }}
@@ -306,21 +309,13 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             {/* Chat With Us Button */}
             {showChat && (
               <Button
-                href={finalWhatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
+                {...whatsAppCta}
                 variant="secondary"
                 size="md"
                 leftIcon={!isMobile ? <PhoneIcon /> : <WhatsAppIcon />}
                 className="rounded-full"
-                data-cta-id="chat_with_us_desktop"
+                data-cta-id={CTA_IDS.CHAT_WITH_US_DESKTOP}
                 data-cta-context="bottom_navigation"
-                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                  if (!isMobile) {
-                    e.preventDefault();
-                    openChat(finalWhatsappLink);
-                  }
-                }}
               >
                 {!isMobile ? "Get a Call Back" : "Chat With Us"}
               </Button>
