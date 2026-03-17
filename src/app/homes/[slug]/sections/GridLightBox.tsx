@@ -50,6 +50,7 @@ interface GridLightBoxProps {
   previewImages?: string[]; // Optional images to show in the grid preview (defaults to first 4 of 'images')
   status?: string; // e.g., "Occupied" or "Available From Dec 3"
   isOccupied?: boolean; // Whether the room/property is occupied
+  propertySlug?: string;
 }
 
 export const GridLightBox = ({
@@ -63,7 +64,10 @@ export const GridLightBox = ({
   isOccupied,
 }: GridLightBoxProps) => {
   const isMobile = useMobile();
-  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName));
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName), {
+    source: "lightbox",
+    propertyName,
+  });
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(
     defaultTab.toLowerCase().replace(/\s+/g, "-")

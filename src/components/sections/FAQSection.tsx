@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { FAQTabScrollContainer } from "@/components/ui/FAQTabScrollContainer";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { trackFaqClicked, FaqLocation } from "@/lib/posthog-tracking";
 
 export interface FAQCategory {
     value: string;
@@ -27,6 +28,8 @@ interface FAQSectionProps {
     defaultTab?: string;
     inactiveTabBorder?: string; // e.g., "border-black/1" or "border-black/10"
     className?: string;
+    faqLocation?: FaqLocation;
+    propertySlug?: string;
 }
 
 /**
@@ -40,6 +43,8 @@ export const FAQSection = React.forwardRef<HTMLElement, FAQSectionProps>(({
     defaultTab,
     inactiveTabBorder = "border-black/1",
     className,
+    faqLocation = "other",
+    propertySlug,
 }, ref) => {
     const [activeTab, setActiveTab] = useState(defaultTab || categories[0]?.value || "");
 
@@ -96,6 +101,16 @@ export const FAQSection = React.forwardRef<HTMLElement, FAQSectionProps>(({
                                         questionClassName="bg-white border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all"
                                         answerClassName="bg-night-violet text-white border border-black shadow-md"
                                         timestamp={`Common questions about ${category.label.toLowerCase()}`}
+                                        onQuestionToggle={(item, isOpen) => {
+                                            if (!isOpen) return;
+                                            trackFaqClicked({
+                                                faq_id: item.id,
+                                                faq_question: item.question,
+                                                faq_category: category.label,
+                                                location: faqLocation,
+                                                property_slug: propertySlug,
+                                            });
+                                        }}
                                     />
                                 </motion.div>
                             </TabsContent>

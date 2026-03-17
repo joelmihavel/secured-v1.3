@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Property, Room, Occupant, getWebflowOptionLabel } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { cn } from "@/lib/utils";
@@ -42,12 +42,19 @@ import { motion } from "framer-motion";
 import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
 import { getPropertyWhatsappLink } from "@/constants";
 import { LockInSlider } from "@/components/homes/LockInSlider";
-import { LockInPeriod } from "@/lib/property-utils";
+import {
+  LockInPeriod,
+  propertyHasDiscount,
+  getDiscountEndDateFormatted,
+} from "@/lib/property-utils";
 import { getAvailabilityDate } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
 import { useMobile } from "@/hooks/useMobile";
 import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
 import { CTA_IDS } from "@/lib/cta-ids";
+import { trackHomeTourClicked } from "@/lib/posthog-tracking";
+import { useDrawerOpen } from "@/context/DrawerOpenContext";
+import { Badge } from "@/components/ui/badge";
 
 // Helper functions for lock-in period pricing
 // Note: CMS field naming is counterintuitive:
@@ -121,7 +128,14 @@ export const RoomSelection = ({
   slug,
 }: RoomSelectionProps) => {
   const isMobile = useMobile();
-  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(property.fieldData.name));
+  const whatsAppCta = useWhatsAppCta(
+    getPropertyWhatsappLink(property.fieldData.name),
+    {
+      source: "property_page",
+      propertySlug: property.fieldData.slug,
+      propertyName: property.fieldData.name,
+    }
+  );
   const isDebugMode = useDebugMode();
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [calculatorData, setCalculatorData] = useState<{
@@ -144,6 +158,20 @@ export const RoomSelection = ({
   const [roomLockIns, setRoomLockIns] = useState<Record<string, LockInPeriod>>(
     {}
   );
+
+  const hasDiscount = propertyHasDiscount(property);
+  const discountPercent =
+    hasDiscount && property.fieldData["discount"]
+      ? Number(property.fieldData["discount"])
+      : 0;
+  const discountEndDate = hasDiscount
+    ? getDiscountEndDateFormatted(property)
+    : null;
+
+  const { setDrawerOpen } = useDrawerOpen();
+  useEffect(() => {
+    setDrawerOpen(isCalculatorOpen);
+  }, [isCalculatorOpen, setDrawerOpen]);
 
   const handleRoomPricingClick = (
     room: RoomDisplayData,
@@ -304,6 +332,7 @@ export const RoomSelection = ({
                       defaultTab={room.name}
                       status={room.status}
                       isOccupied={room.isOccupied}
+                      propertySlug={property.fieldData.slug}
                     />
                   </div>
 
@@ -408,21 +437,63 @@ export const RoomSelection = ({
                           <p className="text-sm font-medium text-text-main/70 mb-2">
                             {room.name}
                           </p>
-                          <div className="flex items-baseline justify-center gap-1 mb-2">
-                            <span className="font-heading text-fluid-h3 text-text-main font-zin">
-                              ₹
-                              {getRentForLockIn(
-                                room.raw,
-                                roomLockIns[room.id] || 11
-                              ).toLocaleString("en-IN")}
-                            </span>
-                            <span className="text-sm text-text-main/70">
-                              / mo
-                            </span>
-                          </div>
+                          {(() => {
+                            const currentLockIn =
+                              roomLockIns[room.id] || (11 as LockInPeriod);
+                            const baseRent = getRentForLockIn(
+                              room.raw,
+                              currentLockIn
+                            );
+                            const discountedRent =
+                              hasDiscount && discountPercent > 0
+                                ? Math.round(
+                                    baseRent * (1 - discountPercent / 100)
+                                  )
+                                : baseRent;
+
+                            if (hasDiscount && discountPercent > 0) {
+                              return (
+                                <div className="flex flex-col items-center gap-1.5 mb-2">
+                                  <div className="flex items-baseline justify-center gap-1">
+                                    <span className="font-heading text-fluid-h3 text-text-main font-zin">
+                                      ₹
+                                      {discountedRent.toLocaleString("en-IN")}
+                                    </span>
+                                    <span className="text-sm text-text-main/70">
+                                      / mo
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center justify-center gap-2 text-xs">
+                                    <span className="text-text-main/40 line-through">
+                                      ₹
+                                      {baseRent.toLocaleString("en-IN")}
+                                    </span>
+                                    <Badge
+                                      variant="discount"
+                                      className="px-2 py-0.5 text-[11px] border-0"
+                                    >
+                                      -{discountPercent}% OFF
+                                    </Badge>
+                                  </div>
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <div className="flex items-baseline justify-center gap-1 mb-2">
+                                <span className="font-heading text-fluid-h3 text-text-main font-zin">
+                                  ₹
+                                  {baseRent.toLocaleString("en-IN")}
+                                </span>
+                                <span className="text-sm text-text-main/70">
+                                  / mo
+                                </span>
+                              </div>
+                            );
+                          })()}
 
                           {/* Lock-in Period with Popover */}
-                          <div className="flex items-center justify-center gap-1 text-xs text-text-main/60">
+                          <div className="flex items-center justify-center gap-1 text-xs text-text-main/60 mt-2">
                             <Popover>
                               <PopoverTrigger asChild>
                                 <button className="flex items-center gap-1 hover:text-text-main transition-colors cursor-pointer group">
@@ -552,6 +623,17 @@ export const RoomSelection = ({
                             rightIcon={<ArrowRight />}
                             data-cta-id={CTA_IDS.ROOM_SELECTION_BOOK_TOUR}
                             data-cta-context="room_selection"
+                            onClick={() =>
+                              trackHomeTourClicked({
+                                source: "room_card",
+                                property_slug: property.fieldData.slug,
+                                property_name: property.fieldData.name,
+                                property_type: hasDiscount ? "discounted" : "standard",
+                                room_id: room.raw.id,
+                                room_name: room.name,
+                                cta_id: CTA_IDS.ROOM_SELECTION_BOOK_TOUR,
+                              })
+                            }
                           >
                             Book a Tour
                           </Button>
@@ -715,6 +797,15 @@ export const RoomSelection = ({
                           rightIcon={<ArrowRight />}
                           data-cta-id={CTA_IDS.FULL_HOUSE_BOOK_TOUR}
                           data-cta-context="room_selection"
+                          onClick={() =>
+                            trackHomeTourClicked({
+                              source: "full_house_card",
+                              property_slug: property.fieldData.slug,
+                              property_name: property.fieldData.name,
+                              property_type: hasDiscount ? "discounted" : "standard",
+                              cta_id: CTA_IDS.FULL_HOUSE_BOOK_TOUR,
+                            })
+                          }
                         >
                           Book a Tour
                         </Button>
@@ -778,7 +869,7 @@ export const RoomSelection = ({
           lockInPeriod={calculatorData.lockInPeriod}
           breakdown={calculatorData.breakdown}
           room={calculatorData.room}
-          property={calculatorData.isFullHouse ? property : undefined}
+          property={property}
           slug={slug}
           propertyName={property.fieldData.name}
         />

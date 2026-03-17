@@ -58,3 +58,5 @@ cta_clicked,secured_form_invite,desktop and mobile,/secured,Secured form: Get Yo
 cta_clicked,campaign_call_us,mobile,/collections/hsr,Campaign bottom nav: Call Us
 cta_clicked,campaign_chat_with_us,mobile,/collections/hsr,Campaign bottom nav: Chat with us
 cta_clicked,campaign-view-more,desktop and mobile,/collections/hsr,Campaign: View more properties
+property_card_clicked,cta_property_card,desktop and mobile,/ and /homes and /collections/hsr and more options,Property card click. Filter: property_type = discounted | standard. page_section = homepage | search | campaign_hsr | more_options
+property_page_viewed,,desktop and mobile,/homes/[slug],Property detail page view. Filter: property_type = discounted | standard

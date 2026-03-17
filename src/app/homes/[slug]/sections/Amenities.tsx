@@ -4,39 +4,16 @@ import React from "react";
 import Image from "next/image";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Amenity, Property } from "@/lib/webflow";
-import { IconArrowUpRight as ArrowUpRight } from "@tabler/icons-react";
 
 interface AmenitiesProps {
   property: Property;
   amenities: Amenity[];
-  allImages: string[];
-  slug: string;
 }
 
 export const Amenities = ({
   property,
   amenities,
-  allImages,
-  slug,
 }: AmenitiesProps) => {
-  // Check if discount should be shown
-  const showDiscount = property.fieldData["apply-discount"] || 
-                       property.fieldData["discount-end-date"] || 
-                       property.fieldData["discount"];
-
-  // Use property featured photo, fallback to random image logic
-  const featuredPhoto = property.fieldData["property-featured-photo"]?.url;
-
-  // Fallback logic if no featured photo
-  const seed = property.id
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const randomImageIndex = seed % (allImages.length || 1);
-  const fallbackImage =
-    allImages[randomImageIndex] || allImages[0] || "/placeholder.jpg";
-
-  const bgImage = featuredPhoto || fallbackImage;
-
   // Designer quote subtexts - randomly select one based on property ID
   const designerQuotes = [
     "A lot of the decor you see in the pictures is made in-house. You'll spot that DIY spirit in the lamp makeovers, picture frames, art pieces and corners you only catch once you visit :)",
@@ -46,61 +23,15 @@ export const Amenities = ({
     "You might think the home is just styled to look good, but once you start living you'll see it is set up to work for you. The workspace is actually comfortable for long hours, switchboards are exactly where your hand reaches for them, the blackout curtains have your back on slow mornings, and no corner ever feels cramped :)",
     "All the common areas are designed for hosting with ease. With ample seating, ambient lighting and some Instagrammable corners, this home is always ready for a party :)",
   ];
+  const seed = property.id
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
   const randomQuoteIndex = seed % designerQuotes.length;
   const selectedQuote = designerQuotes[randomQuoteIndex];
 
-  const discountEndDate = property.fieldData["discount-end-date"]
-    ? new Date(
-        property.fieldData["discount-end-date"] as string
-      ).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-      })
-    : null;
-
   return (
     <OpenSection id="amenities" className="bg-bg-white">
-      {/* Conditionally render discount banner - only if discount exists */}
-      {showDiscount && (
-        <div className="w-full relative aspect-[16/9] md:aspect-[2.5/1] overflow-hidden">
-          <Image
-            src={bgImage}
-            alt="Property Amenity Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/50" /> {/* Dark Overlay */}
-          {/* Text and CTA Overlay */}
-          <div className="absolute inset-0 flex items-center">
-            <div className="max-w-7xl flex flex-col items-center mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="inline-flex items-center gap-2 bg-brand-pink/90 px-3 py-1 md:px-4 md:py-2 rounded-full mb-4">
-                <span className="text-xs md:text-sm font-medium text-text-main">
-                  ✨ Holiday Offer
-                </span>
-              </div>
-              <h2 className="font-heading text-white text-3xl md:text-fluid-h2 font-bold mb-6 text-center">
-                Get {property.fieldData["discount"]}% off on bookings made by{" "}
-                <br className="hidden md:block" />
-                {discountEndDate}
-              </h2>
-              <a
-                href={`${process.env.NEXT_PUBLIC_CAL_URL}?property-name=${slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white text-text-main px-6 py-3 md:px-8 md:py-4 rounded-full font-semibold flex items-center gap-2 hover:bg-white/90 transition-colors text-sm md:text-base"
-              >
-                Book a Tour
-                <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Always render amenities content - no matter what */}
-      {/* Bottom: Content Section */}
-      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showDiscount ? 'py-12 lg:py-24' : 'pt-8 pb-12 lg:pt-12 lg:pb-24'}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 lg:pt-12 lg:pb-24">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-stretch mx-auto">
           {/* Amenities List (60%) */}
           <div id="amenities-list" className="w-full lg:w-[60%]">

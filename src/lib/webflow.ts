@@ -78,6 +78,7 @@ export interface Property extends WebflowItem {
     location?: string; // Reference ID
     hotspots?: string[]; // MultiReference IDs
     reviews?: string[]; // MultiReference IDs
+    Active?: boolean;
     available?: boolean;
     "available-from"?: string;
     "car-parking"?: boolean;

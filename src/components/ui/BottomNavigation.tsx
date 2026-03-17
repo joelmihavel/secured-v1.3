@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IconChevronUp as ChevronUp, IconPhone as PhoneIcon } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
-import { getPropertyWhatsappLink, WHATSAPP_LINK, DEMAND_OPS_PHONE } from "@/constants";
+import { getPropertyWhatsappLink, WHATSAPP_LINK } from "@/constants";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { Property } from "@/lib/webflow";
 import { useMobile } from "@/hooks/useMobile";
 import { useCTATracking } from "@/hooks/useCTATracking";
 import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
 import { CTA_IDS, bottomNavSectionCtaId } from "@/lib/cta-ids";
+import { useDrawerOpen } from "@/context/DrawerOpenContext";
 
 interface NavLink {
   name: string;
@@ -32,33 +33,15 @@ interface BottomNavigationProps {
   customWhatsappLink?: string;
   showAtId?: string;
   showChat?: boolean;
-  showCallButton?: boolean;
 }
 
-export const BottomNavigation: React.FC<BottomNavigationProps> = ({
-  property,
-  customLinks,
-  customWhatsappLink,
-  showAtId = "rooms",
-  showChat = true,
-  showCallButton = false,
-}) => {
-  const isMobile = useMobile();
-  const { trackCTAClick } = useCTATracking();
-  const [isOpen, setIsOpen] = useState(false);
-  const [showMobileNav, setShowMobileNav] = useState(false);
-
-  const navLinks = customLinks || defaultPropertyNavLinks;
+function useActiveSectionOnScroll(navLinks: NavLink[], showAtId: string) {
   const [activeSection, setActiveSection] = useState(navLinks[0]?.name || "");
-
-  const finalWhatsappLink = customWhatsappLink
-    ? customWhatsappLink
-    : (property ? getPropertyWhatsappLink(property.fieldData.name) : WHATSAPP_LINK);
-
-  const whatsAppCta = useWhatsAppCta(finalWhatsappLink);
+  const [showMobileNav, setShowMobileNav] = useState(false);
+  const tickingRef = React.useRef(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const compute = () => {
       const scrollPosition = window.scrollY + window.innerHeight / 3;
 
       // Show mobile nav after scrolling 100px or reaching the trigger section
@@ -90,10 +73,48 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       }
     };
 
+    const handleScroll = () => {
+      if (tickingRef.current) return;
+      tickingRef.current = true;
+      requestAnimationFrame(() => {
+        compute();
+        tickingRef.current = false;
+      });
+    };
+
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    compute(); // Initial check
     return () => window.removeEventListener("scroll", handleScroll);
   }, [navLinks, showAtId]);
+
+  return { activeSection, setActiveSection, showMobileNav };
+}
+
+export const BottomNavigation: React.FC<BottomNavigationProps> = ({
+  property,
+  customLinks,
+  customWhatsappLink,
+  showAtId = "rooms",
+  showChat = true,
+}) => {
+  const isMobile = useMobile();
+  const { trackCTAClick } = useCTATracking();
+  const { isDrawerOpen } = useDrawerOpen();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const navLinks = customLinks || defaultPropertyNavLinks;
+  const { activeSection, setActiveSection, showMobileNav } =
+    useActiveSectionOnScroll(navLinks, showAtId);
+
+  const finalWhatsappLink = customWhatsappLink
+    ? customWhatsappLink
+    : (property ? getPropertyWhatsappLink(property.fieldData.name) : WHATSAPP_LINK);
+
+  const whatsAppCta = useWhatsAppCta(finalWhatsappLink, {
+    source: "bottom_nav",
+    propertySlug: property?.fieldData.slug,
+    propertyName: property?.fieldData.name,
+  });
 
   const handleLinkClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
     e.preventDefault();
@@ -124,6 +145,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     }, 300); // Match the modal close animation duration
   };
 
+  if (isDrawerOpen) return null;
+
   return (
     <>
       {/* Mobile Navigation */}
@@ -137,40 +160,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {showCallButton ? (
-              /* Two-button layout: Call Us + Chat with us */
-              <div className="w-full pointer-events-auto flex items-center gap-3 bg-white p-3 rounded-[2rem] shadow-2xl border border-text-main">
-                <Button
-                  href={DEMAND_OPS_PHONE}
-                  variant="primary"
-                  size="md"
-                  leftIcon={<PhoneIcon />}
-                  className="shrink-0 rounded-full px-5"
-                  style={{ backgroundColor: "white", color: "var(--color-text-main)", borderColor: "var(--color-text-main)" }}
-                  data-cta-id={CTA_IDS.CALL_US_MOBILE}
-                  data-cta-context="bottom_navigation"
-                >
-                  Call Us
-                </Button>
-                {showChat && (
-                  <Button
-                    href={finalWhatsappLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="primary"
-                    size="md"
-                    leftIcon={<WhatsAppIcon className="w-5 h-5" />}
-                    className="flex-1 rounded-full"
-                    data-cta-id={CTA_IDS.CHAT_WITH_US_MOBILE}
-                    data-cta-context="bottom_navigation"
-                  >
-                    Chat with us
-                  </Button>
-                )}
-              </div>
-            ) : (
-              /* Expandable section nav layout (original) */
-              <motion.div
+            {/* Expandable section nav: section links + Chat */}
+            <motion.div
                 className="bg-white shadow-2xl border border-black pointer-events-auto overflow-hidden mx-auto"
                 initial="closed"
                 animate={isOpen ? "open" : "closed"}
@@ -271,7 +262,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                   </AnimatePresence>
                 </div>
               </motion.div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>

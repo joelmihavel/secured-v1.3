@@ -1,14 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import React from "react";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
+import { isPropertyActive } from "@/lib/property-utils";
 import { CardSection } from "@/components/layout/CardSection";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { PhoneSubscribeForm } from "@/components/ui/PhoneSubscribeForm";
 import { useSectionViewTracking } from "@/hooks/useSectionViewTracking";
 
-interface ComingSoonProps {
+const DEFAULT_TITLE = (
+  <>
+    See what's<br className="md:hidden" /> <br className="hidden md:block" />
+    <span className="font-zin-italic"> coming next</span>
+  </>
+);
+const DEFAULT_SUBTITLE =
+  "Get early access to one of a kind Flent homes";
+const DEFAULT_NEWSLETTER_HEADING =
+  "Want an email from us every time we launch a home?";
+
+export interface ComingSoonContentProps {
+  /** Main heading. Pass a string or React node; defaults to "See what's coming next". */
+  title?: React.ReactNode;
+  /** Subtitle below the heading. */
+  subtitle?: string;
+  /** Heading above the newsletter form. */
+  newsletterHeading?: string;
+}
+
+interface ComingSoonProps extends ComingSoonContentProps {
   properties?: Property[];
   locations?: Location[];
   rooms?: Room[];
@@ -20,9 +40,12 @@ export const ComingSoon = ({
   locations = [],
   rooms = [],
   occupants = [],
+  title = DEFAULT_TITLE,
+  subtitle = DEFAULT_SUBTITLE,
+  newsletterHeading = DEFAULT_NEWSLETTER_HEADING,
 }: ComingSoonProps) => {
   const comingSoonProperties = properties.filter(
-    (p) => p.fieldData["is-upcoming"]
+    (p) => p.fieldData["is-upcoming"] && isPropertyActive(p)
   );
 
   // Track section visibility
@@ -46,12 +69,11 @@ export const ComingSoon = ({
       {/* Top Section - Centered */}
       <div className="flex flex-col items-center text-center mb-12 px-4 sm:px-6 lg:px-8 relative z-10">
         <h2 className="font-heading text-fluid-h2 text-white mb-6">
-          See what's<br className="md:hidden" /> <br className="hidden md:block" />
-          <span className="font-zin-italic"> coming next</span>
+          {title}
         </h2>
 
         <p className="text-subtitle !text-white/90 font-body font-medium max-w-2xl">
-        Get early access to one of a kind Flent homes
+          {subtitle}
         </p>
       </div>
 
@@ -82,7 +104,7 @@ export const ComingSoon = ({
       {/* Newsletter Section */}
       <div className=" rounded-[2rem] py-12 px-2 text-center relative z-10">
         <h3 className="font-heading text-fluid-h3 text-white mb-8">
-        Want an email from us every time we launch a home?
+          {newsletterHeading}
         </h3>
 
         <PhoneSubscribeForm 

@@ -13,7 +13,7 @@ export interface SearchFilters {
     maxBudget: number;
     locationIds: string[];
     moveInDate: string;
-    showAvailable: boolean;
+    showFullHomes: boolean;
     femaleOnly: boolean;
 }
 
@@ -23,54 +23,34 @@ interface SearchBarProps {
     setFilters: (filters: SearchFilters) => void;
 }
 
-export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) => {
-    const { trackCTAClick } = useCTATracking();
+interface SearchBarViewProps {
+    locations: Location[];
+    filters: SearchFilters;
+    getBudgetValue: () => string;
+    getLocationDisplayText: () => string;
+    trackCTAClick: ReturnType<typeof useCTATracking>["trackCTAClick"];
+    onBudgetChange: (value: string) => void;
+    onSelectAllLocations: () => void;
+    onLocationToggle: (locationId: string) => void;
+    onMoveInChange: (value: string) => void;
+    onToggleFullHomes: () => void;
+    onToggleFemaleOnly: () => void;
+}
+
+const SearchBarView = ({
+    locations,
+    filters,
+    getBudgetValue,
+    getLocationDisplayText,
+    trackCTAClick,
+    onBudgetChange,
+    onSelectAllLocations,
+    onLocationToggle,
+    onMoveInChange,
+    onToggleFullHomes,
+    onToggleFemaleOnly,
+}: SearchBarViewProps) => {
     const [open, setOpen] = useState(false);
-
-    const handleBudgetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = e.target.value;
-        let min = 0;
-        let max = Infinity;
-
-        if (value === "25-35") { min = 25000; max = 35000; }
-        else if (value === "35-45") { min = 35000; max = 45000; }
-        else if (value === "45+") { min = 45000; }
-
-        setFilters({ ...filters, minBudget: min, maxBudget: max });
-    };
-
-    const getBudgetValue = () => {
-        if (filters.minBudget === 25000 && filters.maxBudget === 35000) return "25-35";
-        if (filters.minBudget === 35000 && filters.maxBudget === 45000) return "35-45";
-        if (filters.minBudget === 45000 && filters.maxBudget === Infinity) return "45+";
-        return "all";
-    };
-
-    const handleLocationToggle = (locationId: string) => {
-        const currentIds = filters.locationIds || [];
-        const isSelected = currentIds.includes(locationId);
-
-        let newIds: string[];
-        if (isSelected) {
-            newIds = currentIds.filter(id => id !== locationId);
-        } else {
-            newIds = [...currentIds, locationId];
-        }
-
-        setFilters({ ...filters, locationIds: newIds });
-    };
-
-    const getLocationDisplayText = () => {
-        const selectedIds = filters.locationIds || [];
-        if (selectedIds.length === 0) return "All Locations";
-
-        if (selectedIds.length === 1) {
-            const location = locations.find(l => l.id === selectedIds[0]);
-            return location ? location.fieldData.name : "1 Location Selected";
-        }
-
-        return `${selectedIds.length} Locations Selected`;
-    };
 
     return (
         <div className="w-full bg-night-violet rounded-2xl p-6 flex flex-col lg:flex-row items-center gap-4 lg:gap-6 shadow-lg">
@@ -80,7 +60,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 <div className="relative">
                     <select
                         value={getBudgetValue()}
-                        onChange={handleBudgetChange}
+                        onChange={(e) => onBudgetChange(e.target.value)}
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none cursor-pointer"
                     >
                         <option value="all" className="text-black">Any Budget</option>
@@ -118,7 +98,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                         cta_type: "button",
                                         page_section: "search_bar",
                                     });
-                                    setFilters({ ...filters, locationIds: [] });
+                                    onSelectAllLocations();
                                 }}
                                 data-cta-id={CTA_IDS.CTA_SEARCH_ALL_LOCATIONS}
                             >
@@ -147,7 +127,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                                                 cta_type: "button",
                                                 page_section: "search_bar",
                                             });
-                                            handleLocationToggle(loc.id);
+                                            onLocationToggle(loc.id);
                                         }}
                                         data-cta-id={searchLocationCtaId(loc.fieldData.slug)}
                                     >
@@ -173,38 +153,38 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                     <input
                         type="date"
                         value={filters.moveInDate}
-                        onChange={(e) => setFilters({ ...filters, moveInDate: e.target.value })}
+                        onChange={(e) => onMoveInChange(e.target.value)}
                         className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full"
                     />
                     <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={16} />
                 </div>
             </div>
 
-            {/* Show Available & Female Only */}
+            {/* Show Full Homes & Female Only */}
             <div className="flex flex-col lg:flex-row gap-3 lg:gap-4 mt-4 lg:mt-0 lg:flex-shrink-0">
                 <div
                     className="flex items-center gap-2 bg-white rounded-full px-4 py-2 cursor-pointer select-none"
                     onClick={() => {
                         trackCTAClick({
-                            cta_id: CTA_IDS.CTA_SEARCH_AVAILABLE_TOGGLE,
-                            cta_text: "Show Available",
+                            cta_id: CTA_IDS.CTA_SEARCH_FULL_HOMES_TOGGLE,
+                            cta_text: "Show Full Homes",
                             cta_type: "button",
                             page_section: "search_bar",
                         });
-                        setFilters({ ...filters, showAvailable: !filters.showAvailable });
+                        onToggleFullHomes();
                     }}
-                    data-cta-id={CTA_IDS.CTA_SEARCH_AVAILABLE_TOGGLE}
+                    data-cta-id={CTA_IDS.CTA_SEARCH_FULL_HOMES_TOGGLE}
                 >
                     <div className="relative inline-flex items-center">
                         <input
                             type="checkbox"
                             className="sr-only peer"
-                            checked={filters.showAvailable}
+                            checked={filters.showFullHomes}
                             readOnly
                         />
                         <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-night-violet"></div>
                     </div>
-                    <span className="text-text-main text-sm font-medium whitespace-nowrap">Show Available</span>
+                    <span className="text-text-main text-sm font-medium whitespace-nowrap">Show Full Homes</span>
                 </div>
 
                 <div
@@ -216,7 +196,7 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                             cta_type: "button",
                             page_section: "search_bar",
                         });
-                        setFilters({ ...filters, femaleOnly: !filters.femaleOnly });
+                        onToggleFemaleOnly();
                     }}
                     data-cta-id={CTA_IDS.CTA_SEARCH_FEMALE_TOGGLE}
                 >
@@ -233,5 +213,69 @@ export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) =>
                 </div>
             </div>
         </div>
+    );
+};
+
+export const SearchBar = ({ locations, filters, setFilters }: SearchBarProps) => {
+    const { trackCTAClick } = useCTATracking();
+
+    const getBudgetValue = () => {
+        if (filters.minBudget === 25000 && filters.maxBudget === 35000) return "25-35";
+        if (filters.minBudget === 35000 && filters.maxBudget === 45000) return "35-45";
+        if (filters.minBudget === 45000 && filters.maxBudget === Infinity) return "45+";
+        return "all";
+    };
+
+    const getLocationDisplayText = () => {
+        const selectedIds = filters.locationIds || [];
+        if (selectedIds.length === 0) return "All Locations";
+
+        if (selectedIds.length === 1) {
+            const location = locations.find((l) => l.id === selectedIds[0]);
+            return location ? location.fieldData.name : "1 Location Selected";
+        }
+
+        return `${selectedIds.length} Locations Selected`;
+    };
+
+    return (
+        <SearchBarView
+            locations={locations}
+            filters={filters}
+            getBudgetValue={getBudgetValue}
+            getLocationDisplayText={getLocationDisplayText}
+            trackCTAClick={trackCTAClick}
+            onBudgetChange={(value) => {
+                let min = 0;
+                let max = Infinity;
+
+                if (value === "25-35") { min = 25000; max = 35000; }
+                else if (value === "35-45") { min = 35000; max = 45000; }
+                else if (value === "45+") { min = 45000; }
+
+                setFilters({ ...filters, minBudget: min, maxBudget: max });
+            }}
+            onSelectAllLocations={() => setFilters({ ...filters, locationIds: [] })}
+            onLocationToggle={(locationId) => {
+                const currentIds = filters.locationIds || [];
+                const isSelected = currentIds.includes(locationId);
+
+                let newIds: string[];
+                if (isSelected) {
+                    newIds = currentIds.filter((id) => id !== locationId);
+                } else {
+                    newIds = [...currentIds, locationId];
+                }
+
+                setFilters({ ...filters, locationIds: newIds });
+            }}
+            onMoveInChange={(value) => setFilters({ ...filters, moveInDate: value })}
+            onToggleFullHomes={() =>
+                setFilters({ ...filters, showFullHomes: !filters.showFullHomes })
+            }
+            onToggleFemaleOnly={() =>
+                setFilters({ ...filters, femaleOnly: !filters.femaleOnly })
+            }
+        />
     );
 };

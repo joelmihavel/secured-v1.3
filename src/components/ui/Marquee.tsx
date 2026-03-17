@@ -22,6 +22,19 @@ export const Marquee = ({
     duration = 50,
     ...props
 }: MarqueeProps) => {
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const media = window.matchMedia("(max-width: 767px)");
+        const onChange = () => setIsMobile(media.matches);
+        onChange();
+        media.addEventListener?.("change", onChange);
+        return () => media.removeEventListener?.("change", onChange);
+    }, []);
+
+    // Mobile felt too fast; slow down by 25% under md breakpoint.
+    const effectiveDuration = isMobile ? duration * 1.25 : duration;
+
     return (
         <div
             {...props}
@@ -43,7 +56,7 @@ export const Marquee = ({
                         y: vertical ? (reverse ? "0%" : "-100%") : 0
                     }}
                     transition={{
-                        duration,
+                        duration: effectiveDuration,
                         ease: "linear",
                         repeat: Infinity,
                     }}
@@ -54,15 +67,9 @@ export const Marquee = ({
                 >
                     {Array.from({ length: repeat }).map((_, j) => (
                         <React.Fragment key={j}>
-                            {React.Children.map(children, (child) => {
-                                if (React.isValidElement(child)) {
-                                    return React.cloneElement(child, {
-                                        // @ts-ignore
-                                        key: `${j}-${child.key || 'child'}`
-                                    });
-                                }
-                                return child;
-                            })}
+                            {React.Children.toArray(children).map((child, idx) => (
+                                <React.Fragment key={`${j}-${idx}`}>{child}</React.Fragment>
+                            ))}
                         </React.Fragment>
                     ))}
                 </motion.div>

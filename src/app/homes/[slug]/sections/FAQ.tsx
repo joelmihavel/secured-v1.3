@@ -233,6 +233,8 @@ export const FAQ = () => {
             categories={faqCategories}
             defaultTab="general"
             inactiveTabBorder="border-black/1"
+            faqLocation="property_page"
+            propertySlug={propertySlug}
         />
     );
 };

@@ -103,19 +103,33 @@ export function getDeviceContext(): {
   screen_width: number;
   screen_height: number;
   user_agent: string;
+  device_type: 'mobile' | 'tablet' | 'desktop' | 'unknown';
 } {
   if (typeof window === 'undefined') {
     return {
       screen_width: 0,
       screen_height: 0,
       user_agent: '',
+      device_type: 'unknown',
     };
   }
 
+  const width = window.screen?.width || 0;
+
+  let device_type: 'mobile' | 'tablet' | 'desktop' | 'unknown' = 'unknown';
+  if (width > 0 && width < 768) {
+    device_type = 'mobile';
+  } else if (width >= 768 && width < 1024) {
+    device_type = 'tablet';
+  } else if (width >= 1024) {
+    device_type = 'desktop';
+  }
+
   return {
-    screen_width: window.screen?.width || 0,
+    screen_width: width,
     screen_height: window.screen?.height || 0,
     user_agent: navigator.userAgent || '',
+    device_type,
   };
 }
 
@@ -227,6 +241,258 @@ export function trackEvent(
   } catch (error) {
     console.error(`Failed to track event '${eventName}':`, error);
   }
+}
+
+/**
+ * Payload for search_filters_changed event.
+ * Use this to understand filter usage and user preferences on /homes.
+ */
+export interface SearchFiltersChangedPayload {
+  /** Current filter state (serialized for PostHog) */
+  min_budget: number;
+  max_budget: number;
+  location_ids: string[];
+  location_names?: string[];
+  move_in_date: string;
+  female_only: boolean;
+  show_full_homes: boolean;
+  /** Number of properties matching the current filters */
+  result_count: number;
+}
+
+const SEARCH_FILTERS_CHANGED_EVENT = 'search_filters_changed';
+
+/**
+ * Track when the user changes search filters on /homes.
+ * Fired after each filter/toggle change with full state and result count
+ * for preference analysis and funnel tuning.
+ */
+export function trackSearchFiltersChanged(payload: SearchFiltersChangedPayload): void {
+  trackEvent(SEARCH_FILTERS_CHANGED_EVENT, payload);
+}
+
+/** Filter type for property card click and property page view (discounted vs standard). */
+export type PropertyTypeFilter = 'discounted' | 'standard';
+
+type BasePropertyAnalyticsPayload = {
+  property_slug: string;
+  property_type: PropertyTypeFilter;
+  /** Human-readable area / neighbourhood name (Location.fieldData.name). */
+  property_area?: string;
+};
+
+const PROPERTY_CARD_CLICKED_EVENT = 'property_card_clicked';
+const PROPERTY_PAGE_VIEWED_EVENT = 'property_page_viewed';
+const HOMES_RENT_CALCULATOR_OPENED_EVENT = 'homes_rent_calculator_opened';
+const HOMES_RENT_LOCK_IN_CHANGED_EVENT = 'homes_rent_lock_in_changed';
+const WHATSAPP_CTA_CLICKED_EVENT = 'whatsapp_cta_clicked';
+const HOME_TOUR_CLICKED_EVENT = 'home_tour_clicked';
+const FAQ_CLICKED_EVENT = 'faq_clicked';
+
+function trackWithContext(eventName: string, properties?: Record<string, any>): void {
+  trackEvent(eventName, properties);
+}
+
+export interface PropertyCardClickPayload extends BasePropertyAnalyticsPayload {
+  page_section?: string;
+  cta_id?: string;
+}
+
+/**
+ * Track when a user clicks a property card (listing). Use property_type to filter
+ * discounted vs standard properties in PostHog.
+ */
+export function trackPropertyCardClick(payload: PropertyCardClickPayload): void {
+  trackWithContext(PROPERTY_CARD_CLICKED_EVENT, {
+    property_slug: payload.property_slug,
+    property_type: payload.property_type,
+    property_area: payload.property_area ?? null,
+    page_section: payload.page_section,
+    cta_id: payload.cta_id,
+  });
+}
+
+export type PropertyPageViewPayload = BasePropertyAnalyticsPayload;
+
+/**
+ * Track when a user views a property detail page. Use property_type to filter
+ * discounted vs standard in PostHog.
+ */
+export function trackPropertyPageView(payload: PropertyPageViewPayload): void {
+  trackWithContext(PROPERTY_PAGE_VIEWED_EVENT, {
+    property_slug: payload.property_slug,
+    property_type: payload.property_type,
+    property_area: payload.property_area ?? null,
+  });
+}
+
+export type LockInSource = 'room' | 'full_house';
+
+export interface HomesRentCalculatorOpenedPayload extends BasePropertyAnalyticsPayload {
+  property_name: string;
+  source: LockInSource;
+  room_id?: string;
+  room_name?: string;
+  initial_lock_in_months: number;
+  rent_total_after_discounts: number | null;
+  open_cta_id?: string;
+}
+
+export function trackHomesRentCalculatorOpened(
+  payload: HomesRentCalculatorOpenedPayload
+): void {
+  trackWithContext(HOMES_RENT_CALCULATOR_OPENED_EVENT, {
+    property_slug: payload.property_slug,
+    property_name: payload.property_name,
+    property_type: payload.property_type,
+    property_area: payload.property_area ?? null,
+    source: payload.source,
+    room_id: payload.room_id ?? null,
+    room_name: payload.room_name ?? null,
+    initial_lock_in_months: payload.initial_lock_in_months,
+    rent_total_after_discounts: payload.rent_total_after_discounts,
+    open_cta_id: payload.open_cta_id,
+  });
+}
+
+export interface HomesRentLockInChangedPayload extends BasePropertyAnalyticsPayload {
+  property_name: string;
+  source: LockInSource;
+  room_id?: string;
+  room_name?: string;
+  lock_in_months: number;
+  rent_base: number | null;
+  rent_maintenance: number | null;
+  rent_furnishing: number | null;
+  rent_convenience: number | null;
+  rent_gst: number | null;
+  rent_lock_in_discount: number;
+  rent_promo_discount: number;
+  rent_total_after_discounts: number | null;
+}
+
+export function trackHomesRentLockInChanged(
+  payload: HomesRentLockInChangedPayload
+): void {
+  trackWithContext(HOMES_RENT_LOCK_IN_CHANGED_EVENT, {
+    property_slug: payload.property_slug,
+    property_name: payload.property_name,
+    property_type: payload.property_type,
+    property_area: payload.property_area ?? null,
+    source: payload.source,
+    room_id: payload.room_id ?? null,
+    room_name: payload.room_name ?? null,
+    lock_in_months: payload.lock_in_months,
+    rent_base: payload.rent_base,
+    rent_maintenance: payload.rent_maintenance,
+    rent_furnishing: payload.rent_furnishing,
+    rent_convenience: payload.rent_convenience,
+    rent_gst: payload.rent_gst,
+    rent_lock_in_discount: payload.rent_lock_in_discount,
+    rent_promo_discount: payload.rent_promo_discount,
+    rent_total_after_discounts: payload.rent_total_after_discounts,
+  });
+}
+
+// --- WhatsApp CTA tracking ---
+
+export type WhatsAppCtaSource =
+  | 'floating'
+  | 'rent_calculator'
+  | 'property_page'
+  | 'owners_page'
+  | 'bottom_nav'
+  | 'lightbox'
+  | 'how_it_works'
+  | 'other';
+
+export interface WhatsAppCtaClickedPayload {
+  source: WhatsAppCtaSource;
+  page_location?: string;
+  property_slug?: string;
+  property_name?: string;
+  property_area?: string;
+  cta_id?: string;
+}
+
+export function trackWhatsAppCtaClicked(
+  payload: WhatsAppCtaClickedPayload
+): void {
+  trackWithContext(WHATSAPP_CTA_CLICKED_EVENT, {
+    source: payload.source,
+    page_location: payload.page_location,
+    property_slug: payload.property_slug,
+    property_name: payload.property_name,
+    property_area: payload.property_area,
+    cta_id: payload.cta_id,
+  });
+}
+
+// --- Home tour tracking ---
+
+export type HomeTourSource =
+  | 'room_card'
+  | 'full_house_card'
+  | 'rent_calculator'
+  | 'amenities_banner'
+  | 'other';
+
+export interface HomeTourClickedPayload {
+  source: HomeTourSource;
+  property_slug: string;
+  property_name: string;
+  property_area?: string;
+  property_type: PropertyTypeFilter;
+  room_id?: string;
+  room_name?: string;
+  lock_in_months?: number;
+  rent_total_after_discounts?: number | null;
+  cta_id?: string;
+}
+
+export function trackHomeTourClicked(
+  payload: HomeTourClickedPayload
+): void {
+  trackWithContext(HOME_TOUR_CLICKED_EVENT, {
+    source: payload.source,
+    property_slug: payload.property_slug,
+    property_name: payload.property_name,
+    property_area: payload.property_area,
+    property_type: payload.property_type,
+    room_id: payload.room_id,
+    room_name: payload.room_name,
+    lock_in_months: payload.lock_in_months,
+    rent_total_after_discounts: payload.rent_total_after_discounts,
+    cta_id: payload.cta_id,
+  });
+}
+
+// --- FAQ click tracking ---
+
+export type FaqLocation =
+  | 'property_page'
+  | 'owners_page'
+  | 'homepage'
+  | 'other';
+
+export interface FaqClickedPayload {
+  faq_id: number;
+  faq_question: string;
+  faq_category: string;
+  location: FaqLocation;
+  property_slug?: string;
+}
+
+export function trackFaqClicked(
+  payload: FaqClickedPayload
+): void {
+  trackWithContext(FAQ_CLICKED_EVENT, {
+    faq_id: payload.faq_id,
+    faq_question: payload.faq_question,
+    faq_category: payload.faq_category,
+    location: payload.location,
+    property_slug: payload.property_slug,
+  });
 }
 
 /**

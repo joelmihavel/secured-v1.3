@@ -20,6 +20,7 @@ interface FaqAccordionProps {
     timestamp?: string;
     questionClassName?: string;
     answerClassName?: string;
+    onQuestionToggle?: (item: FAQItem, isOpen: boolean) => void;
 }
 
 export function FaqAccordion({
@@ -28,6 +29,7 @@ export function FaqAccordion({
     timestamp = "Every day, 9:01 AM",
     questionClassName,
     answerClassName,
+    onQuestionToggle,
 }: FaqAccordionProps) {
     const [openItem, setOpenItem] = React.useState<string | null>(null);
 
@@ -74,6 +76,10 @@ export function FaqAccordion({
                             <Accordion.Item
                                 value={item.id.toString()}
                                 className="mb-2"
+                                onClick={() => {
+                                    const isOpenNow = openItem !== item.id.toString();
+                                    onQuestionToggle?.(item, isOpenNow);
+                                }}
                             >
                                 <Accordion.Header>
                                     <Accordion.Trigger className="flex w-full items-center justify-start gap-x-4">

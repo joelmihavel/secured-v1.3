@@ -1,9 +1,13 @@
+"use client";
 
 import React from "react";
 import { Property, Room, Occupant } from "@/lib/webflow";
 import { OpenSection } from "@/components/layout/OpenSection";
 import Link from "next/link";
 import { PropertyCard } from "@/components/ui/PropertyCard";
+import { propertyHasDiscount } from "@/lib/property-utils";
+import { trackPropertyCardClick } from "@/lib/posthog-tracking";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface MoreOptionsProps {
     properties: Property[];
@@ -34,6 +38,14 @@ export const MoreOptions = ({ properties, currentPropertyId, rooms = [], occupan
                             href={`/homes/${property.fieldData.slug}`}
                             className="block w-full min-h-[500px]"
                             draggable={false}
+                            onClick={() =>
+                                trackPropertyCardClick({
+                                    property_slug: property.fieldData.slug,
+                                    property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+                                    page_section: "more_options",
+                                    cta_id: CTA_IDS.PROPERTY_CARD,
+                                })
+                            }
                         >
                             <PropertyCard
                                 property={property}

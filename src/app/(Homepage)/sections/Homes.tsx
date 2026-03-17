@@ -3,8 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
-import { sortProperties } from "@/lib/property-utils";
+import { sortProperties, propertyHasDiscount, isPropertyActive } from "@/lib/property-utils";
 import { CardSection } from "@/components/layout/CardSection";
+import { trackPropertyCardClick } from "@/lib/posthog-tracking";
+import { CTA_IDS } from "@/lib/cta-ids";
 import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
 import { Button } from "@/components/ui/Button";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -36,7 +38,10 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
         return null;
     }
 
-    const sortedProperties = [...properties].sort(sortProperties).filter(property => {
+    const sortedProperties = [...properties]
+        .filter(isPropertyActive)
+        .sort(sortProperties)
+        .filter(property => {
         // Only show properties that are available or have an available-from date
         // + properties available from today + 30 days
         const availableFrom = property.fieldData["available-from"];
@@ -55,7 +60,20 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
     const cards = sortedProperties.map((item, index) => {
         const location = locations.find(l => l.id === item.fieldData.location);
         return (
-            <Link key={item.id} href={`/homes/${item.fieldData.slug}`} className="block w-full h-full" draggable={false}>
+            <Link
+                key={item.id}
+                href={`/homes/${item.fieldData.slug}`}
+                className="block w-full h-full"
+                draggable={false}
+                onClick={() =>
+                    trackPropertyCardClick({
+                        property_slug: item.fieldData.slug,
+                        property_type: propertyHasDiscount(item) ? "discounted" : "standard",
+                        page_section: "homepage",
+                        cta_id: CTA_IDS.PROPERTY_CARD,
+                    })
+                }
+            >
                 <PropertyCard
                     property={item}
                     index={index}

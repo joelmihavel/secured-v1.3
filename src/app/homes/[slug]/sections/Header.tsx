@@ -136,6 +136,7 @@ export const Header = ({
             propertyStats={`${property.fieldData["property-bedrooms"]} BHK | ${property.fieldData["carpet-area"]
               } Sq. Ft | ${(property.fieldData["floor-number-new"] || "1st")} Floor`}
             photoCategories={photoCategories}
+            propertySlug={property.fieldData.slug}
           />
         </div>
       </div>
