@@ -176,6 +176,11 @@ const PropertyCardImageCarousel = ({
   setCurrentImageIndex,
   setIsHovering,
   imageUrl,
+  showRibbon,
+  ribbonPhase,
+  discountPercent,
+  ribbonSavings,
+  discountEndDate,
 }: {
   isDebugMode: boolean;
   property: Property;
@@ -187,7 +192,14 @@ const PropertyCardImageCarousel = ({
   setCurrentImageIndex: React.Dispatch<React.SetStateAction<number>>;
   setIsHovering: (v: boolean) => void;
   imageUrl: string;
+  showRibbon: boolean;
+  ribbonPhase: number;
+  discountPercent: number;
+  ribbonSavings: number;
+  discountEndDate: string | null;
 }) => {
+  const showDiscountRibbon = !isComingSoon && !isOccupied && showRibbon;
+
   return (
     <div
       className={`group/card rounded-t-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col relative bg-white h-full ${
@@ -227,7 +239,7 @@ const PropertyCardImageCarousel = ({
         </div>
       )}
 
-      {/* Image Section */}
+      {/* Image Section + Discount Ribbon Overlay */}
       <div className="relative h-[300px] md:h-[340px] w-full bg-gray-100 overflow-hidden shrink-0">
         <AnimatePresence initial={false}>
           <motion.div
@@ -257,6 +269,19 @@ const PropertyCardImageCarousel = ({
             />
           </motion.div>
         </AnimatePresence>
+
+        {/* Discount Ribbon overlays on top of image so non-discounted cards use full image height */}
+        {showDiscountRibbon && (
+          <div className="absolute inset-x-0 bottom-0 z-10">
+            <PropertyCardDiscountRibbon
+              showRibbon={showDiscountRibbon}
+              ribbonPhase={ribbonPhase}
+              discountPercent={discountPercent}
+              ribbonSavings={ribbonSavings}
+              discountEndDate={discountEndDate}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -375,10 +400,6 @@ export const PropertyCard = ({
           setCurrentImageIndex={setCurrentImageIndex}
           setIsHovering={setIsHovering}
           imageUrl={imageUrl}
-        />
-
-        {/* Discount ribbon: revolving copy when property has a discount (CMS). */}
-        <PropertyCardDiscountRibbon
           showRibbon={showRibbon}
           ribbonPhase={ribbonPhase}
           discountPercent={discountPercent}

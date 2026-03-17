@@ -1,4 +1,8 @@
-export const WEBFLOW_API_TOKEN = process.env.NEXT_PUBLIC_WEBFLOW_API_TOKEN!;
+// Webflow API token is optional at build/runtime. When it's missing or the
+// network call fails, we gracefully fall back to empty data so builds don't
+// crash (e.g. during Vercel preview builds or local environments without
+// network access).
+export const WEBFLOW_API_TOKEN = process.env.NEXT_PUBLIC_WEBFLOW_API_TOKEN;
 export const SITE_ID = "6593ed11d5ad65d107dfe76c";
 
 export const COLLECTIONS = {
@@ -189,13 +193,23 @@ export interface Occupant extends WebflowItem {
 export class WebflowFetchError extends Error {
   constructor(message: string, public readonly collectionId: string) {
     super(message);
-    this.name = 'WebflowFetchError';
+    this.name = "WebflowFetchError";
   }
 }
 
 export async function getCollectionItems<T extends WebflowItem>(
   collectionId: string
 ): Promise<T[]> {
+  // If the token is missing, log and return empty so that pages depending
+  // on Webflow data can still render (with no items) instead of failing
+  // the entire build.
+  if (!WEBFLOW_API_TOKEN) {
+    console.warn(
+      `[Webflow] WEBFLOW_API_TOKEN is not set. Returning empty items for collection ${collectionId}.`
+    );
+    return [];
+  }
+
   let allItems: T[] = [];
   let offset = 0;
   const limit = 100; // Webflow API limit
@@ -212,14 +226,26 @@ export async function getCollectionItems<T extends WebflowItem>(
       next: { revalidate: 3600 }, // 60 minutes
     };
 
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      // Throw error instead of returning empty array - prevents caching bad results
-      throw new WebflowFetchError(
-        `Error fetching collection ${collectionId}: ${response.status} ${response.statusText}`,
-        collectionId
+    let response: Response;
+    try {
+      response = await fetch(url, options);
+    } catch (error) {
+      console.error(
+        `[Webflow] Network error fetching collection ${collectionId} from ${url}. Returning empty list.`,
+        error
       );
+      return [];
     }
+
+    if (!response.ok) {
+      // Instead of throwing (which breaks static generation completely),
+      // log and return whatever we have so far.
+      console.error(
+        `[Webflow] Error fetching collection ${collectionId}: ${response.status} ${response.statusText}. Returning items fetched so far (${allItems.length}).`
+      );
+      return allItems;
+    }
+
     const data = await response.json();
 
     if (data.items) {
