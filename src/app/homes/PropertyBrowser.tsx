@@ -3,12 +3,20 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import type { ReadonlyURLSearchParams } from "next/navigation";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
-import { sortProperties } from "@/lib/property-utils";
+import {
+  sortByAvailabilityThenRank,
+  propertyHasDiscount,
+  isPropertyActive,
+} from "@/lib/property-utils";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { CardSection } from "@/components/layout/CardSection";
+import { ComingSoon } from "@/app/(Homepage)/sections/ComingSoon";
+import { trackSearchFiltersChanged, trackPropertyCardClick } from "@/lib/posthog-tracking";
+import { CTA_IDS } from "@/lib/cta-ids";
 
 interface PropertyBrowserProps {
   properties: Property[];
@@ -17,12 +25,161 @@ interface PropertyBrowserProps {
   occupants?: Occupant[];
 }
 
-export const PropertyBrowser = ({
-  properties,
-  locations,
-  rooms = [],
-  occupants = [],
-}: PropertyBrowserProps) => {
+function useLocationMaps(locations: Location[]) {
+  return useMemo(
+    () => ({
+      locationNameMap: new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
+      locationMap: new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
+    }),
+    [locations]
+  );
+}
+
+function parseLocationIdsFromParam(locationParam: string, locations: Location[]) {
+  if (!locationParam) return [];
+  const names = locationParam
+    .split(",")
+    .map((n) => n.trim().toLowerCase())
+    .filter((n) => n.length > 0);
+  if (names.length === 0) return [];
+
+  const ids: string[] = [];
+  names.forEach((name) => {
+    const location = locations.find(
+      (loc) => loc.fieldData.name.toLowerCase().trim() === name
+    );
+    if (location) ids.push(location.id);
+  });
+  return ids;
+}
+
+function parseFiltersFromSearchParams(
+  searchParams: ReadonlyURLSearchParams,
+  locations: Location[]
+): SearchFilters {
+  const locationNameParam = searchParams.get("location") || "";
+  const minBudgetParam = searchParams.get("minBudget");
+  const maxBudgetParam = searchParams.get("maxBudget");
+  const moveInDateParam = searchParams.get("moveInDate") || "";
+  const showFullHomesParam = searchParams.get("showFullHomes");
+  const femaleOnlyParam = searchParams.get("femaleOnly");
+
+  let minBudget = 0;
+  let maxBudget = Infinity;
+
+  if (minBudgetParam) {
+    const parsed = parseInt(minBudgetParam, 10);
+    if (!isNaN(parsed)) minBudget = parsed;
+  }
+  if (maxBudgetParam) {
+    const parsed = parseInt(maxBudgetParam, 10);
+    if (!isNaN(parsed)) maxBudget = parsed;
+  }
+
+  return {
+    minBudget,
+    maxBudget,
+    locationIds: parseLocationIdsFromParam(locationNameParam, locations),
+    moveInDate: moveInDateParam,
+    showFullHomes: showFullHomesParam === "true",
+    femaleOnly: femaleOnlyParam === "true",
+  };
+}
+
+function serializeFiltersToSearchParams({
+  filters,
+  searchParams,
+  locationNameMap,
+}: {
+  filters: SearchFilters;
+  searchParams: ReadonlyURLSearchParams;
+  locationNameMap: Map<string, string>;
+}) {
+  const locationNameParam = searchParams.get("location") || "";
+  const minBudgetParam = searchParams.get("minBudget");
+  const maxBudgetParam = searchParams.get("maxBudget");
+  const moveInDateParam = searchParams.get("moveInDate") || "";
+  const showFullHomesParam = searchParams.get("showFullHomes");
+  const femaleOnlyParam = searchParams.get("femaleOnly");
+
+  const params = new URLSearchParams(searchParams.toString());
+  let urlChanged = false;
+
+  const selectedIds = filters.locationIds || [];
+  const locationNames: string[] = [];
+  selectedIds.forEach((id) => {
+    const name = locationNameMap.get(id);
+    if (name) locationNames.push(name);
+  });
+
+  const newLocationParam = locationNames.join(",");
+  const urlLocationParam = locationNameParam || "";
+
+  if (newLocationParam && newLocationParam !== urlLocationParam) {
+    params.set("location", newLocationParam);
+    urlChanged = true;
+  } else if (!newLocationParam && urlLocationParam) {
+    params.delete("location");
+    urlChanged = true;
+  }
+
+  if (filters.minBudget !== 0) {
+    if (minBudgetParam !== filters.minBudget.toString()) {
+      params.set("minBudget", filters.minBudget.toString());
+      urlChanged = true;
+    }
+  } else if (minBudgetParam) {
+    params.delete("minBudget");
+    urlChanged = true;
+  }
+
+  if (filters.maxBudget !== Infinity) {
+    if (maxBudgetParam !== filters.maxBudget.toString()) {
+      params.set("maxBudget", filters.maxBudget.toString());
+      urlChanged = true;
+    }
+  } else if (maxBudgetParam) {
+    params.delete("maxBudget");
+    urlChanged = true;
+  }
+
+  if (filters.moveInDate) {
+    if (moveInDateParam !== filters.moveInDate) {
+      params.set("moveInDate", filters.moveInDate);
+      urlChanged = true;
+    }
+  } else if (moveInDateParam) {
+    params.delete("moveInDate");
+    urlChanged = true;
+  }
+
+  if (filters.showFullHomes) {
+    if (showFullHomesParam !== "true") {
+      params.set("showFullHomes", "true");
+      urlChanged = true;
+    }
+  } else if (showFullHomesParam === "true") {
+    params.delete("showFullHomes");
+    urlChanged = true;
+  }
+
+  if (filters.femaleOnly) {
+    if (femaleOnlyParam !== "true") {
+      params.set("femaleOnly", "true");
+      urlChanged = true;
+    }
+  } else if (femaleOnlyParam === "true") {
+    params.delete("femaleOnly");
+    urlChanged = true;
+  }
+
+  return { params, urlChanged };
+}
+
+function useHomesSearchFilters(
+  properties: Property[],
+  locations: Location[]
+) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -30,96 +187,35 @@ export const PropertyBrowser = ({
   const minBudgetParam = searchParams.get("minBudget");
   const maxBudgetParam = searchParams.get("maxBudget");
   const moveInDateParam = searchParams.get("moveInDate") || "";
-  const showAvailableParam = searchParams.get("showAvailable");
+  const showFullHomesParam = searchParams.get("showFullHomes");
   const femaleOnlyParam = searchParams.get("femaleOnly");
   const isSyncingFromUrl = useRef(false);
 
-  /* 
-    This robust replacement handles the multi-select logic for locations. 
-    It parses comma-separated location names from the URL into location IDs, 
-    updates the URL with comma-separated names when filters change, 
-    and filters properties based on the selected location IDs.
-  */
-
   // Find location ID from location name
   const locationIdsFromUrl = useMemo(() => {
-    if (!locationNameParam) return [];
-    
-    // Split by comma and trim
-    const names = decodeURIComponent(locationNameParam)
-      .split(",")
-      .map(n => n.trim().toLowerCase())
-      .filter(n => n.length > 0);
-      
-    if (names.length === 0) return [];
-
-    const ids: string[] = [];
-    names.forEach(name => {
-      const location = locations.find(
-        (loc) => loc.fieldData.name.toLowerCase().trim() === name
-      );
-      if (location) {
-        ids.push(location.id);
-      }
-    });
-    
-    return ids;
+    return parseLocationIdsFromParam(locationNameParam, locations);
   }, [locationNameParam, locations]);
 
   // Initialize filters from URL params
-  const initialFilters = useMemo<SearchFilters>(() => {
-    let minBudget = 0;
-    let maxBudget = Infinity;
-
-    if (minBudgetParam) {
-      const parsed = parseInt(minBudgetParam, 10);
-      if (!isNaN(parsed)) minBudget = parsed;
-    }
-
-    if (maxBudgetParam) {
-      const parsed = parseInt(maxBudgetParam, 10);
-      if (!isNaN(parsed)) maxBudget = parsed;
-    }
-
-    const showAvailable =
-      showAvailableParam === null ? true : showAvailableParam === "true";
-
-    const femaleOnly = femaleOnlyParam === "true";
-
-    return {
-      minBudget,
-      maxBudget,
-      locationIds: locationIdsFromUrl,
-      moveInDate: moveInDateParam,
-      showAvailable,
-      femaleOnly,
-    };
-  }, [
-    locationIdsFromUrl,
-    minBudgetParam,
-    maxBudgetParam,
-    moveInDateParam,
-    showAvailableParam,
-    femaleOnlyParam,
-  ]);
+  const initialFilters = useMemo<SearchFilters>(
+    () => parseFiltersFromSearchParams(searchParams, locations),
+    // NOTE: searchParams is stable per navigation state; keep behavior consistent with prior deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [locationIdsFromUrl, minBudgetParam, maxBudgetParam, moveInDateParam, showFullHomesParam, femaleOnlyParam, locations]
+  );
 
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
 
-  // Create a map: locationId -> locationName
-  const locationNameMap = useMemo(
-    () => new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
-    [locations]
-  );
+  const { locationNameMap, locationMap } = useLocationMaps(locations);
 
   // Sync filters state when URL param changes (external navigation)
   useEffect(() => {
     const urlFilters: Partial<SearchFilters> = {};
     let hasChanges = false;
 
-    // Check location
-    // Simple array equality check (assuming order doesn't matter much or is stable enough for this check)
-    const currentUrlIds = locationIdsFromUrl.sort().join(",");
-    const currentFilterIds = (filters.locationIds || []).sort().join(",");
+    // Check location (compare sorted copies to avoid mutating state)
+    const currentUrlIds = [...locationIdsFromUrl].sort().join(",");
+    const currentFilterIds = [...(filters.locationIds || [])].sort().join(",");
     
     if (currentUrlIds !== currentFilterIds) {
       urlFilters.locationIds = locationIdsFromUrl;
@@ -154,11 +250,10 @@ export const PropertyBrowser = ({
       hasChanges = true;
     }
 
-    // Check showAvailable
-    const urlShowAvailable =
-      showAvailableParam === null ? true : showAvailableParam === "true";
-    if (urlShowAvailable !== filters.showAvailable) {
-      urlFilters.showAvailable = urlShowAvailable;
+    // Check showFullHomes
+    const urlShowFullHomes = showFullHomesParam === "true";
+    if (urlShowFullHomes !== filters.showFullHomes) {
+      urlFilters.showFullHomes = urlShowFullHomes;
       hasChanges = true;
     }
 
@@ -182,7 +277,7 @@ export const PropertyBrowser = ({
     minBudgetParam,
     maxBudgetParam,
     moveInDateParam,
-    showAvailableParam,
+    showFullHomesParam,
     femaleOnlyParam,
   ]);
 
@@ -193,86 +288,12 @@ export const PropertyBrowser = ({
       isSyncingFromUrl.current = false;
       return;
     }
-
-    const params = new URLSearchParams(searchParams.toString());
-    let urlChanged = false;
-
-    // Update location
-    const selectedIds = filters.locationIds || [];
-    const locationNames: string[] = [];
-    
-    selectedIds.forEach(id => {
-        const name = locationNameMap.get(id);
-        if (name) locationNames.push(name);
+ 
+    const { params, urlChanged } = serializeFiltersToSearchParams({
+      filters,
+      searchParams,
+      locationNameMap,
     });
-    
-    const newLocationParam = locationNames.join(",");
-    const urlLocationParam = locationNameParam ? decodeURIComponent(locationNameParam) : "";
-    
-    // Check if changed (simple string comparison works if order matches, but let's be safe?)
-    // Actually, let's just update if the serialized string is different.
-    if (newLocationParam && newLocationParam !== urlLocationParam) {
-        params.set("location", encodeURIComponent(newLocationParam));
-        urlChanged = true;
-    } else if (!newLocationParam && urlLocationParam) {
-        params.delete("location");
-        urlChanged = true;
-    }
-    
-    // Update minBudget
-    if (filters.minBudget !== 0) {
-      if (minBudgetParam !== filters.minBudget.toString()) {
-        params.set("minBudget", filters.minBudget.toString());
-        urlChanged = true;
-      }
-    } else if (minBudgetParam) {
-      params.delete("minBudget");
-      urlChanged = true;
-    }
-
-    // Update maxBudget
-    if (filters.maxBudget !== Infinity) {
-      if (maxBudgetParam !== filters.maxBudget.toString()) {
-        params.set("maxBudget", filters.maxBudget.toString());
-        urlChanged = true;
-      }
-    } else if (maxBudgetParam) {
-      params.delete("maxBudget");
-      urlChanged = true;
-    }
-
-    // Update moveInDate
-    if (filters.moveInDate) {
-      if (moveInDateParam !== filters.moveInDate) {
-        params.set("moveInDate", filters.moveInDate);
-        urlChanged = true;
-      }
-    } else if (moveInDateParam) {
-      params.delete("moveInDate");
-      urlChanged = true;
-    }
-
-    // Update showAvailable
-    if (filters.showAvailable !== true) {
-      if (showAvailableParam !== "false") {
-        params.set("showAvailable", "false");
-        urlChanged = true;
-      }
-    } else if (showAvailableParam === "false") {
-      params.delete("showAvailable");
-      urlChanged = true;
-    }
-
-    // Update femaleOnly
-    if (filters.femaleOnly) {
-      if (femaleOnlyParam !== "true") {
-        params.set("femaleOnly", "true");
-        urlChanged = true;
-      }
-    } else if (femaleOnlyParam === "true") {
-      params.delete("femaleOnly");
-      urlChanged = true;
-    }
 
     if (urlChanged) {
       const newUrl = params.toString()
@@ -285,7 +306,7 @@ export const PropertyBrowser = ({
     filters.minBudget,
     filters.maxBudget,
     filters.moveInDate,
-    filters.showAvailable,
+    filters.showFullHomes,
     filters.femaleOnly,
     locationNameMap,
     pathname,
@@ -295,14 +316,9 @@ export const PropertyBrowser = ({
     minBudgetParam,
     maxBudgetParam,
     moveInDateParam,
-    showAvailableParam,
+    showFullHomesParam,
     femaleOnlyParam,
   ]);
-
-  const locationMap = useMemo(
-    () => new Map(locations.map((loc) => [loc.id, loc.fieldData.name])),
-    [locations]
-  );
 
   // Sort locations alphabetically A -> Z
   const sortedLocations = useMemo(
@@ -314,6 +330,7 @@ export const PropertyBrowser = ({
 
   const filteredProperties = useMemo(() => {
     return properties.filter((property) => {
+      if (!isPropertyActive(property)) return false;
       // do not show upcoming properties
       if (property.fieldData["is-upcoming"]) {
         return false;
@@ -336,8 +353,8 @@ export const PropertyBrowser = ({
         return false;
       }
 
-      // Filter by Availability
-      if (filters.showAvailable && !property.fieldData.available) {
+      // Filter by Full Homes
+      if (filters.showFullHomes && !property.fieldData["full-house-available"]) {
         return false;
       }
 
@@ -358,8 +375,52 @@ export const PropertyBrowser = ({
       }
 
       return true;
-    }).sort(sortProperties);
+    }).sort(sortByAvailabilityThenRank);
   }, [properties, filters]);
+
+  // Track filter changes for preference analysis (skip initial mount / URL hydration)
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    trackSearchFiltersChanged({
+      min_budget: filters.minBudget,
+      max_budget: filters.maxBudget === Infinity ? Number.MAX_SAFE_INTEGER : filters.maxBudget,
+      location_ids: filters.locationIds ?? [],
+      location_names: (filters.locationIds ?? []).map((id) => locationNameMap.get(id)).filter(Boolean) as string[],
+      move_in_date: filters.moveInDate ?? "",
+      female_only: filters.femaleOnly,
+      show_full_homes: filters.showFullHomes,
+      result_count: filteredProperties.length,
+    });
+  }, [filters, filteredProperties.length, locationNameMap]);
+
+  return {
+    filters,
+    setFilters,
+    filteredProperties,
+    locationMap,
+    sortedLocations,
+    searchParams,
+  };
+}
+
+export const PropertyBrowser = ({
+  properties,
+  locations,
+  rooms = [],
+  occupants = [],
+}: PropertyBrowserProps) => {
+  const {
+    filters,
+    setFilters,
+    filteredProperties,
+    locationMap,
+    sortedLocations,
+    searchParams,
+  } = useHomesSearchFilters(properties, locations);
 
   return (
     <>
@@ -392,6 +453,15 @@ export const PropertyBrowser = ({
                   key={property.id}
                   href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
                   className="block h-full"
+                  onClick={() =>
+                    trackPropertyCardClick({
+                      property_slug: property.fieldData.slug,
+                      property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+                      property_area: locationName,
+                      page_section: "search",
+                      cta_id: CTA_IDS.PROPERTY_CARD,
+                    })
+                  }
                 >
                   <PropertyCard
                     property={property}
@@ -403,10 +473,16 @@ export const PropertyBrowser = ({
               );
             })}
             {filteredProperties.length === 0 && (
-              <div className="col-span-full text-center py-20">
-                <p className="text-xl text-text-main/60">
-                  No homes found matching your criteria.
-                </p>
+              <div className="col-span-full">
+                <ComingSoon
+                  properties={properties}
+                  locations={locations}
+                  rooms={rooms}
+                  occupants={occupants}
+                  title="No homes match your filters"
+                  subtitle="Try adjusting your search, or get notified when we launch homes that fit."
+                  newsletterHeading="Want an email when we have homes that match?"
+                />
               </div>
             )}
           </div>

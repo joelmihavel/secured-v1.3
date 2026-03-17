@@ -19,14 +19,17 @@ cta_haralur,implicit,Neighborhood Card - Haralur,/,click
 cta_hsr_layout,implicit,Neighborhood Card - HSR Layout,/,click
 cta_whitefield,implicit,Neighborhood Card - Whitefield,/,click
 cta_sarjapura_road,implicit,Neighborhood Card - Sarjapura Road,/,click
-cta_property_card,implicit,Property Listing Card,/,click
+cta_property_card,implicit,Property Listing Card (sends property_card_clicked with property_type: discounted | standard),/ and /homes and /collections/hsr and more options,click
+property_card_clicked,event,"User clicked a property card. Properties: property_slug property_type (discounted | standard) page_section cta_id",/ and /homes and /collections/hsr and more options,click
+property_page_viewed,event,"User viewed a property detail page. Properties: property_slug property_type (discounted | standard)",/homes/[slug],page_view
 cta_view_all_homes,implicit,View All Homes Link,/,click
 cta_homes_carousel_prev,implicit,Homes Carousel Previous,/,click
 cta_homes_carousel_next,implicit,Homes Carousel Next,/,click
 cta_search_location_toggle,implicit,Filter Location Toggle,/homes,click
-cta_search_available_toggle,implicit,Filter Availability Toggle,/homes,click
 cta_search_female_toggle,implicit,Filter Female Only Toggle,/homes,click
+cta_search_full_homes_toggle,implicit,Filter Show Full Homes Toggle,/homes,click
 cta_search_reset,implicit,Filter Reset,/homes,click
+search_filters_changed,event,"Homes search filters changed. Payload: min_budget max_budget location_ids location_names move_in_date female_only show_full_homes result_count",/homes,filter_change
 cta_show_available_rooms,implicit,Header Show Available Rooms,/homes/[slug],click
 cta_watch_a_video,implicit,Header Watch a Video,/homes/[slug],click
 cta_header_book_tour,implicit,Property Header Scroll to Book,/homes/[slug],click

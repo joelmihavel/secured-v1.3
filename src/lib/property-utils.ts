@@ -1,5 +1,28 @@
 import { Property, Room } from "@/lib/webflow";
 
+/**
+ * TEMPORARY: We originally filtered properties using an `Active` boolean from Webflow:
+ * `property.fieldData.Active === true`.
+ *
+ * However, the current Webflow response for the Properties collection does not
+ * include an `Active` field at all (only `available`, `is-upcoming`, etc.).
+ * That meant this check was filtering out every property locally even though
+ * data exists in CMS and on the live site.
+ *
+ * Until the CMS is updated to add/populate an `Active` field (and this function
+ * is wired back to it), we intentionally treat all properties as "active" here
+ * so that local and production behaviour match.
+ *
+ * When you add the `Active` field in Webflow, restore the strict check below:
+ *
+ *   return property.fieldData.Active === true;
+ */
+export function isPropertyActive(property: Property): boolean {
+  // Temporarily disable the strict Active flag check.
+  // See the detailed explanation in the comment above.
+  return true;
+}
+
 export interface PhotoCategory {
     name: string;
     images: string[];
@@ -188,25 +211,67 @@ export const formatCurrency = (amount: number | null | undefined) => {
     }).format(amount);
 };
 
+function getPropertyDiscountContext(property: Property, allRooms: Room[]) {
+    const isDiscounted = Boolean(
+        property.fieldData["apply-discount"] &&
+        property.fieldData["discount"]
+    );
 
-export function getDiscountSavings(property: Property, allRooms: Room[]): number {
-    if (!property.fieldData["apply-discount"] || !property.fieldData["discount"]) {
-        return 0;
-    }
+    const discountPercent = isDiscounted ? (Number(property.fieldData["discount"]) || 0) : 0;
 
     const propertyRoomIds = property.fieldData.rooms || [];
     const propertyRooms = allRooms.filter((r) => propertyRoomIds.includes(r.id));
 
-    if (propertyRooms.length === 0) return 0;
+    const highestRoomRentAny =
+        propertyRooms.length === 0
+            ? 0
+            : Math.max(...propertyRooms.map((r) => Number(r.fieldData["room-rent"]) || 0));
 
-    const highestRoomRent = Math.max(
-        ...propertyRooms.map((r) => Number(r.fieldData["room-rent"]) || 0)
-    );
+    const availableRooms = propertyRooms.filter((r) => r.fieldData.available);
+    const highestRoomRentAvailable =
+        availableRooms.length === 0
+            ? 0
+            : Math.max(...availableRooms.map((r) => Number(r.fieldData["room-rent"]) || 0));
 
-    if (highestRoomRent === 0) return 0;
+    return {
+        isDiscounted,
+        discountPercent,
+        highestRoomRentAny,
+        highestRoomRentAvailable,
+    };
+}
 
-    const discountPercent = Number(property.fieldData["discount"]) || 0;
-    return Math.round(highestRoomRent * (discountPercent / 100));
+export function propertyHasDiscount(property: Property): boolean {
+    // NOTE: propertyHasDiscount intentionally does not depend on rooms.
+    return getPropertyDiscountContext(property, []).isDiscounted;
+}
+
+/**
+ * Savings (₹) for the discount ribbon: property discount % applied to the
+ * direct room price (room-rent) of the most expensive *available* room.
+ * Lock-in is not used.
+ */
+export function getRibbonDiscountSavings(property: Property, allRooms: Room[]): number {
+    const ctx = getPropertyDiscountContext(property, allRooms);
+    if (!ctx.isDiscounted) return 0;
+    if (ctx.highestRoomRentAvailable === 0) return 0;
+    return Math.round(ctx.highestRoomRentAvailable * (ctx.discountPercent / 100));
+}
+
+export function getDiscountEndDateFormatted(property: Property): string | null {
+    const raw = property.fieldData["discount-end-date"];
+    if (!raw) return null;
+    return new Date(raw as string).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+    });
+}
+
+export function getDiscountSavings(property: Property, allRooms: Room[]): number {
+    const ctx = getPropertyDiscountContext(property, allRooms);
+    if (!ctx.isDiscounted) return 0;
+    if (ctx.highestRoomRentAny === 0) return 0;
+    return Math.round(ctx.highestRoomRentAny * (ctx.discountPercent / 100));
 }
 
 export const sortProperties = (a: Property, b: Property): number => {
@@ -248,4 +313,11 @@ export const sortProperties = (a: Property, b: Property): number => {
     }
 
     return 0;
+};
+
+export const sortByAvailabilityThenRank = (a: Property, b: Property): number => {
+    const aAvailable = Boolean(a.fieldData.available);
+    const bAvailable = Boolean(b.fieldData.available);
+    if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
+    return sortProperties(a, b);
 };

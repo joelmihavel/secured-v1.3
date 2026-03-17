@@ -6,7 +6,7 @@ import { Neighborhoods } from "./sections/Neighborhoods";
 import { Community } from "./sections/Community";
 import { ComingSoon } from "./sections/ComingSoon";
 import { getCollectionItems, COLLECTIONS, Property, Location, Room, Occupant } from "@/lib/webflow";
-
+import { isPropertyActive } from "@/lib/property-utils";
 import { AsSeenIn } from "@/components/layout/AsSeenIn";
 
 export default async function Home() {
@@ -18,6 +18,7 @@ export default async function Home() {
     getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
   ]);
 
+  const activeProperties = properties.filter(isPropertyActive);
 
   return (
     <main className="min-h-screen bg-bg-white flex flex-col gap-12">
@@ -26,7 +27,7 @@ export default async function Home() {
       <Homes properties={properties} locations={locations} rooms={rooms} occupants={occupants} />
       <Info />
       <MarqueeSection />
-      <Neighborhoods locations={locations} properties={properties} />
+      <Neighborhoods locations={locations} properties={activeProperties} />
       <Community />
       <ComingSoon properties={properties} locations={locations} rooms={rooms} occupants={occupants} />
     </main>

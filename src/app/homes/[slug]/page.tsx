@@ -7,8 +7,16 @@ import {
   Amenity,
   Room,
   Occupant,
+  WEBFLOW_BACKGROUND_COLOUR_MAP,
 } from "@/lib/webflow";
-import { getPropertyImagesData } from "@/lib/property-utils";
+import {
+  getPropertyImagesData,
+  propertyHasDiscount,
+  isPropertyActive,
+  getRibbonDiscountSavings,
+  getDiscountEndDateFormatted,
+} from "@/lib/property-utils";
+import { PropertyPageViewTracker } from "./PropertyPageViewTracker";
 import { Header } from "./sections/Header";
 import { RoomSelection } from "./sections/RoomSelection";
 import { Neighborhood } from "./sections/Neighborhood";
@@ -18,11 +26,14 @@ import { FAQ } from "./sections/FAQ";
 import { MoreOptions } from "./sections/MoreOptions";
 import { MarqueeSection } from "@/app/(Homepage)/sections/MarqueeSection";
 import { BottomNavigation } from "@/components/ui/BottomNavigation";
+import { DrawerOpenProvider } from "@/context/DrawerOpenContext";
 import { BreadcrumbSetter } from "@/components/utils/BreadcrumbSetter";
 import { Amenities } from "./sections/Amenities";
 import { HowItWorks } from "./sections/HowItWorks";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Marquee } from "@/components/ui/Marquee";
+import { buildPropertyPageContext } from "./buildPropertyPageContext";
 
 const baseTitle = "Flent | India's New Standard of Renting";
 const baseDescription =
@@ -30,7 +41,8 @@ const baseDescription =
 
 export async function generateStaticParams() {
   const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
-  return properties.map((property) => ({
+  const activeProperties = properties.filter(isPropertyActive);
+  return activeProperties.map((property) => ({
     slug: property.fieldData.slug,
   }));
 }
@@ -44,7 +56,8 @@ export async function generateMetadata({
 
   try {
     const properties = await getCollectionItems<Property>(COLLECTIONS.PROPERTIES);
-    const property = properties.find((p) => p.fieldData.slug === slug);
+    const activeProperties = properties.filter(isPropertyActive);
+    const property = activeProperties.find((p) => p.fieldData.slug === slug);
 
     if (!property) {
       return {
@@ -106,63 +119,154 @@ export default async function PropertyPage({
       getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
     ]);
 
-  const property = properties.find((p) => p.fieldData.slug === slug);
+  const ctx = buildPropertyPageContext({
+    slug,
+    properties,
+    locations,
+    reviews,
+    amenities: allAmenities,
+    rooms: allRooms,
+    occupants: allOccupants,
+  });
 
-  if (!property) {
+  if (!ctx.property || !ctx.isValidProperty) {
     notFound();
   }
 
-  const location = locations.find((l) => l.id === property.fieldData.location);
-
-  // Filter amenities for this property
-  const propertyAmenityIds = property.fieldData.amenities || [];
-  const propertyAmenities = allAmenities.filter((amenity) =>
-    propertyAmenityIds.includes(amenity.id)
-  );
-
-  // Filter rooms for this property
-  const propertyRoomIds = property.fieldData.rooms || [];
-  const propertyRooms = allRooms.filter((room) =>
-    propertyRoomIds.includes(room.id)
-  );
-
-  // Pass all occupants - the components lookup occupants using room.fieldData.occupant
-  // (room -> occupant direction) which is the source of truth.
-  // Filtering by occupant.fieldData.room creates mismatches since bidirectional refs in Webflow aren't consistent.
-  const propertyOccupants = allOccupants;
-
-  // Filter properties in the same neighborhood (excluding current property)
-  const neighborhoodProperties = properties.filter(
-    (p) =>
-      p.fieldData.location === location?.id &&
-      p.id !== property.id &&
-      p.fieldData["is-upcoming"] === false
-  );
-
-  // Calculate image data for the property
-  const { allImages, photoCategories } = getPropertyImagesData(
+  const {
     property,
-    propertyRooms
-  );
+    location,
+    propertyAmenities,
+    propertyRooms,
+    propertyOccupants,
+    neighborhoodProperties,
+    allImages,
+    photoCategories,
+    propertyType,
+    hasDiscount,
+    discountSavings,
+    discountEndDate,
+    marqueeStarFill,
+  } = ctx;
 
   return (
+    <DrawerOpenProvider>
     <main className="min-h-screen bg-bg-white flex flex-col gap-12">
+      <PropertyPageViewTracker
+        propertySlug={slug}
+        propertyType={propertyType}
+        propertyArea={location?.fieldData.name}
+      />
       {location && (
         <BreadcrumbSetter
           neighborhoodName={location.fieldData.name}
           neighborhoodId={location.id}
         />
       )}
-      <section id="overview">
-        <Header
-        rooms={propertyRooms}
-          property={property}
-          amenities={propertyAmenities}
-          allImages={allImages}
-          photoCategories={photoCategories}
-          locationName={location?.fieldData.name}
-        />
-      </section>
+      <div className="flex flex-col gap-0">
+        <section id="overview">
+          <Header
+          rooms={propertyRooms}
+            property={property}
+            amenities={propertyAmenities}
+            allImages={allImages}
+            photoCategories={photoCategories}
+            locationName={location?.fieldData.name}
+          />
+        </section>
+
+        {hasDiscount && discountSavings > 0 && (
+          <section aria-label="Discount offer marquee" className="bg-bg-white">
+            <div className="border-y border-text-main py-3">
+              <Marquee
+                className="gap-4 items-center"
+                duration={20}
+              >
+              {/* Leading star separator */}
+              <div className="mx-2 inline-flex items-center justify-center w-10 h-10 rounded-full animate-spin [animation-duration:25s] [animation-timing-function:linear] md:[animation-duration:20s]">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    stroke: "var(--color-text-main)",
+                    fill: "var(--color-forest-green)",
+                  }}
+                >
+                  <path
+                    d="M12 2.5L14.9443 8.27179L21.25 9.20871L16.625 13.5718L17.7639 19.7913L12 16.875L6.23607 19.7913L7.375 13.5718L2.75 9.20871L9.05573 8.27179L12 2.5Z"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              {/* Content 1 */}
+              <div className="px-2 text-text-main font-heading text-subtitle-xl md:text-fluid-h4 whitespace-nowrap">
+                Early Bird Discount
+              </div>
+
+              {/* Star separator */}
+              <div className="mx-2 inline-flex items-center justify-center w-10 h-10 rounded-full animate-spin [animation-duration:25s] [animation-timing-function:linear] md:[animation-duration:20s]">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    stroke: "var(--color-text-main)",
+                    fill: "var(--color-forest-green)",
+                  }}
+                >
+                  <path
+                    d="M12 2.5L14.9443 8.27179L21.25 9.20871L16.625 13.5718L17.7639 19.7913L12 16.875L6.23607 19.7913L7.375 13.5718L2.75 9.20871L9.05573 8.27179L12 2.5Z"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              {/* Content 2 */}
+              <div className="px-2 text-text-main font-heading text-subtitle-xl md:text-fluid-h4 whitespace-nowrap">
+                Save up to ₹{discountSavings.toLocaleString("en-IN")} every month
+              </div>
+
+              {/* Star separator */}
+              <div className="mx-2 inline-flex items-center justify-center w-10 h-10 rounded-full animate-spin [animation-duration:25s] [animation-timing-function:linear] md:[animation-duration:20s]">
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    stroke: "var(--color-text-main)",
+                    fill: "var(--color-forest-green)",
+                  }}
+                >
+                  <path
+                    d="M12 2.5L14.9443 8.27179L21.25 9.20871L16.625 13.5718L17.7639 19.7913L12 16.875L6.23607 19.7913L7.375 13.5718L2.75 9.20871L9.05573 8.27179L12 2.5Z"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              {/* Content 3 */}
+              <div className="px-2 text-text-main font-heading text-subtitle-xl md:text-fluid-h4 whitespace-nowrap">
+                Book before {discountEndDate ?? "the offer ends"} to avail
+              </div>
+              </Marquee>
+            </div>
+          </section>
+        )}
+      </div>
 
       <section id="rooms">
         <RoomSelection
@@ -179,8 +283,6 @@ export default async function PropertyPage({
         <Amenities
           property={property}
           amenities={propertyAmenities}
-          allImages={allImages}
-          slug={slug}
         />
       </section>
 
@@ -211,13 +313,14 @@ export default async function PropertyPage({
       </section>
 
       <MoreOptions 
-        properties={properties} 
+        properties={properties.filter(isPropertyActive)} 
         currentPropertyId={property.id}
         rooms={allRooms}
         occupants={allOccupants}
       />
 
-      <BottomNavigation property={property} showCallButton />
+      <BottomNavigation property={property} />
     </main>
+    </DrawerOpenProvider>
   );
 }

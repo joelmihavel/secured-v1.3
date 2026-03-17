@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Property, Room, Occupant } from "@/lib/webflow";
-import { getDiscountSavings } from "@/lib/property-utils";
+import { getDiscountSavings, propertyHasDiscount } from "@/lib/property-utils";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { Button } from "@/components/ui/Button";
 import { Info, InfoStat } from "@/app/(Homepage)/sections/Info";
 import { CTA_IDS } from "@/lib/cta-ids";
+import { trackPropertyCardClick } from "@/lib/posthog-tracking";
 
 const INITIAL_VISIBLE = 4;
 const LOAD_MORE_COUNT = 3;
@@ -55,6 +56,14 @@ export const HSRPropertyGrid = ({
         key={property.id}
         href={`/homes/${property.fieldData.slug}`}
         className="block h-full"
+        onClick={() =>
+          trackPropertyCardClick({
+            property_slug: property.fieldData.slug,
+            property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+            page_section: "campaign_hsr",
+            cta_id: CTA_IDS.PROPERTY_CARD,
+          })
+        }
       >
         <div className="flex flex-col h-full">
           <PropertyCard
@@ -62,7 +71,6 @@ export const HSRPropertyGrid = ({
             locationName="HSR Layout"
             rooms={rooms}
             occupants={occupants}
-            showCampaignRibbon
           />
           {savings > 0 && (
             <div className="bg-pastel-green border border-t-0 border-text-main rounded-b-xl px-4 py-2 text-center -mt-px">

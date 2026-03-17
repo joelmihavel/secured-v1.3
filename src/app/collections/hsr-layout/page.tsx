@@ -6,12 +6,12 @@ import {
   Room,
   Occupant,
 } from "@/lib/webflow";
-import { sortProperties } from "@/lib/property-utils";
+import { sortProperties, isPropertyActive } from "@/lib/property-utils";
 import { CampaignHero } from "./CampaignHero";
 import { CampaignListBanner } from "./CampaignListBanner";
 import { HSRPropertyGrid } from "./HSRPropertyGrid";
 import { HSRHowItWorks } from "./HSRHowItWorks";
-import { CampaignBottomNav } from "./CampaignBottomNav";
+import { BottomNavigation } from "@/components/ui/BottomNavigation";
 import { AsSeenIn } from "@/components/layout/AsSeenIn";
 import { Neighborhoods } from "@/app/(Homepage)/sections/Neighborhoods";
 import type { Metadata } from "next";
@@ -47,11 +47,12 @@ export default async function HSRLayoutCampaignPage() {
     getCollectionItems<Occupant>(COLLECTIONS.OCCUPANTS),
   ]);
 
+  const activeProperties = properties.filter(isPropertyActive);
   const hsrLocation = locations.find(
     (l) => l.fieldData.slug === HSR_LAYOUT_SLUG
   );
 
-  const hsrProperties = properties.filter(
+  const hsrProperties = activeProperties.filter(
     (p) =>
       hsrLocation &&
       p.fieldData.location === hsrLocation.id &&
@@ -82,9 +83,9 @@ export default async function HSRLayoutCampaignPage() {
         <AsSeenIn />
       </section>
       <HSRHowItWorks />
-      <Neighborhoods locations={locations} properties={properties} />
+      <Neighborhoods locations={locations} properties={activeProperties} />
 
-      <CampaignBottomNav />
+      <BottomNavigation />
     </main>
   );
 }

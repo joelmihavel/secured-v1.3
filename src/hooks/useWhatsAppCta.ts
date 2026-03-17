@@ -3,6 +3,10 @@
 import { useCallback } from "react";
 import { useMobile } from "@/hooks/useMobile";
 import { openChat } from "@/lib/open-chat";
+import {
+  trackWhatsAppCtaClicked,
+  WhatsAppCtaSource,
+} from "@/lib/posthog-tracking";
 
 /**
  * Props to spread onto a Button (or <a>) that opens WhatsApp.
@@ -16,12 +20,21 @@ export interface WhatsAppCtaProps {
   onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 
+export interface WhatsAppTrackingContext {
+  source: WhatsAppCtaSource;
+  propertySlug?: string;
+  propertyName?: string;
+  propertyArea?: string;
+  ctaId?: string;
+}
+
 /**
  * Hook for WhatsApp / "Talk to us" / "Get a Call Back" CTAs.
  * Returns href, target, rel, and onClick so you can spread onto <Button href={...} />.
  * Use with data-cta-id and data-cta-context for PostHog tracking (Button tracks the click).
  *
  * @param url - WhatsApp URL (e.g. from getPropertyWhatsappLink or WHATSAPP_LINK)
+ * @param tracking - Optional tracking context for whatsapp_cta_clicked
  * @returns Props to spread onto Button: href, target, rel, onClick
  *
  * @example
@@ -30,17 +43,31 @@ export interface WhatsAppCtaProps {
  *     Chat with us
  *   </Button>
  */
-export function useWhatsAppCta(url: string): WhatsAppCtaProps {
+export function useWhatsAppCta(
+  url: string,
+  tracking?: WhatsAppTrackingContext
+): WhatsAppCtaProps {
   const isMobile = useMobile();
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (tracking) {
+        trackWhatsAppCtaClicked({
+          source: tracking.source,
+          page_location: undefined,
+          property_slug: tracking.propertySlug,
+          property_name: tracking.propertyName,
+          property_area: tracking.propertyArea,
+          cta_id: tracking.ctaId,
+        });
+      }
+
       if (!isMobile) {
         e.preventDefault();
         openChat(url);
       }
     },
-    [isMobile, url]
+    [isMobile, url, tracking]
   );
 
   return {

@@ -50,7 +50,10 @@ interface HowItWorksProps {
 
 export const HowItWorks = ({ propertyName }: HowItWorksProps) => {
   const isMobile = useMobile();
-  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName));
+  const whatsAppCta = useWhatsAppCta(getPropertyWhatsappLink(propertyName), {
+    source: "how_it_works",
+    propertyName,
+  });
   return (
     <OpenSection id="how-it-works" className="py-20">
       <div className="container mx-auto px-4 md:px-20">

@@ -31,6 +31,7 @@ export const CTA_IDS = {
   HERO_EXPLORE_HOMES: "hero_explore_homes",
 
   // --- Property card (listing, coming soon) ---
+  PROPERTY_CARD: "cta_property_card",
   VIEW_ON_MAPS_COMING_SOON: "view-on-maps-coming-soon",
   PROPERTY_GET_LAUNCH_INVITE: "property_get_launch_invite",
 
@@ -38,6 +39,7 @@ export const CTA_IDS = {
   CTA_SEARCH_ALL_LOCATIONS: "cta_search_all_locations",
   CTA_SEARCH_AVAILABLE_TOGGLE: "cta_search_available_toggle",
   CTA_SEARCH_FEMALE_TOGGLE: "cta_search_female_toggle",
+  CTA_SEARCH_FULL_HOMES_TOGGLE: "cta_search_full_homes_toggle",
 
   // --- Property detail: Header ---
   SCROLL_TO_MAPS: "scroll_to_maps",
