@@ -18,6 +18,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/renewal-guide",
+        destination: "https://tenant-renewals.vercel.app/",
+      },
+      {
+        source: "/renewal-guide/:path*",
+        destination: "https://tenant-renewals.vercel.app/:path*",
+      },
+    ];
+  },
   async redirects() {
     return [
       {
