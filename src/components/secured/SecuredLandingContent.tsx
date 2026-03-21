@@ -10,7 +10,6 @@ import {
   FAQ,
   DownloadApp,
 } from "@/components/secured";
-import { Navbar } from "@/components/secured/Navbar";
 import { Footer } from "@/components/secured/Footer";
 import { useVariant } from "./VariantContext";
 import {
@@ -49,7 +48,6 @@ export function SecuredLandingContent() {
 
   return (
     <>
-      <Navbar />
       <main className="flex flex-col gap-12 md:gap-0">
         <Hero data={data.hero} variant={variant} />
         <div className="-mt-4 md:mt-[34px]">
