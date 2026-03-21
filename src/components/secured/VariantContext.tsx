@@ -20,13 +20,13 @@ const VariantContext = createContext<{
 export function VariantProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [variant, setVariantState] = useState<Variant>(
-    pathname === "/landlord" ? "landlord" : "tenant"
+    pathname === "/secured/landlord" ? "landlord" : "tenant"
   );
   const [menuOpen, setMenuOpen] = useState(false);
 
   const setVariant = useCallback((v: Variant) => {
     setVariantState(v);
-    const url = v === "landlord" ? "/landlord" : "/";
+    const url = v === "landlord" ? "/secured/landlord" : "/secured";
     window.history.pushState({}, "", url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -34,7 +34,7 @@ export function VariantProvider({ children }: { children: React.ReactNode }) {
   // Handle browser back/forward
   useEffect(() => {
     const handlePopState = () => {
-      setVariantState(window.location.pathname === "/landlord" ? "landlord" : "tenant");
+      setVariantState(window.location.pathname === "/secured/landlord" ? "landlord" : "tenant");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);

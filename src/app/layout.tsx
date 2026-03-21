@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
-import { Navbar } from "@/components/layout/Navbar";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
+import { ConditionalNavbar } from "@/components/layout/ConditionalNavbar";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 
 // Trigger Vercel deploy
 const zin = localFont({
@@ -120,9 +120,9 @@ export default function RootLayout({
           <GoogleMapsProvider>
             <BreadcrumbProvider>
               <ScrollRestoration />
-              <Navbar />
+              <ConditionalNavbar />
               {children}
-              <Footer />
+              <ConditionalFooter />
             </BreadcrumbProvider>
           </GoogleMapsProvider>
         </CSPostHogProvider>
