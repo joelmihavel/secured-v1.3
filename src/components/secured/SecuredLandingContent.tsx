@@ -11,6 +11,7 @@ import {
   DownloadApp,
 } from "@/components/secured";
 import { Navbar } from "@/components/secured/Navbar";
+import { Footer } from "@/components/secured/Footer";
 import { useVariant } from "./VariantContext";
 import {
   HERO_DEFAULTS,
@@ -25,6 +26,7 @@ import {
   FAQ_DEFAULTS,
   FAQ_LANDLORD_DEFAULTS,
   STATS_DEFAULTS,
+  FOOTER_DEFAULTS,
 } from "@/lib/secured/defaults";
 
 export function SecuredLandingContent() {
@@ -65,6 +67,7 @@ export function SecuredLandingContent() {
         <FAQ items={data.faq} />
         <Stats data={STATS_DEFAULTS} />
       </main>
+      <Footer data={FOOTER_DEFAULTS} />
     </>
   );
 }
