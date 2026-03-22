@@ -3,7 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import { Property, Location, Room, Occupant } from "@/lib/webflow";
-import { sortProperties, propertyHasDiscount, isPropertyActive } from "@/lib/property-utils";
+import {
+  sortProperties,
+  propertyHasDiscount,
+  isPropertyActive,
+  isUpcomingProperty,
+} from "@/lib/property-utils";
 import { CardSection } from "@/components/layout/CardSection";
 import { trackPropertyCardClick } from "@/lib/posthog-tracking";
 import { CTA_IDS } from "@/lib/cta-ids";
@@ -40,6 +45,7 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
 
     const sortedProperties = [...properties]
         .filter(isPropertyActive)
+        .filter((p) => !isUpcomingProperty(p))
         .sort(sortProperties)
         .filter(property => {
         // Only show properties that are available or have an available-from date
