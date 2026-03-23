@@ -23,6 +23,11 @@ export function isPropertyActive(property: Property): boolean {
   return true;
 }
 
+/** True when Webflow marks the property as upcoming (excluded from /homes browse and homepage carousel). */
+export function isUpcomingProperty(property: Property): boolean {
+  return Boolean(property.fieldData["is-upcoming"]);
+}
+
 export interface PhotoCategory {
     name: string;
     images: string[];

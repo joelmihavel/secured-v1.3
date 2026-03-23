@@ -9,6 +9,7 @@ import {
   sortByAvailabilityThenRank,
   propertyHasDiscount,
   isPropertyActive,
+  isUpcomingProperty,
 } from "@/lib/property-utils";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
@@ -331,10 +332,7 @@ function useHomesSearchFilters(
   const filteredProperties = useMemo(() => {
     return properties.filter((property) => {
       if (!isPropertyActive(property)) return false;
-      // do not show upcoming properties
-      if (property.fieldData["is-upcoming"]) {
-        return false;
-      }
+      if (isUpcomingProperty(property)) return false;
 
       // Filter by Location
       if (
