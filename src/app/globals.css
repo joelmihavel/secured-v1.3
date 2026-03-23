@@ -364,6 +364,7 @@ h4,
 .secured-page {
   --font-display: "Geist Pixel Triangle", sans-serif;
   --font-body: "Geist Pixel Circle", sans-serif;
+  --font-ui: "Plus Jakarta Sans", var(--font-plus-jakarta-sans), sans-serif;
   background-color: #131313;
   color: #E0E0E0;
   font-family: "Geist Pixel Circle", sans-serif;
