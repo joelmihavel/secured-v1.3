@@ -33,7 +33,7 @@ export function Hero() {
       </p>
 
       {/* Qualification pills */}
-      <div className="animate-fade-up-delay-2 flex flex-wrap gap-3">
+      <div className="animate-fade-up-delay-2 grid grid-cols-3 gap-3">
         {qualificationPills.map((pill) => (
           <button
             key={pill.label}
