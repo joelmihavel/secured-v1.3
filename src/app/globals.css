@@ -196,36 +196,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1:not(.secured-page *),
-h2:not(.secured-page *),
-h3:not(.secured-page *),
-h4:not(.secured-page *),
-h5:not(.secured-page *),
-h6:not(.secured-page *),
-.font-heading:not(.secured-page *) {
+h1:not(.secured-page *):not(.home-concierge-page *),
+h2:not(.secured-page *):not(.home-concierge-page *),
+h3:not(.secured-page *):not(.home-concierge-page *),
+h4:not(.secured-page *):not(.home-concierge-page *),
+h5:not(.secured-page *):not(.home-concierge-page *),
+h6:not(.secured-page *):not(.home-concierge-page *),
+.font-heading:not(.secured-page *):not(.home-concierge-page *) {
   font-weight: 600;
 }
 
-h1:not(.secured-page *),
-.text-fluid-h1:not(.secured-page *) {
+h1:not(.secured-page *):not(.home-concierge-page *),
+.text-fluid-h1:not(.secured-page *):not(.home-concierge-page *) {
   font-size: clamp(2.5rem, 4vw + 0.5rem, 3.5rem);
   line-height: 1.1;
 }
 
-h2:not(.secured-page *),
-.text-fluid-h2:not(.secured-page *) {
+h2:not(.secured-page *):not(.home-concierge-page *),
+.text-fluid-h2:not(.secured-page *):not(.home-concierge-page *) {
   font-size: clamp(2rem, 3vw + 0.5rem, 3rem);
   line-height: 1.1;
 }
 
-h3:not(.secured-page *),
-.text-fluid-h3:not(.secured-page *) {
+h3:not(.secured-page *):not(.home-concierge-page *),
+.text-fluid-h3:not(.secured-page *):not(.home-concierge-page *) {
   font-size: clamp(1.5rem, 2vw + 0.5rem, 2rem);
   line-height: 1.2;
 }
 
-h4:not(.secured-page *),
-.text-fluid-h4:not(.secured-page *) {
+h4:not(.secured-page *):not(.home-concierge-page *),
+.text-fluid-h4:not(.secured-page *):not(.home-concierge-page *) {
   font-size: clamp(1.25rem, 1.5vw + 0.25rem, 1.5rem);
   line-height: 1.3;
 }
@@ -523,4 +523,83 @@ body:has(.secured-page) {
 
 .animate-marquee {
   animation: marquee 20s linear infinite;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Home Concierge Page — Flent Brand Tokens & Animations
+   All styles are scoped to .home-concierge-page so they
+   don't affect any other page.
+───────────────────────────────────────────────────────── */
+
+@theme inline {
+  --color-flent-green: #008E75;
+  --color-flent-dark: #1A1A1A;
+  --color-flent-red: #C64747;
+  --color-flent-violet: #614ECE;
+  --color-flent-orange: #FFA37B;
+  --color-flent-yellow: #FFE98A;
+  --color-flent-cream: #FAF8F5;
+  --color-flent-brown: #7F5639;
+  --color-flent-pastel-green: #C0E3DC;
+  --color-flent-pastel-orange: #FFE2D8;
+  --color-flent-pastel-violet: #DAD7F4;
+}
+
+.home-concierge-page {
+  /* Override border colour from site default (dark) to warm light grey */
+  --color-border: #E5E0D8;
+  --border: #E5E0D8;
+  /* Playfair Display loaded via next/font in the page component */
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  background-color: #FAF8F5;
+}
+
+/* Ticker */
+@keyframes hc-ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker { animation: hc-ticker-scroll 30s linear infinite; }
+
+/* Fade-up entrance */
+@keyframes hc-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up            { animation: hc-fade-up 0.6s ease-out both; }
+.animate-fade-up-delay-1    { animation: hc-fade-up 0.6s ease-out 0.1s both; }
+.animate-fade-up-delay-2    { animation: hc-fade-up 0.6s ease-out 0.2s both; }
+.animate-fade-up-delay-3    { animation: hc-fade-up 0.6s ease-out 0.3s both; }
+
+/* Pulse dot */
+@keyframes hc-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.5); }
+}
+.animate-pulse-dot { animation: hc-pulse-dot 2s ease-in-out infinite; }
+
+/* Form attention shake + glow */
+@keyframes hc-form-shake {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-4px); }
+  30%  { transform: translateX(4px); }
+  45%  { transform: translateX(-4px); }
+  60%  { transform: translateX(4px); }
+  75%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+@keyframes hc-form-glow {
+  0%   { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  40%  { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 8px rgba(0,142,117,0.3); }
+  100% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+}
+.hc-form-card.attention {
+  animation: hc-form-shake 0.4s ease, hc-form-glow 0.8s ease;
+}
+
+/* Input focus ring */
+.hc-flent-input:focus {
+  border-color: #008E75;
+  box-shadow: 0 0 0 3px rgba(0, 142, 117, 0.1);
+  outline: none;
 }
