@@ -1,4 +1,4 @@
-import { Armchair, ChefHat, Wifi, Wrench, BadgeCheck, DoorOpen } from "lucide-react"
+import { Armchair, ChefHat, ConciergeBell, Wrench, BadgeCheck, DoorOpen } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 interface Feature {
@@ -25,7 +25,7 @@ const features: Feature[] = [
     iconColor: "text-flent-orange",
   },
   {
-    icon: Wifi,
+    icon: ConciergeBell,
     title: "Single POC",
     description: "Dedicated POC for any maintenance / setup you require in a Flent home. You do not have to deal with multiple POCs anymore.",
     bgColor: "bg-flent-pastel-violet",
