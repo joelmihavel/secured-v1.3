@@ -47,10 +47,12 @@ interface NavbarProps {
 const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
     const pathname = usePathname();
     const isSecurePath = pathname.startsWith("/secured");
+    const isRenewalGuidePath = pathname.startsWith("/renewal-guide");
 
     // If it's a secure path BUT variant is not secure, it means it's the global Navbar in layout.tsx.
     // We hide it because the secure page provides its own Navbar instance with the correct variant and state.
     if (isSecurePath && variant !== "secure") return null;
+    if (isRenewalGuidePath) return null;
 
     const [isOpen, setIsOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);

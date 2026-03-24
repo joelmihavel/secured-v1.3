@@ -1,0 +1,55 @@
+<svg width="1400" height="934" viewBox="0 0 1400 934" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clipped grid area (top 10.5% = 98px, bottom 3.28% = 30.6px → grid from y=98 to y=903) -->
+  <defs>
+    <clipPath id="grid-clip">
+      <rect x="0" y="98" width="1400" height="805" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#grid-clip)">
+    <!-- Horizontal grid lines (dashed, #4D4D4D) -->
+    <line x1="0" y1="98.4"  x2="1400" y2="98.4"  stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="130.8" x2="1400" y2="130.8" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="163.6" x2="1400" y2="163.6" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="202.1" x2="1400" y2="202.1" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="254.4" x2="1400" y2="254.4" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="290.2" x2="1400" y2="290.2" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="326.0" x2="1400" y2="326.0" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="361.6" x2="1400" y2="361.6" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="397.4" x2="1400" y2="397.4" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="433.2" x2="1400" y2="433.2" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="469.0" x2="1400" y2="469.0" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="504.7" x2="1400" y2="504.7" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="540.5" x2="1400" y2="540.5" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="576.1" x2="1400" y2="576.1" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="611.9" x2="1400" y2="611.9" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="647.7" x2="1400" y2="647.7" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="683.4" x2="1400" y2="683.4" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="719.1" x2="1400" y2="719.1" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="755.1" x2="1400" y2="755.1" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="791.2" x2="1400" y2="791.2" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="0" y1="827.2" x2="1400" y2="827.2" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+
+    <!-- Vertical grid lines (dashed, #4D4D4D) -->
+    <line x1="72.2"   y1="98" x2="72.2"   y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="174.6"  y1="98" x2="174.6"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="380.5"  y1="98" x2="380.5"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="483.4"  y1="98" x2="483.4"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="586.3"  y1="98" x2="586.3"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="689.1"  y1="98" x2="689.1"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="791.9"  y1="98" x2="791.9"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="894.7"  y1="98" x2="894.7"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="997.8"  y1="98" x2="997.8"  y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="1111.7" y1="98" x2="1111.7" y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="1225.4" y1="98" x2="1225.4" y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+    <line x1="1327.8" y1="98" x2="1327.8" y2="903" stroke="#4D4D4D" stroke-width="0.875" stroke-dasharray="875 875"/>
+  </g>
+
+  <!-- Prominent horizontal lines (lighter color #C6CDD8) -->
+  <line x1="0" y1="163.3" x2="1400" y2="163.3" stroke="#C6CDD8" stroke-width="0.875" stroke-dasharray="875 875"/>
+  <line x1="0" y1="754.9" x2="1400" y2="754.9" stroke="#C6CDD8" stroke-width="0.875" stroke-dasharray="875 875"/>
+
+  <!-- Prominent vertical lines (lighter color #C6CDD8) -->
+  <line x1="174.6" y1="98" x2="174.6" y2="903" stroke="#C6CDD8" stroke-width="0.875" stroke-dasharray="875 875"/>
+  <line x1="1225.4" y1="98" x2="1225.4" y2="903" stroke="#C6CDD8" stroke-width="0.875" stroke-dasharray="875 875"/>
+</svg>
