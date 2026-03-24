@@ -111,6 +111,7 @@ export const ComingSoon = ({
           notificationType="all homes" 
           buttonText="Notify Me"
           useEmail={true}
+          surface="homepage_newsletter"
         />
 
         <div className="mb-16"></div>

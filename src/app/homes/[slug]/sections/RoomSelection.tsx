@@ -39,7 +39,7 @@ import {
   getPropertyDisplayRent,
 } from "@/lib/property-utils";
 import { motion } from "framer-motion";
-import { RoomNotificationModal } from "@/components/ui/RoomNotificationModal";
+import { NotificationModal } from "@/components/ui/NotificationModal";
 import { getPropertyWhatsappLink } from "@/constants";
 import { LockInSlider } from "@/components/homes/LockInSlider";
 import {
@@ -52,7 +52,7 @@ import { useDebugMode } from "@/hooks/useDebugMode";
 import { useMobile } from "@/hooks/useMobile";
 import { useWhatsAppCta } from "@/hooks/useWhatsAppCta";
 import { CTA_IDS } from "@/lib/cta-ids";
-import { trackHomeTourClicked } from "@/lib/posthog-tracking";
+import { trackClickedGetNotifiied, trackHomeTourClicked } from "@/lib/posthog-tracking";
 import { useDrawerOpen } from "@/context/DrawerOpenContext";
 import { Badge } from "@/components/ui/badge";
 
@@ -599,6 +599,15 @@ export const RoomSelection = ({
                             data-cta-id={CTA_IDS.ROOM_GET_NOTIFIED}
                             data-cta-context="room_selection"
                             onClick={() => {
+                              trackClickedGetNotifiied({
+                                type: "specific property",
+                                surface: "property_slug_room",
+                                notification_type: "specific room",
+                                cta_id: CTA_IDS.ROOM_GET_NOTIFIED,
+                                property_id: property.fieldData?.pid || property.id,
+                                property_name: property.fieldData.name,
+                                room_id: room.id,
+                              });
                               setNotificationModalData({
                                 propertyId: property.fieldData?.pid || property.id,
                                 roomId: room.id,
@@ -838,6 +847,15 @@ export const RoomSelection = ({
                           data-cta-id={CTA_IDS.FULL_HOUSE_GET_NOTIFIED}
                           data-cta-context="room_selection"
                           onClick={() => {
+                            trackClickedGetNotifiied({
+                              type: "specific property",
+                              surface: "property_slug_full_house",
+                              notification_type: "specific home",
+                              cta_id: CTA_IDS.FULL_HOUSE_GET_NOTIFIED,
+                              property_id: property.fieldData?.pid || property.id,
+                              property_name: property.fieldData.name,
+                              room_id: "full_house",
+                            });
                             setNotificationModalData({
                               propertyId: property.fieldData?.pid || property.id,
                               roomId: "full_house",
@@ -876,14 +894,21 @@ export const RoomSelection = ({
       )}
 
       {notificationModalData && (
-        <RoomNotificationModal
+        <NotificationModal
           isOpen={isNotificationModalOpen}
           onClose={() => setIsNotificationModalOpen(false)}
+          title="Get Notified"
+          description={`We'll let you know when ${notificationModalData.roomName} becomes available`}
           propertyId={notificationModalData.propertyId}
           roomId={notificationModalData.roomId}
-          roomName={notificationModalData.roomName}
           propertyName={notificationModalData.propertyName}
           notificationType={notificationModalData.notificationType}
+          submitLabel="Notify Me"
+          surface={
+            notificationModalData.notificationType === "specific room"
+              ? "property_slug_room"
+              : "property_slug_full_house"
+          }
         />
       )}
     </OpenSection>
