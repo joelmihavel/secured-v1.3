@@ -1,11 +1,11 @@
 "use client"
 
 import Image from "next/image"
-import { triggerFormAttention } from "@/lib/home-concierge-form-attention"
+import { triggerFormAttention } from "@landing-pages/home-concierge/lib/form-attention"
 
 export function Nav() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#E5E0D8] bg-flent-cream/95 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 lg:px-8">
         <Image
           src="/flent-logo.png"
@@ -18,9 +18,9 @@ export function Nav() {
         <button
           type="button"
           onClick={triggerFormAttention}
-          className="rounded-full bg-flent-dark px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-flent-dark/90"
+          className="rounded-full bg-flent-green px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-flent-green/90"
         >
-          Request a callback
+          Find your home →
         </button>
       </div>
     </nav>

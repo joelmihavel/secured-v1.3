@@ -1,0 +1,293 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #FAF8F5;
+  --foreground: #1A1A1A;
+  --card: #ffffff;
+  --card-foreground: #1A1A1A;
+  --popover: #ffffff;
+  --popover-foreground: #1A1A1A;
+  --primary: #008E75;
+  --primary-foreground: #ffffff;
+  --secondary: #FAF8F5;
+  --secondary-foreground: #1A1A1A;
+  --muted: #F0EDE8;
+  --muted-foreground: #6B6B6B;
+  --accent: #FFA37B;
+  --accent-foreground: #1A1A1A;
+  --destructive: #C64747;
+  --destructive-foreground: #ffffff;
+  --border: #E5E0D8;
+  --input: #E5E0D8;
+  --ring: #008E75;
+  --radius: 0.625rem;
+
+  /* Flent brand tokens */
+  --flent-green: #008E75;
+  --flent-brown: #7F5639;
+  --flent-red: #C64747;
+  --flent-violet: #614ECE;
+  --flent-orange: #FFA37B;
+  --flent-yellow: #FFE98A;
+  --flent-cream: #FAF8F5;
+  --flent-dark: #1A1A1A;
+  --flent-pastel-green: #C0E3DC;
+  --flent-pastel-orange: #FFE2D8;
+  --flent-pastel-violet: #DAD7F4;
+}
+
+@theme inline {
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-flent-green: var(--flent-green);
+  --color-flent-brown: var(--flent-brown);
+  --color-flent-red: var(--flent-red);
+  --color-flent-violet: var(--flent-violet);
+  --color-flent-orange: var(--flent-orange);
+  --color-flent-yellow: var(--flent-yellow);
+  --color-flent-cream: var(--flent-cream);
+  --color-flent-dark: var(--flent-dark);
+  --color-flent-pastel-green: var(--flent-pastel-green);
+  --color-flent-pastel-orange: var(--flent-pastel-orange);
+  --color-flent-pastel-violet: var(--flent-pastel-violet);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Ticker animation */
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+/* Fade up animation */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out both;
+}
+
+.animate-fade-up-delay-1 {
+  animation: fade-up 0.6s ease-out 0.1s both;
+}
+
+.animate-fade-up-delay-2 {
+  animation: fade-up 0.6s ease-out 0.2s both;
+}
+
+.animate-fade-up-delay-3 {
+  animation: fade-up 0.6s ease-out 0.3s both;
+}
+
+/* Pulse dot */
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.5);
+  }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Arch shape clip */
+.arch-clip {
+  border-radius: 999px 999px 12px 12px;
+  overflow: hidden;
+}
+
+/* Form focus styles */
+.flent-input:focus {
+  border-color: var(--flent-green);
+  box-shadow: 0 0 0 3px rgba(0, 142, 117, 0.1);
+  outline: none;
+}
+
+/* Form attention animation */
+@keyframes formAttention {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-4px); }
+  30%  { transform: translateX(4px); }
+  45%  { transform: translateX(-4px); }
+  60%  { transform: translateX(4px); }
+  75%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes glowPulse {
+  0%   { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  40%  { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 8px rgba(0,142,117,0.3); }
+  100% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+}
+
+.form-card.attention {
+  animation: formAttention 0.4s ease, glowPulse 0.8s ease;
+}
+
+/* HubSpot form styling - reset and custom overrides */
+.hs-form-frame,
+.hs-form {
+  all: unset;
+  display: block;
+  width: 100%;
+}
+
+.hs-form .hs-form-field {
+  margin-bottom: 16px !important;
+}
+
+.hs-form label {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: #555 !important;
+  margin-bottom: 6px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.hs-form .hs-input {
+  width: 100% !important;
+  padding: 12px 14px !important;
+  border: 1.5px solid rgba(0,0,0,0.12) !important;
+  border-radius: 12px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 14px !important;
+  background: #FAFAFA !important;
+  box-sizing: border-box !important;
+  color: #1A1A1A !important;
+  transition: border-color 0.2s, background-color 0.2s !important;
+}
+
+.hs-form .hs-input:focus {
+  border-color: #008E75 !important;
+  background: white !important;
+  outline: none !important;
+}
+
+.hs-form .hs-input::placeholder {
+  color: #999 !important;
+}
+
+.hs-form .hs-button,
+.hs-form input[type="submit"] {
+  width: 100% !important;
+  padding: 15px !important;
+  background: #1A1A1A !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 14px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  margin-top: 8px !important;
+  transition: background-color 0.2s !important;
+}
+
+.hs-form .hs-button:hover,
+.hs-form input[type="submit"]:hover {
+  background: #008E75 !important;
+}
+
+.hs-form .hs-error-msgs {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 4px 0 0 0 !important;
+}
+
+.hs-form .hs-error-msgs li {
+  font-size: 11px !important;
+  color: #C64747 !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+.hs-form .hs-richtext {
+  display: none !important;
+}
+
+.hs-form .submitted-message {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 1rem;
+  color: #1A1A1A;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Remove HubSpot default styling on form wrapper */
+.hs-form fieldset {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+.hs-form .input {
+  margin: 0 !important;
+}
+
+.hs-form .field {
+  margin-bottom: 16px !important;
+}
+
+.hs-form .actions {
+  margin: 0 !important;
+  padding: 0 !important;
+}

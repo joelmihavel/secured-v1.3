@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { triggerFormAttention } from "@/lib/home-concierge-form-attention"
+import { triggerFormAttention } from "@landing-pages/home-concierge/lib/form-attention"
 
 const properties = [
   {
@@ -54,13 +54,10 @@ export function PropertyCards() {
             key={property.name}
             type="button"
             onClick={triggerFormAttention}
-            className="group cursor-pointer overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="group cursor-pointer overflow-hidden rounded-2xl border border-border bg-card text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
             {/* Arch-shaped image */}
-            <div
-              className="relative mx-4 mt-4 overflow-hidden"
-              style={{ borderRadius: "999px 999px 12px 12px" }}
-            >
+            <div className="relative mx-4 mt-4 overflow-hidden" style={{ borderRadius: "999px 999px 12px 12px" }}>
               <div className="aspect-[4/3]">
                 <Image
                   src={property.image}
@@ -70,32 +67,47 @@ export function PropertyCards() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
-              <span className="absolute bottom-3 left-3 rounded-full bg-flent-dark/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+              {/* Location tag */}
+              <span className="absolute bottom-3 left-3 rounded-full bg-flent-dark/70 px-3 py-1 text-xs font-semibold text-card backdrop-blur-sm">
                 {property.location}
               </span>
             </div>
 
             {/* Card body */}
             <div className="px-5 pb-5 pt-4">
-              <h3 className="font-serif text-xl font-bold text-flent-dark">{property.name}</h3>
-              <div className="mt-1.5 flex items-center gap-3 text-xs font-medium uppercase tracking-wider text-[#6B6B6B]">
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="font-serif text-xl font-bold text-flent-dark">
+                  {property.name}
+                </h3>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
+                  property.available.includes("left")
+                    ? "bg-red-100 text-red-700"
+                    : "bg-green-100 text-green-700"
+                }`}>
+                  {property.available}
+                </span>
+              </div>
+              <div className="mt-1.5 flex items-center gap-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 <span>{property.bhk}</span>
                 <span aria-hidden="true" className="text-border">{"·"}</span>
                 <span>{property.sqft}</span>
               </div>
               <p className="mt-3 text-base font-bold text-flent-dark">
                 {"From ₹"}{property.price}{" "}
-                <span className="text-sm font-medium text-[#6B6B6B]">/month per room</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  /month per room
+                </span>
               </p>
             </div>
           </button>
         ))}
       </div>
 
+      {/* View more homes CTA */}
       <button
         type="button"
         onClick={triggerFormAttention}
-        className="mt-6 w-full rounded-lg bg-flent-dark px-6 py-4 text-sm font-bold text-white transition-colors hover:bg-flent-dark/90"
+        className="mt-6 w-full rounded-lg bg-flent-dark px-6 py-4 text-sm font-bold text-card transition-colors hover:bg-flent-dark/90"
       >
         {"View more homes →"}
       </button>

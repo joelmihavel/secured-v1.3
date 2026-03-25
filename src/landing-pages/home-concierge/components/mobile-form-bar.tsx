@@ -2,18 +2,20 @@
 
 import { useState, useEffect, useRef } from "react"
 import { X } from "lucide-react"
-import { QualificationForm } from "@/components/home-concierge/qualification-form"
+import { QualificationForm } from "./qualification-form"
 
 export function MobileFormBar() {
   const [expanded, setExpanded] = useState(false)
   const [showGlow, setShowGlow] = useState(false)
   const formRef = useRef<HTMLDivElement>(null)
 
+  // Listen for custom event to expand mobile form
   useEffect(() => {
     const handleExpand = () => {
       setExpanded(true)
       setShowGlow(true)
 
+      // Focus first empty input after expansion animation
       setTimeout(() => {
         if (formRef.current) {
           const inputs = formRef.current.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
@@ -26,6 +28,7 @@ export function MobileFormBar() {
             }
           }
         }
+        // Remove glow after animation
         setTimeout(() => setShowGlow(false), 800)
       }, 300)
     }
@@ -36,6 +39,7 @@ export function MobileFormBar() {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 lg:hidden">
+      {/* Expanded overlay + form */}
       {expanded && (
         <>
           <div
@@ -52,7 +56,7 @@ export function MobileFormBar() {
             <button
               type="button"
               onClick={() => setExpanded(false)}
-              className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-flent-dark shadow-md"
+              className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-card text-flent-dark shadow-md"
               aria-label="Close form"
             >
               <X className="h-4 w-4" />
@@ -62,14 +66,15 @@ export function MobileFormBar() {
         </>
       )}
 
+      {/* Collapsed bar */}
       {!expanded && (
-        <div className="border-t border-[#E5E0D8] bg-white px-5 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="border-t border-border bg-card px-5 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="w-full rounded-lg bg-flent-green px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-flent-green/90"
+            className="w-full rounded-lg bg-flent-green px-6 py-3.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-flent-green/90"
           >
-            {"Find your Flent home →"}
+{"Get started \u2192"}
           </button>
         </div>
       )}
