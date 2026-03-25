@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "./ui/Button";
@@ -9,24 +9,8 @@ import type { HeroContent } from "@/lib/secured/types";
 export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?: "tenant" | "landlord" }) {
   const isLandlord = variant === "landlord";
   const [showText, setShowText] = useState(true);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const [phoneOffset, setPhoneOffset] = useState(237);
   const prevVariant = useRef(variant);
   const isFirstRender = useRef(true);
-
-  useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      setIsDesktop(w >= 1024);
-      // Scale phone offset proportionally beyond 1440px
-      if (w >= 1536) setPhoneOffset(Math.round(w * 0.165));
-      else if (w >= 1280) setPhoneOffset(Math.round(w * 0.165));
-      else setPhoneOffset(237);
-    };
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -35,7 +19,6 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
     }
 
     if (prevVariant.current !== variant) {
-      // Hide text, wait for phone to slide, then show new text
       setShowText(false);
       const timer = setTimeout(() => {
         setShowText(true);
@@ -46,9 +29,9 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
   }, [variant]);
 
   return (
-    <section className="relative min-h-[600px] w-full overflow-visible bg-[#131313] pt-4 md:h-[calc(100vh-100px)] md:pt-0">
+    <section className="relative flex min-h-[600px] w-full flex-col overflow-hidden bg-[#131313] pt-4 md:min-h-[calc(100vh-100px)] md:pt-0 lg:h-[calc(100vh-100px)]">
       {/* Background layers */}
-      <div className="absolute inset-x-0 top-0" style={{ height: "calc(100% + 80px)" }}>
+      <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[#131313] lg:left-[205px]" />
         <div className="absolute top-0 left-0 hidden h-full w-[205px] bg-[#1a1a1a] lg:block" />
 
@@ -63,83 +46,87 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
         </div>
       </div>
 
-      {/* Content */}
-      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col-reverse items-center px-6 pt-24 md:px-8 lg:block lg:px-12 lg:pt-0 xl:max-w-[1600px] 2xl:max-w-[1800px]">
-        {/* Phone mockup — slides smoothly */}
+      {/* Content — two-container layout */}
+      <div className="relative mx-auto flex w-full flex-1 max-w-[1440px] flex-col-reverse items-center px-6 pt-24 md:px-8 lg:flex-row lg:px-12 lg:pt-0 xl:max-w-[1600px] 2xl:max-w-[1800px]">
+        {/* Phone container */}
         <motion.div
-          className="relative z-[1] mt-8 -mb-[80px] w-[255px] md:-mb-[120px] md:w-[360px] lg:absolute lg:top-[110px] lg:mb-0 lg:mt-0 lg:w-[500px]"
-          animate={isDesktop ? {
-            left: isLandlord ? "auto" : phoneOffset,
-            right: isLandlord ? phoneOffset : "auto",
-          } : undefined}
+          layout
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          style={{ willChange: isDesktop ? "transform" : undefined }}
+          className="flex w-full items-center justify-center lg:h-full lg:w-1/2 lg:items-end"
+          style={{ order: isLandlord ? 2 : 1 }}
         >
-          {/* Clipping container: shows phone screen+frame, crops the hand on desktop */}
-          <div className="relative lg:h-[calc(100vh-160px)] lg:overflow-hidden">
-            {/* Tenant phone */}
-            <Image
-              src="/assets/illustrations/hero-phone-mockup.png"
-              alt="Flent Secured app showing rent payment"
-              width={706}
-              height={1003}
-              priority
-              className="h-auto w-full transition-opacity duration-300"
-              style={{ opacity: isLandlord ? 0 : 1 }}
-            />
-            {/* Landlord phone overlaid */}
-            <Image
-              src="/assets/illustrations/hero-phone-mockup-landlord.png"
-              alt="Flent Secured app showing payment receipt"
-              width={706}
-              height={1003}
-              priority
-              className="absolute inset-0 h-auto w-full transition-opacity duration-300"
-              style={{ opacity: isLandlord ? 1 : 0 }}
-            />
+          <div className="relative z-[1] mt-8 w-[255px] md:w-[360px] lg:mt-0 lg:w-[500px]">
+            {/* Clipping container: shows phone screen+frame, crops the hand on desktop */}
+            <div className="relative">
+              {/* Tenant phone */}
+              <Image
+                src="/assets/illustrations/hero-phone-mockup.png"
+                alt="Flent Secured app showing rent payment"
+                width={706}
+                height={1003}
+                priority
+                className="h-auto w-full transition-opacity duration-300"
+                style={{ opacity: isLandlord ? 0 : 1 }}
+              />
+              {/* Landlord phone overlaid */}
+              <Image
+                src="/assets/illustrations/hero-phone-mockup-landlord.png"
+                alt="Flent Secured app showing payment receipt"
+                width={706}
+                height={1003}
+                priority
+                className="absolute inset-0 h-auto w-full transition-opacity duration-300"
+                style={{ opacity: isLandlord ? 1 : 0 }}
+              />
+            </div>
           </div>
         </motion.div>
 
-        {/* Text content — disappears, reappears after phone slides */}
-        <div
-          className={`relative z-[2] flex w-full max-w-[446px] flex-col gap-4 text-center transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:gap-6 lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:text-left xl:max-w-[520px] 2xl:max-w-[580px] ${
-            isLandlord ? "lg:left-[120px] xl:left-[8%] lg:right-auto" : "lg:left-[851px] xl:left-[59%]"
-          }`}
-          style={{
-            opacity: showText ? 1 : 0,
-            transform: showText ? "translateY(0)" : "translateY(8px)",
-          }}
+        {/* Text container */}
+        <motion.div
+          layout
+          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+          className="flex w-full items-center justify-center lg:h-full lg:w-1/2"
+          style={{ order: isLandlord ? 1 : 2 }}
         >
-          <div className="flex flex-col gap-2 md:gap-3">
-            <h1 className="font-display text-[36px] leading-[1] tracking-[-1.5px] text-white md:text-[48px] lg:text-[64px] lg:leading-[64px] lg:tracking-[-2px] xl:text-[72px] xl:leading-[72px] 2xl:text-[80px] 2xl:leading-[80px]">
-              {data.headingPrefix}{" "}
-              <span className="text-[#ff9a6d]">{data.headingHighlight}</span>
-            </h1>
-            <p
-              className="text-lg leading-[1.4] tracking-[-0.5px] text-[#797979] md:text-[22px] lg:text-[28px] lg:leading-[40px] lg:tracking-[-1px] xl:text-[32px] xl:leading-[44px] 2xl:text-[36px] 2xl:leading-[48px]"
-              style={{ fontFamily: "var(--font-ui)" }}
-            >
-              {data.subheading}
-            </p>
-          </div>
-
-          <p
-            className="text-sm leading-[1.8] tracking-[-0.32px] text-[#8a8a8a] md:text-base"
-            style={{ fontFamily: "var(--font-ui)" }}
+          <div
+            className="relative z-[2] flex w-full max-w-[446px] flex-col gap-4 text-center transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:gap-6 lg:text-left xl:max-w-[520px] 2xl:max-w-[580px]"
+            style={{
+              opacity: showText ? 1 : 0,
+              transform: showText ? "translateY(0)" : "translateY(8px)",
+            }}
           >
-            {data.description}
-          </p>
+            <div className="flex flex-col gap-2 md:gap-3">
+              <h1 className="font-display text-[36px] leading-[1] tracking-[-1.5px] text-white md:text-[48px] lg:text-[64px] lg:leading-[64px] lg:tracking-[-2px] xl:text-[72px] xl:leading-[72px] 2xl:text-[80px] 2xl:leading-[80px]">
+                {data.headingPrefix}{" "}
+                <span className="text-[#ff9a6d]">{data.headingHighlight}</span>
+              </h1>
+              <p
+                className="text-lg leading-[1.4] tracking-[-0.5px] text-[#797979] md:text-[22px] lg:text-[28px] lg:leading-[40px] lg:tracking-[-1px] xl:text-[32px] xl:leading-[44px] 2xl:text-[36px] 2xl:leading-[48px]"
+                style={{ fontFamily: "var(--font-ui)" }}
+              >
+                {data.subheading}
+              </p>
+            </div>
 
-          <div className="flex flex-col gap-4">
-            <Button fullWidth onClick={() => document.getElementById("download-app")?.scrollIntoView({ behavior: "smooth" })}>{data.ctaButtonText}</Button>
             <p
-              className="text-xs leading-[1.8] tracking-[-0.24px] text-[#8a8a8a]"
+              className="text-sm leading-[1.8] tracking-[-0.32px] text-[#8a8a8a] md:text-base"
               style={{ fontFamily: "var(--font-ui)" }}
             >
-              {data.ctaDisclaimer}
+              {data.description}
             </p>
+
+            <div className="flex flex-col gap-4">
+              <Button fullWidth onClick={() => document.getElementById("download-app")?.scrollIntoView({ behavior: "smooth" })}>{data.ctaButtonText}</Button>
+              <p
+                className="text-xs leading-[1.8] tracking-[-0.24px] text-[#8a8a8a]"
+                style={{ fontFamily: "var(--font-ui)" }}
+              >
+                {data.ctaDisclaimer}
+              </p>
+            </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

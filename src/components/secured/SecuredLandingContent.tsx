@@ -49,8 +49,8 @@ export function SecuredLandingContent() {
   return (
     <>
       <main className="flex flex-col gap-12 md:gap-0">
-        <Hero data={data.hero} variant={variant} />
-        <div className="-mt-4 md:mt-[34px]">
+        <div>
+          <Hero data={data.hero} variant={variant} />
           <GridDivider variant={variant} />
         </div>
         <div style={{ marginTop: 48 }} />

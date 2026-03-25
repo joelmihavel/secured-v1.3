@@ -7,6 +7,8 @@ interface ButtonProps {
   fullWidth?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  target?: string;
+  rel?: string;
 }
 
 export function Button({
@@ -16,6 +18,8 @@ export function Button({
   fullWidth = false,
   disabled = false,
   onClick,
+  target,
+  rel,
 }: ButtonProps) {
   const widthClass = fullWidth ? "w-full" : "w-[297px]";
 
@@ -41,6 +45,8 @@ export function Button({
     <a
       href={href}
       onClick={onClick}
+      target={target}
+      rel={rel}
       className={`btn-figma group flex flex-col items-center gap-2 rounded-xl ${widthClass} ${className}`}
     >
       {/* Top accent bar */}

@@ -142,7 +142,7 @@ function StarfieldCanvas({ active }: { active: boolean }) {
       ref={canvasRef}
       className="fixed inset-0"
       style={{
-        zIndex: -1,
+        zIndex: 0,
         opacity: active ? 1 : 0,
         transition: "opacity 0.7s cubic-bezier(0.77, 0, 0.175, 1)",
         pointerEvents: "none",
