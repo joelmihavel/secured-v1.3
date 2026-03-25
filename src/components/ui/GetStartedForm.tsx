@@ -1,17 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { submitHubSpotForm } from "@/lib/hubspot";
 import { Button } from "./Button";
 import { useGooglePlacesAutocomplete } from "@/hooks/useGooglePlacesAutocomplete";
 import { useCTATracking } from "@/hooks/useCTATracking";
 import { CTA_IDS } from "@/lib/cta-ids";
+import {
+  OwnersFieldName,
+  trackOwnersFormFieldCompleted,
+  trackOwnersFormStarted,
+  trackOwnersFormSubmitAttempted,
+  trackOwnersFormSubmitFailed,
+  trackOwnersFormSubmitSucceeded,
+  trackOwnersFormViewed,
+} from "@/lib/posthog-tracking";
 
 const portalId = "45469632";
 const formId = "2ef75bf3-54a2-465a-815b-2d03e784a66e";
 
 // Add your Google Maps API key here
 const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+const OWNERS_FORM_BASE_PAYLOAD = {
+  form_id: "owners_get_started_v1" as const,
+  surface: "owners_contact_section" as const,
+};
 
 export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonText?: string }) => {
   const { trackCTAClick } = useCTATracking();
@@ -29,6 +42,13 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [hasStarted, setHasStarted] = useState(false);
+  const [completedFields, setCompletedFields] = useState<Set<OwnersFieldName>>(new Set());
+  const [submitStartMs, setSubmitStartMs] = useState<number | null>(null);
+
+  useEffect(() => {
+    trackOwnersFormViewed(OWNERS_FORM_BASE_PAYLOAD);
+  }, []);
 
   // Handle place selection from autocomplete
   const handlePlaceSelected = (place: { formatted_address?: string }) => {
@@ -55,9 +75,28 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
+    const fieldName = e.target.name as OwnersFieldName;
+    const value = e.target.value;
+    if (!hasStarted) {
+      setHasStarted(true);
+      trackOwnersFormStarted({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        start_trigger: "first_input",
+      });
+    }
+    if (
+      value.trim() &&
+      !completedFields.has(fieldName)
+    ) {
+      setCompletedFields((prev) => new Set(prev).add(fieldName));
+      trackOwnersFormFieldCompleted({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        field_name: fieldName,
+      });
+    }
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     });
   };
 
@@ -65,17 +104,40 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
     e.preventDefault();
     setStatus("loading");
     setErrorMessage("");
+    setSubmitStartMs(Date.now());
+    const requiredFieldsPresent =
+      !!formData.firstname.trim() &&
+      !!formData.phone.trim() &&
+      !!formData.email.trim() &&
+      !!formData.typeofhome &&
+      !!formData.is_property_vacant_now;
+    trackOwnersFormSubmitAttempted({
+      ...OWNERS_FORM_BASE_PAYLOAD,
+      required_fields_present: requiredFieldsPresent,
+      has_property_address: !!formData.landlord_lead_property_address,
+      has_expected_rent: !!formData.expected_rent,
+    });
 
     // Validate required fields
     if (!formData.typeofhome) {
       setStatus("error");
       setErrorMessage("Please select the type of home.");
+      trackOwnersFormSubmitFailed({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        failure_stage: "client_validation",
+        error_code: "missing_typeofhome",
+      });
       return;
     }
 
     if (!formData.is_property_vacant_now) {
       setStatus("error");
       setErrorMessage("Please indicate if your property is vacant right now.");
+      trackOwnersFormSubmitFailed({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        failure_stage: "client_validation",
+        error_code: "missing_vacancy_status",
+      });
       return;
     }
 
@@ -98,6 +160,10 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
       });
 
       setStatus("success");
+      trackOwnersFormSubmitSucceeded({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        submit_latency_ms: submitStartMs ? Date.now() - submitStartMs : undefined,
+      });
       setFormData({
         firstname: "",
         phone: "",
@@ -114,6 +180,11 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           ? error.message
           : "Something went wrong. Please try again."
       );
+      trackOwnersFormSubmitFailed({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        failure_stage: "hubspot_api",
+        error_code: "hubspot_error",
+      });
     }
   };
 
@@ -147,6 +218,14 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           required
           value={formData.firstname}
           onChange={handleChange}
+          onFocus={() => {
+            if (hasStarted) return;
+            setHasStarted(true);
+            trackOwnersFormStarted({
+              ...OWNERS_FORM_BASE_PAYLOAD,
+              start_trigger: "first_focus",
+            });
+          }}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
           placeholder="Your Name"
         />

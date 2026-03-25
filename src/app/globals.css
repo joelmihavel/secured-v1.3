@@ -346,6 +346,22 @@ h4:not(.secured-page *):not(.home-concierge-page *),
   /* Firefox */
 }
 
+/* Hide floating chat/WhatsApp widgets while notification modal is open */
+body.notification-modal-open .whatsapp-float {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.notification-modal-house {
+  width: 128px;
+  height: 128px;
+}
+
+@media (min-width: 768px) {
+  .notification-modal-house {
+    width: 200px;
+    height: 200px;
+  }
 /* ── Scrollbar hiding (Secured pages use no-scrollbar) ── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
