@@ -42,6 +42,11 @@ const nextConfig: NextConfig = {
         destination: "/homes/:path*",
         permanent: true,
       },
+      {
+        source: "/collections/ulsoor",
+        destination: "https://wa.me/918904695925?text=Hey,%20I%20saw%20the%20to-let%20board%20at%20Ulsoor.%20Tell%20me%20more%20about%20the%20house",
+        permanent: false,
+      },
     ];
   },
 };
