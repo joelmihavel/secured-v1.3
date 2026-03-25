@@ -362,11 +362,13 @@ body.notification-modal-open .whatsapp-float {
     width: 200px;
     height: 200px;
   }
-/* ── Scrollbar hiding (Secured pages use no-scrollbar) ── */
+}
+
+/* -- Scrollbar hiding (Secured pages use no-scrollbar) -- */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── Geist Pixel Fonts (Flent Secured) ── */
+/* -- Geist Pixel Fonts (Flent Secured) -- */
 @font-face {
   font-family: "Geist Pixel Triangle";
   src: url("/fonts/GeistPixel-Triangle.woff2") format("woff2");
@@ -383,13 +385,13 @@ body.notification-modal-open .whatsapp-float {
   font-display: swap;
 }
 
-/* Body override when secured page is present — needed for starfield canvas */
+/* Body override when secured page is present - needed for starfield canvas */
 body:has(.secured-page) {
   background-color: #131313 !important;
   color: #E0E0E0 !important;
 }
 
-/* ── Secured Page Scoped Variables ── */
+/* -- Secured Page Scoped Variables -- */
 .secured-page {
   --font-display: "Geist Pixel Triangle", sans-serif;
   --font-body: "Geist Pixel Circle", sans-serif;
@@ -465,7 +467,7 @@ body:has(.secured-page) {
   color: #000000;
 }
 
-/* ── Secured Button Styles (Figma parity) ── */
+/* -- Secured Button Styles (Figma parity) -- */
 .btn-figma__bar {
   background: #4d4d4d;
   transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
@@ -531,7 +533,7 @@ body:has(.secured-page) {
   box-shadow: inset 2px 4px 4px 0px #060606;
 }
 
-/* ── Secured Marquee Animation ── */
+/* -- Secured Marquee Animation -- */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -541,11 +543,11 @@ body:has(.secured-page) {
   animation: marquee 20s linear infinite;
 }
 
-/* ─────────────────────────────────────────────────────────
-   Home Concierge Page — Flent Brand Tokens & Animations
+/* ---------------------------------------------------------
+   Home Concierge Page - Flent Brand Tokens & Animations
    All styles are scoped to .home-concierge-page so they
    don't affect any other page.
-───────────────────────────────────────────────────────── */
+--------------------------------------------------------- */
 
 @theme inline {
   --color-flent-green: #008E75;
@@ -605,8 +607,8 @@ body:has(.secured-page) {
   100% { transform: translateX(0); }
 }
 @keyframes hc-form-glow {
-  0%   { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-  40%  { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 8px rgba(0,142,117,0.3); }
+  0% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  40% { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 8px rgba(0,142,117,0.3); }
   100% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
 }
 .hc-form-card.attention {
