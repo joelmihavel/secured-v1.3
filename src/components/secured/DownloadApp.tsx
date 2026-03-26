@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FadeIn } from "./ui/FadeIn";
+import { Button } from "./ui/Button";
 import { WordReveal, SlideUp } from "./ui/TextReveal";
 import type { DownloadAppContent } from "@/lib/secured/types";
 
@@ -99,36 +100,22 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
 
                 <div className="flex flex-col gap-3 md:flex-row md:gap-4">
                   {/* App Store button */}
-                  <div className="flex flex-1 flex-col items-center gap-2">
-                    <div className="h-[2px] w-6 rounded-[200px] bg-[#4d4d4d]" />
-                    <a
+                  <div className="flex-1">
+                    <Button
+                      fullWidth
                       href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex w-full items-center justify-center overflow-hidden rounded-lg p-3 text-sm font-medium leading-6 text-white transition-colors md:p-4 md:text-base"
-                      style={{
-                        fontFamily: "var(--font-ui)",
-                        background:
-                          "linear-gradient(to bottom, #202020, #0d0d0d 90.179%)",
-                        border: "0.1px solid #ff9a6d",
-                        boxShadow:
-                          "0px 6px 12px -2px rgba(153,92,65,0.24), inset -2px -4px 0px 1px black, inset 0px -3px 4px 1px rgba(255,255,255,0.12)",
-                      }}
                     >
                       {data.appStoreButtonText}
-                    </a>
+                    </Button>
                   </div>
 
                   {/* Play Store button */}
-                  <div className="flex flex-1 flex-col items-center gap-2">
-                    <div className="h-[2px] w-6 rounded-[200px] bg-[#4d4d4d]" />
-                    <a
-                      href="#"
-                      className="flex w-full items-center justify-center rounded-lg border border-[#202020] bg-[#1a1a1a] p-3 text-sm font-medium leading-6 text-[#8a8a8a] transition-colors md:p-4 md:text-base"
-                      style={{ fontFamily: "var(--font-ui)" }}
-                    >
+                  <div className="flex-1">
+                    <Button fullWidth disabled>
                       {data.playStoreButtonText}
-                    </a>
+                    </Button>
                   </div>
                 </div>
               </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVariant } from "./VariantContext";
+import { Button } from "./ui/Button";
 
 /* ── Easing curves ── */
 const EASE_SMOOTH = [0.77, 0, 0.175, 1] as const;
@@ -119,23 +120,15 @@ function MaskedCTA({ index }: { index: number }) {
           delay: index * STAGGER_DELAY + 0.15,
         }}
       >
-        <a
+        <Button
           href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-figma group mt-4 flex w-full flex-col items-center gap-2 md:inline-flex md:w-auto"
+          fullWidth
+          className="mt-4"
         >
-          <div className="btn-figma__bar h-[2px] w-6 rounded-[200px] bg-[#4d4d4d]" />
-          <div className="btn-figma__body relative flex w-full items-center justify-center overflow-hidden rounded-lg border-[0.1px] border-[#ff9a6d] px-8 py-3 md:w-auto">
-            <span
-              className="relative z-10 text-center text-sm font-medium leading-5 text-white md:text-base"
-              style={{ fontFamily: "var(--font-ui)" }}
-            >
-              Join the Waitlist
-            </span>
-            <div className="btn-figma__inset pointer-events-none absolute inset-0 rounded-[inherit]" />
-          </div>
-        </a>
+          Join the Waitlist
+        </Button>
       </motion.div>
     </div>
   );
