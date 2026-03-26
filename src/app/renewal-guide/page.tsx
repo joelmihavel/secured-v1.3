@@ -144,18 +144,25 @@ export default function RenewalGuidePage() {
     setIsSubmitting(true)
     setSubmitStatus(null)
 
+    const payload = {
+      tenant_email: tenantEmail,
+      tenant_name: tenantName || null,
+      current_rent: currentRent,
+      escalation_percent: escalation,
+      lockin_months: selectedOption.lockIn,
+      lockin_label: selectedOption.label + " Lock-in",
+      discount_percent: selectedOption.discount,
+      new_monthly_rent: selectedCalc.newMonthlyRent,
+      total_savings: selectedCalc.totalSavings,
+    }
+
     try {
-      const response = await axios.post(`${API}/renewal/submit`, {
-        tenant_email: tenantEmail,
-        tenant_name: tenantName || null,
-        current_rent: currentRent,
-        escalation_percent: escalation,
-        lockin_months: selectedOption.lockIn,
-        lockin_label: selectedOption.label + " Lock-in",
-        discount_percent: selectedOption.discount,
-        new_monthly_rent: selectedCalc.newMonthlyRent,
-        total_savings: selectedCalc.totalSavings,
-      })
+      const response = await axios.post(`${API}/renewal/submit`, payload)
+
+      fetch("https://script.google.com/macros/s/AKfycbyWI2FgBUcWCiwuDJ6xQtQ98j1MTVZQm9YeZp5tU62dIVvfnYKKDoKA4s65eeKj8WES/exec", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }).catch(() => {})
       setSubmitStatus("success")
       setSubmitMessage(response.data.message)
     } catch (error) {
