@@ -8,10 +8,6 @@ import { Card, CardContent } from "./ui/card"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
-import axios from "axios"
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-const API = `${BACKEND_URL}/api`
 
 const FAQ_CATEGORIES = [
   {
@@ -157,17 +153,15 @@ export default function RenewalGuidePage() {
     }
 
     try {
-      const response = await axios.post(`${API}/renewal/submit`, payload)
-
-      fetch("https://script.google.com/macros/s/AKfycbyWI2FgBUcWCiwuDJ6xQtQ98j1MTVZQm9YeZp5tU62dIVvfnYKKDoKA4s65eeKj8WES/exec", {
+      await fetch("https://script.google.com/macros/s/AKfycbyWI2FgBUcWCiwuDJ6xQtQ98j1MTVZQm9YeZp5tU62dIVvfnYKKDoKA4s65eeKj8WES/exec", {
         method: "POST",
         body: JSON.stringify(payload),
-      }).catch(() => {})
+      })
       setSubmitStatus("success")
-      setSubmitMessage(response.data.message)
+      setSubmitMessage("Your renewal choice has been confirmed. Our team will reach out shortly.")
     } catch (error) {
       setSubmitStatus("error")
-      setSubmitMessage(error.response?.data?.detail || "Something went wrong. Please try again.")
+      setSubmitMessage("Something went wrong. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
