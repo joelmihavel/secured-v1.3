@@ -356,7 +356,7 @@ export const RoomSelection = ({
                           <p className="text-sm font-medium text-text-main/70 mb-2">
                             {room.name}
                           </p>
-                          <h3 className="text-fluid-h3 text-text-main mb-4 font-zin">
+                          <h3 className="text-fluid-h3 font-heading text-text-main mb-4 font-zin">
                             {room.occupant?.profession || "Occupied by Someone"}
                           </h3>
                           {room.occupant?.company && (
@@ -455,7 +455,7 @@ export const RoomSelection = ({
                               return (
                                 <div className="flex flex-col items-center gap-1.5 mb-2">
                                   <div className="flex items-baseline justify-center gap-1">
-                                    <span className="text-fluid-h3 text-text-main font-zin">
+                                    <span className="font-heading text-fluid-h3 text-text-main font-zin">
                                       ₹
                                       {discountedRent.toLocaleString("en-IN")}
                                     </span>
@@ -481,7 +481,7 @@ export const RoomSelection = ({
 
                             return (
                               <div className="flex items-baseline justify-center gap-1 mb-2">
-                                <span className="text-fluid-h3 text-text-main font-zin">
+                                <span className="font-heading text-fluid-h3 text-text-main font-zin">
                                   ₹
                                   {baseRent.toLocaleString("en-IN")}
                                 </span>
@@ -698,7 +698,7 @@ export const RoomSelection = ({
                           Full House
                         </p>
                         <div className="flex items-baseline justify-center gap-1 mb-2">
-                          <span className="text-fluid-h3 text-text-main font-zin">
+                          <span className="text-fluid-h3 font-heading text-text-main font-zin">
                             ₹
                             {getPropertyDisplayRent(property).toLocaleString(
                               "en-IN"
@@ -741,7 +741,7 @@ export const RoomSelection = ({
                         <p className="text-sm font-medium text-text-main/70 mb-2">
                           Full House
                         </p>
-                        <h3 className="font-zin text-text-main mb-2">
+                        <h3 className="font-zin font-heading text-text-main mb-2">
                           Occupied
                         </h3>
                         <p className="text-sm text-text-main mb-6 max-w-xs mx-auto">

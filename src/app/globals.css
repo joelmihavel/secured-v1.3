@@ -196,6 +196,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1:not(.secured-page *):not(.home-concierge-page *),
+h2:not(.secured-page *):not(.home-concierge-page *),
+h3:not(.secured-page *):not(.home-concierge-page *),
+h4:not(.secured-page *):not(.home-concierge-page *),
+h5:not(.secured-page *):not(.home-concierge-page *),
+h6:not(.secured-page *):not(.home-concierge-page *),
 .font-heading:not(.secured-page *):not(.home-concierge-page *) {
   font-weight: 600;
 }

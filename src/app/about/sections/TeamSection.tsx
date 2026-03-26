@@ -54,45 +54,7 @@ const reorderTeamForLeadColumns = (items: typeof TEAM_MEMBERS) => {
     return [...leading, ...remaining];
 };
 
-const moveNamesToEnd = (items: typeof TEAM_MEMBERS, namesToMove: string[]) => {
-    const endSet = new Set(namesToMove);
-    const keep = items.filter((member) => !endSet.has(member.name));
-    const moved = namesToMove
-        .map((name) => items.find((member) => member.name === name))
-        .filter(Boolean) as typeof TEAM_MEMBERS;
-    return [...keep, ...moved];
-};
-
-const swapMembers = (items: typeof TEAM_MEMBERS, nameA: string, nameB: string) => {
-    const next = [...items];
-    const indexA = next.findIndex((member) => member.name === nameA);
-    const indexB = next.findIndex((member) => member.name === nameB);
-    if (indexA === -1 || indexB === -1) return next;
-    [next[indexA], next[indexB]] = [next[indexB], next[indexA]];
-    return next;
-};
-
-const moveMemberToMiddle = (items: typeof TEAM_MEMBERS, name: string) => {
-    const next = [...items];
-    const fromIndex = next.findIndex((member) => member.name === name);
-    if (fromIndex === -1) return next;
-    const [member] = next.splice(fromIndex, 1);
-    const middleIndex = Math.floor(next.length / 2);
-    next.splice(middleIndex, 0, member);
-    return next;
-};
-
-const TEAM_MEMBERS_ORDERED = (() => {
-    // Keep previous ordering rules and then apply explicit placement requests.
-    let items = reorderTeamForLeadColumns(TEAM_MEMBERS).filter(
-        (member) => member.name !== "Nikhil Khandave"
-    );
-    items = moveNamesToEnd(items, ["Nayan S K"]);
-    items = swapMembers(items, "Dhiram Shah", "Vidyuth Sridhar");
-    items = swapMembers(items, "Srinandh Gosala", "Pratik Kulkarni");
-    items = moveMemberToMiddle(items, "Srinandh Gosala");
-    return items;
-})();
+const TEAM_MEMBERS_ORDERED = reorderTeamForLeadColumns(TEAM_MEMBERS);
 
 const BACKGROUND_COLORS = [
     "var(--color-forest-green)",
