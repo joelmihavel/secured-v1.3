@@ -106,7 +106,9 @@ export default function RenewalGuidePage() {
     const params = new URLSearchParams(window.location.search)
     const email = params.get("email") || ""
     const name = params.get("name") || ""
-    const rent = params.get("current_rent") ? parseInt(params.get("current_rent")) : 50000
+    const rentParam = params.get("current_rent") || params.get("rent")
+    const rentParsed = rentParam ? parseInt(rentParam.replace(/[₹,\s]/g, "")) : NaN
+    const rent = !isNaN(rentParsed) ? rentParsed : 50000
     const esc = params.get("escalation") ? parseFloat(params.get("escalation")) : 10
     setTenantEmail(email)
     setTenantName(name)

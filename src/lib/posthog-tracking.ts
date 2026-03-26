@@ -165,8 +165,6 @@ export function trackCTAClick(
   try {
     const pageContext = getPageContext();
     const sessionContext = getSessionContext();
-    const deviceContext = getDeviceContext();
-
     const eventProperties = {
       // CTA Identification
       cta_id: ctaData.cta_id,
@@ -181,9 +179,6 @@ export function trackCTAClick(
 
       // Session Context
       ...sessionContext,
-
-      // Device Context
-      ...deviceContext,
 
       // Timestamp
       timestamp: new Date().toISOString(),
@@ -218,17 +213,12 @@ export function trackEvent(
   try {
     const pageContext = getPageContext();
     const sessionContext = getSessionContext();
-    const deviceContext = getDeviceContext();
-
     const eventProperties = {
       // Page Context
       ...pageContext,
 
       // Session Context
       ...sessionContext,
-
-      // Device Context
-      ...deviceContext,
 
       // Timestamp
       timestamp: new Date().toISOString(),
@@ -288,9 +278,262 @@ const HOMES_RENT_LOCK_IN_CHANGED_EVENT = 'homes_rent_lock_in_changed';
 const WHATSAPP_CTA_CLICKED_EVENT = 'whatsapp_cta_clicked';
 const HOME_TOUR_CLICKED_EVENT = 'home_tour_clicked';
 const FAQ_CLICKED_EVENT = 'faq_clicked';
+const CLICKED_GET_NOTIFIIED_EVENT = 'clicked_get_notifiied';
+const NOTIFICATION_FORM_STARTED_EVENT = 'notification_form_started';
+const NOTIFICATION_FORM_FIELD_COMPLETED_EVENT = 'notification_form_field_completed';
+const NOTIFICATION_FORM_SUBMIT_ATTEMPTED_EVENT = 'notification_form_submit_attempted';
+const NOTIFICATION_FORM_SUBMIT_SUCCEEDED_EVENT = 'notification_form_submit_succeeded';
+const NOTIFICATION_FORM_SUBMIT_FAILED_EVENT = 'notification_form_submit_failed';
+const NOTIFICATION_MODAL_CLOSED_EVENT = 'notification_modal_closed';
+const UPCOMING_MAP_MODAL_OPENED_EVENT = 'upcoming_map_modal_opened';
+const UPCOMING_MAP_INTERACTION_EVENT = 'upcoming_map_interaction';
+const UPCOMING_MAP_CTA_CLICKED_EVENT = 'upcoming_map_cta_clicked';
+const UPCOMING_MAP_MODAL_CLOSED_EVENT = 'upcoming_map_modal_closed';
+const OWNERS_FORM_VIEWED_EVENT = 'owners_form_viewed';
+const OWNERS_FORM_STARTED_EVENT = 'owners_form_started';
+const OWNERS_FORM_FIELD_COMPLETED_EVENT = 'owners_form_field_completed';
+const OWNERS_FORM_SUBMIT_ATTEMPTED_EVENT = 'owners_form_submit_attempted';
+const OWNERS_FORM_SUBMIT_SUCCEEDED_EVENT = 'owners_form_submit_succeeded';
+const OWNERS_FORM_SUBMIT_FAILED_EVENT = 'owners_form_submit_failed';
 
 function trackWithContext(eventName: string, properties?: Record<string, any>): void {
   trackEvent(eventName, properties);
+}
+
+// --- Notification funnel tracking ---
+export type NotificationTrackingType =
+  | 'upcoming home'
+  | 'email newsletter'
+  | 'specific property';
+
+export type NotificationSurface =
+  | 'coming_soon_card'
+  | 'homepage_newsletter'
+  | 'property_slug_room'
+  | 'property_slug_full_house';
+
+export type NotificationType =
+  | 'specific room'
+  | 'specific home'
+  | 'all homes'
+  | 'upcoming home';
+
+export type NotificationFormVariant = 'phone' | 'email';
+export type NotificationStartTrigger = 'first_focus' | 'first_input';
+export type NotificationFieldName = 'name' | 'phone' | 'email';
+export type NotificationFieldCompletionMethod = 'blur' | 'valid_pattern' | 'value_present';
+export type NotificationFailureStage = 'client_validation' | 'api_4xx' | 'api_5xx' | 'network';
+export type NotificationErrorCode =
+  | 'invalid_phone_length'
+  | 'invalid_email'
+  | 'missing_name'
+  | 'server_error'
+  | 'unknown';
+export type NotificationCloseSource =
+  | 'x_button'
+  | 'go_back'
+  | 'overlay'
+  | 'esc'
+  | 'auto_success_close';
+
+export interface NotificationTrackingBasePayload {
+  type: NotificationTrackingType;
+  surface: NotificationSurface;
+  notification_type: NotificationType;
+  cta_id?: string;
+  property_id?: string;
+  property_name?: string;
+  room_id?: string;
+  journey_map_session_id?: string;
+}
+
+export function mapNotificationTrackingType(
+  notificationType: NotificationType
+): NotificationTrackingType {
+  if (notificationType === 'upcoming home') return 'upcoming home';
+  if (notificationType === 'all homes') return 'email newsletter';
+  return 'specific property';
+}
+
+export function trackClickedGetNotifiied(
+  payload: NotificationTrackingBasePayload
+): void {
+  trackWithContext(CLICKED_GET_NOTIFIIED_EVENT, payload);
+}
+
+export function trackNotificationFormStarted(
+  payload: NotificationTrackingBasePayload & { start_trigger: NotificationStartTrigger }
+): void {
+  trackWithContext(NOTIFICATION_FORM_STARTED_EVENT, payload);
+}
+
+export function trackNotificationFormFieldCompleted(
+  payload: NotificationTrackingBasePayload & {
+    field_name: NotificationFieldName;
+    completion_method: NotificationFieldCompletionMethod;
+  }
+): void {
+  trackWithContext(NOTIFICATION_FORM_FIELD_COMPLETED_EVENT, payload);
+}
+
+export function trackNotificationFormSubmitAttempted(
+  payload: NotificationTrackingBasePayload & {
+    form_variant: NotificationFormVariant;
+    validation_passed: boolean;
+  }
+): void {
+  trackWithContext(NOTIFICATION_FORM_SUBMIT_ATTEMPTED_EVENT, payload);
+}
+
+export function trackNotificationFormSubmitSucceeded(
+  payload: NotificationTrackingBasePayload & {
+    form_variant: NotificationFormVariant;
+    submit_latency_ms?: number;
+  }
+): void {
+  trackWithContext(NOTIFICATION_FORM_SUBMIT_SUCCEEDED_EVENT, payload);
+}
+
+export function trackNotificationFormSubmitFailed(
+  payload: NotificationTrackingBasePayload & {
+    form_variant: NotificationFormVariant;
+    failure_stage: NotificationFailureStage;
+    error_code: NotificationErrorCode;
+  }
+): void {
+  trackWithContext(NOTIFICATION_FORM_SUBMIT_FAILED_EVENT, payload);
+}
+
+export function trackNotificationModalClosed(
+  payload: NotificationTrackingBasePayload & { close_source: NotificationCloseSource }
+): void {
+  trackWithContext(NOTIFICATION_MODAL_CLOSED_EVENT, payload);
+}
+
+// --- Upcoming map modal funnel tracking ---
+export type UpcomingMapSurface = 'coming_soon_card';
+export type UpcomingMapInteractionType =
+  | 'marker_click'
+  | 'drag'
+  | 'zoom'
+  | 'recenter'
+  | 'map_loaded'
+  | 'map_error';
+export type UpcomingMapCtaType = 'get_launch_invite' | 'go_back';
+export type UpcomingMapCloseSource =
+  | 'go_back'
+  | 'overlay'
+  | 'esc'
+  | 'x_button'
+  | 'primary_cta';
+
+export interface UpcomingMapTrackingBasePayload {
+  surface: UpcomingMapSurface;
+  map_session_id: string;
+  property_id?: string;
+  property_name: string;
+  location_name: string;
+  lat: number;
+  lng: number;
+}
+
+export function trackUpcomingMapModalOpened(
+  payload: UpcomingMapTrackingBasePayload & { source_cta_id?: string }
+): void {
+  trackWithContext(UPCOMING_MAP_MODAL_OPENED_EVENT, payload);
+}
+
+export function trackUpcomingMapInteraction(
+  payload: UpcomingMapTrackingBasePayload & {
+    interaction_type: UpcomingMapInteractionType;
+    zoom_level?: number;
+    marker_name?: string;
+  }
+): void {
+  trackWithContext(UPCOMING_MAP_INTERACTION_EVENT, payload);
+}
+
+export function trackUpcomingMapCtaClicked(
+  payload: UpcomingMapTrackingBasePayload & {
+    cta_type: UpcomingMapCtaType;
+    cta_id?: string;
+  }
+): void {
+  trackWithContext(UPCOMING_MAP_CTA_CLICKED_EVENT, payload);
+}
+
+export function trackUpcomingMapModalClosed(
+  payload: UpcomingMapTrackingBasePayload & {
+    close_source: UpcomingMapCloseSource;
+    time_in_modal_ms?: number;
+    interaction_count?: number;
+  }
+): void {
+  trackWithContext(UPCOMING_MAP_MODAL_CLOSED_EVENT, payload);
+}
+
+// --- Owners form funnel tracking ---
+export type OwnersFormSurface = 'owners_contact_section';
+export type OwnersStartTrigger = 'first_focus' | 'first_input';
+export type OwnersFieldName =
+  | 'firstname'
+  | 'phone'
+  | 'email'
+  | 'landlord_lead_property_address'
+  | 'typeofhome'
+  | 'expected_rent'
+  | 'is_property_vacant_now';
+export type OwnersFailureStage = 'client_validation' | 'hubspot_api' | 'network';
+export type OwnersErrorCode =
+  | 'missing_typeofhome'
+  | 'missing_vacancy_status'
+  | 'hubspot_error'
+  | 'unknown';
+
+export interface OwnersFormBasePayload {
+  form_id: 'owners_get_started_v1';
+  surface: OwnersFormSurface;
+}
+
+export function trackOwnersFormViewed(payload: OwnersFormBasePayload): void {
+  trackWithContext(OWNERS_FORM_VIEWED_EVENT, payload);
+}
+
+export function trackOwnersFormStarted(
+  payload: OwnersFormBasePayload & { start_trigger: OwnersStartTrigger }
+): void {
+  trackWithContext(OWNERS_FORM_STARTED_EVENT, payload);
+}
+
+export function trackOwnersFormFieldCompleted(
+  payload: OwnersFormBasePayload & { field_name: OwnersFieldName }
+): void {
+  trackWithContext(OWNERS_FORM_FIELD_COMPLETED_EVENT, payload);
+}
+
+export function trackOwnersFormSubmitAttempted(
+  payload: OwnersFormBasePayload & {
+    required_fields_present: boolean;
+    has_property_address: boolean;
+    has_expected_rent: boolean;
+  }
+): void {
+  trackWithContext(OWNERS_FORM_SUBMIT_ATTEMPTED_EVENT, payload);
+}
+
+export function trackOwnersFormSubmitSucceeded(
+  payload: OwnersFormBasePayload & { submit_latency_ms?: number }
+): void {
+  trackWithContext(OWNERS_FORM_SUBMIT_SUCCEEDED_EVENT, payload);
+}
+
+export function trackOwnersFormSubmitFailed(
+  payload: OwnersFormBasePayload & {
+    failure_stage: OwnersFailureStage;
+    error_code: OwnersErrorCode;
+  }
+): void {
+  trackWithContext(OWNERS_FORM_SUBMIT_FAILED_EVENT, payload);
 }
 
 export interface PropertyCardClickPayload extends BasePropertyAnalyticsPayload {

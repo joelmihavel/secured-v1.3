@@ -17,6 +17,11 @@ interface GoogleMapProps {
   apiKey: string;
   selectedPlace?: { lat: number; lng: number; name: string } | null;
   onDirectionsResult?: (distance: string, duration: string) => void;
+  onInteraction?: (payload: {
+    interaction_type: "marker_click" | "drag" | "zoom" | "recenter";
+    zoom_level?: number;
+    marker_name?: string;
+  }) => void;
 }
 
 // Component to handle directions rendering
@@ -154,8 +159,12 @@ const GoogleMap = ({
   apiKey,
   selectedPlace,
   onDirectionsResult,
+  onInteraction,
 }: GoogleMapProps) => {
   const [selectedNeighbor, setSelectedNeighbor] = useState<number | null>(null);
+  const previousCameraRef = useRef<{ lat: number; lng: number; zoom: number } | null>(
+    null
+  );
 
   return (
     <Map
@@ -165,6 +174,40 @@ const GoogleMap = ({
       style={{ width: "100%", height: "100%" }}
       gestureHandling="cooperative"
       disableDefaultUI={false}
+      onCameraChanged={(event) => {
+        const next = event.detail;
+        const previous = previousCameraRef.current;
+
+        if (!previous) {
+          previousCameraRef.current = {
+            lat: next.center.lat,
+            lng: next.center.lng,
+            zoom: next.zoom,
+          };
+          return;
+        }
+
+        if (previous.zoom !== next.zoom) {
+          onInteraction?.({
+            interaction_type: "zoom",
+            zoom_level: next.zoom,
+          });
+        } else if (
+          previous.lat !== next.center.lat ||
+          previous.lng !== next.center.lng
+        ) {
+          onInteraction?.({
+            interaction_type: "drag",
+            zoom_level: next.zoom,
+          });
+        }
+
+        previousCameraRef.current = {
+          lat: next.center.lat,
+          lng: next.center.lng,
+          zoom: next.zoom,
+        };
+      }}
     >
       {/* Marker for main property */}
       <Marker
@@ -214,6 +257,10 @@ const GoogleMap = ({
               action: 'marker_click',
               marker_name: neighbor.name,
               marker_type: 'neighbor'
+            });
+            onInteraction?.({
+              interaction_type: "marker_click",
+              marker_name: neighbor.name,
             });
           }}
           icon={"/images/map-marker-secondary.svg"}

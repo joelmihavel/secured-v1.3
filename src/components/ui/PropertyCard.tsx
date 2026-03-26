@@ -14,17 +14,16 @@ import {
   IconDoor as DoorOpen,
   IconUsers as Users,
   IconBuilding as Building2,
-  IconX,
   IconMap,
 } from "@tabler/icons-react";
 import { Property, Room, Occupant } from "@/lib/webflow";
 import { Button } from "@/components/ui/Button";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { PhoneSubscribeForm } from "@/components/ui/PhoneSubscribeForm";
+import { NotificationModal } from "@/components/ui/NotificationModal";
+import { UpcomingPropertyMapModal } from "@/components/ui/UpcomingPropertyMapModal";
 import { CTA_IDS } from "@/lib/cta-ids";
-import { cn } from "@/lib/utils";
 import { getAvailabilityDateForProperty } from "@/lib/get-availability-date";
 import { useDebugMode } from "@/hooks/useDebugMode";
+import { trackClickedGetNotifiied } from "@/lib/posthog-tracking";
 import {
   propertyHasDiscount,
   getRibbonDiscountSavings,
@@ -297,6 +296,10 @@ export const PropertyCard = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const [mapJourneySessionId, setMapJourneySessionId] = useState<string | undefined>(
+    undefined
+  );
   const [ribbonPhase, setRibbonPhase] = useState(0);
   const isDebugMode = useDebugMode();
 
@@ -470,18 +473,18 @@ export const PropertyCard = ({
                 {(() => {
                   const lat = property.fieldData["map-latitude"];
                   const lng = property.fieldData["map-longitude"];
-                  const hasCoordinates = lat && lng && 
+                  const hasCoordinates = lat && lng &&
                     parseFloat(lat) !== 0 && parseFloat(lng) !== 0;
-                  
+
                   if (!hasCoordinates) return null;
-                  
-                  const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-                  
+
                   return (
-                    <motion.a
-                      href={mapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <motion.button
+                      type="button"
+                      onClick={() => {
+                        setMapJourneySessionId(undefined);
+                        setIsMapModalOpen(true);
+                      }}
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98, y: 0 }}
                       className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem] inline-flex items-center justify-center font-bold transition-colors duration-200 cursor-pointer font-heading tracking-wide whitespace-nowrap px-3 py-3 text-button-link gap-2 border border-text-main shadow-[-3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[-1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[-3px] active:translate-y-[3px]"
@@ -497,102 +500,80 @@ export const PropertyCard = ({
                         <IconMap size={18} />
                       </span>
                       <span className="flex-shrink-0">View on Maps</span>
-                    </motion.a>
+                    </motion.button>
                   );
                 })()}
 
                 {/* Get Launch Invite Button */}
-                <DialogPrimitive.Root
-                  open={isDialogOpen}
-                  onOpenChange={setIsDialogOpen}
+                <Button
+                  variant="primary"
+                  pastelColor="violet"
+                  size="md"
+                  className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem]"
+                  data-cta-id={CTA_IDS.PROPERTY_GET_LAUNCH_INVITE}
+                  data-cta-context="property_card"
+                  onClick={() => {
+                    trackClickedGetNotifiied({
+                      type: "upcoming home",
+                      surface: "coming_soon_card",
+                      notification_type: "upcoming home",
+                      cta_id: CTA_IDS.PROPERTY_GET_LAUNCH_INVITE,
+                      property_id: property.fieldData?.pid || property.id,
+                      property_name: property.fieldData.name,
+                    });
+                    setIsDialogOpen(true);
+                  }}
                 >
-                  <Button
-                    variant="primary"
-                    pastelColor="violet"
-                    size="md"
-                    className="w-full rounded-tr-[1rem] rounded-tl-none rounded-bl-none rounded-br-[1rem]"
-                    data-cta-id={CTA_IDS.PROPERTY_GET_LAUNCH_INVITE}
-                    data-cta-context="property_card"
-                    onClick={() => setIsDialogOpen(true)}
-                  >
-                    Get Launch Invite
-                  </Button>
-                  <AnimatePresence>
-                    {isDialogOpen && (
-                      <DialogPrimitive.Portal forceMount>
-                        <DialogPrimitive.Overlay asChild>
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="fixed inset-0 z-50 bg-black/80"
-                          />
-                        </DialogPrimitive.Overlay>
-                        <DialogPrimitive.Content asChild>
-                          <motion.div
-                            initial={{
-                              opacity: 0,
-                              scale: 0.95,
-                              y: "-40%",
-                              x: "-50%",
-                              filter: "blur(10px)",
-                            }}
-                            animate={{
-                              opacity: 1,
-                              scale: 1,
-                              y: "-50%",
-                              x: "-50%",
-                              filter: "blur(0px)",
-                            }}
-                            exit={{
-                              opacity: 0,
-                              scale: 0.95,
-                              y: "-40%",
-                              x: "-50%",
-                              filter: "blur(10px)",
-                            }}
-                            transition={{
-                              type: "spring",
-                              damping: 25,
-                              stiffness: 300,
-                              duration: 0.3,
-                            }}
-                            className={cn(
-                              "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg gap-4 border p-6 shadow-lg sm:rounded-lg",
-                              "bg-ground-brown text-white border-white/20 sm:max-w-md"
-                            )}
-                          >
-                            <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-                              <DialogPrimitive.Title className="text-2xl font-zin text-white">
-                                Get Launch Invite
-                              </DialogPrimitive.Title>
-                              <DialogPrimitive.Description className="text-white/80">
-                                We&apos;ll notify you when{" "}
-                                {property.fieldData.name.split(",")[0]} becomes
-                                available.
-                              </DialogPrimitive.Description>
-                            </div>
-                            <div className="mt-4">
-                              <PhoneSubscribeForm
-                                notificationType="upcoming home"
-                                propertyId={property.fieldData?.pid || property.id}
-                                propertyName={property.fieldData.name}
-                                placeholder="Enter your phone number"
-                                buttonText="Get Invite"
-                                className="max-w-full"
-                              />
-                            </div>
-                            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                              <IconX className="h-4 w-4 text-white" />
-                              <span className="sr-only">Close</span>
-                            </DialogPrimitive.Close>
-                          </motion.div>
-                        </DialogPrimitive.Content>
-                      </DialogPrimitive.Portal>
-                    )}
-                  </AnimatePresence>
-                </DialogPrimitive.Root>
+                  Get Launch Invite
+                </Button>
+                <NotificationModal
+                  isOpen={isDialogOpen}
+                  onClose={() => setIsDialogOpen(false)}
+                  title="Get Launch Invite"
+                  description={`Get notified when ${property.fieldData.name.split(",")[0]} gets available`}
+                  notificationType="upcoming home"
+                  propertyId={property.fieldData?.pid || property.id}
+                  propertyName={property.fieldData.name}
+                  submitLabel="Get Invite"
+                  submitCtaId={CTA_IDS.PROPERTY_GET_LAUNCH_INVITE}
+                  surface="coming_soon_card"
+                  journeyMapSessionId={mapJourneySessionId}
+                />
+                {(() => {
+                  const lat = parseFloat(property.fieldData["map-latitude"] || "0");
+                  const lng = parseFloat(property.fieldData["map-longitude"] || "0");
+                  const hasCoordinates = lat !== 0 && lng !== 0;
+
+                  if (!hasCoordinates) return null;
+
+                  return (
+                    <UpcomingPropertyMapModal
+                      isOpen={isMapModalOpen}
+                      onClose={() => setIsMapModalOpen(false)}
+                      onGetLaunchInvite={() => {
+                        trackClickedGetNotifiied({
+                          type: "upcoming home",
+                          surface: "coming_soon_card",
+                          notification_type: "upcoming home",
+                          cta_id: CTA_IDS.PROPERTY_GET_LAUNCH_INVITE,
+                          property_id: property.fieldData?.pid || property.id,
+                          property_name: property.fieldData.name,
+                        });
+                        setIsMapModalOpen(false);
+                        setIsDialogOpen(true);
+                      }}
+                      onMapSessionStart={(sessionId) =>
+                        setMapJourneySessionId(sessionId)
+                      }
+                      propertyId={property.fieldData?.pid || property.id}
+                      propertyName={property.fieldData.name}
+                      propertyTitle={property.fieldData.name.split(",")[0]}
+                      locationName={locationName || "Bangalore"}
+                      latitude={lat}
+                      longitude={lng}
+                    />
+                  );
+                })()}
               </div>
             </>
           ) : (

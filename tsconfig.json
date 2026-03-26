@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@landing-pages/*": [
+        "./src/landing-pages/*"
       ]
     }
   },
@@ -39,6 +42,7 @@
   "exclude": [
     "node_modules",
     "secured-v1",
-    "tenant-renewals"
+    "tenant-renewals",
+    "v0-flent-landing-page-1"
   ]
 }

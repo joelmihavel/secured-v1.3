@@ -4,6 +4,16 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { CTA_IDS } from "@/lib/cta-ids";
+import {
+  mapNotificationTrackingType,
+  NotificationSurface,
+  trackClickedGetNotifiied,
+  trackNotificationFormFieldCompleted,
+  trackNotificationFormStarted,
+  trackNotificationFormSubmitAttempted,
+  trackNotificationFormSubmitFailed,
+  trackNotificationFormSubmitSucceeded,
+} from "@/lib/posthog-tracking";
 
 export interface PhoneSubscribeFormProps {
   notificationType: "specific room" | "specific home" | "all homes" | "upcoming home";
@@ -14,6 +24,7 @@ export interface PhoneSubscribeFormProps {
   buttonText?: string;
   className?: string;
   useEmail?: boolean; // If true, use email field; if false (default), use phone field
+  surface?: NotificationSurface;
 }
 
 interface PhoneFormData {
@@ -34,6 +45,7 @@ export const PhoneSubscribeForm = ({
   buttonText = "Subscribe",
   className = "",
   useEmail = false,
+  surface,
 }: PhoneSubscribeFormProps) => {
   const defaultPlaceholder = useEmail 
     ? "Enter your email address" 
@@ -45,9 +57,66 @@ export const PhoneSubscribeForm = ({
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
+  const [hasStarted, setHasStarted] = useState(false);
+  const [completedFields, setCompletedFields] = useState<Set<"name" | "phone" | "email">>(new Set());
+  const [submitStartMs, setSubmitStartMs] = useState<number | null>(null);
+  const effectiveSurface: NotificationSurface =
+    surface ||
+    (notificationType === "all homes"
+      ? "homepage_newsletter"
+      : notificationType === "upcoming home"
+      ? "coming_soon_card"
+      : notificationType === "specific home"
+      ? "property_slug_full_house"
+      : "property_slug_room");
+  const basePayload = {
+    type: mapNotificationTrackingType(notificationType),
+    surface: effectiveSurface,
+    notification_type: notificationType,
+    property_id: propertyId,
+    property_name: propertyName,
+    room_id: roomId,
+  } as const;
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+  const trackStarted = (trigger: "first_focus" | "first_input") => {
+    if (hasStarted) return;
+    setHasStarted(true);
+    trackNotificationFormStarted({
+      ...basePayload,
+      start_trigger: trigger,
+    });
+  };
+
+  const trackFieldCompleted = (
+    field: "name" | "phone" | "email",
+    value: string
+  ) => {
+    if (completedFields.has(field)) return;
+    const isComplete =
+      field === "name"
+        ? value.trim().length >= 2
+        : field === "phone"
+        ? value.replace(/\D/g, "").length >= 8
+        : emailRegex.test(value);
+    if (!isComplete) return;
+
+    setCompletedFields((prev) => new Set(prev).add(field));
+    trackNotificationFormFieldCompleted({
+      ...basePayload,
+      field_name: field,
+      completion_method: "valid_pattern",
+    });
+  };
 
   const handlePhoneSubmit = async (data: PhoneFormData) => {
     try {
+      trackNotificationFormSubmitAttempted({
+        ...basePayload,
+        form_variant: "phone",
+        validation_passed: true,
+      });
+      setSubmitStartMs(Date.now());
       setSubmitStatus("idle");
       const requestBody = {
         phone: data.phone,
@@ -65,21 +134,44 @@ export const PhoneSubscribeForm = ({
       });
 
       if (!response.ok) {
+        trackNotificationFormSubmitFailed({
+          ...basePayload,
+          form_variant: "phone",
+          failure_stage: response.status >= 500 ? "api_5xx" : "api_4xx",
+          error_code: "server_error",
+        });
         throw new Error("Submission failed");
       }
 
       setSubmitStatus("success");
+      trackNotificationFormSubmitSucceeded({
+        ...basePayload,
+        form_variant: "phone",
+        submit_latency_ms: submitStartMs ? Date.now() - submitStartMs : undefined,
+      });
       phoneForm.reset();
       setTimeout(() => setSubmitStatus("idle"), 3000);
     } catch (error) {
       console.error("Form submission error:", error);
       setSubmitStatus("error");
+      trackNotificationFormSubmitFailed({
+        ...basePayload,
+        form_variant: "phone",
+        failure_stage: "network",
+        error_code: "unknown",
+      });
       setTimeout(() => setSubmitStatus("idle"), 3000);
     }
   };
 
   const handleEmailSubmit = async (data: EmailFormData) => {
     try {
+      trackNotificationFormSubmitAttempted({
+        ...basePayload,
+        form_variant: "email",
+        validation_passed: true,
+      });
+      setSubmitStartMs(Date.now());
       setSubmitStatus("idle");
       const requestBody = {
         email: data.email,
@@ -96,15 +188,32 @@ export const PhoneSubscribeForm = ({
       });
 
       if (!response.ok) {
+        trackNotificationFormSubmitFailed({
+          ...basePayload,
+          form_variant: "email",
+          failure_stage: response.status >= 500 ? "api_5xx" : "api_4xx",
+          error_code: "server_error",
+        });
         throw new Error("Submission failed");
       }
 
       setSubmitStatus("success");
+      trackNotificationFormSubmitSucceeded({
+        ...basePayload,
+        form_variant: "email",
+        submit_latency_ms: submitStartMs ? Date.now() - submitStartMs : undefined,
+      });
       emailForm.reset();
       setTimeout(() => setSubmitStatus("idle"), 3000);
     } catch (error) {
       console.error("Form submission error:", error);
       setSubmitStatus("error");
+      trackNotificationFormSubmitFailed({
+        ...basePayload,
+        form_variant: "email",
+        failure_stage: "network",
+        error_code: "unknown",
+      });
       setTimeout(() => setSubmitStatus("idle"), 3000);
     }
   };
@@ -114,7 +223,19 @@ export const PhoneSubscribeForm = ({
     
     return (
       <form
-        onSubmit={handleSubmit(handleEmailSubmit)}
+        onSubmit={handleSubmit(handleEmailSubmit, () => {
+          trackNotificationFormSubmitAttempted({
+            ...basePayload,
+            form_variant: "email",
+            validation_passed: false,
+          });
+          trackNotificationFormSubmitFailed({
+            ...basePayload,
+            form_variant: "email",
+            failure_stage: "client_validation",
+            error_code: "invalid_email",
+          });
+        })}
         className={`max-w-md mx-auto mb-4 ${className}`}
       >
         <div className="flex flex-col md:flex-row gap-4">
@@ -127,7 +248,12 @@ export const PhoneSubscribeForm = ({
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "Please enter a valid email address",
               },
+              onChange: (e) => {
+                trackStarted("first_input");
+                trackFieldCompleted("email", e.target.value);
+              },
             })}
+            onFocus={() => trackStarted("first_focus")}
             className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
             disabled={isSubmitting}
           />
@@ -139,6 +265,12 @@ export const PhoneSubscribeForm = ({
             className="w-full md:w-auto"
             data-cta-id={CTA_IDS.EMAIL_SUBSCRIBE_SUBMIT}
             data-cta-context="email_subscribe_form"
+            onClick={() => {
+              trackClickedGetNotifiied({
+                ...basePayload,
+                cta_id: CTA_IDS.EMAIL_SUBSCRIBE_SUBMIT,
+              });
+            }}
           >
             {isSubmitting ? "Subscribing..." : buttonText}
           </Button>
@@ -166,7 +298,19 @@ export const PhoneSubscribeForm = ({
   
   return (
     <form
-      onSubmit={handleSubmit(handlePhoneSubmit)}
+      onSubmit={handleSubmit(handlePhoneSubmit, () => {
+        trackNotificationFormSubmitAttempted({
+          ...basePayload,
+          form_variant: "phone",
+          validation_passed: false,
+        });
+        trackNotificationFormSubmitFailed({
+          ...basePayload,
+          form_variant: "phone",
+          failure_stage: "client_validation",
+          error_code: "invalid_phone_length",
+        });
+      })}
       className={`max-w-md mx-auto mb-4 ${className}`}
     >
       <div className="flex flex-col gap-4">
@@ -179,7 +323,12 @@ export const PhoneSubscribeForm = ({
               value: 2,
               message: "Name must be at least 2 characters",
             },
+            onChange: (e) => {
+              trackStarted("first_input");
+              trackFieldCompleted("name", e.target.value);
+            },
           })}
+          onFocus={() => trackStarted("first_focus")}
           className="flex-1 px-6 py-3 rounded-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
           disabled={isSubmitting}
         />
@@ -193,7 +342,12 @@ export const PhoneSubscribeForm = ({
                 value: /^[0-9+\-\s()]+$/,
                 message: "Please enter a valid phone number",
               },
+              onChange: (e) => {
+                trackStarted("first_input");
+                trackFieldCompleted("phone", e.target.value);
+              },
             })}
+            onFocus={() => trackStarted("first_focus")}
             className="flex-1 px-6 py-3 rounded-l-[1rem] border border-white/20 focus:outline-none focus:ring-2 focus:ring-white bg-white/10 backdrop-blur-sm text-white placeholder:text-white/60"
             disabled={isSubmitting}
           />
@@ -205,6 +359,12 @@ export const PhoneSubscribeForm = ({
             className="w-full md:w-auto"
             data-cta-id={CTA_IDS.PHONE_SUBSCRIBE_SUBMIT}
             data-cta-context="phone_subscribe_form"
+            onClick={() => {
+              trackClickedGetNotifiied({
+                ...basePayload,
+                cta_id: CTA_IDS.PHONE_SUBSCRIBE_SUBMIT,
+              });
+            }}
           >
             {isSubmitting ? "Subscribing..." : buttonText}
           </Button>
