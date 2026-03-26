@@ -13,6 +13,7 @@ import {
 } from "@/lib/property-utils";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
+import { DiscountCta } from "@/components/ui/DiscountCta";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { CardSection } from "@/components/layout/CardSection";
 import { ComingSoon } from "@/app/(Homepage)/sections/ComingSoon";
@@ -440,34 +441,45 @@ export const PropertyBrowser = ({
       <OpenSection className="pt-0">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.map((property) => {
+            {filteredProperties.map((property, index) => {
               const locationId = property.fieldData.location;
               const locationName = locationId
                 ? locationMap.get(locationId)
                 : undefined;
 
               return (
-                <Link
-                  key={property.id}
-                  href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
-                  className="block h-full"
-                  onClick={() =>
-                    trackPropertyCardClick({
-                      property_slug: property.fieldData.slug,
-                      property_type: propertyHasDiscount(property) ? "discounted" : "standard",
-                      property_area: locationName,
-                      page_section: "search",
-                      cta_id: CTA_IDS.PROPERTY_CARD,
-                    })
-                  }
-                >
-                  <PropertyCard
-                    property={property}
-                    locationName={locationName}
-                    rooms={rooms}
-                    occupants={occupants}
-                  />
-                </Link>
+                <React.Fragment key={property.id}>
+                  <Link
+                    href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
+                    className="block h-full"
+                    onClick={() =>
+                      trackPropertyCardClick({
+                        property_slug: property.fieldData.slug,
+                        property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+                        property_area: locationName,
+                        page_section: "search",
+                        cta_id: CTA_IDS.PROPERTY_CARD,
+                      })
+                    }
+                  >
+                    <PropertyCard
+                      property={property}
+                      locationName={locationName}
+                      rooms={rooms}
+                      occupants={occupants}
+                    />
+                  </Link>
+                  {index === 1 && (
+                    <div className="md:hidden">
+                      <DiscountCta />
+                    </div>
+                  )}
+                  {index === 3 && (
+                    <div className="hidden md:block">
+                      <DiscountCta />
+                    </div>
+                  )}
+                </React.Fragment>
               );
             })}
             {filteredProperties.length === 0 && (

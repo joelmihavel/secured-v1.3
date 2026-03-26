@@ -173,7 +173,7 @@ export const Header = ({
 
           {/* Title */}
           <h1
-            className={`text-fluid-h1 font-heading mb-8 leading-tight font-zin  ${textColor}`}
+            className={`text-fluid-h1 mb-8 leading-tight font-zin ${textColor}`}
           >
             {property.fieldData.name.split(",")[0]}
           </h1>
