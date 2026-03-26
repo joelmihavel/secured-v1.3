@@ -15,7 +15,7 @@
   },
   {
     "name": "Mayank Lalwani",
-    "title": "COO",
+    "title": "Co-founder / COO",
     "image": "/team-photos-normalized/mayank_lalwani.webp",
     "linkedin": "https://www.linkedin.com/in/mayankklalwani/",
     "downloaded": true
@@ -43,7 +43,7 @@
   },
   {
     "name": "Purva Jadhav",
-    "title": "Product Ops Manager",
+    "title": "Product Operations Manager",
     "image": "/team-photos-normalized/purva_jadhav.webp",
     "linkedin": "https://www.linkedin.com/in/purvajadhav/",
     "downloaded": true
@@ -70,8 +70,8 @@
     "downloaded": true
   },
   {
-    "name": "Chetan Sai",
-    "title": "Senior Associate - Demand",
+    "name": "Sai Chetan Pathi",
+    "title": "Senior Associate - Demand Operations",
     "image": "/team-photos-normalized/chetan_sai.webp",
     "linkedin": "https://www.linkedin.com/in/sai-chetan-pathi-a272b31ba/",
     "downloaded": true
@@ -92,8 +92,8 @@
   },
   {
     "name": "Raghav Malhotra",
-    "title": "Supply Lead",
-    "image": "/team-photos-normalized/raghav_malhotra.webp",
+    "title": "Supply Operations Manager",
+    "image": "/team-photos-normalized/raghav_malhotra.png",
     "linkedin": "https://www.linkedin.com/in/malhotra-raghav/",
     "downloaded": true
   },
@@ -126,8 +126,8 @@
     "downloaded": true
   },
   {
-    "name": "Chhavi Daswani",
-    "title": "Product Ops Associate",
+    "name": "Chhavi Manoj Daswani",
+    "title": "Product Operations Associate",
     "image": "/team-photos-normalized/chhavi_daswani.webp",
     "linkedin": "https://www.linkedin.com/in/chhavi-daswani-b86714227/",
     "downloaded": true
@@ -147,8 +147,8 @@
     "downloaded": true
   },
   {
-    "name": "Shreya Bhagwat",
-    "title": "Product Ops Associate",
+    "name": "Shreya Mandar Bhagwat",
+    "title": "Product Operations Associate",
     "image": "/team-photos-normalized/shreya_bhagwat.webp",
     "linkedin": "https://www.linkedin.com/in/shreya-bhagwat-1716b1218/",
     "downloaded": true
@@ -186,6 +186,66 @@
     "title": "Visual Designer",
     "image": "/team-photos-normalized/Jyotir v2.webp",
     "linkedin": "https://www.linkedin.com/in/jyotirmya/",
+    "downloaded": true
+  },
+  {
+    "name": "Vamsi Krishna",
+    "title": "Business Growth Manager",
+    "image": "/team-photos-normalized/vamsi_krishna.png",
+    "downloaded": true
+  },
+  {
+    "name": "Nayan S K",
+    "title": "Demand Operations Associate",
+    "image": "/team-photos-normalized/nayan_s_k.png",
+    "downloaded": true
+  },
+  {
+    "name": "Tanmayee Sharma",
+    "title": "Intern-FlentX",
+    "image": "/team-photos-normalized/tanmayee_sharma.png",
+    "downloaded": true
+  },
+  {
+    "name": "Krishna Shetty",
+    "title": "Intern-FlentX",
+    "image": "/team-photos-normalized/krishna_shetty.png",
+    "downloaded": true
+  },
+  {
+    "name": "Aman Sonawane",
+    "title": "Intern-FlentX",
+    "image": "/team-photos-normalized/aman_sonawane.png",
+    "downloaded": true
+  },
+  {
+    "name": "Sherin Marian Lobo",
+    "title": "People Operations Coordinator",
+    "image": "/team-photos-normalized/sherin_marian_lobo.png",
+    "downloaded": true
+  },
+  {
+    "name": "Shanafil Ahamed N",
+    "title": "Operations Associate",
+    "image": "/team-photos-normalized/shanafil_ahamed_n.png",
+    "downloaded": true
+  },
+  {
+    "name": "Tanmay Rakshe",
+    "title": "Supply Growth Executive",
+    "image": "/team-photos-normalized/tanmay_rakshe.png",
+    "downloaded": true
+  },
+  {
+    "name": "Vidyuth Sridhar",
+    "title": "AI Engineer",
+    "image": "/team-photos-normalized/vidyuth_sridhar.png",
+    "downloaded": true
+  },
+  {
+    "name": "Amit Nicodemus",
+    "title": "Supply Growth Executive",
+    "image": "/team-photos-normalized/amit_nicodemus.png",
     "downloaded": true
   }
 ]
