@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Flent Secured - Tenant</title>
+  <meta name="description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
+  <meta property="og:title" content="Flent Secured - Tenant">
+  <meta property="og:description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Flent Secured - Tenant">
+  <meta name="twitter:description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
+  <link rel="icon" type="image/svg+xml" href="/hiw-tenant/svg/favicon.svg">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Geist Pixel';
+      src: url('https://cdn.jsdelivr.net/npm/geist@1.7.0/dist/fonts/geist-pixel/GeistPixel-Square.woff2') format('woff2');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #131313;
+      --bg-card: #202020;
+      --bg-surface: #131313;
+      --bg-input: #1a1a1a;
+      --brand: #ff9a6d;
+      --text-primary: #eeeeee;
+      --text-secondary: #a9a9a9;
+      --text-muted: #656565;
+      --text-dim: #444444;
+      --border: #202020;
+      --border-brand: #ff9a6d;
+      --pill: #4d4d4d;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: transparent;
+      color: var(--text-primary);
+      margin: 0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 393px;
+      margin: 0 auto;
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    /* Each major section fills the viewport */
+    .snap-section {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+    }
+
+    /* ── Preloader ── */
+    .preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .preloader-logo {
+      width: 34px; height: 40px;
+    }
+
+    /* Page wrap hidden until GSAP reveals it */
+    .page-wrap {
+      clip-path: inset(0 0 100% 0);
+    }
+
+    .font-geist {
+      font-family: 'Geist', sans-serif;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      height: 53px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 64px 24px 0;
+    }
+
+    .hero-logo svg {
+      width: 34px;
+      height: 40px;
+    }
+
+    .hero-illustration {
+      width: 199px;
+      height: 150px;
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-text h1 {
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 40px;
+      letter-spacing: -1px;
+      color: var(--text-secondary);
+    }
+
+    .hero-text h1 .accent {
+      color: var(--brand);
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 20px;
+    }
+
+    /* CTA Button */
+    .btn-primary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .btn-primary .pill {
+      width: 24px;
+      height: 2px;
+      background: var(--pill);
+      border-radius: 200px;
+    }
+
+    .btn-primary .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 154, 109, 0.25);
+      background: linear-gradient(180deg, #202020 0%, #0d0d0d 90.18%);
+      box-shadow: 0px 6px 12px -2px rgba(153,92,65,0.24),
+                  inset 0px -3px 4px 1px rgba(255,255,255,0.12),
+                  inset -2px -4px 0px 1px #000;
+      cursor: pointer;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, background 0.08s ease-out;
+    }
+
+    .btn-primary:not(.btn-disabled) .btn-inner:active {
+      transform: translateY(2px) scale(0.985);
+      background: #111111;
+      box-shadow: inset 0 2px 16px rgba(0,0,0,0.8),
+                  inset 0 0 0 2px rgba(0,0,0,0.6);
+      border-color: rgba(255, 154, 109, 0.12);
+    }
+
+    .btn-primary:not(.btn-disabled):active .pill {
+      background: var(--brand);
+    }
+
+    .btn-primary .btn-inner span {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #ffffff;
+      line-height: 24px;
+    }
+
+    /* Disabled button */
+    .btn-disabled .btn-inner {
+      background: #202020;
+      border: 1px solid #202020;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .btn-disabled .btn-inner span {
+      color: #444444;
+    }
+
+    /* Dotted divider lines */
+    .dotted-divider {
+      width: 100%;
+      padding: 0 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+
+    .dot-row {
+      display: flex;
+      gap: 0;
+      width: 100%;
+      justify-content: space-evenly;
+    }
+
+    .dot-row span {
+      width: 9px;
+      height: 2px;
+      background: #1a1a1a;
+      border-radius: 1px;
+    }
+
+    .divider-arrow {
+      width: 3px;
+      margin-top: -4px;
+    }
+
+    /* Section heading pattern */
+    .section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 45px;
+      padding: 0 24px;
+    }
+
+    .section-icon {
+      width: auto;
+      height: 100px;
+      opacity: 0.5;
+    }
+
+    .section-text {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+      max-width: 291px;
+    }
+
+    .section-text.gap-14 {
+      gap: 14px;
+    }
+
+    .section-heading {
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 40px;
+      letter-spacing: -1px;
+    }
+
+    .section-heading .accent {
+      color: var(--brand);
+    }
+
+    .section-heading .neutral {
+      color: var(--text-secondary);
+    }
+
+    .section-body {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 20px;
+    }
+
+    /* Benefit Cards (What this unlocks) */
+    .benefit-card {
+      position: relative;
+      width: 320px;
+      max-width: 100%;
+      height: 258px;
+      background: #202020;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px 16px;
+      overflow: visible;
+    }
+
+    .benefit-card-paperclip {
+      position: absolute;
+      left: 8px;
+      top: -5.71px;
+      width: 22.775px;
+      height: 41.399px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .benefit-card-paperclip img {
+      width: 12.122px;
+      height: 39.588px;
+      display: block;
+      transform: rotate(163.65deg) scaleY(-1);
+      flex-shrink: 0;
+    }
+
+    .benefit-card-fold {
+      position: absolute;
+      right: 0;
+      top: -0.4px;
+      width: 54px;
+      height: 54px;
+      pointer-events: none;
+      border-radius: 0 12px 0 0;
+      overflow: hidden;
+    }
+
+    .benefit-card-fold img {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .benefit-card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .benefit-card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0.5;
+    }
+
+    .benefit-card-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      text-align: center;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    .benefit-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--brand);
+      line-height: 20px;
+    }
+
+    .benefit-card-desc {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: #cbcbcb;
+      line-height: 20px;
+    }
+
+    /* Feature Cards - horizontal scroll */
+    .cards-scroll-container {
+      width: 100%;
+      background: var(--bg);
+      padding: 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .cards-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cards-scroll {
+      display: flex;
+      gap: 16px;
+    }
+
+    .note-card {
+      position: relative;
+      width: 244px;
+      min-width: 244px;
+      height: 321px;
+      background: url('/hiw-tenant/svg/card-bg.svg') no-repeat center/contain;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 24px;
+      overflow: visible;
+    }
+
+    .note-card p {
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 24px;
+    }
+
+    .note-card p .accent {
+      color: var(--brand);
+    }
+
+    .sticky-cards-section {
+      scroll-snap-align: none;
+      min-height: auto;
+    }
+
+    /* Vertical requirement cards — sticky stack */
+    .req-cards {
+      display: flex;
+      flex-direction: column;
+      padding: 32px 24px 0;
+      width: 100%;
+      align-items: center;
+      gap: 0;
+    }
+
+    .req-card-wrap {
+      position: sticky;
+      width: 270px;
+    }
+
+    .req-card-wrap:nth-child(1) { top: 100px; z-index: 1; margin-bottom: 40vh; transform: rotate(3deg); }
+    .req-card-wrap:nth-child(2) { top: 100px; z-index: 2; margin-bottom: 40vh; transform: rotate(-3deg); }
+    .req-card-wrap:nth-child(3) { top: 100px; z-index: 3; margin-bottom: 40vh; transform: rotate(3deg); }
+    .req-card-wrap:nth-child(4) { top: 100px; z-index: 4; margin-bottom: 40vh; transform: rotate(-3deg); }
+
+    .req-card {
+      position: relative;
+      width: 270px;
+      height: 321px;
+      background: url('/hiw-tenant/svg/req-card-bg.svg') no-repeat center/contain;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 24px;
+      box-shadow: 0px 9px 19px rgba(0,0,0,0.1), 0px 35px 35px rgba(0,0,0,0.09), 0px 78px 47px rgba(0,0,0,0.05);
+    }
+
+    .req-card p {
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 24px;
+    }
+
+    .req-card p .accent {
+      color: var(--brand);
+    }
+
+    /* Form Section */
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+      padding: 48px 40px;
+      background: var(--bg-surface);
+      border-radius: 16px;
+      margin: 0 0;
+      width: 100%;
+    }
+
+    .form-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 20px;
+    }
+
+    .field-input {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+    }
+
+    /* Country code picker */
+    .cc-picker {
+      position: relative;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .cc-picker-selected {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Geist', sans-serif;
+      font-size: 16px;
+      color: var(--text-dim);
+    }
+
+    .cc-picker-flag {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .cc-picker-arrow {
+      width: 12px;
+      height: 12px;
+      opacity: 0.5;
+      transition: transform 0.2s;
+    }
+
+    .cc-picker.open .cc-picker-arrow {
+      transform: rotate(180deg);
+    }
+
+    .cc-dropdown {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: -16px;
+      width: 280px;
+      max-height: 320px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      overflow: hidden;
+      display: none;
+      z-index: 50;
+      flex-direction: column;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.4);
+    }
+
+    .cc-picker.open .cc-dropdown {
+      display: flex;
+    }
+
+    .cc-search {
+      padding: 12px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .cc-search input {
+      width: 100%;
+      background: #131313;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .cc-search input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .cc-list {
+      overflow-y: auto;
+      flex: 1;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
+
+    .cc-list::-webkit-scrollbar { width: 4px; }
+    .cc-list::-webkit-scrollbar-track { background: transparent; }
+    .cc-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+    .cc-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Geist', sans-serif;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .cc-option:hover, .cc-option.active {
+      background: #252525;
+    }
+
+    .cc-option .flag {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .cc-option .name {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cc-option .dial {
+      color: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    .field-input .placeholder {
+      font-size: 20px;
+      color: var(--text-dim);
+      line-height: 32px;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .form-disclaimer {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 20px;
+    }
+
+    /* Spacers */
+    .spacer-sm { height: 40px; }
+    .spacer-md { height: 80px; }
+    .spacer-lg { height: 100px; }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 0 48px;
+      width: 100%;
+    }
+
+    /* Speak section */
+    .speak-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 45px;
+      padding: 0 24px;
+    }
+
+    .speak-btn {
+      width: 297px;
+    }
+
+    /* Footer */
+    .site-footer {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 393px;
+      margin: 0 auto;
+      padding: 64px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .footer-logo svg {
+      width: 28px;
+      height: 33px;
+    }
+
+    .footer-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .footer-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      background: #202020;
+      border-radius: 12px;
+      color: #ffffff;
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.2s;
+      box-shadow: 0px 9px 19px rgba(0,0,0,0.1), 0px 35px 35px rgba(0,0,0,0.09), 0px 78px 47px rgba(0,0,0,0.05);
+    }
+
+    .footer-btn:hover {
+      background: #282828;
+    }
+
+    .footer-line {
+      width: 1px;
+      height: 64px;
+      background: var(--brand);
+      opacity: 0.5;
+    }
+
+    .footer-tagline {
+      text-align: center;
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-weight: 400;
+      letter-spacing: -2px;
+    }
+
+    .footer-tagline .line1 {
+      display: block;
+      font-size: 32px;
+      line-height: 48px;
+      color: #ffffff;
+    }
+
+    .footer-tagline .line2 {
+      display: block;
+      font-size: 32px;
+      line-height: 48px;
+      color: var(--brand);
+    }
+
+    .footer-copyright {
+      font-family: 'Geist Pixel', 'Geist', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #bababa;
+      text-align: center;
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+      background: #0a0a0a;
+      scroll-snap-type: y proximity;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Scroll animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Word-by-word typing reveal for headings */
+    .word-reveal .word {
+      display: inline-block;
+      opacity: 0;
+      filter: blur(8px);
+      transform: translateY(8px);
+      transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .word-reveal.visible .word {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+
+    /* Subheading slide-up reveal */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(30px);
+      filter: blur(4px);
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    /* Illustration reveal */
+    .reveal-illustration {
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-illustration.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+
+    /* Animated divider */
+    #animatedDivider {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+      max-width: 393px;
+      margin: 0 auto;
+    }
+
+    .divider-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .divider-row {
+      display: block;
+      width: 100%;
+      height: 2px;
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .divider-row.visible {
+      opacity: 1;
+    }
+
+    /* Illustration styles */
+    .illustration {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .illustration img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Multi-step form */
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+      width: 100%;
+      animation: stepFadeIn 0.4s ease;
+    }
+
+    .step[style*="display: none"], .step[style*="display:none"] {
+      animation: none;
+    }
+
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #dddddd;
+      line-height: 32px;
+      width: 100%;
+      caret-color: var(--brand);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .form-input.phone-input {
+      flex: 1;
+    }
+
+    /* OTP inputs */
+    .otp-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .otp-box {
+      width: 64px;
+      height: 64px;
+      background: #222222;
+      border: 1px solid #444444;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0px 1px 2px 0px rgba(10,13,18,0.05);
+    }
+
+    .otp-input {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 48px;
+      font-weight: 500;
+      color: #444444;
+      text-align: center;
+      line-height: 60px;
+      letter-spacing: -0.96px;
+      caret-color: var(--brand);
+    }
+
+    .otp-input.filled {
+      color: #ffffff;
+    }
+
+    /* Detail rows */
+    .detail-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .detail-row-inline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .detail-row-stacked {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .detail-label-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .detail-label-group svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .detail-label {
+      font-size: 12px;
+      font-weight: 400;
+      color: #878787;
+      line-height: 20px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 400;
+      color: #cbcbcb;
+      line-height: 20px;
+    }
+
+    .detail-divider {
+      width: 100%;
+      height: 0;
+      border: none;
+      border-top: 0.25px dashed #444444;
+    }
+
+    /* Button release transition — slightly slower for spring-back feel */
+    .btn-primary .btn-inner {
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background 0.2s ease-out;
+    }
+
+    /* Resend / Enter Manually link */
+    .form-link {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      text-align: center;
+      line-height: 20px;
+      cursor: pointer;
+    }
+
+    /* Success illustration placeholder */
+    .success-illustration {
+      width: 265px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.6;
+    }
+
+    .success-body {
+      font-size: 14px;
+      font-weight: 400;
+      color: #a6a6a6;
+      text-align: center;
+      line-height: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Starfield background (repeating tile) -->
+  <div style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; background-image:url('/hiw-tenant/svg/starfield.svg'); background-repeat:repeat; background-size:576px 288px;"></div>
+
+  <!-- Preloader: logo on starfield -->
+  <div class="preloader" id="preloader">
+    <svg class="preloader-logo" id="preloaderLogo" viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.475 40H3.726V21.206H0V16.022H3.726C1.653 7.986 7.507 3.169 10.693 1.764C20.025 -3.161 29.703 3.385 33.375 7.273V40H24.626V11.647C19.571 3.352 13.231 5.275 10.693 7.273C7.453 12.846 12.043 15.428 14.743 16.022H19.28V21.206H12.475V40Z" fill="#FFFFFF" />
+    </svg>
+  </div>
+
+  <div class="page-wrap" id="pageWrap">
+
+  <!-- Snap 1: Hero + CTA + Arrow + Divider -->
+  <div class="snap-section">
+    <section class="hero" style="position:relative; z-index:1;">
+      <!-- Logo -->
+      <div class="hero-logo reveal-illustration">
+        <svg viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.475 40H3.726V21.206H0V16.022H3.726C1.653 7.986 7.507 3.169 10.693 1.764C20.025 -3.161 29.703 3.385 33.375 7.273V40H24.626V11.647C19.571 3.352 13.231 5.275 10.693 7.273C7.453 12.846 12.043 15.428 14.743 16.022H19.28V21.206H12.475V40Z" fill="#FFFFFF" />
+        </svg>
+      </div>
+
+      <!-- House Illustration -->
+      <div class="hero-illustration illustration reveal-illustration" data-target-opacity="0.48" style="width: 256px; height: 150px;">
+        <img src="/hiw-tenant/svg/hero-illustration-new.svg" alt="" width="256" height="150" />
+      </div>
+
+      <!-- Heading -->
+      <div class="hero-text">
+        <h1 class="word-reveal" data-word-reveal>
+          Just <span class="accent">one thing left</span>
+        </h1>
+        <p class="reveal-up">Invite your landlord to unlock<br>the full benefits of Secured</p>
+      </div>
+    </section>
+
+    <!-- Invite My Landlord Button -->
+    <div class="cta-section" id="learnMoreBtn" style="padding: 32px 48px;">
+      <div class="btn-primary reveal-up">
+        <div class="pill"></div>
+        <a href="#learn-more" class="btn-inner" style="text-decoration: none;">
+          <span>Invite My Landlord</span>
+        </a>
+      </div>
+      <p class="reveal-up" style="font-size: 14px; color: var(--text-secondary); text-align: center; margin-top: 12px;">*Takes less than 10 seconds</p>
+    </div>
+
+    <!-- Arrow Line (scroll-drawn) -->
+    <div style="display:flex; justify-content:center; margin-bottom:24px;" id="arrowLineWrap">
+      <svg width="3" height="180" viewBox="0 0 3 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line id="arrowLine" x1="1.5" y1="0" x2="1.5" y2="178.5" stroke="#FF9A6D" stroke-width="1" stroke-dasharray="178.5" stroke-dashoffset="178.5" />
+        <path id="arrowHead" d="M1.443 179.943L2.887 178.5L1.443 177.057L0 178.5L1.443 179.943Z" fill="#FF9A6D" opacity="0" />
+      </svg>
+    </div>
+
+    <!-- Dotted Divider (Figma groups: 4-3-2-1 rows) -->
+    <div class="dotted-divider" id="animatedDivider">
+      <div class="divider-group">
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-0.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+      </div>
+      <div class="divider-group">
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+      </div>
+      <div class="divider-group">
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-3.svg" alt="" />
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-3.svg" alt="" />
+      </div>
+      <div class="divider-group">
+        <img class="divider-row" src="/hiw-tenant/svg/divider-row-4.svg" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Snap 2: What this unlocks? -->
+  <div class="snap-section">
+    <section class="section" id="learn-more" style="gap: 0; padding: 0 24px;">
+      <h2 class="section-heading word-reveal" data-word-reveal style="text-align: center; margin-bottom: 45px;">
+        <span class="neutral">What </span><span class="accent">this unlocks?</span>
+      </h2>
+      <div style="display: flex; flex-direction: column; gap: 24px; width: 320px; max-width: 100%;">
+        <!-- Cashback Card -->
+        <div class="benefit-card reveal-up">
+          <!-- Paperclip decoration -->
+          <div class="benefit-card-paperclip">
+            <img src="/hiw-tenant/svg/paperclip.svg" alt="" />
+          </div>
+          <!-- Corner fold decoration -->
+          <div class="benefit-card-fold">
+            <img src="/hiw-tenant/svg/corner-fold.svg" alt="" />
+          </div>
+          <!-- Card content -->
+          <div class="benefit-card-icon" style="width: 67.54px; height: 64px;">
+            <img src="/hiw-tenant/svg/cashback-icon.svg" alt="" />
+          </div>
+          <div class="benefit-card-text">
+            <p class="benefit-card-title">Redeem your 1% cashback</p>
+            <p class="benefit-card-desc">Cashback becomes redeemable once your landlord signs up.</p>
+          </div>
+        </div>
+        <!-- Credit Card -->
+        <div class="benefit-card reveal-up">
+          <!-- Paperclip decoration -->
+          <div class="benefit-card-paperclip">
+            <img src="/hiw-tenant/svg/paperclip.svg" alt="" />
+          </div>
+          <!-- Corner fold decoration -->
+          <div class="benefit-card-fold">
+            <img src="/hiw-tenant/svg/corner-fold.svg" alt="" />
+          </div>
+          <!-- Card content -->
+          <div class="benefit-card-icon" style="width: 71px; height: 48px;">
+            <img src="/hiw-tenant/svg/creditcard-icon.svg" alt="" />
+          </div>
+          <div class="benefit-card-text">
+            <p class="benefit-card-title">Pay using credit card</p>
+            <p class="benefit-card-desc">Credit card payments activate after your landlord signs up.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Snap 3: Your landlord gets something valuable too -->
+  <div class="snap-section">
+    <section class="section" style="gap: 45px;">
+      <div class="illustration reveal-illustration" style="height: 100px;">
+        <img src="/hiw-tenant/svg/keys-icon.svg" alt="" width="70" height="100" />
+      </div>
+      <div class="section-text">
+        <h2 class="section-heading word-reveal" data-word-reveal>
+          <span class="neutral">Your landlord gets </span><br>
+          <span class="accent">something valuable too</span>
+        </h2>
+      </div>
+    </section>
+    <div style="height: 24px;"></div>
+    <div class="cards-scroll-container reveal-up">
+    <div class="cards-scroll">
+      <div class="note-card">
+        <p>They unlock a free rental cover of <span class="accent">up to ₹1.5L</span></p>
+      </div>
+      <div class="note-card">
+        <p>They get upto one month's rent if the <span class="accent">home is vacant for 30+ days after your exit.</span></p>
+      </div>
+      <div class="note-card">
+        <p>They get <span class="accent">one month's rent </span>if you exit the home without serving a notice</p>
+      </div>
+      <div class="note-card">
+        <p>Landlords <span class="accent">don't pay anything</span> to receive this protection</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Snap 4: Inviting your landlord is simple + Sticky cards -->
+  <div class="snap-section sticky-cards-section" style="justify-content: flex-start;">
+  <section class="section" style="padding-top: 64px;">
+    <div class="illustration reveal-illustration" style="height: 110px;">
+      <img src="/hiw-tenant/svg/lock-icon.svg" alt="" width="99" height="110" />
+    </div>
+    <div class="section-text">
+      <h2 class="section-heading word-reveal" data-word-reveal>
+        <span class="accent">Inviting your landlord </span><br>
+        is simple
+      </h2>
+    </div>
+  </section>
+
+  <!-- Step Cards (sticky stack) -->
+  <div class="req-cards">
+    <div class="req-card-wrap">
+      <div class="req-card fade-up">
+        <p>Tap <span class="accent">"Invite Now"</span></p>
+      </div>
+    </div>
+    <div class="req-card-wrap">
+      <div class="req-card fade-up">
+        <p style="color: var(--brand);">We'll generate a message for your landlord</p>
+      </div>
+    </div>
+    <div class="req-card-wrap">
+      <div class="req-card fade-up">
+        <p>Send it on WhatsApp</p>
+      </div>
+    </div>
+    <div class="req-card-wrap">
+      <div class="req-card fade-up">
+        <p>Once they join, your benefits unlock</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Snap 5: Still Unsure? -->
+  <div class="snap-section">
+  <section class="speak-section" style="padding-top: 64px;">
+    <div class="illustration reveal-illustration" style="height: 100px;">
+      <img src="/hiw-tenant/svg/still-unsure-icon.svg" alt="" width="121" height="100" />
+    </div>
+    <div class="section-text gap-14">
+      <h2 class="section-heading word-reveal" data-word-reveal style="color: var(--brand);">
+        Still Unsure?
+      </h2>
+      <p class="section-body reveal-up">If your landlord has questions or you'd prefer us to explain Flent Secured directly, our team is available to assist.</p>
+    </div>
+    <div class="speak-btn reveal-up">
+      <div class="btn-primary">
+        <div class="pill"></div>
+        <a href="https://wa.me/918904695925?text=Help%20me%20understand%20more%20about%20flent%20secured" target="_blank" rel="noopener noreferrer" class="btn-inner" style="text-decoration: none;">
+          <span>Get support</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-logo">
+      <svg viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.475 40H3.726V21.206H0V16.022H3.726C1.653 7.986 7.507 3.169 10.693 1.764C20.025 -3.161 29.703 3.385 33.375 7.273V40H24.626V11.647C19.571 3.352 13.231 5.275 10.693 7.273C7.453 12.846 12.043 15.428 14.743 16.022H19.28V21.206H12.475V40Z" fill="#FFFFFF" />
+      </svg>
+    </div>
+    <div class="footer-buttons">
+      <a href="https://www.flent.in/secured" class="footer-btn" target="_blank" rel="noopener noreferrer">Explore Secured</a>
+      <a href="#" class="footer-btn">Contact</a>
+    </div>
+    <div class="footer-line"></div>
+    <div class="footer-tagline">
+      <span class="line1">Welcome to the</span>
+      <span class="line2">right side of renting</span>
+    </div>
+    <p class="footer-copyright">&copy; 2026 FLENT. ALL RIGHTS RESERVED.</p>
+  </footer>
+
+  </div><!-- /.page-wrap -->
+
+  <!-- Scroll Animation Script -->
+  <script>
+    // ── Word-reveal: wrap each text node word in a <span class="word"> ──
+    document.querySelectorAll('[data-word-reveal]').forEach(heading => {
+      const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT, null);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+      textNodes.forEach(node => {
+        const words = node.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        words.forEach(w => {
+          if (/^\s+$/.test(w)) {
+            frag.appendChild(document.createTextNode(w));
+          } else if (w) {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = w;
+            frag.appendChild(span);
+          }
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+    });
+
+    // ── Reveal observer: triggers animation when element enters viewport ──
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        if (el.classList.contains('visible')) return;
+
+        if (el.classList.contains('word-reveal')) {
+          const words = el.querySelectorAll('.word');
+          words.forEach((word, i) => {
+            word.style.transitionDelay = `${i * 0.035}s`;
+          });
+          // Trigger sibling reveal-up elements after the words finish
+          const parent = el.closest('.section-text, .hero-text, .section-text.gap-14');
+          if (parent) {
+            const siblingReveals = parent.querySelectorAll('.reveal-up');
+            const wordDelay = words.length * 0.035 + 0.08;
+            siblingReveals.forEach(sib => {
+              sib.style.transitionDelay = `${wordDelay}s`;
+            });
+          }
+        }
+        el.classList.add('visible');
+
+        const targetOpacity = el.dataset.targetOpacity;
+        if (targetOpacity) {
+          requestAnimationFrame(() => { el.style.opacity = targetOpacity; });
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // ── Reset observer: resets animation when element is far off-screen ──
+    const resetObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) return;
+        const el = entry.target;
+        if (!el.classList.contains('visible')) return;
+
+        el.classList.remove('visible');
+        el.style.transitionDelay = '';
+        if (el.classList.contains('word-reveal')) {
+          el.querySelectorAll('.word').forEach(w => { w.style.transitionDelay = '0s'; });
+          const parent = el.closest('.section-text, .hero-text, .section-text.gap-14');
+          if (parent) {
+            parent.querySelectorAll('.reveal-up').forEach(sib => { sib.style.transitionDelay = ''; });
+          }
+        }
+        if (el.dataset.targetOpacity) {
+          el.style.opacity = '';
+        }
+      });
+    }, { rootMargin: '200px 0px 200px 0px' });
+
+    // Only observe elements outside the hero section + learn more btn;
+    // those are handled by the preloader sequence
+    const heroSection = document.querySelector('.hero');
+    const learnMoreSection = document.getElementById('learnMoreBtn');
+    document.querySelectorAll('.fade-up, .word-reveal, .reveal-up, .reveal-illustration').forEach(el => {
+      if (heroSection && heroSection.contains(el)) return;
+      if (learnMoreSection && learnMoreSection.contains(el)) return;
+      revealObserver.observe(el);
+      resetObserver.observe(el);
+    });
+
+    // ── Preloader sequence (GSAP) ──
+    function revealHeroElements() {
+      const hero = document.querySelector('.hero');
+      if (!hero) return;
+      // Collect hero elements + the Learn More button
+      const heroEls = Array.from(hero.querySelectorAll('.reveal-illustration, .word-reveal, .reveal-up'));
+      const learnMoreBtn = document.querySelector('#learnMoreBtn .reveal-up');
+      if (learnMoreBtn) heroEls.push(learnMoreBtn);
+
+      heroEls.forEach((el, i) => {
+        setTimeout(() => {
+          if (el.classList.contains('word-reveal')) {
+            const words = el.querySelectorAll('.word');
+            words.forEach((word, j) => {
+              word.style.transitionDelay = `${j * 0.035}s`;
+            });
+          }
+          el.classList.add('visible');
+          const targetOpacity = el.dataset.targetOpacity;
+          if (targetOpacity) {
+            requestAnimationFrame(() => { el.style.opacity = targetOpacity; });
+          }
+        }, i * 105);
+      });
+    }
+
+    window.addEventListener('load', () => {
+      const preloaderLogo = document.getElementById('preloaderLogo');
+      const preloader = document.getElementById('preloader');
+      const pageWrap = document.getElementById('pageWrap');
+      const heroLogo = document.querySelector('.hero-logo');
+      const heroRect = heroLogo.getBoundingClientRect();
+      const logoRect = preloaderLogo.getBoundingClientRect();
+
+      const tl = gsap.timeline();
+
+      // Step 1: Hold logo on starfield
+      tl.to(preloaderLogo, { duration: 0.28, scale: 1 })
+
+      // Step 2: Logo moves to hero position
+      .to(preloaderLogo, {
+        duration: 0.42,
+        x: heroRect.left + heroRect.width / 2 - (logoRect.left + logoRect.width / 2),
+        y: heroRect.top + heroRect.height / 2 - (logoRect.top + logoRect.height / 2),
+        ease: 'power3.inOut',
+      })
+
+      // Step 3: Background unrolls from top
+      .to(pageWrap, {
+        duration: 0.45,
+        clipPath: 'inset(0 0 0% 0)',
+        ease: 'power2.inOut',
+      }, '-=0.14')
+
+      // Step 4: Fade out preloader logo
+      .to(preloaderLogo, {
+        duration: 0.14,
+        opacity: 0,
+        ease: 'power2.in',
+      }, '-=0.25')
+
+      // Step 5: Reveal hero content
+      .call(() => {
+        preloader.style.display = 'none';
+        revealHeroElements();
+      });
+    });
+
+    // ── Arrow line: draw on scroll ──
+    const arrowLine = document.getElementById('arrowLine');
+    const arrowHead = document.getElementById('arrowHead');
+    const arrowWrap = document.getElementById('arrowLineWrap');
+    const lineLen = 178.5;
+    let arrowRevealed = false;
+
+    const arrowObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) {
+          arrowLine.style.strokeDashoffset = lineLen;
+          arrowHead.style.opacity = 0;
+          arrowRevealed = false;
+        }
+      });
+    }, { rootMargin: '200px 0px 200px 0px' });
+    arrowObserver.observe(arrowWrap);
+
+    // ── Animated divider (triggered by arrow completion) ──
+    const dividerEl = document.getElementById('animatedDivider');
+    const dividerRowEls = dividerEl.querySelectorAll('.divider-row');
+    const totalRows = dividerRowEls.length;
+    let dividerActive = false;
+
+    function triggerDivider() {
+      if (dividerActive) return;
+      dividerActive = true;
+      dividerRowEls.forEach((row, i) => {
+        const opacity = 0.4 + (i / (totalRows - 1)) * 0.6;
+        setTimeout(() => {
+          row.style.opacity = opacity;
+          row.classList.add('visible');
+        }, i * 40);
+      });
+    }
+
+    function resetDivider() {
+      if (!dividerActive) return;
+      dividerActive = false;
+      dividerRowEls.forEach(row => {
+        row.classList.remove('visible');
+        row.style.opacity = '';
+      });
+    }
+
+    function updateArrowLine() {
+      const rect = arrowWrap.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      const start = viewH * 0.7;
+      const progress = Math.max(0, Math.min(1, (start - rect.top) / (start * 0.5)));
+      arrowLine.style.strokeDashoffset = lineLen * (1 - progress);
+      arrowHead.style.opacity = progress >= 0.95 ? 1 : 0;
+
+      // Trigger divider when arrow completes
+      if (progress >= 0.95) {
+        triggerDivider();
+      } else if (progress < 0.1) {
+        resetDivider();
+      }
+
+      requestAnimationFrame(updateArrowLine);
+    }
+    requestAnimationFrame(updateArrowLine);
+
+  </script>
+
+
+</body>
+</html>
