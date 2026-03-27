@@ -934,6 +934,219 @@
       border-top: 0.25px dashed #444444;
     }
 
+    /* ── Protection Cover Document ── */
+    .cover-doc-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cover-doc-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cover-doc-label svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .cover-doc {
+      width: 100%;
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .cover-doc-scroll {
+      max-height: 340px;
+      overflow-y: auto;
+      padding: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: #2a2a2a transparent;
+    }
+
+    .cover-doc-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .cover-doc-scroll::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 2px;
+    }
+
+    .cover-doc-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .cover-doc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #eeeeee;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .cover-doc-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .cover-doc-section {
+      margin-bottom: 18px;
+    }
+
+    .cover-doc-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .cover-doc-section p,
+    .cover-doc-section ul,
+    .cover-doc-section ol {
+      font-size: 11.5px;
+      color: #7a7a7a;
+      line-height: 1.7;
+      margin: 0 0 8px 0;
+    }
+
+    .cover-doc-section ul,
+    .cover-doc-section ol {
+      padding-left: 16px;
+    }
+
+    .cover-doc-section li {
+      margin-bottom: 4px;
+    }
+
+    .cover-doc-section strong {
+      color: #a0a0a0;
+      font-weight: 500;
+    }
+
+    .cover-doc-highlight {
+      background: #161616;
+      border-left: 3px solid var(--brand);
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+      margin: 10px 0;
+    }
+
+    .cover-doc-highlight p {
+      margin: 0;
+    }
+
+    .cover-doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin: 10px 0;
+    }
+
+    .cover-doc-table th {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #666666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #222222;
+    }
+
+    .cover-doc-table td {
+      padding: 8px 10px;
+      color: #6a6a6a;
+      border-bottom: 1px solid #1a1a1a;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .cover-doc-table td strong {
+      color: #888888;
+      font-weight: 500;
+    }
+
+    .cover-doc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .cover-doc-card {
+      background: #161616;
+      border: 1px solid #1e1e1e;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .cover-doc-card h5 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #909090;
+      margin: 0 0 6px;
+    }
+
+    .cover-doc-card ul {
+      font-size: 10.5px;
+      color: #666666;
+      padding-left: 14px;
+      margin: 0;
+    }
+
+    .cover-doc-card li {
+      margin-bottom: 3px;
+    }
+
+    .cover-doc-scroll-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      font-size: 10px;
+      color: #3a3a3a;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .cover-doc-scroll-hint svg {
+      width: 12px;
+      height: 12px;
+      animation: bounce-hint 1.8s ease-in-out infinite;
+    }
+
+    @keyframes bounce-hint {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    .cover-doc-accept-note {
+      font-size: 11px;
+      color: #444444;
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 4px;
+    }
+
     /* Button release transition — slightly slower for spring-back feel */
     .btn-primary .btn-inner {
       transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background 0.2s ease-out;
@@ -1301,6 +1514,190 @@
           <span class="detail-value" id="detailExitDate">—</span>
         </div>
       </div>
+
+      <!-- Protection Cover Agreement -->
+      <div class="cover-doc-wrapper">
+        <div class="cover-doc-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Landlord Protection Cover Agreement
+        </div>
+
+        <div class="cover-doc">
+          <div class="cover-doc-scroll" id="coverDocScroll">
+
+            <div class="cover-doc-title">Secured Protection Cover Agreement</div>
+            <div class="cover-doc-subtitle">Landlord Onboarding and Rental Income Protection Terms<br>Service Provider: Slaash Technologies Private Limited (trading as "Flent" & "Flent Secured")</div>
+
+            <!-- 1. Introduction -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">1. Introduction &amp; Service Overview</div>
+              <p>Welcome to Flent Secured — a modern rental management platform designed to bring security and simplicity to your rental income.</p>
+              <div class="cover-doc-grid">
+                <div class="cover-doc-card">
+                  <h5>What We Provide</h5>
+                  <ul>
+                    <li>Rental Management: streamlined payments, verification, and documentation.</li>
+                    <li>Income Protection: financial guarantee against vacancy &amp; tenant default.</li>
+                    <li>Payment Coordination: secure rent settlement via RBI-regulated partners.</li>
+                    <li>Verifiable Records: auditable payment history.</li>
+                  </ul>
+                </div>
+                <div class="cover-doc-card">
+                  <h5>What This Covers</h5>
+                  <ul>
+                    <li>Enrollment in Flent Secured rental management.</li>
+                    <li>Rental Income Protection Plan terms.</li>
+                    <li>Payment processing arrangements.</li>
+                    <li>Property and tenancy verification protocols.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="cover-doc-highlight">
+                <p><strong>Fee Structure:</strong> This service is currently provided at <strong>no cost</strong>. Should pricing be introduced, you will receive 30 days' advance notice with the option to continue or discontinue.</p>
+              </div>
+            </div>
+
+            <!-- 2. Consent -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">2. Your Consent &amp; Authorization</div>
+              <p>By proceeding, you confirm and authorize the following:</p>
+              <p><strong>2.1 Tenancy Verification</strong> — You authorize Flent Secured to verify that the tenant who invited you actually resides in your property, the existence and condition of the property, and tenancy details including rent amount, lease duration, and payment history.</p>
+              <p><strong>2.2 Payment Processing</strong> — You authorize Slaash Technologies Private Limited to facilitate rent payments through our platform, coordinate processing via RBI-regulated payment gateways, arrange direct settlement to your registered bank account, and maintain comprehensive transaction records.</p>
+              <p><strong>2.3 Platform Usage</strong> — You agree to keep your property listed on Flent Secured for the protection period, process all rent payments from enrolled tenants through the platform, provide accurate property and bank details, and respond to verification requests within reasonable timeframes.</p>
+            </div>
+
+            <!-- 3. Protection Plan -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">3. Rental Income Protection Plan</div>
+              <p>This guarantee protects against two critical rental income risks and is backed by Slaash Technologies Private Limited through institutional risk management partnerships.</p>
+              <div class="cover-doc-grid">
+                <div class="cover-doc-card">
+                  <h5>Un-occupancy Guarantee</h5>
+                  <ul>
+                    <li>If vacant 30+ days after tenant moves out and Flent can't find a replacement, you receive up to <strong>one month's rent (max ₹1,50,000)</strong>.</li>
+                    <li>Tenant must serve 30-day notice via Flent.</li>
+                    <li>Property must remain listed &amp; available.</li>
+                  </ul>
+                </div>
+                <div class="cover-doc-card">
+                  <h5>Tenant Abandonment</h5>
+                  <ul>
+                    <li>If tenant abandons and property stays vacant beyond the security deposit adjustment period (min 60 days), you receive up to <strong>one month's rent (max ₹1,50,000)</strong>.</li>
+                    <li>Abandonment must be verified via Flent.</li>
+                  </ul>
+                </div>
+              </div>
+              <p><strong>3.2 When Coverage Does NOT Apply</strong></p>
+              <table class="cover-doc-table">
+                <thead><tr><th>Scenario</th><th>Reason</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>First 90 days or before 3 payments</strong></td><td>Activation requirements not yet met.</td></tr>
+                  <tr><td><strong>Qualified tenant rejected</strong></td><td>Tenant met your stated rent/terms.</td></tr>
+                  <tr><td><strong>Under renovation</strong></td><td>Property not move-in ready during vacancy.</td></tr>
+                  <tr><td><strong>Removed from platform</strong></td><td>Coverage requires active enrollment.</td></tr>
+                  <tr><td><strong>Self-initiated vacancy</strong></td><td>Landlord initiated vacancy without tenant notice.</td></tr>
+                </tbody>
+              </table>
+              <div class="cover-doc-highlight">
+                <p><strong>Activation Requirements:</strong></p>
+                <ol style="margin:6px 0 0; padding-left:16px; font-size:11.5px; color:#7a7a7a; line-height:1.7;">
+                  <li>Minimum 3 rent payments completed through Flent.</li>
+                  <li>90-day waiting period from enrollment date.</li>
+                  <li>All subsequent rent payments processed via Flent.</li>
+                  <li>Tenant identity &amp; address verification completed.</li>
+                  <li>Property remains listed throughout the period.</li>
+                </ol>
+              </div>
+            </div>
+
+            <!-- 4. Payment Processing -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">4. Payment Processing &amp; Settlement</div>
+              <ul>
+                <li>Tenant initiates payment through Flent Secured using their preferred method.</li>
+                <li>Processed via authorized RBI-regulated payment gateways.</li>
+                <li>Settled directly to your registered bank account (typically within 1–2 business days).</li>
+                <li>Auditable records accessible 24/7 via your dashboard — verifiable proof of income for tax compliance.</li>
+              </ul>
+            </div>
+
+            <!-- 5. Verification -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">5. Property &amp; Tenant Verification</div>
+              <div class="cover-doc-grid">
+                <div class="cover-doc-card">
+                  <h5>Property</h5>
+                  <ul>
+                    <li>Geo-tagged photography</li>
+                    <li>Ownership/rental agreement review</li>
+                    <li>Utility bill verification</li>
+                    <li>Remote or in-person verification</li>
+                  </ul>
+                </div>
+                <div class="cover-doc-card">
+                  <h5>Tenant</h5>
+                  <ul>
+                    <li>Identity (PAN &amp; Aadhaar e-KYC)</li>
+                    <li>Address verification</li>
+                    <li>Tenancy confirmation</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. Obligations -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">6. Your Obligations</div>
+              <ul>
+                <li><strong>Information Accuracy:</strong> Maintain current property/bank details; update within 7 days of changes.</li>
+                <li><strong>Platform Exclusivity:</strong> Process all rent exclusively through Flent Secured.</li>
+                <li><strong>Tenant Cooperation:</strong> Respond to placement opportunities within 48 hours; notify of vacancy/abandonment within 24 hours.</li>
+                <li><strong>Continuity:</strong> Do not remove property while coverage is active.</li>
+              </ul>
+            </div>
+
+            <!-- 7. Claims -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">7. Claims Process</div>
+              <ol>
+                <li><strong>Notify:</strong> Submit claim within 7 days via platform or support@flentsecured.com.</li>
+                <li><strong>Document:</strong> Provide move-out notice, timeline, communications, and availability proof.</li>
+                <li><strong>Verify:</strong> Cooperate with KYC, ownership, and tenant verification.</li>
+              </ol>
+              <p><em>Timeline: Initial Review (5–7 days) → Verification (7–10 days) → Payout (10–15 days). Total 15–30 business days.</em></p>
+            </div>
+
+            <!-- 8. Liability, Privacy & Compliance -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">8. Liability, Privacy &amp; Compliance</div>
+              <p><strong>Coverage Limits:</strong> Maximum ₹1,50,000 per event and per policy year. We do not guarantee placement timeframes, assume maintenance responsibilities, or provide legal advice.</p>
+              <p><strong>Privacy:</strong> Your data is processed to provide services, verify eligibility, process claims, and comply with RBI payment regulations. Data shared only with essential payment processors, coverage partners, or regulatory authorities.</p>
+              <p><strong>Regulatory Compliance:</strong> Flent Secured operates in full compliance with RBI regulations. You remain responsible for your independent tax obligations (income reporting, TDS under Section 194-I, etc.).</p>
+            </div>
+
+            <!-- 9. General Terms -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">9. General Terms &amp; Termination</div>
+              <p><strong>Termination:</strong> Coverage ends if you remove the property, stop processing rent via Flent, provide false information, or violate material terms.</p>
+              <p><strong>Governing Law:</strong> Laws of India. Exclusive jurisdiction of courts in Bangalore, Karnataka.</p>
+              <p><strong>Contact:</strong> support@flentsecured.com | Slaash Technologies Private Limited, Bangalore.</p>
+            </div>
+
+            <!-- 10. Acceptance -->
+            <div class="cover-doc-section">
+              <div class="cover-doc-section-title">10. Acceptance</div>
+              <p>By clicking <strong>Proceed</strong> below, you confirm that you have read and understood these terms, are the lawful owner or authorized representative, and consent to the described verifications and payment processing.</p>
+            </div>
+
+          </div><!-- /.cover-doc-scroll -->
+          <div class="cover-doc-scroll-hint" id="coverDocScrollHint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            Scroll to read full terms
+          </div>
+        </div><!-- /.cover-doc -->
+
+        <p class="cover-doc-accept-note">By tapping Proceed you electronically accept the Landlord Protection Cover Agreement above.</p>
+      </div><!-- /.cover-doc-wrapper -->
 
       <div class="form-actions">
         <div class="btn-primary" id="proceedConfirmBtn">
@@ -1841,6 +2238,18 @@
         }
       }
     }
+
+    // ── Step 3: hide scroll hint when user has scrolled near the bottom ──
+    (function() {
+      const scroll = document.getElementById('coverDocScroll');
+      const hint   = document.getElementById('coverDocScrollHint');
+      if (!scroll || !hint) return;
+      scroll.addEventListener('scroll', function() {
+        if (scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 24) {
+          hint.style.display = 'none';
+        }
+      }, { passive: true });
+    })();
 
     // ── Step 3: confirm → notify landlord (fire and forget) ──
     function handleProceed() {
