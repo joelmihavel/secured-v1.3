@@ -227,23 +227,23 @@ export function GettingStarted({ data }: { data: GettingStartedContent }) {
           </div>
 
           {/* === DESKTOP LAYOUT (lg+) === */}
-          <div className="relative z-10 mx-auto hidden h-full w-full max-w-[1200px] px-6 lg:flex lg:items-center xl:max-w-[1320px] 2xl:max-w-[1536px]">
+          <div className="relative z-10 mx-auto hidden h-full w-full max-w-[1200px] px-6 lg:flex lg:items-center xl:max-w-[1320px] 2xl:max-w-[1536px] 3xl:max-w-[1800px] 4xl:max-w-[2200px] 5xl:max-w-[3200px]">
             <div className="flex w-full items-center justify-between gap-16">
               {/* Left — heading */}
-              <div className="flex w-[376px] flex-shrink-0 flex-col gap-4">
+              <div className="flex w-[376px] flex-shrink-0 flex-col gap-4 3xl:w-[460px] 4xl:w-[560px] 5xl:w-[760px]">
                 <p
-                  className="text-base leading-[1.6] tracking-[-0.32px] text-[#737373]"
+                  className="text-base leading-[1.6] tracking-[-0.32px] text-[#737373] 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
                   style={{ fontFamily: "var(--font-ui)" }}
                 >
                   {data.sectionLabel}
                 </p>
-                <h2 className="font-display text-[32px] leading-[1.5] tracking-[-0.704px] text-white xl:text-[36px] 2xl:text-[40px]">
+                <h2 className="font-display text-[32px] leading-[1.5] tracking-[-0.704px] text-white xl:text-[36px] 2xl:text-[40px] 3xl:text-[48px] 4xl:text-[60px] 5xl:text-[80px]">
                   {data.heading}
                 </h2>
               </div>
 
               {/* Center — iPhone mockup */}
-              <IPhoneFrame className="w-[335px] flex-shrink-0">
+              <IPhoneFrame className="w-[335px] flex-shrink-0 3xl:w-[400px] 4xl:w-[500px] 5xl:w-[680px]">
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.div
                     key={activeStep}
@@ -266,7 +266,7 @@ export function GettingStarted({ data }: { data: GettingStartedContent }) {
               </IPhoneFrame>
 
               {/* Right — step list */}
-              <div className="flex w-[376px] flex-shrink-0 flex-col gap-2">
+              <div className="flex w-[376px] flex-shrink-0 flex-col gap-2 3xl:w-[460px] 4xl:w-[560px] 5xl:w-[760px]">
                 {STEPS.map((step, i) => (
                   <div
                     key={i}
@@ -283,7 +283,7 @@ export function GettingStarted({ data }: { data: GettingStartedContent }) {
                     }}
                   >
                     <ol
-                      className={`list-decimal font-body text-base leading-6 transition-colors duration-300 ${
+                      className={`list-decimal font-body text-base leading-6 transition-colors duration-300 3xl:text-lg 4xl:text-xl 5xl:text-2xl ${
                         activeStep === i
                           ? "text-[#ff9a6d]"
                           : "text-[#8a8a8a]"

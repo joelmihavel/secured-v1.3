@@ -17,12 +17,12 @@ export function Stats({ data }: { data: StatsContent }) {
             {/* Brand info */}
             <div className="flex flex-col gap-3 md:gap-4">
                 <div className="flex items-center gap-3">
-                  <h3 className="font-display text-[24px] leading-[1.5] tracking-[-0.5px] text-white md:text-[32px] md:tracking-[-0.704px] xl:text-[38px] 2xl:text-[42px]">
+                  <h3 className="font-display text-[24px] leading-[1.5] tracking-[-0.5px] text-white md:text-[32px] md:tracking-[-0.704px] xl:text-[38px] 2xl:text-[42px] 3xl:text-[50px] 4xl:text-[60px] 5xl:text-[80px]">
                     <WordReveal delay={0.1}>{data.brandHeading}</WordReveal>
                   </h3>
                   <div className="flex items-center gap-2 self-center">
                     <span
-                      className="text-sm leading-[1.5] text-white md:text-base"
+                      className="text-sm leading-[1.5] text-white md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
                       style={{ fontFamily: "var(--font-ui)" }}
                     >
                       by
@@ -32,12 +32,13 @@ export function Stats({ data }: { data: StatsContent }) {
                       alt="Flent"
                       width={66}
                       height={24}
+                      className="3xl:w-[88px] 3xl:h-[32px] 4xl:w-[110px] 4xl:h-[40px] 5xl:w-[154px] 5xl:h-[56px]"
                     />
                   </div>
                 </div>
                 <SlideUp delay={0.2}>
                   <p
-                    className="text-sm font-medium leading-[1.6] text-white md:whitespace-nowrap md:text-base"
+                    className="text-sm font-medium leading-[1.6] text-white md:whitespace-nowrap md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
                     style={{ fontFamily: "var(--font-ui)" }}
                   >
                     {data.brandSubheading}
@@ -51,7 +52,7 @@ export function Stats({ data }: { data: StatsContent }) {
                 {data.stats.map((stat, i) => (
                   <div key={i} className="flex flex-col gap-1 md:gap-[10px]">
                     <p
-                      className="text-[24px] font-medium leading-[36px] tracking-[-0.5px] md:whitespace-nowrap md:text-[32px] md:leading-[48px] md:tracking-[-1px]"
+                      className="text-[24px] font-medium leading-[36px] tracking-[-0.5px] md:whitespace-nowrap md:text-[32px] md:leading-[48px] md:tracking-[-1px] 3xl:text-[40px] 3xl:leading-[60px] 4xl:text-[48px] 4xl:leading-[72px] 5xl:text-[64px] 5xl:leading-[96px]"
                       style={{ fontFamily: "var(--font-ui)" }}
                     >
                       {stat.prefix ? (
@@ -73,7 +74,7 @@ export function Stats({ data }: { data: StatsContent }) {
                       )}
                     </p>
                     <p
-                      className="text-sm font-medium leading-[1.6] text-[#797979] md:whitespace-nowrap md:text-base"
+                      className="text-sm font-medium leading-[1.6] text-[#797979] md:whitespace-nowrap md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
                       style={{ fontFamily: "var(--font-ui)" }}
                     >
                       {stat.label}
@@ -85,7 +86,7 @@ export function Stats({ data }: { data: StatsContent }) {
           </div>
 
           {/* Right side — image collage, hidden on mobile */}
-          <div className="hidden lg:block lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 xl:scale-110 2xl:scale-125" style={{ transformOrigin: "right center" }}>
+          <div className="hidden lg:block lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 xl:scale-110 2xl:scale-125 3xl:scale-150 4xl:scale-[1.8] 5xl:scale-[2.4]" style={{ transformOrigin: "right center" }}>
             <FadeIn>
               <div className="relative flex items-center">
                 {/* Gradient */}
