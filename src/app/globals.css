@@ -569,6 +569,12 @@ body:has(.secured-page) {
   background-color: #FAF8F5;
 }
 
+/* Reusable neo-brutalist card treatment */
+.flent-neo-card {
+  border: 2px solid var(--color-text-main);
+  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 1);
+}
+
 /* Ticker */
 @keyframes hc-ticker-scroll {
   0%   { transform: translateX(0); }
