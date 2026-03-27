@@ -27,6 +27,19 @@ interface PropertyBrowserProps {
   occupants?: Occupant[];
 }
 
+const getMoveInCutoffDate = (moveInPreference: string): Date | null => {
+  if (moveInPreference === "within-week" || moveInPreference === "next-15-days") {
+    const cutoffDate = new Date();
+    cutoffDate.setHours(23, 59, 59, 999);
+    cutoffDate.setDate(
+      cutoffDate.getDate() + (moveInPreference === "within-week" ? 7 : 15)
+    );
+    return cutoffDate;
+  }
+
+  return null;
+};
+
 function useLocationMaps(locations: Location[]) {
   return useMemo(
     () => ({
@@ -362,14 +375,14 @@ function useHomesSearchFilters(
         return false;
       }
 
-      // Filter by Date
+      // Filter by Move-In Window
       if (filters.moveInDate && property.fieldData["available-from"]) {
-        const availableFrom = new Date(property.fieldData["available-from"]);
-        const moveIn = new Date(filters.moveInDate);
-        // If property is available AFTER move-in date, it's not suitable?
-        // Or if we want to move in by X date, property must be available by X date.
-        if (availableFrom > moveIn) {
-          return false;
+        const moveInCutoffDate = getMoveInCutoffDate(filters.moveInDate);
+        if (moveInCutoffDate) {
+          const availableFrom = new Date(property.fieldData["available-from"]);
+          if (availableFrom > moveInCutoffDate) {
+            return false;
+          }
         }
       }
 

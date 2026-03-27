@@ -106,6 +106,32 @@ const CompanyPill = ({
 
 const RIBBON_PHASE_DURATION_MS = 2000;
 
+const getDayWithOrdinal = (day: number): string => {
+  if (day > 3 && day < 21) return `${day}th`;
+
+  switch (day % 10) {
+    case 1:
+      return `${day}st`;
+    case 2:
+      return `${day}nd`;
+    case 3:
+      return `${day}rd`;
+    default:
+      return `${day}th`;
+  }
+};
+
+const formatLaunchDate = (rawDate?: string): string | null => {
+  if (!rawDate) return null;
+
+  const parsedDate = new Date(rawDate);
+  if (Number.isNaN(parsedDate.getTime())) return null;
+
+  const day = getDayWithOrdinal(parsedDate.getDate());
+  const month = parsedDate.toLocaleString("en-IN", { month: "long" });
+  return `${day} ${month}`;
+};
+
 const PropertyCardDiscountRibbon = ({
   showRibbon,
   ribbonPhase,
@@ -334,6 +360,8 @@ export const PropertyCard = ({
   const ribbonSavings = getRibbonDiscountSavings(property, rooms);
   const discountEndDate = getDiscountEndDateFormatted(property);
   const discountPercent = Number(property.fieldData["discount"]) || 0;
+  const launchDate = formatLaunchDate(property.fieldData["available-from"]);
+  const launchText = launchDate ? `Launching on ${launchDate}` : "Coming Soon";
 
   useEffect(() => {
     if (!showRibbon) return;
@@ -426,16 +454,7 @@ export const PropertyCard = ({
               {/* Availability Date */}
               <div className="flex items-center gap-2 text-text-main/80">
                 <Calendar size={18} className="md:w-5 md:h-5" />
-                <span className="font-body text-sm md:text-base">
-                  {property.fieldData["available-from"]
-                    ? `Available from ${new Date(
-                        property.fieldData["available-from"]
-                      ).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}`
-                    : "Coming Soon"}
-                </span>
+                <span className="font-body text-sm md:text-base">{launchText}</span>
               </div>
 
               {/* BHK & Area */}
