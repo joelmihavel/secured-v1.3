@@ -1406,13 +1406,23 @@
         <span class="section-heading accent">6-digit code to this number</span>
       </div>
 
-      <div class="otp-row" style="gap: 6px;">
+      <div class="otp-row" id="otpRow" style="gap: 6px;">
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" autocomplete="one-time-code" style="font-size:32px;" /></div>
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;" /></div>
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;" /></div>
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;" /></div>
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;" /></div>
         <div class="otp-box" style="width:46px; min-width:46px; height:54px;"><input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]" style="font-size:32px;" /></div>
+      </div>
+
+      <div id="step2BlockedMsg" style="display:none; text-align:center; padding: 0 8px;">
+        <p style="font-size:14px; color:#a9a9a9; line-height:20px; margin-bottom:16px;">Too many incorrect attempts. Please request a new code.</p>
+        <div class="btn-primary">
+          <div class="pill"></div>
+          <div class="btn-inner" onclick="handleResend()">
+            <span>Request New Code</span>
+          </div>
+        </div>
       </div>
 
       <div class="form-actions">
@@ -1424,6 +1434,7 @@
         </div>
         <p class="form-link">Didn't receive the code? <span onclick="handleResend()" style="cursor:pointer; text-decoration:underline;">Resend</span></p>
         <p id="step2Error" style="font-size:12px; color:#ff7070; text-align:center; display:none;"></p>
+        <p id="step2Success" style="font-size:12px; color:#6fcf97; text-align:center; display:none;"></p>
       </div>
     </div>
 
@@ -1703,10 +1714,20 @@
         <div class="btn-primary" id="proceedConfirmBtn">
           <div class="pill"></div>
           <div class="btn-inner" onclick="handleProceed()">
-            <span>Proceed</span>
+            <span id="proceedConfirmBtnText">Proceed</span>
           </div>
         </div>
+        <p id="step3Error" style="font-size:12px; color:#ff7070; text-align:center; display:none;"></p>
       </div>
+    </div>
+
+    <!-- Already Confirmed State -->
+    <div class="step" id="stepConfirmed" style="display: none;">
+      <div style="text-align: center;">
+        <span class="section-heading neutral">Already </span><br>
+        <span class="section-heading accent">confirmed</span>
+      </div>
+      <p class="success-body">You've already confirmed this tenancy. Nothing more is needed from you.</p>
     </div>
 
     <!-- Step 4: Success -->
@@ -2048,22 +2069,48 @@
       if (token) headers['Authorization'] = `Bearer ${token}`;
       const res  = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error || 'Request failed');
+      if (!res.ok) {
+        const err = new Error(data.message || data.error || 'Request failed');
+        err.code    = data.code;
+        err.status  = res.status;
+        err.details = data.details;
+        throw err;
+      }
       return data;
     }
 
     async function get(url, token) {
       const res  = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${token}` } });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || data.error || 'Request failed');
+      if (!res.ok) {
+        const err = new Error(data.message || data.error || 'Request failed');
+        err.code    = data.code;
+        err.status  = res.status;
+        err.details = data.details;
+        throw err;
+      }
       return data;
     }
 
     // ── UI helpers ──
     function showError(id, msg) {
       const el = document.getElementById(id);
+      if (!el) return;
       el.textContent = msg;
       el.style.display = msg ? 'block' : 'none';
+    }
+
+    function showSuccess(id, msg) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.style.display = msg ? 'block' : 'none';
+    }
+
+    function showStep2Blocked() {
+      document.getElementById('otpRow').style.display = 'none';
+      document.getElementById('proceedOtpBtn').style.display = 'none';
+      document.getElementById('step2BlockedMsg').style.display = 'block';
     }
 
     function setLoading(btnInner, spanEl, loading, label) {
@@ -2074,7 +2121,8 @@
 
     function goToStep(stepNum) {
       document.querySelectorAll('.step').forEach(s => s.style.display = 'none');
-      document.getElementById('step' + stepNum).style.display = 'flex';
+      const id = stepNum === 'Confirmed' ? 'stepConfirmed' : 'step' + stepNum;
+      document.getElementById(id).style.display = 'flex';
       document.getElementById('multiStepForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (stepNum === 2) setTimeout(() => otpInputs[0].focus(), 400);
     }
@@ -2102,7 +2150,13 @@
         _otpRequestId = data.data.otp_request_id;
         goToStep(2);
       } catch (e) {
-        showError('step1Error', e.message);
+        if (e.status === 429 || e.code === 'RATE_LIMITED') {
+          showError('step1Error', 'Too many attempts. Please wait a minute before trying again.');
+        } else if (e.code === 'CASHFREE_ERROR') {
+          showError('step1Error', 'Unable to send OTP right now. Please try again in a moment.');
+        } else {
+          showError('step1Error', 'Something went wrong. Please try again.');
+        }
       } finally {
         setLoading(btnInner, btnSpan, false, 'Continue');
       }
@@ -2157,7 +2211,11 @@
         const tenancyResponse = await get(ENDPOINTS.getTenancy, token);
         const t = tenancyResponse.data;
         if (!t) {
-          showError('step2Error', 'No tenancy found for this number. Please contact support.');
+          showError('step2Error', 'Your phone wasn\'t found. Ask your tenant to verify the number they added.');
+          return;
+        }
+        if (t.landlord_approved) {
+          goToStep('Confirmed');
           return;
         }
 
@@ -2175,7 +2233,15 @@
         populateStep3();
         goToStep(3);
       } catch (e) {
-        showError('step2Error', e.message);
+        if (e.code === 'VALIDATION_ERROR' && e.details?.fields?.otp === 'Invalid') {
+          showError('step2Error', 'Incorrect code. Please try again.');
+        } else if (e.code === 'VALIDATION_ERROR' && e.details?.fields?.otp === 'Expired') {
+          showError('step2Error', 'This code has expired. Please request a new one.');
+        } else if (e.code === 'MAX_ATTEMPTS') {
+          showStep2Blocked();
+        } else {
+          showError('step2Error', 'Something went wrong. Please try again.');
+        }
       } finally {
         setLoading(btnInner, btnSpan, false, 'Proceed');
       }
@@ -2184,11 +2250,23 @@
     // ── Step 2: resend OTP ──
     async function handleResend() {
       showError('step2Error', '');
+      showSuccess('step2Success', '');
+      // If coming from blocked state, restore inputs
+      document.getElementById('otpRow').style.display = '';
+      document.getElementById('proceedOtpBtn').style.display = '';
+      document.getElementById('step2BlockedMsg').style.display = 'none';
+      otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+      checkOtp();
       try {
         const data = await post(ENDPOINTS.authOtp, { action: 'resend_otp', otp_request_id: _otpRequestId });
         _otpRequestId = data.data.otp_request_id;
+        showSuccess('step2Success', 'A new code has been sent to your phone.');
       } catch (e) {
-        showError('step2Error', e.message);
+        if (e.status === 429 || e.code === 'RATE_LIMITED') {
+          showError('step2Error', 'Too many attempts. Please wait before requesting another code.');
+        } else {
+          showError('step2Error', 'Something went wrong. Please try again.');
+        }
       }
     }
 
@@ -2251,13 +2329,26 @@
       }, { passive: true });
     })();
 
-    // ── Step 3: confirm → notify landlord (fire and forget) ──
-    function handleProceed() {
-      const firstLandlord = _tenancy?.landlords?.split(',')[0]?.trim() || 'there';
-      document.getElementById('successName').textContent = firstLandlord;
-      goToStep(4);
-      post(ENDPOINTS.notifyLandlord, {}, _accessToken)
-        .catch(e => console.error('[handleProceed] notify-landlord error:', e.message));
+    // ── Step 3: confirm → notify landlord ──
+    async function handleProceed() {
+      showError('step3Error', '');
+      const btnInner = document.querySelector('#proceedConfirmBtn .btn-inner');
+      const btnSpan  = document.getElementById('proceedConfirmBtnText');
+      setLoading(btnInner, btnSpan, true, 'Proceed');
+      try {
+        const data = await post(ENDPOINTS.notifyLandlord, { action: 'confirm' }, _accessToken);
+        if (data?.data?.already_confirmed) {
+          goToStep('Confirmed');
+          return;
+        }
+        const firstLandlord = _tenancy?.landlords?.split(',')[0]?.trim() || 'there';
+        document.getElementById('successName').textContent = firstLandlord;
+        goToStep(4);
+      } catch (e) {
+        showError('step3Error', 'Something went wrong while confirming. Please try again.');
+      } finally {
+        setLoading(btnInner, btnSpan, false, 'Proceed');
+      }
     }
   </script>
 
