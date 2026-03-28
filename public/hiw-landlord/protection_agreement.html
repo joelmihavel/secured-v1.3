@@ -1181,7 +1181,7 @@
                 <div style="display: flex; align-items: flex-end; padding-bottom: 8px;">
                     <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; font-size: 14px; color: #FFAE8A;">
                         <input type="checkbox" id="sigAccepted" checked disabled style="width: 20px; height: 20px; accent-color: #FF9A6D;">
-                        Electronic Signature/Acceptance: I Accept
+                        I have read and agree to the terms of this agreement.
                     </label>
                 </div>
             </div>
@@ -1215,8 +1215,8 @@
                 document.getElementById('sigDateLine').innerHTML =
                     '<span style="' + sigStyle + '">' + formatted + '</span>';
             }
-            if (accepted === '1') {
-                document.getElementById('sigAccepted').checked = true;
+            if (accepted !== null) {
+                document.getElementById('sigAccepted').checked = accepted === '1';
             }
 
             if (p.get('print') === '1') {
