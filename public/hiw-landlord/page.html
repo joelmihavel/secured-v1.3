@@ -1503,7 +1503,7 @@
       border: none;
       border-bottom: 1px solid #333333;
       color: #eeeeee;
-      font-size: 12px;
+      font-size: 16px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       padding: 4px 0;
       outline: none;
@@ -1611,7 +1611,7 @@
       margin-top: 20px; background: #161616; border: 1px solid #2a1a12; padding: 16px; border-radius: 10px;
     }
     .cover-doc-scroll .signature-block h2 { margin-top: 0; padding: 0; border: none; }
-    .cover-doc-scroll .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .cover-doc-scroll .sig-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 16px; }
     .cover-doc-scroll .sig-grid > div { min-width: 0; }
     .cover-doc-scroll .sig-line { border-bottom: 1px solid #333333; padding-top: 24px; margin-bottom: 4px; }
     .cover-doc-scroll .sig-label { font-size: 9px; color: #555555; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -2442,14 +2442,8 @@
 <input id="sigDate" class="sig-input" type="date" />
 <div class="sig-label">Date of Acceptance</div>
 </div>
-<div style="display: flex; align-items: flex-end; padding-bottom: 8px;">
-<label class="sig-esign-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; color: #FFAE8A;">
-<input id="sigCheckbox" style="width: 16px; height: 16px; flex-shrink: 0; accent-color: #FF9A6D;" type="checkbox"/>
-Electronic Signature/Acceptance: I Accept
-</label>
 </div>
-</div>
-<p style="text-align: center; margin-top: var(--sp-64); font-size: 12px; color: #656565; font-style: italic;">
+<p style="text-align: center; margin-top: 48px; font-size: 12px; color: #656565; font-style: italic;">
                 *Please keep a copy of these terms for your records. You can access them anytime through your Flent Secured landlord dashboard.*
             </p>
 </div>
@@ -2461,15 +2455,19 @@ Electronic Signature/Acceptance: I Accept
           </div>
         </div><!-- /.cover-doc -->
 
-        <p class="cover-doc-accept-note">By tapping Proceed you electronically accept the Landlord Protection Cover Agreement above.</p>
       </div><!-- /.cover-doc-wrapper -->
       <div class="form-actions">
-        <div class="btn-primary" id="proceedConfirmBtn">
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; font-weight: 600; color: #FFAE8A; margin-bottom: 16px;">
+          <input id="sigCheckbox" style="width: 16px; height: 16px; flex-shrink: 0; accent-color: #FF9A6D;" type="checkbox" onchange="document.getElementById('proceedConfirmBtn').classList.toggle('btn-disabled', !this.checked);" />
+          I have read and agree to the terms of this agreement.
+        </label>
+        <div class="btn-primary btn-disabled" id="proceedConfirmBtn">
           <div class="pill"></div>
           <div class="btn-inner" onclick="handleProceed()">
             <span id="proceedConfirmBtnText">Proceed</span>
           </div>
         </div>
+        <p class="cover-doc-accept-note" style="margin-top: 12px;">By tapping Proceed you electronically accept the Landlord Protection Cover Agreement above.</p>
         <p id="step3Error" style="font-size:12px; color:#ff7070; text-align:center; display:none;"></p>
       </div>
     </div>
@@ -3132,6 +3130,7 @@ Electronic Signature/Acceptance: I Accept
     }
 
     async function handleProceed() {
+      if (document.getElementById('proceedConfirmBtn').classList.contains('btn-disabled')) return;
       showError('step3Error', '');
       const btnInner = document.querySelector('#proceedConfirmBtn .btn-inner');
       const btnSpan  = document.getElementById('proceedConfirmBtnText');
