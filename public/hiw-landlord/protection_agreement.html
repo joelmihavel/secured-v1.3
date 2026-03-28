@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secured Protection Cover Agreement | Flent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand */
+            --brand-100: #FFEBE2;
+            --brand-200: #FFD7C5;
+            --brand-300: #FFC2A7;
+            --brand-400: #FFAE8A;
+            --brand-500: #FF9A6D;
+            --brand-600: #CC7B57;
+            --brand-700: #995C41;
+            --brand-800: #663E2C;
+            --brand-900: #331F16;
+
+            /* Black */
+            --black-100: #D2D2D2;
+            --black-200: #A6A6A6;
+            --black-300: #797979;
+            --black-400: #4D4D4D;
+            --black-500: #202020;
+            --black-600: #1A1A1A;
+            --black-700: #131313;
+            --black-800: #0D0D0D;
+            --black-900: #060606;
+
+            /* Neutral */
+            --neutral-100: #EEEEEE;
+            --neutral-200: #DDDDDD;
+            --neutral-300: #CBCBCB;
+            --neutral-400: #BABABA;
+            --neutral-500: #A9A9A9;
+            --neutral-600: #878787;
+            --neutral-700: #656565;
+            --neutral-800: #444444;
+            --neutral-900: #222222;
+
+            /* Success */
+            --success-100: #D8EFDC;
+            --success-500: #4CAF50;
+            --success-700: #2E6930;
+            --success-900: #0F2310;
+
+            /* Warning */
+            --warning-100: #FFEFD2;
+            --warning-500: #FFB020;
+            --warning-700: #996A13;
+            --warning-900: #332306;
+
+            /* Alert */
+            --alert-100: #FADADB;
+            --alert-500: #E5484D;
+            --alert-700: #892B2E;
+            --alert-900: #2E0E0F;
+
+            /* Info */
+            --info-100: #DEE5FF;
+            --info-500: #5B7FFF;
+            --info-700: #374C99;
+            --info-900: #121933;
+
+            /* Spacing */
+            --sp-8: 8px;
+            --sp-16: 16px;
+            --sp-24: 24px;
+            --sp-32: 32px;
+            --sp-48: 48px;
+            --sp-64: 64px;
+
+            /* Radius */
+            --rd-8: 8px;
+            --rd-12: 12px;
+            --rd-40: 40px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background-color: var(--black-800);
+            color: var(--neutral-300);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        .top-nav {
+            position: sticky;
+            top: 0;
+            background: rgba(6, 6, 6, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--black-500);
+            padding: var(--sp-16) var(--sp-48);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-logo-group {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-16);
+        }
+
+        .nav-logo {
+            height: 32px;
+            width: auto;
+            border-radius: var(--rd-8);
+        }
+
+        .nav-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--neutral-400);
+            border-left: 1px solid var(--black-400);
+            padding-left: var(--sp-16);
+            letter-spacing: -0.01em;
+        }
+
+        .btn-download {
+            background: linear-gradient(180deg, #3D3D3D 0%, #282828 100%);
+            color: #FFFFFF;
+            border: none;
+            border-top: 1px solid var(--brand-500);
+            border-left: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-right: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 28px;
+            border-radius: var(--rd-12);
+            font-weight: 500;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--sp-8);
+            box-shadow: #000000 -2px -4px 0px 1px inset, rgba(255, 255, 255, 0.12) 0px -3px 4px 1px inset;
+            transition: all 0.2s ease;
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(180deg, #4A4A4A 0%, #333333 100%);
+            transform: translateY(-1px);
+            border-top-color: var(--brand-400);
+        }
+
+        /* Hero */
+        .hero-section {
+            background: var(--black-700);
+            padding: var(--sp-64) 80px var(--sp-48);
+        }
+
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-section h1 {
+            font-size: 40px;
+            font-weight: 300;
+            line-height: 1.15;
+            letter-spacing: -1px;
+            color: var(--neutral-400);
+            margin-bottom: var(--sp-8);
+        }
+
+        .hero-section h1 strong {
+            font-weight: 700;
+            color: var(--brand-500);
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: var(--neutral-600);
+            margin-bottom: var(--sp-32);
+        }
+
+        .hero-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--sp-16);
+        }
+
+        .hero-meta-item {
+            background: var(--black-600);
+            border: 1px solid var(--black-400);
+            border-radius: var(--rd-12);
+            padding: var(--sp-24);
+        }
+
+        .hero-meta-item span {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--neutral-700);
+            margin-bottom: var(--sp-8);
+            font-weight: 600;
+        }
+
+        .hero-meta-item strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--neutral-100);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .hero-meta-item .meta-sub {
+            font-size: 13px;
+            color: var(--neutral-700);
+        }
+
+        /* Document */
+        .document-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--black-700);
+            border-top: 1px solid var(--black-500);
+            padding: var(--sp-48) 80px var(--sp-64);
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            margin-top: var(--sp-64);
+            margin-bottom: var(--sp-24);
+            color: var(--neutral-100);
+            padding-bottom: var(--sp-16);
+            border-bottom: 1px solid var(--black-400);
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 20px;
+            background: var(--brand-500);
+            border-radius: 2px;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: var(--sp-32);
+            margin-bottom: var(--sp-16);
+            color: var(--brand-400);
+            letter-spacing: -0.3px;
+        }
+
+        h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: var(--sp-24);
+            margin-bottom: var(--sp-8);
+            color: var(--neutral-200);
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--neutral-600);
+            margin-bottom: var(--sp-16);
+        }
+
+        p strong {
+            color: var(--neutral-300);
+        }
+
+        ul, ol {
+            font-size: 14px;
+            color: var(--neutral-600);
+            margin-bottom: var(--sp-24);
+            padding-left: var(--sp-24);
+            line-height: 1.7;
+        }
+
+        li {
+            margin-bottom: var(--sp-8);
+            padding-left: 4px;
+        }
+
+        li strong {
+            color: var(--neutral-300);
+        }
+
+        li::marker {
+            color: var(--brand-500);
+        }
+
+        /* Callout */
+        .callout {
+            background: var(--brand-900);
+            border-left: 3px solid var(--brand-500);
+            padding: var(--sp-24);
+            border-radius: 0 var(--rd-12) var(--rd-12) 0;
+            margin: var(--sp-24) 0;
+        }
+
+        .callout.warning {
+            background: var(--alert-900);
+            border-left-color: var(--alert-500);
+        }
+
+        .callout.warning h4, .callout.warning strong {
+            color: var(--alert-500);
+        }
+
+        .callout.warning p {
+            color: var(--neutral-500);
+        }
+
+        .callout h4 {
+            margin-top: 0;
+            color: var(--brand-400);
+            margin-bottom: var(--sp-8);
+            font-size: 14px;
+        }
+
+        .callout p:last-child, .callout ul:last-child {
+            margin-bottom: 0;
+        }
+
+        .callout p, .callout ul {
+            color: var(--neutral-500);
+            font-size: 13px;
+        }
+
+        .callout p strong {
+            color: var(--brand-300);
+        }
+
+        /* Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-16);
+            margin: var(--sp-24) 0;
+        }
+
+        /* Cards */
+        .card {
+            border: 1px solid var(--black-400);
+            border-radius: var(--rd-12);
+            padding: var(--sp-24);
+            background: var(--black-600);
+            transition: border-color 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: var(--brand-800);
+        }
+
+        .card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: var(--sp-16);
+            color: var(--brand-400);
+            display: flex;
+            align-items: center;
+            gap: var(--sp-8);
+        }
+
+        .card p:last-child, .card ul:last-child {
+            margin-bottom: 0;
+        }
+
+        .card ul, .card p {
+            font-size: 13px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--sp-24) 0;
+            font-size: 13px;
+            border-radius: var(--rd-12);
+            overflow: hidden;
+            border: 1px solid var(--black-400);
+        }
+
+        th {
+            background: var(--black-900);
+            color: var(--neutral-500);
+            text-align: left;
+            padding: var(--sp-16);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--black-400);
+        }
+
+        td {
+            padding: var(--sp-16);
+            border-bottom: 1px solid var(--black-500);
+            color: var(--neutral-600);
+            vertical-align: top;
+            background: var(--black-600);
+        }
+
+        td strong {
+            color: var(--neutral-300);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--black-500);
+        }
+
+        .highlight-row td {
+            background: var(--brand-900);
+        }
+
+        .highlight-row:hover td {
+            background: var(--brand-900);
+        }
+
+        .highlight-row td strong {
+            color: var(--brand-400);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: var(--sp-16);
+            margin: var(--sp-24) 0;
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: var(--sp-16);
+            background: var(--black-600);
+            padding: var(--sp-24);
+            border-radius: var(--rd-12);
+            border: 1px solid var(--black-400);
+            transition: border-color 0.2s ease;
+        }
+
+        .timeline-step:hover {
+            border-color: var(--brand-700);
+        }
+
+        .step-number {
+            background: linear-gradient(180deg, #3D3D3D 0%, #282828 100%);
+            border-top: 1px solid var(--brand-500);
+            border-left: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-right: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+            box-shadow: #000000 -2px -4px 0px 1px inset, rgba(255, 255, 255, 0.12) 0px -3px 4px 1px inset;
+            color: #FFFFFF;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--rd-8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            margin-top: 0;
+            margin-bottom: var(--sp-8);
+            font-size: 14px;
+            color: var(--neutral-100);
+        }
+
+        .step-content p, .step-content ul {
+            margin-bottom: 0;
+            font-size: 13px;
+        }
+
+        .step-content ul {
+            margin-top: var(--sp-8);
+        }
+
+        /* Terms Grid */
+        .terms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: var(--sp-32);
+            row-gap: var(--sp-24);
+        }
+
+        .term-item {
+            background: var(--black-600);
+            border: 1px solid var(--black-400);
+            border-radius: var(--rd-12);
+            padding: var(--sp-24);
+        }
+
+        .term-item h3 {
+            margin-top: 0;
+            font-size: 14px;
+            margin-bottom: var(--sp-8);
+            color: var(--brand-400);
+        }
+
+        .term-item p {
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
+        /* Example Box */
+        .example-box {
+            background: var(--black-600);
+            border: 1px solid var(--black-400);
+            padding: var(--sp-24);
+            border-radius: var(--rd-12);
+            font-family: 'Plus Jakarta Sans', monospace;
+            font-size: 13px;
+            color: var(--neutral-600);
+            margin-top: var(--sp-16);
+            line-height: 1.8;
+        }
+
+        .example-box strong {
+            color: var(--brand-400);
+        }
+
+        /* Signature */
+        .signature-block {
+            margin-top: var(--sp-64);
+            background: var(--black-600);
+            border: 1px solid var(--brand-700);
+            padding: var(--sp-48);
+            border-radius: var(--rd-12);
+        }
+
+        .signature-block h2 {
+            color: var(--neutral-100);
+            border-bottom-color: var(--black-400);
+        }
+
+        .signature-block p {
+            color: var(--neutral-600);
+        }
+
+        .signature-block ul {
+            color: var(--neutral-600);
+        }
+
+        .sig-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--sp-32);
+            margin-top: var(--sp-32);
+        }
+
+        .sig-line {
+            border-bottom: 1px solid var(--black-300);
+            padding-top: var(--sp-32);
+            margin-bottom: var(--sp-8);
+        }
+
+        .sig-label {
+            font-size: 11px;
+            color: var(--neutral-700);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Section divider */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--black-400), transparent);
+            margin: var(--sp-48) 0;
+        }
+
+        /* Print — preserve dark theme */
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            body {
+                background: var(--black-800) !important;
+            }
+            .top-nav {
+                display: none;
+            }
+            .hero-section {
+                background: var(--black-700) !important;
+            }
+            .document-wrapper {
+                background: var(--black-700) !important;
+                box-shadow: none;
+                margin: 0;
+                padding: var(--sp-32) var(--sp-48);
+                max-width: 100%;
+            }
+            .card, .term-item {
+                background: var(--black-600) !important;
+                border-color: var(--black-400) !important;
+            }
+            .callout {
+                background: var(--brand-900) !important;
+            }
+            .callout.warning {
+                background: var(--alert-900) !important;
+            }
+            table {
+                border-color: var(--black-400) !important;
+            }
+            th {
+                background: var(--black-900) !important;
+                color: var(--neutral-500) !important;
+            }
+            td {
+                background: var(--black-600) !important;
+                color: var(--neutral-600) !important;
+                border-color: var(--black-500) !important;
+            }
+            .highlight-row td {
+                background: var(--brand-900) !important;
+            }
+            .timeline-step {
+                background: var(--black-600) !important;
+                border-color: var(--black-400) !important;
+            }
+            .step-number {
+                background: linear-gradient(180deg, #3D3D3D 0%, #282828 100%) !important;
+            }
+            .example-box {
+                background: var(--black-600) !important;
+                border-color: var(--black-400) !important;
+            }
+            .signature-block {
+                background: var(--black-600) !important;
+                border-color: var(--brand-700) !important;
+            }
+            .hero-meta-item {
+                background: var(--black-600) !important;
+                border-color: var(--black-400) !important;
+            }
+            h2, h3, h4, .card, .callout, table, .timeline-step, .signature-block, .term-item {
+                page-break-inside: avoid;
+            }
+            h2 {
+                page-break-after: avoid;
+                margin-top: var(--sp-32);
+            }
+            @page {
+                margin: 0;
+                size: auto;
+            }
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section { padding: var(--sp-32) var(--sp-24); }
+            .hero-section h1 { font-size: 28px; }
+            .hero-meta { grid-template-columns: 1fr; }
+            .document-wrapper { padding: var(--sp-32) var(--sp-24); }
+            .grid-2, .sig-grid, .terms-grid { grid-template-columns: 1fr; gap: var(--sp-16); }
+            .top-nav { padding: var(--sp-16) var(--sp-24); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-nav">
+        <div class="nav-logo-group">
+            <img src="../logo.png" alt="Flent Logo" class="nav-logo" onerror="this.style.display='none'">
+            <div class="nav-title">Flent Secured</div>
+        </div>
+        <button class="btn-download" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download PDF
+        </button>
+    </div>
+
+    <div class="hero-section">
+        <div class="hero-inner">
+            <h1>Secured Protection<br><strong>Cover Agreement</strong></h1>
+            <p class="hero-subtitle">Landlord Onboarding and Rental Income Protection Terms</p>
+            <div class="hero-meta">
+                <div class="hero-meta-item">
+                    <span>Between</span>
+                    <strong>Slaash Technologies Private Limited</strong>
+                    <div class="meta-sub">(trading as "Flent" and "Flent Secured")</div>
+                </div>
+                <div class="hero-meta-item">
+                    <span>And</span>
+                    <strong>The Property Owner</strong>
+                    <div class="meta-sub">("Landlord")</div>
+                </div>
+                <div class="hero-meta-item">
+                    <span>Effective Date</span>
+                    <strong>[Date of acceptance]</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="document-wrapper">
+
+        <h2>1. Introduction and Service Overview</h2>
+        <p>Welcome to Flent Secured—a modern rental management platform designed to bring security and simplicity to your rental income.</p>
+
+        <div class="grid-2">
+            <div class="card">
+                <h4>What we provide:</h4>
+                <ul>
+                    <li><strong>Rental Management Platform:</strong> Streamlined tenant payments, verification, and documentation</li>
+                    <li><strong>Income Protection Plan:</strong> Financial guarantee against vacancy and tenant default, backed by Slaash Technologies Private Limited</li>
+                    <li><strong>Payment Coordination:</strong> Secure, direct rent settlement to your bank account through RBI-regulated partners</li>
+                    <li><strong>Verifiable Records:</strong> Auditable payment history for tax and financial purposes</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>What this agreement covers:</h4>
+                <ul>
+                    <li>Enrollment in Flent Secured's rental management services</li>
+                    <li>Rental Income Protection Plan terms and conditions</li>
+                    <li>Payment processing arrangements with our authorized gateway partners</li>
+                    <li>Property and tenancy verification protocols</li>
+                </ul>
+            </div>
+        </div>
+
+        <p><strong>No cost today:</strong> This service is currently complimentary. Should pricing be introduced, you will receive 30 days' advance notice with the option to continue or discontinue.</p>
+
+        <h2>2. Your Consent and Authorization</h2>
+        <p>By accepting these terms, you confirm and authorize the following:</p>
+
+        <h3>2.1 Tenancy Verification</h3>
+        <p>You authorize Flent Secured to verify:</p>
+        <ul>
+            <li>That the tenant who invited you to the platform actually resides in your property</li>
+            <li>The existence and condition of the property at the stated address</li>
+            <li>Tenancy details including rent amount, lease duration, and payment history</li>
+        </ul>
+
+        <h3>2.2 Payment Processing Authorization</h3>
+        <p>You authorize Slaash Technologies Private Limited (Flent/Flent Secured) to:</p>
+        <ul>
+            <li>Facilitate rent payments from your tenant through our platform and authorized payment partners</li>
+            <li>Coordinate payment processing through RBI-regulated payment gateway providers</li>
+            <li>Arrange direct settlement of rent to your registered bank account</li>
+            <li>Maintain comprehensive transaction records demonstrating timely rent payment</li>
+        </ul>
+        <div class="callout">
+            <p><strong>Why this matters:</strong> Verified payment records serve as authoritative proof of consistent rental income for tax filing, credit applications, and property documentation.</p>
+        </div>
+
+        <h3>2.3 Platform Usage</h3>
+        <p>You agree to:</p>
+        <ul>
+            <li>Keep your property actively listed on Flent Secured for the entire protection period</li>
+            <li>Process all rent payments from enrolled tenants through the Flent Secured platform</li>
+            <li>Provide accurate property and bank account details</li>
+            <li>Respond to tenant verification requests within reasonable timeframes</li>
+        </ul>
+
+        <h2>3. Rental Income Protection Plan – Coverage Details</h2>
+        <p>The Rental Income Protection Plan provides financial protection against two critical rental income risks. This guarantee is financially backed by Slaash Technologies Private Limited (Flent Secured) through our institutional risk management partnerships.</p>
+
+        <h3>3.1 What is Covered</h3>
+        <div class="grid-2">
+            <div class="card">
+                <h4>Un-occupancy Guarantee</h4>
+                <p>If your property remains vacant for 30 days after a tenant moves out and Flent Secured is unable to find a replacement tenant, you will receive coverage of up to one month's rent (maximum ₹1,50,000).</p>
+                <p><strong>Conditions for Un-occupancy coverage:</strong></p>
+                <ul>
+                    <li>The departing tenant must have served a minimum 30-day notice period through the Flent Secured platform</li>
+                    <li>The property must remain listed and actively available on Flent Secured during the vacant period</li>
+                    <li>You must accept a new tenant who meets the agreed rental terms (including 5-10% renewal escalation if applicable)</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Tenant Abandonment Coverage</h4>
+                <p>If a tenant abandons the property and it remains vacant beyond the security deposit adjustment period (minimum 60 days), you will receive coverage of up to one month's rent (maximum ₹1,50,000).</p>
+                <p><strong>Conditions for Abandonment coverage:</strong></p>
+                <ul>
+                    <li>Tenant abandonment must be verified through Flent Secured's verification process</li>
+                    <li>You must accept a new tenant who meets the agreed rental terms (including 5-10% renewal escalation if applicable)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>3.2 When Coverage Does NOT Apply</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Scenario</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>First 90 days or before 3 payments</strong></td><td>Activation requirements not yet met</td></tr>
+                <tr><td><strong>You reject a qualified replacement tenant</strong></td><td>Tenant meets your stated rent and terms (including 5-10% escalation)</td></tr>
+                <tr><td><strong>Property under renovation or repair</strong></td><td>During the vacancy period</td></tr>
+                <tr><td><strong>Property removed from Flent Secured</strong></td><td>Coverage requires active platform enrollment</td></tr>
+                <tr><td><strong>Future fees unpaid</strong></td><td>If pricing is introduced and remains unpaid beyond due date</td></tr>
+                <tr><td><strong>Unverified tenant</strong></td><td>Only verified tenants qualify for coverage</td></tr>
+                <tr><td><strong>Self-initiated vacancy</strong></td><td>Landlord-initiated vacancy without tenant notice</td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.3 Coverage Activation Requirements</h3>
+        <p>Your protection activates when all five conditions are met:</p>
+        <ol>
+            <li><strong>Three successful payments:</strong> Tenant completes minimum 3 rent payments through Flent Secured</li>
+            <li><strong>90-day waiting period:</strong> Coverage begins 90 days from enrollment date</li>
+            <li><strong>Continuous platform usage:</strong> All subsequent rent payments processed through Flent Secured</li>
+            <li><strong>Verified tenant:</strong> Tenant completes identity and address verification</li>
+            <li><strong>Active enrollment:</strong> Property remains listed on Flent Secured throughout coverage period</li>
+        </ol>
+
+        <div class="example-box">
+            <strong>Practical Example:</strong><br>
+            Enrollment date: March 1, 2026<br>
+            First payment: March 5, 2026<br>
+            Third payment: May 5, 2026<br>
+            Coverage active: June 1, 2026 (90 days post-enrollment + 3 payments complete)
+        </div>
+
+        <h2>4. Payment Processing and Settlement</h2>
+
+        <h3>4.1 How Payments Work</h3>
+        <ul>
+            <li>Your tenant initiates rent payment through Flent Secured's platform using their preferred payment method</li>
+            <li>Payment is processed through our authorized RBI-regulated payment gateway partners</li>
+            <li>Rent is settled directly to your registered bank account (less any applicable platform fees, if introduced)</li>
+            <li>Settlement typically occurs within 1-2 business days of successful payment processing</li>
+        </ul>
+        <p><strong>Payment Flow:</strong> Tenant → Payment Gateway Partner → Your Bank Account<br>
+        Flent Secured coordinates this process as your rental management service provider.</p>
+
+        <h3>4.2 Payment Records and Documentation</h3>
+        <p>Flent Secured maintains auditable records of all rent transactions, which:</p>
+        <ul>
+            <li>Provide verifiable proof of consistent rental income</li>
+            <li>Are accessible 24/7 through your secure landlord dashboard</li>
+            <li>Can be downloaded for income verification, tax compliance, or financial applications</li>
+            <li>Include transaction IDs, timestamps, and payment confirmation from our gateway partners</li>
+        </ul>
+
+        <h3>4.3 Your Bank Account</h3>
+        <p>You must provide and maintain accurate bank account details. Changes to your bank account must be updated promptly through the platform. Flent Secured is not responsible for payment delays or failures due to incorrect bank details.</p>
+
+        <h2>5. Property and Tenant Verification</h2>
+
+        <div class="grid-2">
+            <div class="card">
+                <h4>5.1 Property Verification</h4>
+                <p>To activate your coverage, Flent Secured may conduct verification of your property, which may include:</p>
+                <ul>
+                    <li>Physical address confirmation through geo-tagged photography</li>
+                    <li>Review of property ownership or rental agreement documents</li>
+                    <li>Utility bill verification</li>
+                    <li>Remote or in-person verification by authorized Flent Secured representatives</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>5.2 Tenant Verification</h4>
+                <p>Your tenant must complete Flent Secured's standard verification process, which includes:</p>
+                <ul>
+                    <li>Identity verification (PAN and Aadhaar-based e-KYC)</li>
+                    <li>Address verification</li>
+                    <li>Tenancy confirmation</li>
+                </ul>
+                <p>You agree to cooperate with reasonable verification requests to confirm the tenant's occupancy.</p>
+            </div>
+        </div>
+
+        <h2>6. Your Obligations</h2>
+        <p>To maintain coverage and platform access, you commit to:</p>
+
+        <div class="grid-2">
+            <div class="card">
+                <h4>Information Accuracy</h4>
+                <ul>
+                    <li>Provide and maintain current property details, bank account information, and contact details</li>
+                    <li>Update information within 7 days of any change</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Platform Exclusivity</h4>
+                <ul>
+                    <li>Process all rent payments from enrolled tenants exclusively through Flent Secured</li>
+                    <li>Maintain active property listing throughout the coverage period</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Tenant Cooperation</h4>
+                <ul>
+                    <li>Respond to qualified tenant placement opportunities within 48 hours</li>
+                    <li>Accept replacement tenants who meet your documented rental criteria and terms</li>
+                    <li>Notify Flent Secured within 24 hours of tenant vacancy or abandonment</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>Continuity</h4>
+                <ul>
+                    <li>Keep property enrolled on Flent Secured for the entire coverage period</li>
+                    <li>Do not remove property from platform while coverage is active</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>7. Service Fees and Future Changes</h2>
+
+        <h3>7.1 Current Fee Structure</h3>
+        <p>This service is currently provided to you at <strong>no cost</strong> as a complimentary offering.</p>
+
+        <h3>7.2 Future Fee Introduction</h3>
+        <p>Flent Secured reserves the right to introduce fees for this service in the future. If fees are introduced:</p>
+        <ul>
+            <li>You will receive at least 30 days' advance written notice</li>
+            <li>You may choose to continue with the service and pay the applicable fees, or discontinue the service</li>
+            <li>Coverage will remain active during the notice period</li>
+            <li>If you choose not to pay future fees, coverage will be discontinued from the date fees become due</li>
+        </ul>
+
+        <h2>8. Termination and Suspension</h2>
+
+        <h3>8.1 Coverage Termination</h3>
+        <p>Your coverage will be terminated if:</p>
+        <ul>
+            <li>You remove your property from the Flent Secured platform</li>
+            <li>You stop processing rent payments through Flent Secured</li>
+            <li>Future fees (if introduced) remain unpaid after the due date</li>
+            <li>You provide false or misleading information</li>
+            <li>You violate any material term of this agreement</li>
+        </ul>
+
+        <h3>8.2 Service Suspension</h3>
+        <p>Flent Secured may temporarily suspend services if:</p>
+        <ul>
+            <li>There is suspected fraud or misuse</li>
+            <li>Your bank account details are invalid or outdated</li>
+            <li>Required verification steps are not completed</li>
+        </ul>
+        <p>You will be notified of any suspension and given an opportunity to rectify the issue.</p>
+
+        <h2>9. Claims Process</h2>
+
+        <h3>9.1 Filing a Claim (3-Step Process)</h3>
+        <div class="timeline">
+            <div class="timeline-step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Notify (within 7 days)</h4>
+                    <p>Submit claim through Flent Secured platform or email support@flentsecured.com</p>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Document</h4>
+                    <p>Provide supporting evidence:</p>
+                    <ul>
+                        <li>Tenant move-out notice (for un-occupancy claims)</li>
+                        <li>Vacancy confirmation and timeline</li>
+                        <li>Communication records with tenant</li>
+                        <li>Property availability confirmation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="timeline-step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Verification</h4>
+                    <p>Cooperate with Flent Secured's verification process (may include property inspection)</p>
+                </div>
+            </div>
+        </div>
+
+        <p><strong>Financial Backing:</strong> All approved claim payouts are guaranteed and paid by Slaash Technologies Private Limited (Flent Secured). Our financial commitments are supported through institutional risk-sharing arrangements with regulated financial partners.</p>
+
+        <h3>9.2 Mandatory Verification for Claim Disbursement</h3>
+        <p>Before any claim payout is processed, the following verifications must be completed:</p>
+        <ul>
+            <li><strong>Landlord KYC:</strong> Valid government-issued identity proof (PAN + Aadhaar-based e-KYC), bank account verification linked to the registered name, and contact verification.</li>
+            <li><strong>Property Ownership Verification:</strong> Proof of ownership (registered sale deed, property tax receipt, or equivalent document), confirmation that the property address matches records, and any additional documentation reasonably requested to establish lawful ownership.</li>
+            <li><strong>Tenant Verification:</strong> Confirmation that the tenant was onboarded through Flent Secured's verified onboarding process, tenancy agreement on record, and verification of the qualifying event (vacancy, abandonment) through platform records and supporting documentation.</li>
+        </ul>
+
+        <div class="callout warning">
+            <h4>Important</h4>
+            <p>Incomplete KYC, unverified ownership, or unverified tenancy will result in claim processing delays or denial. We strongly recommend completing all verifications at the time of onboarding to avoid delays at the time of a claim.</p>
+        </div>
+
+        <h3>9.3 Claim Assessment Timeline</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stage</th>
+                    <th>Timeline</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Initial Review</td><td>5–7 business days</td></tr>
+                <tr><td>Verification (KYC, Property, Tenant)</td><td>7–10 business days</td></tr>
+                <tr><td>Payout (if approved)</td><td>10–15 business days</td></tr>
+                <tr class="highlight-row"><td><strong>Total</strong></td><td><strong>15–30 business days from complete documentation</strong></td></tr>
+            </tbody>
+        </table>
+
+        <div class="grid-2">
+            <div>
+                <h3>9.4 Claim Approval Criteria</h3>
+                <p>Claims are approved when:</p>
+                <ul>
+                    <li>Event is covered (un-occupancy or abandonment)</li>
+                    <li>All activation requirements were met (3 payments, 90-day waiting period, active enrollment)</li>
+                    <li>Landlord KYC, property ownership, and tenant verification are complete</li>
+                    <li>Complete documentation provided</li>
+                    <li>No exclusion conditions apply</li>
+                </ul>
+            </div>
+            <div>
+                <h3>9.5 Claim Denial Reasons</h3>
+                <p>Common reasons for denial:</p>
+                <ul>
+                    <li>Coverage not yet active (waiting period or payment requirement not met)</li>
+                    <li>Qualified replacement tenant rejected by landlord</li>
+                    <li>Property was undergoing renovation during vacancy</li>
+                    <li>Incomplete KYC, ownership verification, or tenant verification</li>
+                    <li>Incomplete or missing documentation</li>
+                    <li>Exclusion condition applies</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>10. Limitation of Liability</h2>
+
+        <h3>10.1 Coverage Limits</h3>
+        <p>Maximum coverage per event: ₹1,50,000<br>Maximum coverage per policy year: ₹1,50,000</p>
+
+        <h3>10.2 Service Limitations</h3>
+        <p>Flent Secured provides rental management and income protection services but does not:</p>
+        <ul>
+            <li>Guarantee tenant placement within any specific timeframe</li>
+            <li>Assume responsibility for property maintenance or repairs</li>
+            <li>Provide legal advice or representation</li>
+            <li>Guarantee continuous occupancy of your property</li>
+        </ul>
+
+        <h3>10.3 Liability Cap and Financial Backing</h3>
+        <p>Flent Secured's total liability under this agreement is limited to the coverage amounts specified in the Rental Income Protection Plan (maximum ₹1,50,000 per event).</p>
+        <p><strong>Financial Security:</strong> Slaash Technologies Private Limited maintains institutional risk management arrangements to ensure financial capacity to honor all coverage commitments.</p>
+
+        <h2>11. Data Privacy and Security</h2>
+
+        <h3>11.1 Information Collection</h3>
+        <p>Flent Secured collects and processes:</p>
+        <ul>
+            <li>Your property details, bank account information, and contact details</li>
+            <li>Tenant payment records and verification data</li>
+            <li>Communication and transaction history</li>
+        </ul>
+
+        <h3>11.2 Data Usage</h3>
+        <p>Your information is used to:</p>
+        <ul>
+            <li>Provide rental management and payment processing services</li>
+            <li>Verify eligibility for coverage</li>
+            <li>Process claims</li>
+            <li>Comply with legal and regulatory requirements (including RBI payment regulations)</li>
+        </ul>
+
+        <h3>11.3 Data Protection</h3>
+        <p>Flent Secured maintains industry-standard security measures to protect your data. Your information will not be shared with third parties except:</p>
+        <ul>
+            <li>As required to provide services (e.g., payment processors, coverage partners)</li>
+            <li>As required by law or regulatory authorities</li>
+            <li>With your explicit consent</li>
+        </ul>
+        <p>For more details, please refer to our Privacy Policy at [website link].</p>
+
+        <h2>12. Regulatory Compliance</h2>
+
+        <h3>12.1 Payment Processing Compliance</h3>
+        <p>Flent Secured operates in full compliance with Reserve Bank of India (RBI) regulations governing digital payments. We partner exclusively with RBI-authorized payment aggregators and payment gateway providers to ensure:</p>
+        <ul>
+            <li>Regulatory-compliant payment processing infrastructure</li>
+            <li>Secure, direct settlement to landlord bank accounts</li>
+            <li>Complete transaction transparency and auditability</li>
+            <li>Adherence to Know Your Customer (KYC) and Anti-Money Laundering (AML) standards</li>
+        </ul>
+        <p><strong>Our Role:</strong> Flent Secured acts as a rental management platform that coordinates payment processing through licensed partners—we do not hold or aggregate funds.</p>
+
+        <h3>12.2 Tax Compliance</h3>
+        <p>You remain responsible for:</p>
+        <ul>
+            <li>Reporting rental income to tax authorities</li>
+            <li>Deducting and depositing applicable TDS under Section 194-I (if applicable)</li>
+            <li>Maintaining tax records</li>
+        </ul>
+        <p>Payment records from Flent Secured can assist with your tax compliance but do not replace your independent tax obligations.</p>
+
+        <h2>13. General Terms</h2>
+
+        <div class="terms-grid">
+            <div class="term-item">
+                <h3>13.1 Entire Agreement</h3>
+                <p>This document constitutes the entire agreement between you and Flent Secured regarding the services described herein.</p>
+            </div>
+            <div class="term-item">
+                <h3>13.2 Amendments</h3>
+                <p>Flent Secured may update these terms with 30 days' advance notice. Continued use of the platform after notice constitutes acceptance of updated terms.</p>
+            </div>
+            <div class="term-item">
+                <h3>13.3 Governing Law</h3>
+                <p>This agreement is governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Bangalore, Karnataka.</p>
+            </div>
+            <div class="term-item">
+                <h3>13.4 Severability</h3>
+                <p>If any provision of this agreement is found to be invalid or unenforceable, the remaining provisions will continue in full force and effect.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: var(--sp-24);">
+            <h3>13.5 Contact Information</h3>
+            <p>For questions, support, or claims:<br>
+            Email: support@flentsecured.com<br>
+            Phone: [Support number]<br>
+            Address: Slaash Technologies Private Limited, [Bangalore office address]</p>
+        </div>
+
+        <!-- Signature -->
+        <div class="signature-block">
+            <h2 style="margin-top: 0; padding: 0;">14. Acceptance and Consent</h2>
+            <p>By clicking "I Accept" or by using Flent Secured services, you confirm that:</p>
+            <ul>
+                <li>You have read and understood these terms</li>
+                <li>You are the lawful owner or authorized representative of the property</li>
+                <li>All information provided is accurate and complete</li>
+                <li>You authorize Flent Secured to process rent payments as described</li>
+                <li>You consent to property and tenancy verification</li>
+                <li>You consent to KYC verification and property ownership verification as required for claim processing</li>
+                <li>You understand the coverage conditions, exclusions, and activation requirements</li>
+            </ul>
+
+            <div class="sig-grid">
+                <div>
+                    <div class="sig-line" id="sigNameLine"></div>
+                    <div class="sig-label">Landlord Name</div>
+                </div>
+                <div>
+                    <div class="sig-line" id="sigAddressLine"></div>
+                    <div class="sig-label">Property Address</div>
+                </div>
+                <div>
+                    <div class="sig-line" id="sigDateLine"></div>
+                    <div class="sig-label">Date of Acceptance</div>
+                </div>
+                <div style="display: flex; align-items: flex-end; padding-bottom: 8px;">
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; font-size: 14px; color: #FFAE8A;">
+                        <input type="checkbox" id="sigAccepted" checked disabled style="width: 20px; height: 20px; accent-color: #FF9A6D;">
+                        Electronic Signature/Acceptance: I Accept
+                    </label>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin-top: var(--sp-64); font-size: 12px; color: #656565; font-style: italic;">
+                *Please keep a copy of these terms for your records. You can access them anytime through your Flent Secured landlord dashboard.*
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const p = new URLSearchParams(window.location.search);
+            const name    = p.get('name');
+            const address = p.get('address');
+            const date    = p.get('date');
+            const accepted = p.get('accepted');
+
+            const sigStyle = 'font-size:15px; color:#eeeeee; font-weight:500; padding-bottom:4px; display:block;';
+
+            if (name) {
+                document.getElementById('sigNameLine').innerHTML =
+                    '<span style="' + sigStyle + '">' + name + '</span>';
+            }
+            if (address) {
+                document.getElementById('sigAddressLine').innerHTML =
+                    '<span style="' + sigStyle + '">' + address + '</span>';
+            }
+            if (date) {
+                const formatted = new Date(date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('sigDateLine').innerHTML =
+                    '<span style="' + sigStyle + '">' + formatted + '</span>';
+            }
+            if (accepted === '1') {
+                document.getElementById('sigAccepted').checked = true;
+            }
+
+            if (p.get('print') === '1') {
+                window.addEventListener('load', function () {
+                    setTimeout(function () { window.print(); }, 400);
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>
