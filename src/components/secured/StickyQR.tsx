@@ -16,6 +16,7 @@ export function StickyQR() {
           alt="Scan QR to download Flent"
           width={96}
           height={96}
+          className="3xl:w-[140px] 3xl:h-[140px] 4xl:w-[180px] 4xl:h-[180px] 5xl:w-[240px] 5xl:h-[240px]"
         />
       </a>
     </div>

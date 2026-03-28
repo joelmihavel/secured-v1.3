@@ -42,7 +42,7 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 mx-auto w-full max-w-[1440px] px-4 md:px-6 xl:max-w-[1600px] 2xl:max-w-[1800px]"
+        className="relative z-10 mx-auto w-full max-w-[1440px] px-4 md:px-6 xl:max-w-[1600px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] 4xl:max-w-[2600px] 5xl:max-w-[3600px]"
       >
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1a1a] md:rounded-3xl">
           {/* Geometric line art illustration */}
@@ -61,10 +61,10 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
           </div>
 
           {/* Card content */}
-          <div className="relative flex flex-col gap-12 p-6 md:gap-[120px] md:p-8 lg:gap-[195px] lg:p-12">
+          <div className="relative flex flex-col gap-12 p-6 md:gap-[120px] md:p-8 lg:gap-[195px] lg:p-12 3xl:p-16 4xl:p-20 5xl:p-28">
             {/* Top row: heading + Flent icon */}
             <div className="flex items-start justify-between">
-              <h2 className="font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:text-[34px] lg:text-[40px] lg:leading-[1.5] lg:tracking-[-0.88px] xl:text-[48px] 2xl:text-[52px]">
+              <h2 className="font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:text-[34px] lg:text-[40px] lg:leading-[1.5] lg:tracking-[-0.88px] xl:text-[48px] 2xl:text-[52px] 3xl:text-[60px] 4xl:text-[72px] 5xl:text-[96px]">
                 <WordReveal>{data.heading}</WordReveal>
               </h2>
               <Image
@@ -72,6 +72,7 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
                 alt="Flent"
                 width={32}
                 height={38}
+                className="3xl:w-[48px] 3xl:h-[56px] 4xl:w-[64px] 4xl:h-[76px] 5xl:w-[96px] 5xl:h-[114px]"
               />
             </div>
 
@@ -84,6 +85,7 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
                   alt="Scan QR to download Flent"
                   width={216}
                   height={216}
+                  className="3xl:w-[280px] 3xl:h-[280px] 4xl:w-[360px] 4xl:h-[360px] 5xl:w-[480px] 5xl:h-[480px]"
                 />
               </div>
 
@@ -91,7 +93,7 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
               <div className="flex flex-1 flex-col gap-4 md:gap-6">
                 <SlideUp>
                   <p
-                    className="max-w-[1016px] text-base leading-[1.7] tracking-[-0.22px] text-white md:text-xl md:leading-[1.8]"
+                    className="max-w-[1016px] text-base leading-[1.7] tracking-[-0.22px] text-white md:text-xl md:leading-[1.8] 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl"
                     style={{ fontFamily: "var(--font-ui)" }}
                   >
                     {data.description}
