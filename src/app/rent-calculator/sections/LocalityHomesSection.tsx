@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { PropertyCard } from "@/components/ui/PropertyCard";
+import { ComingSoon } from "@/app/(Homepage)/sections/ComingSoon";
 import { CTA_IDS } from "@/lib/cta-ids";
 import { trackPropertyCardClick } from "@/lib/posthog-tracking";
 import { isPropertyActive, propertyHasDiscount } from "@/lib/property-utils";
@@ -49,7 +50,7 @@ export function LocalityHomesSection({
     <section className="pt-10 pb-6">
       <div className="mb-8 text-center">
         <h2 className="font-heading text-fluid-h3 text-text-main">
-          Available Homes in <span className="font-zin-italic">{area}</span>
+          Homes in <span className="font-zin-italic">{area}</span>
         </h2>
       </div>
 
@@ -75,9 +76,19 @@ export function LocalityHomesSection({
           ))}
         </div>
       ) : (
-        <p className="mx-auto mb-6 max-w-2xl text-center text-subtitle-sm text-muted-foreground">
-          No available homes found in {area} right now. You can still browse all listings.
-        </p>
+        <ComingSoon
+          properties={properties}
+          locations={locations}
+          rooms={rooms}
+          occupants={occupants}
+          title={
+            <>
+              No available homes in{" "}
+              <span className="font-zin-italic">{area}</span> right now
+            </>
+          }
+          subtitle="Get early access alerts and we will notify you as soon as matching homes launch."
+        />
       )}
 
       <div className="mt-10 flex justify-center">

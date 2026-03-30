@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "../components/primitives/Badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ComparisonRow } from "../components/primitives/ComparisonRow";
 import { EditCell } from "../components/primitives/EditCell";
 import {
@@ -21,6 +21,7 @@ import {
 } from "../constants";
 import type { ComparisonMode, FurnitureMode } from "../types";
 import { formatCurrency } from "../utils";
+import type { RentCalculatorInputName } from "@/lib/posthog-tracking";
 
 type ComparisonTableSectionProps = {
   mode: ComparisonMode;
@@ -38,6 +39,11 @@ type ComparisonTableSectionProps = {
   setTradBrokerage: (value: number) => void;
   tradPainting: number;
   setTradPainting: (value: number) => void;
+  onInputCommit: (
+    inputName: RentCalculatorInputName,
+    newValue: number,
+    previousValue: number
+  ) => void;
   isRentLow: boolean;
   flentDeposit: number;
   tradFurnBuyCost: number;
@@ -50,12 +56,27 @@ type ComparisonTableSectionProps = {
   tradTotal: number;
 };
 
-const SectionHeader = ({ title }: { title: string }) => (
-  <TableRow>
-    <TableCell colSpan={3} className="bg-pastel-brown px-4 py-2">
+const SectionHeader = ({
+  title,
+  className,
+}: {
+  title: string;
+  className?: string;
+}) => (
+  <TableRow className={`border-b-0 ${className ?? ""}`}>
+    <TableCell colSpan={3} className="px-4 py-2">
       <div className="text-[10px] font-extrabold uppercase tracking-[0.12em] text-ground-brown">
         {title}
       </div>
+    </TableCell>
+  </TableRow>
+);
+
+// Spacer that provides 16px "wrapper padding" within a table block.
+const SectionPaddingRow = ({ withTopBorder = false }: { withTopBorder?: boolean }) => (
+  <TableRow className="border-b-0">
+    <TableCell colSpan={3} className={`p-0 ${withTopBorder ? "border-t-2 border-border" : ""}`}>
+      <div className="h-4" />
     </TableCell>
   </TableRow>
 );
@@ -77,6 +98,7 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
     setTradBrokerage,
     tradPainting,
     setTradPainting,
+    onInputCommit,
     isRentLow,
     flentDeposit,
     tradFurnBuyCost,
@@ -95,38 +117,57 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
       : tradFurnBuyCost + ESSENTIALS;
 
   return (
-    <section className="mb-5 overflow-hidden border border-border bg-bg-white">
-      <Table>
+    <section className="flent-neo-card mb-5 overflow-hidden rounded-[20px] bg-bg-white">
+      <Table className="border-0">
         <TableHeader className="font-heading">
           <TableRow>
             <TableHead className="bg-secondary-background px-4 py-3.5 text-foreground">
-              <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-                Cost Component
+              <div className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main/60">
+                Costs
               </div>
             </TableHead>
-            <TableHead className="border-l-2 border-border bg-pastel-green/40 px-2.5 py-3.5 text-center text-foreground">
-              <div className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-forest-green">
-                Flent Home
+            <TableHead className="bg-secondary-background px-2.5 py-3.5 text-center text-foreground">
+              <div className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-forest-green">
+                Flent
               </div>
-              <div className="mt-0.5 text-[10px] text-forest-green/70">All-inclusive</div>
             </TableHead>
-            <TableHead className="border-l-2 border-border bg-secondary-background px-2.5 py-3.5 text-center text-foreground">
-              <div className="text-[10px] font-extrabold uppercase tracking-[0.08em] text-text-main">
-                {mode === "1bhk" ? "Traditional 1BHK" : "Traditional (Shared)"}
+            <TableHead className="bg-secondary-background px-2.5 py-3.5 text-center text-foreground">
+              <div className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main/70">
+                Traditional Renting
               </div>
-              <div className="mt-0.5 text-[10px] text-muted-foreground">Tap numbers to edit</div>
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
+          <SectionPaddingRow />
+
           <SectionHeader title="Monthly Costs" />
 
+          <SectionPaddingRow />
+
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Rent"
-            flent={<EditCell value={flentRent} onChange={setFlentRent} suffix="/mo" />}
+            flent={
+              <EditCell
+                value={flentRent}
+                onChange={setFlentRent}
+                suffix="/mo"
+                onCommit={(newValue, previousValue) =>
+                  onInputCommit("flent_rent", newValue, previousValue)
+                }
+              />
+            }
             trad={
               <div>
-                <EditCell value={effTradRent} onChange={setTradRent} suffix="/mo" />
+                <EditCell
+                  value={effTradRent}
+                  onChange={setTradRent}
+                  suffix="/mo"
+                  onCommit={(newValue, previousValue) =>
+                    onInputCommit("traditional_rent", newValue, previousValue)
+                  }
+                />
                 {isRentLow ? (
                   <div className="mx-auto mt-1.5 max-w-40 text-[11px] font-semibold leading-4 text-brick-red">
                     This may not be a Flent-standard home. The locality, size, or building quality
@@ -138,54 +179,63 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
           />
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Maintenance"
             sub="Society + common area"
-            flent={<Badge text="Included in rent" />}
+            flent={<span className="text-[11px] font-bold text-forest-green md:text-[13px]">Inclusive</span>}
             trad={
               <div>
-                <EditCell value={effMaint} onChange={setTradMaint} suffix="/mo" />
-                <div className="mt-0.5 text-[11px] text-muted-foreground">Paid separately</div>
+                <EditCell
+                  value={effMaint}
+                  onChange={setTradMaint}
+                  suffix="/mo"
+                  onCommit={(newValue, previousValue) =>
+                    onInputCommit("traditional_maintenance", newValue, previousValue)
+                  }
+                />
               </div>
             }
           />
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Furnishing"
-            flent={<Badge text="200+ items included" />}
+            flent={
+              <span className="text-[11px] font-bold text-forest-green md:text-[13px]">
+                200+ items included
+              </span>
+            }
             trad={
               <div>
-                <div className="mx-auto mb-1.5 flex max-w-[180px] rounded-full border border-text-main bg-text-main p-0.5">
-                  <button
-                    onClick={() => setFurnitureMode("rent")}
-                    className={`flex-1 rounded-full px-3 py-1.5 text-[11px] font-semibold ${
-                      furnitureMode === "rent"
-                        ? "bg-bg-white text-text-main"
-                        : "text-text-invert/70"
-                    }`}
-                  >
-                    Rent
-                  </button>
-                  <button
-                    onClick={() => setFurnitureMode("buy")}
-                    className={`flex-1 rounded-full px-3 py-1.5 text-[11px] font-semibold ${
-                      furnitureMode === "buy"
-                        ? "bg-bg-white text-text-main"
-                        : "text-text-invert/70"
-                    }`}
-                  >
-                    Buy
-                  </button>
-                </div>
+                <Tabs
+                  value={furnitureMode}
+                  onValueChange={(value) => setFurnitureMode(value as FurnitureMode)}
+                  variant="pill"
+                  className="mx-auto mb-1.5 w-full max-w-[180px]"
+                >
+                  <TabsList className="flex w-full">
+                    <TabsTrigger value="rent" className="!w-1/2 flex-1 !px-0 !py-1.5 !text-[11px]">
+                      Rent
+                    </TabsTrigger>
+                    <TabsTrigger value="buy" className="!w-1/2 flex-1 !px-0 !py-1.5 !text-[11px]">
+                      Buy
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
                 {furnitureMode === "rent" ? (
                   <>
-                    <div className="text-sm font-bold text-text-main">{formatCurrency(FURN_RENT_MO)}/mo</div>
+                    <div className="text-sm font-bold text-text-main md:text-[17px]">
+                      {formatCurrency(FURN_RENT_MO)}/mo
+                    </div>
                     <div className="mt-0.5 text-[11px] text-muted-foreground">
                       8 items via Furlenco, Rentomojo
                     </div>
                   </>
                 ) : (
                   <>
-                    <div className="text-sm font-bold text-text-main">{formatCurrency(FURN_BUY)} upfront</div>
+                    <div className="text-sm font-bold text-text-main md:text-[17px]">
+                      {formatCurrency(FURN_BUY)} upfront
+                    </div>
                     <div className="mt-0.5 text-[11px] text-muted-foreground">~15 items purchased</div>
                   </>
                 )}
@@ -193,23 +243,34 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
             }
           />
 
-          <TableRow className="bg-secondary-background">
-            <TableCell className="px-4 py-3">
-              <div className="text-[13px] font-extrabold text-text-main">Effective monthly</div>
+          <TableRow className="border-b-0">
+            <TableCell className="border-t-2 border-border px-4 py-3">
+              <div className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main">
+                Effective monthly
+              </div>
             </TableCell>
-            <TableCell className="border-l-2 border-border px-2.5 py-3 text-center">
-              <span className="text-lg font-extrabold text-forest-green">{formatCurrency(flentRent)}</span>
-              <span className="text-[11px] text-muted-foreground">/mo</span>
+            <TableCell className="border-t-2 border-border px-2.5 py-3 text-center">
+              <span className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-forest-green">
+                {formatCurrency(flentRent)}
+              </span>
+              <span className="text-[11px] text-text-main/80">/mo</span>
             </TableCell>
-            <TableCell className="border-l-2 border-border px-2.5 py-3 text-center">
-              <span className="text-lg font-extrabold text-text-main">{formatCurrency(tradMonthly)}</span>
-              <span className="text-[11px] text-muted-foreground">/mo</span>
+            <TableCell className="border-t-2 border-border px-2.5 py-3 text-center">
+              <span className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main">
+                {formatCurrency(tradMonthly)}
+              </span>
+              <span className="text-[11px] text-text-main/80">/mo</span>
             </TableCell>
           </TableRow>
 
+          <SectionPaddingRow withTopBorder />
+
           <SectionHeader title="One-Time & Hidden Costs" />
 
+          <SectionPaddingRow />
+
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Security Deposit"
             flent={
               <div>
@@ -219,7 +280,13 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
             }
             trad={
               <div>
-                <EditCell value={effDeposit} onChange={setTradDeposit} />
+                <EditCell
+                  value={effDeposit}
+                  onChange={setTradDeposit}
+                  onCommit={(newValue, previousValue) =>
+                    onInputCommit("traditional_deposit", newValue, previousValue)
+                  }
+                />
                 <div className="mt-0.5 text-[11px] text-muted-foreground">
                   {DEPOSIT_MONTHS_TRAD} months typical
                 </div>
@@ -228,23 +295,33 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
           />
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Brokerage"
-            flent={<Badge text="Zero, always" />}
+            flent={<span className="text-[11px] font-bold text-forest-green md:text-[13px]">Zero</span>}
             trad={
               <div>
-                <EditCell value={effBrokerage} onChange={setTradBrokerage} />
+                <EditCell
+                  value={effBrokerage}
+                  onChange={setTradBrokerage}
+                  onCommit={(newValue, previousValue) =>
+                    onInputCommit("traditional_brokerage", newValue, previousValue)
+                  }
+                />
                 <div className="mt-0.5 text-[11px] text-muted-foreground">1 month rent typical</div>
               </div>
             }
           />
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Essentials"
             sub="Kitchenware, curtains, bedding"
-            flent={<Badge text="Included" />}
+            flent={<span className="text-[11px] font-bold text-forest-green md:text-[13px]">Included</span>}
             trad={
               <div>
-                <span className="text-sm font-bold text-text-main">{formatCurrency(ESSENTIALS)}</span>
+                <span className="text-sm font-bold text-text-main md:text-[17px]">
+                  {formatCurrency(ESSENTIALS)}
+                </span>
                 <div className="text-[11px] text-muted-foreground">Can&apos;t rent these</div>
               </div>
             }
@@ -252,9 +329,14 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
 
           {furnitureMode === "buy" ? (
             <ComparisonRow
+              rowClassName="border-b-0"
               label="Furniture Depreciation"
               sub="Value lost over 11 months"
-              flent={<Badge text="No furniture to lose" />}
+              flent={
+                <span className="text-[11px] font-bold text-forest-green md:text-[13px]">
+                  No furniture to lose
+                </span>
+              }
               trad={
                 <div className="mx-auto max-w-40 text-left">
                   <div className="mb-0.5 flex justify-between text-[11px]">
@@ -271,7 +353,7 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
                     <span className="font-bold text-brick-red">Value lost</span>
                     <span className="font-extrabold text-brick-red">{formatCurrency(tradFurnBuyCost)}</span>
                   </div>
-                  <div className="mt-1 text-[11px] font-bold text-brick-red">
+                  <div className="mt-1 text-[11px] font-bold text-brick-red md:text-[13px]">
                     = {formatCurrency(tradFurnBuyMo)}/mo effective cost
                   </div>
                 </div>
@@ -280,6 +362,7 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
           ) : null}
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Exit / Painting"
             flent={
               <div>
@@ -289,7 +372,13 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
             }
             trad={
               <div>
-                <EditCell value={tradPainting} onChange={setTradPainting} />
+                <EditCell
+                  value={tradPainting}
+                  onChange={setTradPainting}
+                  onCommit={(newValue, previousValue) =>
+                    onInputCommit("traditional_painting", newValue, previousValue)
+                  }
+                />
                 <div className="mt-0.5 text-[11px] text-muted-foreground">+ surprise deductions</div>
               </div>
             }
@@ -297,12 +386,19 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
 
           {mode === "roommate" ? (
             <ComparisonRow
+              rowClassName="border-b-0"
               label="Flatmate Vacancy"
               sub="~10 days to find flatmates"
-              flent={<Badge text="We match flatmates" />}
+              flent={
+                <span className="text-[11px] font-bold text-forest-green md:text-[13px]">
+                  We match flatmates
+                </span>
+              }
               trad={
                 <div>
-                  <span className="text-sm font-bold text-brick-red">{formatCurrency(tradVacancy)}</span>
+                  <span className="text-sm font-bold text-brick-red md:text-[17px]">
+                    {formatCurrency(tradVacancy)}
+                  </span>
                   <div className="text-[11px] text-muted-foreground">
                     {formatCurrency(VACANCY_DAILY)}/day × ~{VACANCY_DAYS} days
                   </div>
@@ -312,22 +408,40 @@ export function ComparisonTableSection(props: ComparisonTableSectionProps) {
           ) : null}
 
           <ComparisonRow
+            rowClassName="border-b-0"
             label="Deposit Opportunity Cost"
             sub="Returns lost @ 12% p.a."
-            flent={<span className="text-sm font-bold text-text-main">{formatCurrency(flentDepositOpp)}</span>}
-            trad={<span className="text-sm font-bold text-text-main">{formatCurrency(tradDepositOpp)}</span>}
+            flent={
+              <span className="text-sm font-bold text-text-main md:text-[17px]">
+                {formatCurrency(flentDepositOpp)}
+              </span>
+            }
+            trad={
+              <span className="text-sm font-bold text-text-main md:text-[17px]">
+                {formatCurrency(tradDepositOpp)}
+              </span>
+            }
           />
 
+          <SectionPaddingRow />
+
           <TableRow className="border-b-0">
-            <TableCell className="bg-ground-brown px-4 py-4">
-              <div className="text-[13px] font-extrabold text-bg-white">Total Cost</div>
-              <div className="text-[11px] text-brand-orange">{DURATION} months</div>
+            <TableCell className="border-t-2 border-border px-4 py-4">
+              <div className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main">
+                Grand Total
+              </div>
+              {/* Keep the smaller size for the months line */}
+              <div className="text-[11px] text-text-main/80">{DURATION} months</div>
             </TableCell>
-            <TableCell className="border-l-2 border-bg-white/20 bg-forest-green px-4 py-4 text-center">
-              <span className="text-xl font-extrabold text-bg-white">{formatCurrency(flentTotal)}</span>
+            <TableCell className="border-t-2 border-border px-4 py-4 text-center">
+              <span className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-forest-green">
+                {formatCurrency(flentTotal)}
+              </span>
             </TableCell>
-            <TableCell className="border-l-2 border-bg-white/20 bg-ground-brown px-4 py-4 text-center">
-              <span className="text-xl font-extrabold text-brand-orange">{formatCurrency(tradTotal)}</span>
+            <TableCell className="border-t-2 border-border px-4 py-4 text-center">
+              <span className="text-[16px] md:text-[18px] font-bold tracking-[0.1em] font-zin text-text-main">
+                {formatCurrency(tradTotal)}
+              </span>
             </TableCell>
           </TableRow>
         </TableBody>

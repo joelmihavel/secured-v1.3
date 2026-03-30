@@ -48,11 +48,11 @@ export function SavingsSection({
       )}
 
       {flentWins && affordItems.length > 0 ? (
-        <div className="mt-5 border-t border-bg-white/20 pt-4.5">
-          <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-bg-white/60">
+        <div className="mt-5">
+          {/* <div className="mb-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-bg-white/60">
             Or use that for
-          </div>
-          <div className="flex flex-wrap gap-2">
+          </div> */}
+          {/* <div className="flex flex-wrap gap-2">
             {affordItems.map((item) => (
               <div
                 key={item.label}
@@ -63,7 +63,7 @@ export function SavingsSection({
                 <span className="text-[11px] text-bg-white/60">{formatCurrency(item.cost)}</span>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       ) : null}
     </section>
