@@ -20,7 +20,12 @@ import { PropertyPageViewTracker } from "./PropertyPageViewTracker";
 import { Header } from "./sections/Header";
 import { RoomSelection } from "./sections/RoomSelection";
 import { Neighborhood } from "./sections/Neighborhood";
-import { FlentCompare } from "./sections/FlentCompare";
+import {
+  FlentCompare,
+  DEFAULT_WITH_FLENT_ITEMS,
+  DEFAULT_WITHOUT_FLENT_ITEMS,
+  DEFAULT_FLENT_COMPARE_CONTENT,
+} from "./sections/FlentCompare";
 import { Rating } from "@/components/ui/Rating";
 import { FAQ } from "./sections/FAQ";
 import { MoreOptions } from "./sections/MoreOptions";
@@ -299,7 +304,13 @@ export default async function PropertyPage({
       </section>
 
       <section id="flent-compare">
-        <FlentCompare />
+        <FlentCompare
+          cardSectionId="compare"
+          defaultTab="flent"
+          withItems={DEFAULT_WITH_FLENT_ITEMS}
+          withoutItems={DEFAULT_WITHOUT_FLENT_ITEMS}
+          {...DEFAULT_FLENT_COMPARE_CONTENT}
+        />
       </section>
 
       <section id="how-it-works">

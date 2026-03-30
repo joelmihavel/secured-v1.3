@@ -28,13 +28,13 @@ import {
     IconShield as Shield,
     Icon as LucideIcon
 } from "@tabler/icons-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { Gravity, MatterBody } from "@/components/ui/gravity";
 import { Marquee } from "@/components/ui/Marquee";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 
-type CompareItem = {
+export type CompareItem = {
     text: string;
     icon: LucideIcon;
     bgColor: string;
@@ -42,7 +42,7 @@ type CompareItem = {
     borderColor: string;
 };
 
-const withFlentItems: CompareItem[] = [
+export const DEFAULT_WITH_FLENT_ITEMS: CompareItem[] = [
     { text: "Fully Furnished Designer Home", icon: Armchair, bgColor: "var(--color-brick-red)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
     { text: "24/7 Resident Support", icon: Headphones, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-cyan)", borderColor: "var(--color-brand-cyan)" },
     { text: "Quick Issue Resolution", icon: Zap, bgColor: "var(--color-forest-green)", textColor: "var(--color-brand-orange)", borderColor: "var(--color-brand-orange)" },
@@ -58,7 +58,7 @@ const withFlentItems: CompareItem[] = [
     { text: "Guaranteed Deposit Return", icon: CircleDollarSign, bgColor: "var(--color-night-violet)", textColor: "var(--color-brand-yellow)", borderColor: "var(--color-brand-yellow)" },
 ];
 
-const withoutFlentItems: CompareItem[] = [
+export const DEFAULT_WITHOUT_FLENT_ITEMS: CompareItem[] = [
     { text: "High deposits", icon: Banknote, bgColor: "var(--color-brand-yellow)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
     { text: "Buy or rent furniture", icon: ShoppingCart, bgColor: "var(--color-pastel-brown)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
     { text: "Set up WiFi", icon: Wifi, bgColor: "var(--color-pastel-brown)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
@@ -73,6 +73,42 @@ const withoutFlentItems: CompareItem[] = [
     { text: "Deposit refund stress", icon: CircleDollarSign, bgColor: "var(--color-pastel-brown)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
     { text: "Move-in cleaning", icon: Sparkles, bgColor: "var(--color-brand-yellow)", textColor: "var(--color-text-main)", borderColor: "var(--color-text-main)" },
 ];
+
+export type FlentCompareTab = "flent" | "without";
+
+export type FlentCompareProps = {
+    withItems?: CompareItem[];
+    withoutItems?: CompareItem[];
+
+    withTabLabel?: string;
+    withoutTabLabel?: string;
+
+    withTitle?: ReactNode;
+    withSubtitle?: ReactNode;
+    withoutTitle?: ReactNode;
+    withoutSubtitle?: ReactNode;
+
+    cardSectionId?: string;
+    defaultTab?: FlentCompareTab;
+};
+
+export const DEFAULT_FLENT_COMPARE_CONTENT = {
+    withTabLabel: "With Flent",
+    withoutTabLabel: "Without Flent",
+    withTitle: (
+        <>
+            Just get your clothes <br className="hidden md:block" />{" "}
+            <span className="font-zin-italic opacity-60">And start living</span>
+        </>
+    ),
+    withSubtitle: "We do all the heavy lifting so that you don’t have to.",
+    withoutTitle: (
+        <>
+            Why go through <span className="font-zin-italic opacity-60">all this?</span>
+        </>
+    ),
+    withoutSubtitle: "Weeks of house hunting. Move in hassle. A home that isn’t ready for you.",
+} satisfies Partial<FlentCompareProps>;
 
 const Chip = ({ item }: { item: CompareItem }) => (
     <div
@@ -91,15 +127,26 @@ const Chip = ({ item }: { item: CompareItem }) => (
 
 
 
-export const FlentCompare = () => {
-    const [activeTab, setActiveTab] = useState("flent");
+export const FlentCompare = ({
+    withItems = DEFAULT_WITH_FLENT_ITEMS,
+    withoutItems = DEFAULT_WITHOUT_FLENT_ITEMS,
+    withTabLabel = DEFAULT_FLENT_COMPARE_CONTENT.withTabLabel,
+    withoutTabLabel = DEFAULT_FLENT_COMPARE_CONTENT.withoutTabLabel,
+    withTitle = DEFAULT_FLENT_COMPARE_CONTENT.withTitle,
+    withSubtitle = DEFAULT_FLENT_COMPARE_CONTENT.withSubtitle,
+    withoutTitle = DEFAULT_FLENT_COMPARE_CONTENT.withoutTitle,
+    withoutSubtitle = DEFAULT_FLENT_COMPARE_CONTENT.withoutSubtitle,
+    cardSectionId = "compare",
+    defaultTab = "flent",
+}: FlentCompareProps) => {
+    const [activeTab, setActiveTab] = useState<FlentCompareTab>(defaultTab);
 
     // eslint-disable-next-line react-hooks/purity
-    const angles = useMemo(() => Array.from({ length: 20 }).map(() => Math.random() * 20 - 10), []);
+    const angles = useMemo(() => Array.from({ length: withoutItems.length }).map(() => Math.random() * 20 - 10), [withoutItems.length]);
 
     return (
         <CardSection
-            id="compare"
+            id={cardSectionId}
             className="bg-pastel-brown/20"
             paddingX="none"
             backgroundPattern={activeTab === "without" ? "none" : "/patterns/jupiter.svg"}
@@ -108,24 +155,24 @@ export const FlentCompare = () => {
             paddingY="none"
         >
             <Tabs
-                defaultValue="flent"
+                defaultValue={defaultTab}
                 className="w-full flex flex-col items-center pt-12"
-                onValueChange={setActiveTab}
+                onValueChange={(value) => setActiveTab(value as FlentCompareTab)}
                 variant="pill"
             >
                 {/* Tabs at the top */}
                 <div className="w-full flex justify-center mb-8 relative z-20">
                     <TabsList>
                         <TabsTrigger value="flent">
-                            With Flent
+                            {withTabLabel}
                         </TabsTrigger>
                         <TabsTrigger value="without">
-                            Without Flent
+                            {withoutTabLabel}
                         </TabsTrigger>
                     </TabsList>
                 </div>
 
-                <div className="w-full relative z-10 h-[65vh] md:h-[calc(45vh+232px)]">
+                <div className="w-full relative z-10 h-auto">
                     <AnimatePresence mode="wait">
                         {activeTab === "flent" ? (
                             <motion.div
@@ -136,36 +183,36 @@ export const FlentCompare = () => {
                                 transition={{ duration: 0.3 }}
                                 className="w-full h-full"
                             >
-                                <TabsContent value="flent" className="w-full m-0 h-full flex flex-col" forceMount>
+                                <TabsContent value="flent" className="w-full m-0 flex flex-col" forceMount>
                                     {/* Header Section */}
-                                    <div className="w-full flex-shrink-0 flex items-center justify-center pt-2 pb-4">
+                                    <div className="w-full flex-shrink-0 flex items-center justify-center pt-2 pb-0 md:pb-4">
                                         <div className="text-center max-w-3xl mx-auto">
 
                                             <h2 className="font-heading text-fluid-h2 text-text-main">
-                                                Just get your clothes <br className="hidden md:block" /> <span className="font-zin-italic opacity-60">And start living</span>
+                                                {withTitle}
                                             </h2>
                                             <p className="text-sm md:text-subtitle-sm font-medium text-text-main/70 pt-4">
-                                                We do all the heavy lifting so that you don’t have to.
+                                                {withSubtitle}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Carousel Section */}
                                     <div
-                                        className="relative w-screen ml-[calc(50%-50vw)] flex-1 overflow-hidden flex flex-col justify-center gap-6 md:gap-12"
+                                        className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden flex flex-col justify-start gap-6 pt-12 pb-6 md:justify-center md:pt-0 md:pb-0 md:gap-12"
                                     >
                                         <Marquee duration={200} className="w-full" repeat={4}>
-                                            {withFlentItems.slice(0, 5).map((item, i) => (
+                                            {withItems.slice(0, 5).map((item, i) => (
                                                 <Chip key={i} item={item} />
                                             ))}
                                         </Marquee>
                                         <Marquee duration={200} reverse className="w-full" repeat={4}>
-                                            {withFlentItems.slice(5, 9).map((item, i) => (
+                                            {withItems.slice(5, 9).map((item, i) => (
                                                 <Chip key={i} item={item} />
                                             ))}
                                         </Marquee>
                                         <Marquee duration={200} className="w-full" repeat={4}>
-                                            {withFlentItems.slice(9).map((item, i) => (
+                                            {withItems.slice(9).map((item, i) => (
                                                 <Chip key={i} item={item} />
                                             ))}
                                         </Marquee>
@@ -181,12 +228,12 @@ export const FlentCompare = () => {
                                 transition={{ duration: 0.3 }}
                                 className="w-full h-full"
                             >
-                                <TabsContent value="without" className="w-full m-0 h-full" forceMount>
+                                <TabsContent value="without" className="w-full m-0" forceMount>
                                     {/* Full Height Canvas Section (Header Height + Canvas Height) */}
-                                    <div className="relative w-full overflow-hidden h-full rounded-lg">
+                                    <div className="relative w-full overflow-hidden min-h-[320px] md:h-full rounded-lg">
                                         <Gravity gravity={{ x: 0, y: 2.5 }} className="w-full h-full" addTopWall resetOnResize={false}>
                                             {/* Burden pills - start at top, fall immediately */}
-                                            {withoutFlentItems.map((item, i) => (
+                                            {withoutItems.map((item, i) => (
                                                 <MatterBody
                                                     key={`without-${i}`}
                                                     x={`${15 + (i * 12) % 70}%`}
@@ -219,7 +266,7 @@ export const FlentCompare = () => {
                                             >
                                                 <div>
                                                     <h2 className="font-heading text-text-main text-fluid-h2 whitespace-nowrap text-center">
-                                                        Why go through <span className="font-zin-italic opacity-60">all this?</span>
+                                                        {withoutTitle}
                                                     </h2>
                                                 </div>
                                             </MatterBody>
@@ -235,7 +282,7 @@ export const FlentCompare = () => {
                                             >
                                                 <div className=" max-w-xl text-center">
                                                     <p className="text-xs md:text-sm font-medium text-text-main/90">
-                                                        Weeks of house hunting. Move in hassle. A home that isn’t ready for you.
+                                                        {withoutSubtitle}
                                                     </p>
                                                 </div>
                                             </MatterBody>
