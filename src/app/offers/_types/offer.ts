@@ -1,0 +1,43 @@
+export type Offer = {
+  id: string;
+  landlord_name: string;
+  landlord_email: string;
+  created_by: string | null;
+  property_name: string;
+  property_type: string;
+  furnishing_state: string;
+  parking: string;
+  rent_amount: number;
+  security_deposit: number;
+  service_term: string;
+  rent_increment: string;
+  key_handover_date: string;
+  rent_free_period: string;
+  rent_start_date: string;
+  lock_in: string;
+  notice_period: string;
+  selected_terms: string[];
+  agreed: boolean;
+  agreed_at: string | null;
+  created_at: string;
+};
+
+export type OfferInsert = {
+  landlord_name: string;
+  landlord_email: string;
+  created_by: string;
+  property_name: string;
+  property_type: string;
+  furnishing_state: string;
+  parking: string;
+  rent_amount: number;
+  security_deposit: number;
+  service_term: string;
+  rent_increment: string;
+  key_handover_date: string;
+  rent_free_period: string;
+  rent_start_date: string;
+  lock_in: string;
+  notice_period: string;
+  selected_terms: string[];
+};
