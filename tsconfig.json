@@ -43,6 +43,7 @@
     "node_modules",
     "secured-v1",
     "tenant-renewals",
-    "v0-flent-landing-page-1"
+    "v0-flent-landing-page-1",
+    "flent-offers"
   ]
 }
