@@ -13,7 +13,9 @@ type OfferTrackingRow = {
   created_by: string | null;
   property_name: string;
   property_type: string;
+  /** Present after migration `006_add_furnishing_and_parking.sql` is applied. */
   furnishing_state?: string | null;
+  /** Present after migration `006_add_furnishing_and_parking.sql` is applied. */
   parking?: string | null;
   rent_amount: number;
   security_deposit: number;
@@ -451,7 +453,7 @@ export default function AdminOffersTrackingTable() {
                         <div className="font-medium text-flent-black/90">{row.property_name}</div>
                       </td>
                       <td className={`${stickyLandlordTdClass(2)} px-2 py-4`}>
-                        <div className="text-[12px] font-medium text-flent-brown/80">{row.landlord_email}</div>
+                        <div className="text-[12px] font-medium text-flent-black/80">{row.landlord_email}</div>
                       </td>
                       <td className={`${stickyLandlordTdClass(3)} px-2 py-4`}>
                         <div className="whitespace-nowrap text-[12px] font-medium text-flent-black/90">

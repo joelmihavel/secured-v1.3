@@ -32,7 +32,7 @@ type TimelineStep = {
   copy: string;
   icon: LucideIcon;
   bgColor: string;
-  /** Calendar days from “today” for the dynamic date label (step 1 uses 0 → “Today”). */
+  /** Calendar days from "today" for the dynamic date label (step 1 uses 0 → "Today"). */
   dayOffsetFromToday: number;
 };
 
@@ -53,7 +53,7 @@ const timelineSteps: TimelineStep[] = [
   },
   {
     title: "Review and sign your agreement.",
-    copy: "Post onboarding, we’ll prepare the Authorization Agreement with your details and share it for review. Upon approval, we’ll initiate e-stamp and e-signing. The remaining 50% of the deposit is transferred once the agreement is signed.",
+    copy: "Post onboarding, we'll prepare the Authorization Agreement with your details and share it for review. Upon approval, we'll initiate e-stamp and e-signing. The remaining 50% of the deposit is transferred once the agreement is signed.",
     icon: FileText,
     bgColor: "#ddd0c7",
     dayOffsetFromToday: 2,
@@ -102,7 +102,7 @@ type TermInfoId =
 
 const TERM_INFO: Record<TermInfoId, string> = {
   property_type:
-    "Your home’s details that Flent will manage under this partnership.",
+    "Your home's details that Flent will manage under this partnership.",
   furnishing_state:
     "How the home is equipped when Flent takes over — unfurnished, partially furnished, or fully furnished.",
   parking:
@@ -112,7 +112,7 @@ const TERM_INFO: Record<TermInfoId, string> = {
   security_deposit:
     "The deposit Flent pays upfront to begin. Half is transferred post onboarding, the rest on agreement signing.",
   service_term:
-    "The duration of Flent’s managed-services commitment for your property.",
+    "The duration of Flent's managed-services commitment for your property.",
   rent_increment:
     "The guaranteed rent increment applied annually over the service term.",
   key_handover_date:
@@ -669,7 +669,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                   </motion.p>
 
                   <motion.p
-                    className="max-w-xl text-[1.05rem] font-medium text-flent-brown"
+                    className="max-w-xl text-[1.05rem] font-medium text-flent-black/80"
                     variants={{
                       hidden: { opacity: 0, y: 20 },
                       visible: { opacity: 1, y: 0 },
@@ -743,7 +743,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                   />
                 </div>
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                  <span className="eyebrow-pill bg-flent-forest text-flent-yellow">
+                  <span className="eyebrow-pill bg-flent-forest text-flent-black">
                     <span className="text-[1rem] md:text-[1.2rem]">
                       YOUR PERSONALIZED OFFER
                     </span>
@@ -933,16 +933,14 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                 <img
                   src="/flent-logo-black.png"
                   alt="Flent"
-                  className="mb-10 h-10 w-auto"
+                  className="mb-4 h-10 w-auto"
                 />
               </div>
               {/* Timeline */}
               <section>
-                <div className="space-y-4">
-                  <span className="eyebrow-pill bg-flent-brown text-flent-orange">
-                    <span className="text-[1rem] md:text-[1.2rem]">
-                      YOUR ONBOARDING JOURNEY
-                    </span>
+                <div>
+                  <span className="mb-16 block text-[1rem] font-bold uppercase tracking-[0.1em] text-flent-black md:text-[1.2rem]">
+                    YOUR ONBOARDING JOURNEY
                   </span>
                   <h2 className="headline-display text-[2.1rem] font-medium text-flent-black md:text-[2.7rem]">
                     From{" "}
@@ -1017,7 +1015,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                                   <p className="text-[0.85rem] md:text-[0.95rem] font-bold tracking-[0.16em] text-flent-forest">
                                     STEP {index + 1}
                                   </p>
-                                  <h3 className="headline-display text-[1.45rem] font-medium text-flent-black md:text-[1.7rem]">
+                                  <h3 className="headline-display text-[1.45rem] font-normal text-flent-black md:text-[1.7rem]">
                                     {item.title}
                                   </h3>
                                 </div>
@@ -1044,7 +1042,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                                     }}
                                     className="overflow-hidden"
                                   >
-                                    <p className="mt-4 max-w-3xl border-t border-flent-black/10 pt-4 text-[1rem] font-medium text-flent-brown ml-[3.75rem]">
+                                    <p className="mt-4 max-w-3xl border-t border-flent-black/10 pt-4 text-[1rem] font-medium text-flent-black/80 ml-[3.75rem]">
                                       {item.copy}
                                     </p>
                                   </motion.div>
@@ -1062,10 +1060,8 @@ export function OfferWizard({ offer }: { offer: Offer }) {
               {/* Terms & conditions */}
               <section className="terms-digest-panel mx-[-1.5rem] rounded-3xl px-6 py-10 text-flent-black md:mx-0 md:px-10">
                 <div className="space-y-4">
-                  <span className="eyebrow-pill bg-flent-yellow text-flent-black">
-                    <span className="text-[1rem] md:text-[1.2rem]">
-                      OTHER TERMS & CONDITIONS
-                    </span>
+                  <span className="text-[0.85rem] font-bold uppercase tracking-[0.1em] text-flent-black">
+                    OTHER TERMS & CONDITIONS
                   </span>
                   <h2 className="headline-display text-[2.2rem] font-medium md:text-[2.5rem] text-flent-black">
                     Important terms,{" "}
@@ -1135,7 +1131,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                           >
                             {term.title}
                           </h3>
-                          <p className="mt-2 text-[0.98rem] font-medium leading-relaxed text-flent-brown">
+                          <p className="mt-2 text-[0.98rem] font-medium leading-relaxed text-flent-black/80">
                             {term.description}
                           </p>
                           <p className="mt-4 text-[0.82rem] font-semibold text-flent-black/70">
@@ -1168,10 +1164,8 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                 <div className="relative overflow-hidden rounded-3xl bg-flent-forest px-6 py-10 md:px-10">
                   <div className="pointer-events-none absolute inset-y-4 right-[-60px] hidden w-[260px] border border-white/20 opacity-40 md:block doorframe" />
                   <div className="relative space-y-4">
-                    <span className="eyebrow-pill bg-flent-yellow text-flent-forest">
-                      <span className="text-[1rem] md:text-[1.2rem]">
-                        A QUICK NOTE
-                      </span>
+                    <span className="text-[0.85rem] font-bold uppercase tracking-[0.1em] text-flent-black">
+                      A QUICK NOTE
                     </span>
                     <h2 className="headline-display text-[2.2rem] font-medium md:text-[2.5rem] text-flent-black">
                       Maintaining your property{" "}
@@ -1344,7 +1338,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.28 }}
                 >
-                  <h2 className="headline-display text-center text-[1.25rem] font-medium text-flent-forest md:text-[1.5rem]">
+                  <h2 className="headline-display whitespace-nowrap text-center text-[10px] font-medium text-flent-forest" style={{ transform: "scale(0.6)", transformOrigin: "center" }}>
                     What Happens Next?
                   </h2>
                   <div className="grid w-full gap-3 md:grid-cols-3">
@@ -1392,7 +1386,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                 </motion.div>
 
                 <motion.p
-                  className="max-w-xl text-center text-sm font-medium italic text-flent-brown/85 md:text-[0.95rem]"
+                  className="max-w-xl text-center text-sm font-medium italic text-flent-black/85 md:text-[0.95rem]"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.45 }}
@@ -1418,7 +1412,7 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                     Complete Onboarding Form
                     <ChevronDown className="h-5 w-5" />
                   </button>
-                  <p className="mt-4 text-center text-sm font-medium italic text-flent-brown/75">
+                  <p className="mt-4 text-center text-sm font-medium italic text-flent-black/75">
                     Most landlords finish this in under 4 minutes.
                   </p>
                 </motion.div>
@@ -1470,7 +1464,7 @@ function FieldCard({
     <motion.div
       className={`rounded-2xl p-6 transition-colors ${
         highlight
-          ? "bg-flent-forest text-flent-yellow"
+          ? "bg-flent-forest text-flent-black"
           : "bg-flent-off-white text-flent-black"
       }`}
       initial={{ opacity: 0, y: 16 }}
@@ -1480,7 +1474,7 @@ function FieldCard({
     >
       <div className="flex items-start justify-between gap-3">
         <p
-          className="text-[0.85rem] font-semibold tracking-[0.16em] md:text-[0.95rem]"
+          className="text-[0.85rem] font-bold tracking-[0.16em] md:text-[0.95rem]"
           style={{ color: "#7F5639" }}
         >
           {label.toUpperCase()}
