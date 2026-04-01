@@ -7,7 +7,7 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { ComingSoon } from "@/app/(Homepage)/sections/ComingSoon";
 import { CTA_IDS } from "@/lib/cta-ids";
 import { trackPropertyCardClick } from "@/lib/posthog-tracking";
-import { isPropertyActive, propertyHasDiscount } from "@/lib/property-utils";
+import { isPropertyActive, isUpcomingProperty, propertyHasDiscount } from "@/lib/property-utils";
 import {
   type Location,
   type Occupant,
@@ -42,6 +42,7 @@ export function LocalityHomesSection({
     return properties
       .filter((property) => isPropertyActive(property))
       .filter((property) => property.fieldData.available)
+      .filter((property) => !isUpcomingProperty(property))
       .filter((property) => property.fieldData.location === selectedLocation.id)
       .slice(0, 3);
   }, [properties, selectedLocation]);
