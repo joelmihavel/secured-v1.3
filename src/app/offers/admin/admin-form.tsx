@@ -195,7 +195,7 @@ export default function AdminForm() {
               alt="Flent"
               className="h-9 w-auto"
             />
-            <span className="eyebrow-pill bg-flent-forest text-flent-yellow">
+            <span className="eyebrow-pill bg-flent-black text-white">
               ADMIN
             </span>
           </Link>
