@@ -45,7 +45,7 @@ export const COMMITMENT_LANDLORD_DEFAULTS: CommitmentContent = {
 export const CREDIT_CARD_LANDLORD_DEFAULTS: CreditCardContent = {
   heading: "Tenant or Not. Get paid on time, every month.",
   subheading: "No questions-asked coverage up to \u20B91.5 lakh",
-  ctaButtonText: "Join the Waitlist",
+  ctaButtonText: "Invite your tenant",
   ctaDisclaimer: "Simple | Compliant | No Workarounds",
   featureCards: [
     { text: "Complimentary tenant credit report", icon: "/assets/icons/icon-credit-report.svg" },

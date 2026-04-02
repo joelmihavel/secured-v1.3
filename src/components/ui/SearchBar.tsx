@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { IconSearch as Search, IconCalendar as Calendar, IconChevronDown as ChevronDown, IconCheck as Check } from "@tabler/icons-react";
+import { IconSearch as Search, IconChevronDown as ChevronDown, IconCheck as Check } from "@tabler/icons-react";
 import { Location } from "@/lib/webflow";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -74,7 +74,7 @@ const SearchBarView = ({
 
             {/* Preferred Location */}
             <div className="flex-1 w-full">
-                <label className="block text-text-invert text-sm font-medium mb-2">Preferred Neighbourhood</label>
+                <label className="block text-text-invert text-sm font-medium mb-2">Neighbourhood</label>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <div className="relative cursor-pointer">
@@ -150,13 +150,16 @@ const SearchBarView = ({
             <div className="flex-1 w-full">
                 <label className="block text-text-invert text-sm font-medium mb-2">Move-In Date</label>
                 <div className="relative">
-                    <input
-                        type="date"
+                    <select
                         value={filters.moveInDate}
                         onChange={(e) => onMoveInChange(e.target.value)}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full"
-                    />
-                    <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={16} />
+                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-text-invert focus:outline-none focus:ring-2 focus:ring-white/30 appearance-none cursor-pointer"
+                    >
+                        <option value="" className="text-black">I am flexible</option>
+                        <option value="within-week" className="text-black">Within a week</option>
+                        <option value="next-15-days" className="text-black">In the next 15 days</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={16} />
                 </div>
             </div>
 
@@ -192,7 +195,7 @@ const SearchBarView = ({
                     onClick={() => {
                         trackCTAClick({
                             cta_id: CTA_IDS.CTA_SEARCH_FEMALE_TOGGLE,
-                            cta_text: "Show only Female",
+                            cta_text: "Female Exclusive",
                             cta_type: "button",
                             page_section: "search_bar",
                         });
@@ -209,7 +212,7 @@ const SearchBarView = ({
                         />
                         <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-night-violet"></div>
                     </div>
-                    <span className="text-text-main text-sm font-medium whitespace-nowrap">Show only Female</span>
+                    <span className="text-text-main text-sm font-medium whitespace-nowrap">Female Exclusive</span>
                 </div>
             </div>
         </div>

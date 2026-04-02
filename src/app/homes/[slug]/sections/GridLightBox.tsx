@@ -28,6 +28,13 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import Lightbox, { type Slide } from "yet-another-react-lightbox";
+import Captions from "yet-another-react-lightbox/plugins/captions";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Video from "yet-another-react-lightbox/plugins/video";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -75,6 +82,9 @@ export const GridLightBox = ({
   const [api, setApi] = useState<CarouselApi>();
   const [isInfoVisible, setIsInfoVisible] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxSlides, setLightboxSlides] = useState<Slide[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const lastScrollY = useRef(0);
 
   // Copy link to clipboard (desktop)
@@ -198,6 +208,12 @@ export const GridLightBox = ({
         api.scrollTo(index);
       }
     }
+  };
+
+  const openLightbox = (imageSet: string[], index: number) => {
+    setLightboxSlides(imageSet.map((src) => ({ src })));
+    setLightboxIndex(index);
+    setIsLightboxOpen(true);
   };
 
   return (
@@ -431,7 +447,8 @@ export const GridLightBox = ({
                     {images.map((img, idx) => (
                       <div
                         key={idx}
-                        className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow"
+                        className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow cursor-zoom-in"
+                        onClick={() => openLightbox(images, idx)}
                       >
                         <Image
                           src={img}
@@ -470,7 +487,8 @@ export const GridLightBox = ({
                       {category.images.map((img, imgIdx) => (
                         <div
                           key={imgIdx}
-                          className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow"
+                          className="relative aspect-[4/3] group/item overflow-hidden rounded-lg bg-gray-100 hover:shadow-lg transition-shadow cursor-zoom-in"
+                          onClick={() => openLightbox(category.images, imgIdx)}
                         >
                           <Image
                             src={img}
@@ -502,6 +520,13 @@ export const GridLightBox = ({
           </Carousel>
         </DrawerContent>
       </div>
+      <Lightbox
+        open={isLightboxOpen}
+        close={() => setIsLightboxOpen(false)}
+        slides={lightboxSlides}
+        index={lightboxIndex}
+        plugins={[Captions, Fullscreen, Slideshow, Thumbnails, Video, Zoom]}
+      />
     </Drawer>
   );
 };

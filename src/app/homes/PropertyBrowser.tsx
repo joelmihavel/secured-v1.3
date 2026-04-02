@@ -13,11 +13,15 @@ import {
 } from "@/lib/property-utils";
 import { SearchBar, SearchFilters } from "@/components/ui/SearchBar";
 import { PropertyCard } from "@/components/ui/PropertyCard";
+import { DiscountCta } from "@/components/ui/DiscountCta";
+import { Button } from "@/components/ui/Button";
 import { OpenSection } from "@/components/layout/OpenSection";
 import { CardSection } from "@/components/layout/CardSection";
 import { ComingSoon } from "@/app/(Homepage)/sections/ComingSoon";
 import { trackSearchFiltersChanged, trackPropertyCardClick } from "@/lib/posthog-tracking";
 import { CTA_IDS } from "@/lib/cta-ids";
+import { useLottieData } from "@/hooks/useLottieData";
+import Lottie from "lottie-react";
 
 interface PropertyBrowserProps {
   properties: Property[];
@@ -25,6 +29,19 @@ interface PropertyBrowserProps {
   rooms?: Room[];
   occupants?: Occupant[];
 }
+
+const getMoveInCutoffDate = (moveInPreference: string): Date | null => {
+  if (moveInPreference === "within-week" || moveInPreference === "next-15-days") {
+    const cutoffDate = new Date();
+    cutoffDate.setHours(23, 59, 59, 999);
+    cutoffDate.setDate(
+      cutoffDate.getDate() + (moveInPreference === "within-week" ? 7 : 15)
+    );
+    return cutoffDate;
+  }
+
+  return null;
+};
 
 function useLocationMaps(locations: Location[]) {
   return useMemo(
@@ -361,14 +378,14 @@ function useHomesSearchFilters(
         return false;
       }
 
-      // Filter by Date
+      // Filter by Move-In Window
       if (filters.moveInDate && property.fieldData["available-from"]) {
-        const availableFrom = new Date(property.fieldData["available-from"]);
-        const moveIn = new Date(filters.moveInDate);
-        // If property is available AFTER move-in date, it's not suitable?
-        // Or if we want to move in by X date, property must be available by X date.
-        if (availableFrom > moveIn) {
-          return false;
+        const moveInCutoffDate = getMoveInCutoffDate(filters.moveInDate);
+        if (moveInCutoffDate) {
+          const availableFrom = new Date(property.fieldData["available-from"]);
+          if (availableFrom > moveInCutoffDate) {
+            return false;
+          }
         }
       }
 
@@ -411,6 +428,7 @@ export const PropertyBrowser = ({
   rooms = [],
   occupants = [],
 }: PropertyBrowserProps) => {
+  const rentCalculatorLottie = useLottieData("/lotties/rent-calculator.json");
   const {
     filters,
     setFilters,
@@ -419,6 +437,10 @@ export const PropertyBrowser = ({
     sortedLocations,
     searchParams,
   } = useHomesSearchFilters(properties, locations);
+  const availableFilteredProperties = useMemo(
+    () => filteredProperties.filter((property) => property.fieldData.available),
+    [filteredProperties]
+  );
 
   return (
     <>
@@ -434,55 +456,96 @@ export const PropertyBrowser = ({
             filters={filters}
             setFilters={setFilters}
           />
+
+          <div className="mt-6 rounded-2xl border border-black bg-white p-4 md:mx-auto md:w-fit md:p-5">
+            <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-center md:gap-10">
+              <div className="flex items-center gap-3">
+                {rentCalculatorLottie ? (
+                  <Lottie
+                    animationData={rentCalculatorLottie}
+                    loop
+                    autoplay
+                    className="h-14 w-14 shrink-0"
+                  />
+                ) : null}
+                <div>
+                  <h3 className="font-zin text-xl leading-tight text-text-main">
+                    Flenting vs Renting
+                  </h3>
+                  <p className="mt-1 text-sm text-text-main/70">
+                    We have no hidden costs. See for yourself!
+                  </p>
+                </div>
+              </div>
+
+              <Link href="/rent-calculator" className="w-full md:w-auto">
+                <Button variant="primary" size="md" className="w-full md:w-auto">
+                  Calculate
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </CardSection>
 
       <OpenSection className="pt-0">
         <div className="container mx-auto px-4">
+          {availableFilteredProperties.length === 0 && (
+            <div className="mb-8">
+              <ComingSoon
+                properties={properties}
+                locations={locations}
+                rooms={rooms}
+                occupants={occupants}
+                title="No available homes match your filters"
+                subtitle="Try adjusting your search, or get notified when we launch homes that fit."
+                newsletterHeading="Want an email when we have homes that match?"
+              />
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProperties.map((property) => {
+            {filteredProperties.map((property, index) => {
               const locationId = property.fieldData.location;
               const locationName = locationId
                 ? locationMap.get(locationId)
                 : undefined;
 
               return (
-                <Link
-                  key={property.id}
-                  href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
-                  className="block h-full"
-                  onClick={() =>
-                    trackPropertyCardClick({
-                      property_slug: property.fieldData.slug,
-                      property_type: propertyHasDiscount(property) ? "discounted" : "standard",
-                      property_area: locationName,
-                      page_section: "search",
-                      cta_id: CTA_IDS.PROPERTY_CARD,
-                    })
-                  }
-                >
-                  <PropertyCard
-                    property={property}
-                    locationName={locationName}
-                    rooms={rooms}
-                    occupants={occupants}
-                  />
-                </Link>
+                <React.Fragment key={property.id}>
+                  <Link
+                    href={`/homes/${property.fieldData.slug}?${searchParams.toString()}`}
+                    className="block h-full"
+                    onClick={() =>
+                      trackPropertyCardClick({
+                        property_slug: property.fieldData.slug,
+                        property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+                        property_area: locationName,
+                        page_section: "search",
+                        cta_id: CTA_IDS.PROPERTY_CARD,
+                      })
+                    }
+                  >
+                    <PropertyCard
+                      property={property}
+                      locationName={locationName}
+                      rooms={rooms}
+                      occupants={occupants}
+                    />
+                  </Link>
+                  {index === 1 && (
+                    <div className="md:hidden">
+                      <DiscountCta />
+                    </div>
+                  )}
+                  {index === 3 && (
+                    <div className="hidden md:block">
+                      <DiscountCta />
+                    </div>
+                  )}
+                </React.Fragment>
               );
             })}
-            {filteredProperties.length === 0 && (
-              <div className="col-span-full">
-                <ComingSoon
-                  properties={properties}
-                  locations={locations}
-                  rooms={rooms}
-                  occupants={occupants}
-                  title="No homes match your filters"
-                  subtitle="Try adjusting your search, or get notified when we launch homes that fit."
-                  newsletterHeading="Want an email when we have homes that match?"
-                />
-              </div>
-            )}
           </div>
         </div>
       </OpenSection>

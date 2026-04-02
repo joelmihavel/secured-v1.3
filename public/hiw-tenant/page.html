@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Flent Secured - Tenant</title>
-  <meta name="description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
-  <meta property="og:title" content="Flent Secured - Tenant">
-  <meta property="og:description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
+  <title>Secured - For Tenants</title>
+  <meta name="description" content="Learn why Secured makes renting easier and more reliable.">
+  <meta property="og:title" content="Secured - For Tenants">
+  <meta property="og:description" content="Learn why Secured makes renting easier and more reliable.">
+  <meta property="og:image" content="https://flent.in/hiw-tenant/og-image.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Flent Secured - Tenant">
-  <meta name="twitter:description" content="Invite your landlord to unlock the full benefits of Flent Secured.">
+  <meta name="twitter:title" content="Secured - For Tenants">
+  <meta name="twitter:description" content="Learn why Secured makes renting easier and more reliable.">
+  <meta name="twitter:image" content="https://flent.in/hiw-tenant/og-image.png">
   <link rel="icon" type="image/svg+xml" href="/hiw-tenant/svg/favicon.svg">
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -59,14 +61,274 @@
       min-height: 100vh;
     }
 
-    /* Each major section fills the viewport */
+    /* Each major section */
     .snap-section {
-      min-height: 100svh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      scroll-snap-align: start;
+      padding: 60px 0;
+    }
+
+    /* Hero section keeps full viewport height */
+    .snap-section:first-of-type {
+      min-height: 100svh;
+      padding: 0;
+    }
+
+    /* ── Large screens: scale up proportionally ── */
+
+    /* 1921px–2560px (1440p / QHD) — ~1.35x scale */
+    @media (min-width: 1921px) {
+      .page-wrap {
+        max-width: 530px;
+      }
+      .site-footer {
+        max-width: 530px;
+      }
+      #animatedDivider {
+        max-width: 530px;
+      }
+      .hero {
+        gap: 54px;
+        padding: 86px 32px 0;
+      }
+      .hero-logo svg {
+        width: 46px;
+        height: 54px;
+      }
+      .hero-illustration {
+        width: 269px;
+        height: 203px;
+      }
+      .hero-text h1 {
+        font-size: 38px;
+        line-height: 54px;
+      }
+      .hero-text p {
+        font-size: 18px;
+        line-height: 27px;
+      }
+      .section {
+        gap: 50px;
+        padding: 0 32px;
+      }
+      .section-icon {
+        height: 135px;
+      }
+      .section-text {
+        max-width: 400px;
+      }
+      .section-heading {
+        font-size: 38px;
+        line-height: 54px;
+      }
+      .section-body {
+        font-size: 18px;
+        line-height: 27px;
+      }
+      .note-card {
+        width: 330px;
+        min-width: 330px;
+        height: 433px;
+      }
+      .note-card p {
+        font-size: 22px;
+        line-height: 32px;
+      }
+      .req-card-wrap {
+        width: 365px;
+      }
+      .req-card {
+        width: 365px;
+        height: 433px;
+      }
+      .req-card p {
+        font-size: 22px;
+        line-height: 32px;
+      }
+      .btn-primary .btn-inner span {
+        font-size: 20px;
+        line-height: 30px;
+      }
+      .btn-primary .btn-inner {
+        padding: 20px;
+        border-radius: 10px;
+      }
+      .speak-section {
+        gap: 50px;
+        padding: 0 32px;
+      }
+      .speak-btn {
+        width: 400px;
+      }
+      .footer-tagline .line1,
+      .footer-tagline .line2 {
+        font-size: 43px;
+        line-height: 64px;
+      }
+      .footer-logo svg {
+        width: 38px;
+        height: 45px;
+      }
+      .footer-buttons {
+        max-width: 432px;
+      }
+      .footer-btn {
+        font-size: 18px;
+        line-height: 27px;
+        padding: 20px 32px;
+      }
+      .snap-section {
+        padding: 50px 0;
+      }
+      .snap-section:first-of-type {
+        padding: 0;
+      }
+      .cards-scroll-container {
+        padding: 20px;
+      }
+      .cards-scroll {
+        gap: 20px;
+      }
+      .illustration {
+        transform: scale(1.35);
+      }
+      .footer-copyright {
+        font-size: 18px;
+        line-height: 27px;
+      }
+    }
+
+    /* 2561px–3840px (4K / UHD) — ~1.8x scale */
+    @media (min-width: 2561px) {
+      .page-wrap {
+        max-width: 707px;
+      }
+      .site-footer {
+        max-width: 707px;
+      }
+      #animatedDivider {
+        max-width: 707px;
+      }
+      .hero {
+        gap: 72px;
+        padding: 115px 43px 0;
+      }
+      .hero-logo svg {
+        width: 61px;
+        height: 72px;
+      }
+      .hero-illustration {
+        width: 358px;
+        height: 270px;
+      }
+      .hero-text h1 {
+        font-size: 50px;
+        line-height: 72px;
+      }
+      .hero-text p {
+        font-size: 24px;
+        line-height: 36px;
+      }
+      .section {
+        gap: 64px;
+        padding: 0 43px;
+      }
+      .section-icon {
+        height: 180px;
+      }
+      .section-text {
+        max-width: 524px;
+      }
+      .section-heading {
+        font-size: 50px;
+        line-height: 72px;
+      }
+      .section-body {
+        font-size: 24px;
+        line-height: 36px;
+      }
+      .note-card {
+        width: 440px;
+        min-width: 440px;
+        height: 578px;
+      }
+      .note-card p {
+        font-size: 29px;
+        line-height: 43px;
+      }
+      .req-card-wrap {
+        width: 486px;
+      }
+      .req-card {
+        width: 486px;
+        height: 578px;
+      }
+      .req-card p {
+        font-size: 29px;
+        line-height: 43px;
+      }
+      .btn-primary .btn-inner span {
+        font-size: 27px;
+        line-height: 40px;
+      }
+      .btn-primary .btn-inner {
+        padding: 26px;
+        border-radius: 14px;
+      }
+      .speak-section {
+        gap: 64px;
+        padding: 0 43px;
+      }
+      .speak-btn {
+        width: 534px;
+      }
+      .footer-tagline .line1,
+      .footer-tagline .line2 {
+        font-size: 58px;
+        line-height: 86px;
+      }
+      .footer-logo svg {
+        width: 50px;
+        height: 59px;
+      }
+      .footer-buttons {
+        max-width: 576px;
+      }
+      .footer-btn {
+        font-size: 24px;
+        line-height: 36px;
+        padding: 26px 43px;
+        border-radius: 18px;
+      }
+      .snap-section {
+        padding: 64px 0;
+      }
+      .snap-section:first-of-type {
+        padding: 0;
+      }
+      .cards-scroll-container {
+        padding: 28px;
+      }
+      .cards-scroll {
+        gap: 28px;
+      }
+      .illustration {
+        transform: scale(1.8);
+      }
+      .footer-copyright {
+        font-size: 22px;
+        line-height: 32px;
+      }
+      .status-bar {
+        height: 72px;
+        font-size: 20px;
+      }
+      .preloader-logo {
+        width: 61px;
+        height: 72px;
+      }
     }
 
     /* ── Preloader ── */
@@ -439,7 +701,6 @@
     }
 
     .sticky-cards-section {
-      scroll-snap-align: none;
       min-height: auto;
     }
 
@@ -461,7 +722,7 @@
     .req-card-wrap:nth-child(1) { top: 100px; z-index: 1; margin-bottom: 40vh; transform: rotate(3deg); }
     .req-card-wrap:nth-child(2) { top: 100px; z-index: 2; margin-bottom: 40vh; transform: rotate(-3deg); }
     .req-card-wrap:nth-child(3) { top: 100px; z-index: 3; margin-bottom: 40vh; transform: rotate(3deg); }
-    .req-card-wrap:nth-child(4) { top: 100px; z-index: 4; margin-bottom: 40vh; transform: rotate(-3deg); }
+    .req-card-wrap:nth-child(4) { top: 100px; z-index: 4; margin-bottom: 48px; transform: rotate(-3deg); }
 
     .req-card {
       position: relative;
@@ -792,7 +1053,6 @@
     html {
       scroll-behavior: smooth;
       background: #0a0a0a;
-      scroll-snap-type: y proximity;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -1225,7 +1485,7 @@
   </div>
 
   <!-- Snap 4: Inviting your landlord is simple + Sticky cards -->
-  <div class="snap-section sticky-cards-section" style="justify-content: flex-start;">
+  <div class="snap-section sticky-cards-section" style="justify-content: flex-start; padding-bottom: 0;">
   <section class="section" style="padding-top: 64px;">
     <div class="illustration reveal-illustration" style="height: 110px;">
       <img src="/hiw-tenant/svg/lock-icon.svg" alt="" width="99" height="110" />
@@ -1263,9 +1523,31 @@
   </div>
   </div>
 
+  <!-- Divider before Still Unsure -->
+  <div class="dotted-divider" id="animatedDivider2" style="padding: 24px 0;">
+    <div class="divider-group">
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-0.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-1.svg" alt="" />
+    </div>
+    <div class="divider-group">
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-2.svg" alt="" />
+    </div>
+    <div class="divider-group">
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-3.svg" alt="" />
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-3.svg" alt="" />
+    </div>
+    <div class="divider-group">
+      <img class="divider-row" src="/hiw-tenant/svg/divider-row-4.svg" alt="" />
+    </div>
+  </div>
+
   <!-- Snap 5: Still Unsure? -->
-  <div class="snap-section">
-  <section class="speak-section" style="padding-top: 64px;">
+  <div class="snap-section" style="padding-top: 48px;">
+  <section class="speak-section" style="padding-top: 0;">
     <div class="illustration reveal-illustration" style="height: 100px;">
       <img src="/hiw-tenant/svg/still-unsure-icon.svg" alt="" width="121" height="100" />
     </div>
@@ -1287,7 +1569,9 @@
 
   </div>
 
-  <!-- Footer -->
+  </div><!-- /.page-wrap -->
+
+  <!-- Footer (outside page-wrap so starfield shows through) -->
   <footer class="site-footer">
     <div class="footer-logo">
       <svg viewBox="0 0 34 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1305,8 +1589,6 @@
     </div>
     <p class="footer-copyright">&copy; 2026 FLENT. ALL RIGHTS RESERVED.</p>
   </footer>
-
-  </div><!-- /.page-wrap -->
 
   <!-- Scroll Animation Script -->
   <script>
@@ -1513,8 +1795,10 @@
     function updateArrowLine() {
       const rect = arrowWrap.getBoundingClientRect();
       const viewH = window.innerHeight;
-      const start = viewH * 0.7;
-      const progress = Math.max(0, Math.min(1, (start - rect.top) / (start * 0.5)));
+      // Only start drawing once the arrow's top has scrolled above 90% of viewport height
+      const triggerPoint = viewH * 0.9;
+      const drawZone = viewH * 0.35;
+      const progress = Math.max(0, Math.min(1, (triggerPoint - rect.top) / drawZone));
       arrowLine.style.strokeDashoffset = lineLen * (1 - progress);
       arrowHead.style.opacity = progress >= 0.95 ? 1 : 0;
 
@@ -1528,6 +1812,36 @@
       requestAnimationFrame(updateArrowLine);
     }
     requestAnimationFrame(updateArrowLine);
+
+    // ── Animated divider 2 (scroll-triggered) ──
+    const dividerEl2 = document.getElementById('animatedDivider2');
+    if (dividerEl2) {
+      const dividerRowEls2 = dividerEl2.querySelectorAll('.divider-row');
+      const totalRows2 = dividerRowEls2.length;
+      let divider2Active = false;
+
+      const divider2Observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !divider2Active) {
+            divider2Active = true;
+            dividerRowEls2.forEach((row, i) => {
+              const opacity = 0.4 + (i / (totalRows2 - 1)) * 0.6;
+              setTimeout(() => {
+                row.style.opacity = opacity;
+                row.classList.add('visible');
+              }, i * 40);
+            });
+          } else if (!entry.isIntersecting && divider2Active) {
+            divider2Active = false;
+            dividerRowEls2.forEach(row => {
+              row.classList.remove('visible');
+              row.style.opacity = '';
+            });
+          }
+        });
+      }, { threshold: 0.3 });
+      divider2Observer.observe(dividerEl2);
+    }
 
   </script>
 

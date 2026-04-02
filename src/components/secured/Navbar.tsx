@@ -13,7 +13,7 @@ const EASE_HAMBURGER = [0.76, 0, 0.24, 1] as const;
 /* ── Animated hamburger lines ── */
 function MenuIcon({ open }: { open: boolean }) {
   return (
-    <div className="relative h-[14px] w-6">
+    <div className="relative h-[14px] w-6 3xl:h-[20px] 3xl:w-8 4xl:h-[26px] 4xl:w-10 5xl:h-[34px] 5xl:w-14">
       <motion.span
         className="absolute left-0 h-[1.5px] w-full rounded-full bg-white"
         animate={{
@@ -83,7 +83,7 @@ function MaskedMenuItem({
           onMouseLeave={() => setHovered(false)}
         >
           <span
-            className="relative inline-block font-display text-[clamp(20px,3vw,32px)] leading-[1.2] tracking-[-0.02em]"
+            className="relative inline-block font-display text-[clamp(20px,3vw,64px)] leading-[1.2] tracking-[-0.02em]"
           >
             {/* White base text */}
             <span className="text-white/90">{children}</span>
@@ -107,7 +107,7 @@ function MaskedMenuItem({
 }
 
 /* ── CTA item with btn-figma style — also masked ── */
-function MaskedCTA({ index }: { index: number }) {
+function MaskedCTA({ index, variant }: { index: number; variant: "tenant" | "landlord" }) {
   return (
     <div className="w-full overflow-hidden md:w-auto">
       <motion.div
@@ -127,7 +127,7 @@ function MaskedCTA({ index }: { index: number }) {
           fullWidth
           className="mt-4"
         >
-          Join the Waitlist
+          {variant === "landlord" ? "Invite your tenant" : "Join the Waitlist"}
         </Button>
       </motion.div>
     </div>
@@ -190,9 +190,9 @@ export function Navbar() {
     <>
       {/* Top bar — always visible, z-index above overlay */}
       <div className="fixed top-0 z-[60] w-full">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 pb-2 pt-6 md:px-8 lg:px-12 lg:pt-10 xl:max-w-[1600px] 2xl:max-w-[1800px]">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 pb-2 pt-6 md:px-8 lg:px-12 lg:pt-10 xl:max-w-[1600px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] 4xl:max-w-[2600px] 5xl:max-w-[3600px]">
           {/* Left — Logo */}
-          <a href="/" data-navbar-logo>
+          <a href="/" data-navbar-logo className="3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
             <Image
               src="/assets/logos/flent-logo.svg"
               alt="Flent"
@@ -204,7 +204,7 @@ export function Navbar() {
 
           {/* Right — Hamburger (hover-triggered) */}
           <button
-            className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a]"
+            className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a] 3xl:h-14 3xl:w-14 4xl:h-[72px] 4xl:w-[72px] 5xl:h-24 5xl:w-24 3xl:rounded-2xl"
             onMouseEnter={openMenu}
             onClick={() => setMenuOpen(!menuOpen)}
             style={{
@@ -274,7 +274,7 @@ export function Navbar() {
                   </nav>
 
                   {/* CTA */}
-                  <MaskedCTA index={NAV_ITEMS.length} />
+                  <MaskedCTA index={NAV_ITEMS.length} variant={variant} />
                 </div>
               </div>
             </motion.div>
@@ -297,7 +297,7 @@ export function Navbar() {
         >
           <button
             onClick={() => setVariant("tenant")}
-            className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm ${
+            className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm 3xl:px-8 3xl:py-3 3xl:text-base 4xl:px-10 4xl:py-4 4xl:text-lg 5xl:px-12 5xl:py-5 5xl:text-xl ${
               variant === "tenant" ? "font-semibold text-black" : "font-medium text-[#a6a6a6] hover:text-white"
             }`}
           >
@@ -312,7 +312,7 @@ export function Navbar() {
           </button>
           <button
             onClick={() => setVariant("landlord")}
-            className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm ${
+            className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm 3xl:px-8 3xl:py-3 3xl:text-base 4xl:px-10 4xl:py-4 4xl:text-lg 5xl:px-12 5xl:py-5 5xl:text-xl ${
               variant === "landlord" ? "font-semibold text-black" : "font-medium text-[#a6a6a6] hover:text-white"
             }`}
           >

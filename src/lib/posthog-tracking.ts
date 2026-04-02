@@ -275,6 +275,12 @@ const PROPERTY_CARD_CLICKED_EVENT = 'property_card_clicked';
 const PROPERTY_PAGE_VIEWED_EVENT = 'property_page_viewed';
 const HOMES_RENT_CALCULATOR_OPENED_EVENT = 'homes_rent_calculator_opened';
 const HOMES_RENT_LOCK_IN_CHANGED_EVENT = 'homes_rent_lock_in_changed';
+const RENT_CALCULATOR_VIEWED_EVENT = 'rent_calculator_viewed';
+const RENT_CALCULATOR_AREA_SELECTED_EVENT = 'rent_calculator_area_selected';
+const RENT_CALCULATOR_MODE_CHANGED_EVENT = 'rent_calculator_mode_changed';
+const RENT_CALCULATOR_FURNITURE_MODE_CHANGED_EVENT = 'rent_calculator_furniture_mode_changed';
+const RENT_CALCULATOR_INPUT_EDITED_EVENT = 'rent_calculator_input_edited';
+const RENT_CALCULATOR_STATE_UPDATED_EVENT = 'rent_calculator_state_updated';
 const WHATSAPP_CTA_CLICKED_EVENT = 'whatsapp_cta_clicked';
 const HOME_TOUR_CLICKED_EVENT = 'home_tour_clicked';
 const FAQ_CLICKED_EVENT = 'faq_clicked';
@@ -635,6 +641,103 @@ export function trackHomesRentLockInChanged(
     rent_promo_discount: payload.rent_promo_discount,
     rent_total_after_discounts: payload.rent_total_after_discounts,
   });
+}
+
+// --- Rent calculator tracking ---
+export type RentCalculatorMode = 'roommate' | '1bhk';
+export type RentCalculatorFurnitureMode = 'rent' | 'buy';
+export type RentCalculatorInputName =
+  | 'flent_rent'
+  | 'traditional_rent'
+  | 'traditional_maintenance'
+  | 'traditional_deposit'
+  | 'traditional_brokerage'
+  | 'traditional_painting';
+
+export interface RentCalculatorViewedPayload {
+  surface: 'rent_calculator_page';
+  default_mode: RentCalculatorMode;
+  default_area: string;
+  default_furniture_mode: RentCalculatorFurnitureMode;
+}
+
+export function trackRentCalculatorViewed(payload: RentCalculatorViewedPayload): void {
+  trackWithContext(RENT_CALCULATOR_VIEWED_EVENT, payload);
+}
+
+export interface RentCalculatorAreaSelectedPayload {
+  area_selected: string;
+  previous_area: string;
+  mode: RentCalculatorMode;
+  interaction_source: 'area_chip';
+}
+
+export function trackRentCalculatorAreaSelected(
+  payload: RentCalculatorAreaSelectedPayload
+): void {
+  trackWithContext(RENT_CALCULATOR_AREA_SELECTED_EVENT, payload);
+}
+
+export interface RentCalculatorModeChangedPayload {
+  mode_selected: RentCalculatorMode;
+  previous_mode: RentCalculatorMode;
+}
+
+export function trackRentCalculatorModeChanged(
+  payload: RentCalculatorModeChangedPayload
+): void {
+  trackWithContext(RENT_CALCULATOR_MODE_CHANGED_EVENT, payload);
+}
+
+export interface RentCalculatorFurnitureModeChangedPayload {
+  furniture_mode_selected: RentCalculatorFurnitureMode;
+  previous_furniture_mode: RentCalculatorFurnitureMode;
+  mode: RentCalculatorMode;
+  area: string;
+}
+
+export function trackRentCalculatorFurnitureModeChanged(
+  payload: RentCalculatorFurnitureModeChangedPayload
+): void {
+  trackWithContext(RENT_CALCULATOR_FURNITURE_MODE_CHANGED_EVENT, payload);
+}
+
+export interface RentCalculatorInputEditedPayload {
+  input_name: RentCalculatorInputName;
+  new_value: number;
+  previous_value: number;
+  mode: RentCalculatorMode;
+  area: string;
+  furniture_mode: RentCalculatorFurnitureMode;
+  edit_method: 'typed';
+}
+
+export function trackRentCalculatorInputEdited(
+  payload: RentCalculatorInputEditedPayload
+): void {
+  trackWithContext(RENT_CALCULATOR_INPUT_EDITED_EVENT, payload);
+}
+
+export interface RentCalculatorStateUpdatedPayload {
+  mode: RentCalculatorMode;
+  area: string;
+  furniture_mode: RentCalculatorFurnitureMode;
+  flent_rent: number;
+  effective_traditional_rent: number;
+  effective_traditional_maintenance: number;
+  effective_traditional_deposit: number;
+  effective_traditional_brokerage: number;
+  traditional_painting: number;
+  flent_total: number;
+  traditional_total: number;
+  savings: number;
+  flent_wins: boolean;
+}
+
+export function trackRentCalculatorStateUpdated(
+  payload: RentCalculatorStateUpdatedPayload
+): void {
+  trackWithContext(RENT_CALCULATOR_STATE_UPDATED_EVENT, payload);
 }
 
 // --- WhatsApp CTA tracking ---

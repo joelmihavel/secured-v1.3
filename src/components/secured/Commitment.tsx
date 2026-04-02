@@ -98,6 +98,7 @@ function SparkleIcon() {
       width={35}
       height={37}
       aria-hidden="true"
+      className="3xl:w-[48px] 3xl:h-[50px] 4xl:w-[60px] 4xl:h-[64px] 5xl:w-[84px] 5xl:h-[88px]"
     />
   );
 }
@@ -134,9 +135,9 @@ function TicketCard({ text, delay, index }: { text: string; delay: number; index
   const { smoothRotate, setIsHovered } = usePaperSway(tilt, index);
 
   return (
-    <FadeIn delay={delay} className="w-full md:w-[244px] xl:w-[280px] 2xl:w-[300px]">
+    <FadeIn delay={delay} className="w-full md:w-[244px] xl:w-[280px] 2xl:w-[300px] 3xl:w-[360px] 4xl:w-[440px] 5xl:w-[600px]">
       <motion.div
-        className="relative flex h-[260px] flex-col items-center justify-center rounded-lg bg-[#202020] px-4 py-6 shadow-[0px_78px_47px_rgba(0,0,0,0.05),0px_35px_35px_rgba(0,0,0,0.09),0px_9px_19px_rgba(0,0,0,0.1)] md:h-[321px] xl:h-[360px]"
+        className="relative flex h-[260px] flex-col items-center justify-center rounded-lg bg-[#202020] px-4 py-6 shadow-[0px_78px_47px_rgba(0,0,0,0.05),0px_35px_35px_rgba(0,0,0,0.09),0px_9px_19px_rgba(0,0,0,0.1)] md:h-[321px] xl:h-[360px] 3xl:h-[420px] 4xl:h-[520px] 5xl:h-[700px]"
         style={{ transformOrigin: "top left", rotate: smoothRotate }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
@@ -152,15 +153,15 @@ function TicketCard({ text, delay, index }: { text: string; delay: number; index
         </div>
 
         {/* Paper pin */}
-        <div className="absolute top-3 left-4">
-          <div className="h-4 w-4 rounded-full bg-[#ff9a6d] shadow-[0px_2px_4px_rgba(0,0,0,0.3)]">
-            <div className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cc7b57]" />
+        <div className="absolute top-3 left-4 3xl:top-4 3xl:left-5 4xl:top-5 4xl:left-6 5xl:top-6 5xl:left-8">
+          <div className="h-4 w-4 rounded-full bg-[#ff9a6d] shadow-[0px_2px_4px_rgba(0,0,0,0.3)] 3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-8 5xl:w-8">
+            <div className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cc7b57] 3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3.5 5xl:w-3.5" />
           </div>
         </div>
 
         <div className="flex flex-col items-center gap-4">
           <SparkleIcon />
-          <p className="font-body text-center text-sm leading-6 text-[#a9a9a9] md:text-base">
+          <p className="font-body text-center text-sm leading-6 text-[#a9a9a9] md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl">
             {text}
           </p>
         </div>
@@ -190,12 +191,12 @@ function ScrollMarquee({
 
   return (
     <div
-      className="w-[1693px] overflow-hidden py-4 md:py-6 xl:w-[2200px] 2xl:w-[2800px]"
+      className="w-[1693px] overflow-hidden py-4 md:py-6 xl:w-[2200px] 2xl:w-[2800px] 3xl:w-[3400px] 4xl:w-[4200px] 5xl:w-[5600px]"
       style={{ transform: `rotate(${rotate})`, backgroundColor: bg }}
     >
       <motion.div className="flex gap-6 whitespace-nowrap md:gap-10" style={{ x }}>
         {Array.from({ length: 15 }).map((_, i) => (
-          <span key={i} className="font-display text-base leading-[1.5] text-white md:text-xl">
+          <span key={i} className="font-display text-base leading-[1.5] text-white md:text-xl 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl">
             {text}
           </span>
         ))}
@@ -227,7 +228,7 @@ export function Commitment({ data, variant = "tenant" }: { data: CommitmentConte
       <SectionWrapper className="relative z-10 py-8 text-center md:py-20">
         {/* House illustration */}
         <FadeIn>
-          <div className="mx-auto mb-6 w-[200px] md:mb-8 md:w-[280px]">
+          <div className="mx-auto mb-6 w-[200px] md:mb-8 md:w-[280px] 3xl:w-[340px] 4xl:w-[420px] 5xl:w-[560px]">
             <Image
               src={variant === "landlord" ? "/assets/illustrations/commitment-house-landlord.svg" : "/assets/illustrations/commitment-house.svg"}
               alt=""
@@ -242,7 +243,7 @@ export function Commitment({ data, variant = "tenant" }: { data: CommitmentConte
         {/* Subtitle with orange underline */}
         <FadeIn>
           <p
-            className="text-sm uppercase leading-[1.6] tracking-[0.309px] text-[#797979] md:text-base"
+            className="text-sm uppercase leading-[1.6] tracking-[0.309px] text-[#797979] md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
             style={{ fontFamily: "var(--font-ui)" }}
           >
             {variant === "landlord" ? (
@@ -265,13 +266,13 @@ export function Commitment({ data, variant = "tenant" }: { data: CommitmentConte
           </p>
         </FadeIn>
 
-        <h2 className="mx-auto mt-3 max-w-[715px] font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:mt-4 md:text-[34px] lg:text-[40px] lg:leading-[1.5] lg:tracking-[-0.88px] xl:max-w-[850px] xl:text-[48px] 2xl:text-[52px]">
+        <h2 className="mx-auto mt-3 max-w-[715px] font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:mt-4 md:text-[34px] lg:text-[40px] lg:leading-[1.5] lg:tracking-[-0.88px] xl:max-w-[850px] xl:text-[48px] 2xl:text-[52px] 3xl:max-w-[1050px] 3xl:text-[60px] 4xl:max-w-[1400px] 4xl:text-[72px] 5xl:max-w-[1800px] 5xl:text-[96px]">
           <WordReveal delay={0.1}>{data.heading}</WordReveal>
         </h2>
 
         <SlideUp delay={0.3} className="mt-3 md:mt-4">
           <p
-            className="mx-auto max-w-[700px] text-base leading-7 text-[#797979] md:text-xl md:leading-8 xl:max-w-[800px] xl:text-[22px] xl:leading-9"
+            className="mx-auto max-w-[700px] text-base leading-7 text-[#797979] md:text-xl md:leading-8 xl:max-w-[800px] xl:text-[22px] xl:leading-9 3xl:max-w-[1000px] 3xl:text-[26px] 3xl:leading-10 4xl:max-w-[1300px] 4xl:text-[32px] 4xl:leading-[48px] 5xl:max-w-[1800px] 5xl:text-[44px] 5xl:leading-[64px]"
             style={{ fontFamily: "var(--font-ui)" }}
           >
             {data.description}
