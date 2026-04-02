@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Earn 1% back on every timely rent payment. Secured by Flent - making rent rewarding for tenants and protecting rental income for landlords.",
     images: [
       {
-        url: "/images/og-secured.jpg",
+        url: "/images/og-secured.png",
         width: 1200,
         height: 630,
         alt: "Flent Secured - Earn rewards on rent",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Flent Secured: Make your rent work for you.",
     description: "Earn 1% back on every timely rent payment. Secured by Flent - making rent rewarding for tenants and protecting rental income for landlords.",
-    images: ["/images/og-secured.jpg"],
+    images: ["/images/og-secured.png"],
   },
 };
 
