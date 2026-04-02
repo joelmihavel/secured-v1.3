@@ -62,7 +62,7 @@
 }
 
 .headline-display {
-  font-family: "Zin Display Condensed", "Plus Jakarta Sans", system-ui,
+  font-family: var(--font-zin), "Plus Jakarta Sans", system-ui,
     -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
