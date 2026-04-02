@@ -14,7 +14,7 @@ export const HERO_DEFAULTS: HeroContent = {
   headingHighlight: "1% back",
   subheading: "On every timely rent payment",
   description: "Because habits like yours should\nbe rewarded, not overlooked.",
-  ctaButtonText: "Join the Waitlist",
+  ctaButtonText: "Download the App",
   ctaDisclaimer: "This isn\u2019t for average renters, really..",
 };
 
@@ -23,7 +23,7 @@ export const HERO_LANDLORD_DEFAULTS: HeroContent = {
   headingHighlight: "get Paid",
   subheading: "even after your tenants vacate",
   description: "Protect your rental income from empty months\nand sudden exits \u2013 free of cost.",
-  ctaButtonText: "Invite your tenant",
+  ctaButtonText: "Download the App",
   ctaDisclaimer: "Free Forever | \u20B91.5 lakh protection limit | Instant, hassle-free payout",
 };
 
