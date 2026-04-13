@@ -3,30 +3,13 @@ import { Resend } from "resend";
 import { createServerClient } from "@/app/offers/_lib/supabase/server";
 
 const TYPEFORM_URL = "https://flent.typeform.com/to/TfSGfvX0";
+const DRAFT_TRIPARTITE_LEAVE_LICENSE_URL =
+  "https://docs.google.com/document/d/11vcofm8uWhjQ3iq82mHq2jPEW7fuWt9k/edit";
+const DRAFT_AGREEMENT_URL =
+  "https://docs.google.com/document/d/1F90TjIIJcQLKf39m4PABS2krB78hQSELcFr73rVZ8nU/edit?tab=t.0";
 
-function normalizeBaseUrl(raw: string | undefined): string | null {
-  if (!raw) return null;
-  const trimmed = raw.trim();
-  if (!trimmed) return null;
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-    return trimmed.replace(/\/+$/, "");
-  }
-  return `https://${trimmed.replace(/\/+$/, "")}`;
-}
-
-function getAppBaseUrl(): string {
-  const configured =
-    normalizeBaseUrl(process.env.NEXT_PUBLIC_APP_URL) ||
-    normalizeBaseUrl(process.env.APP_URL) ||
-    normalizeBaseUrl(process.env.VERCEL_PROJECT_PRODUCTION_URL) ||
-    normalizeBaseUrl(process.env.VERCEL_URL);
-
-  if (configured) return configured;
-  if (process.env.NODE_ENV !== "production") return "http://localhost:3000";
-  throw new Error(
-    "Missing app base URL. Set NEXT_PUBLIC_APP_URL or APP_URL in environment."
-  );
-}
+/** Public HTTPS URL so images load in email clients (localhost / preview URLs do not). */
+const FLENT_EMAIL_LOGO_URL = "https://www.flent.in/flent-logo-black.png";
 
 function escapeHtml(s: string): string {
   return s
@@ -38,6 +21,7 @@ function escapeHtml(s: string): string {
 
 function formatDateInEmail(s: string): string {
   if (!s) return s;
+  if (s === "To be decided") return s;
   try {
     return new Date(s).toLocaleDateString("en-IN", {
       day: "numeric",
@@ -55,6 +39,15 @@ function formatCurrencyInEmail(n: number): string {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(n);
+}
+
+function formatMaintenanceInEmail(raw: string): string {
+  const t = raw.trim();
+  if (!t) return "—";
+  if (t === "As per actuals") return t;
+  const n = Number(t);
+  if (Number.isFinite(n)) return formatCurrencyInEmail(n);
+  return t;
 }
 
 function formatAgreedAtIST(iso: string): string {
@@ -86,7 +79,7 @@ type OfferRow = {
   key_handover_date: string;
   rent_start_date: string;
   rent_free_period: string;
-  lock_in: string;
+  maintenance?: string | null;
   notice_period: string;
   selected_terms: unknown;
   agreed: boolean;
@@ -105,7 +98,7 @@ function buildConfirmationEmailHtml(params: {
   keyHandoverDate: string;
   rentStartDate: string;
   rentFreePeriod: string;
-  lockIn: string;
+  maintenance: string;
   noticePeriod: string;
   terms: string[];
   agreedAtIso: string;
@@ -118,12 +111,12 @@ function buildConfirmationEmailHtml(params: {
     parking,
     rentAmount,
     securityDeposit,
+    maintenance,
     serviceTerm,
     rentIncrement,
     keyHandoverDate,
     rentStartDate,
     rentFreePeriod,
-    lockIn,
     noticePeriod,
     terms,
     agreedAtIso,
@@ -132,7 +125,7 @@ function buildConfirmationEmailHtml(params: {
   const safeName = escapeHtml(landlordName);
   const safeProperty = escapeHtml(propertyName);
   const when = formatAgreedAtIST(agreedAtIso);
-  const logoUrl = `${getAppBaseUrl()}/flent-logo-black.png`;
+  const logoUrl = FLENT_EMAIL_LOGO_URL;
 
   const termItems = terms.length
     ? terms.map((t) => `<li style="margin:0 0 8px;">${escapeHtml(t)}</li>`).join("")
@@ -145,12 +138,12 @@ function buildConfirmationEmailHtml(params: {
     ["Parking", parking],
     ["Monthly rent (₹)", formatCurrencyInEmail(rentAmount)],
     ["Security deposit (₹)", formatCurrencyInEmail(securityDeposit)],
+    ["Maintenance", formatMaintenanceInEmail(maintenance)],
     ["Service term", serviceTerm],
     ["Rent increment", rentIncrement],
     ["Key handover date", formatDateInEmail(keyHandoverDate)],
     ["Rent start date", formatDateInEmail(rentStartDate)],
     ["Rent-free period", rentFreePeriod],
-    ["Lock-in", lockIn],
     ["Notice period", noticePeriod],
     [
       "Metered Utilities",
@@ -198,6 +191,15 @@ function buildConfirmationEmailHtml(params: {
       <a href="${TYPEFORM_URL}" style="display: inline-block; background: #111827; color: #ffffff; text-decoration: none; padding: 12px 22px; border-radius: 0 14px 14px 0; border: 2px solid #ffffff; font-weight: 600; font-size: 15px;">
         Complete Onboarding Form →
       </a>
+      <p style="margin: 24px 0 0; font-size: 15px; color: #000000;">
+        Once your onboarding form is submitted, we'll transfer the token amount in your bank within 24 hours and share the authorization agreement with you, updated with your details, for your review. Upon approval, we'll initiate e-stamp and e-signing. Find a <a href="${DRAFT_AGREEMENT_URL}" style="color:rgb(0, 30, 255); text-decoration: underline;">draft of the agreement</a> here.
+      </p>
+      <p style="margin: 16px 0 0; font-size: 15px; color: #000000;">
+        Once the Authorization Agreement is signed &amp; the ideal tenant(s) is identified, Flent will share the tripartite leave and license agreement for your review and signature. You will also receive each registered tenant's profile, background verification report (which may take up to two weeks), and other supporting documentation.
+      </p>
+      <p style="margin: 16px 0 0; font-size: 15px; color: #000000;">
+        Our team ensures that all relevant details and updates are shared transparently with the landlord, society, and other stakeholders for a smooth onboarding experience. Find the <a href="${DRAFT_TRIPARTITE_LEAVE_LICENSE_URL}" style="color:rgb(0, 51, 255); text-decoration: underline;">draft tripartite leave and license agreement</a> here.
+      </p>
       <p style="margin: 24px 0 0; font-size: 15px; color: #000000;">
         If you have any questions at all, reach out — we're here.
       </p>
@@ -289,12 +291,12 @@ export async function POST(request: Request) {
         parking: String(offer.parking ?? ""),
         rentAmount: Number(offer.rent_amount),
         securityDeposit: Number(offer.security_deposit),
+        maintenance: String(offer.maintenance ?? ""),
         serviceTerm: String(offer.service_term),
         rentIncrement: String(offer.rent_increment),
         keyHandoverDate: String(offer.key_handover_date),
         rentStartDate: String(offer.rent_start_date),
         rentFreePeriod: String(offer.rent_free_period),
-        lockIn: String(offer.lock_in),
         noticePeriod: String(offer.notice_period),
         terms,
         agreedAtIso: agreedAt,
@@ -303,7 +305,7 @@ export async function POST(request: Request) {
       const { data: emailData, error: emailError } = await resend.emails.send({
         from: "Flent <landlords@email.flent.in>",
         to: offer.landlord_email,
-        cc: ["raghav@flent.in", "aniket@flent.in", "homeowners@flent.in"],
+        cc: ["homeowners@flent.in"],
         replyTo: "aniket@flent.in",
         subject: `Congratulations! Welcome to the Flent family, ${offer.landlord_name} 🎉`,
         html,
@@ -312,6 +314,8 @@ export async function POST(request: Request) {
       if (emailError) {
         console.error("agree: Resend error:", emailError);
       } else {
+        // Persist send timestamp for admin visibility.
+        // Persist message id (if present) for webhook correlation.
         const sentAtIso = new Date().toISOString();
 
         const { error: sentAtUpdateError } = await supabase

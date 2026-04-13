@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/app/offers/_components/ui/button";
 import { Input } from "@/app/offers/_components/ui/input";
 import { Label } from "@/app/offers/_components/ui/label";
@@ -30,19 +30,60 @@ const FURNISHING_OPTIONS = [
   "Fully Furnished",
 ] as const;
 
+const PROPERTY_TYPE_OPTIONS = [
+  "1 BHK",
+  "2 BHK",
+  "3 BHK",
+  "4 BHK",
+  "5 BHK",
+  "6 BHK",
+] as const;
+
+const PARKING_TYPE_OPTIONS = [
+  "Covered car parking",
+  "Open car parking",
+  "Covered bike parking",
+  "Open bike parking",
+  "None",
+] as const;
+
+const UNIT_COUNT_OPTIONS = Array.from({ length: 20 }, (_, i) => String(i + 1));
+
 const RENT_FREE_NONE = "__none__";
+const RENT_FREE_TBD = "__tbd__";
+/** Must match `rentFreeDayOptions` length below. */
+const RENT_FREE_MAX_SELECTABLE_DAYS = 100;
+
+function parseDateOnlyToUtcMs(iso: string): number | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso.trim());
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]);
+  const d = Number(m[3]);
+  if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+  return Date.UTC(y, mo - 1, d);
+}
+
+const STORED_TBD = "To be decided";
+
+const DATE_MODE_DATE = "date";
+const DATE_MODE_TBD = "tbd";
+
+const RENT_INCREMENT_MODE_CUSTOM = "custom";
+const RENT_INCREMENT_MODE_TBD = "tbd";
+
+const MAINTENANCE_MODE_AMOUNT = "amount";
+const MAINTENANCE_MODE_ACTUALS = "actuals";
+const MAINTENANCE_AS_PER_ACTUALS = "As per actuals";
 
 const initialForm: Record<string, string> = {
   landlord_name: "",
   landlord_email: "",
   property_name: "",
-  property_type: "",
-  parking: "",
   rent_amount: "",
   security_deposit: "",
   key_handover_date: "",
   rent_start_date: "",
-  lock_in: "",
 };
 
 export default function AdminForm() {
@@ -53,7 +94,24 @@ export default function AdminForm() {
   >("11");
   const [serviceTermCustomMonths, setServiceTermCustomMonths] = useState("");
   const [rentFreeDays, setRentFreeDays] = useState(RENT_FREE_NONE);
+  const [rentIncrementMode, setRentIncrementMode] = useState<
+    typeof RENT_INCREMENT_MODE_CUSTOM | typeof RENT_INCREMENT_MODE_TBD
+  >(RENT_INCREMENT_MODE_CUSTOM);
   const [rentIncrementPct, setRentIncrementPct] = useState("");
+  const [keyHandoverDateMode, setKeyHandoverDateMode] = useState<
+    typeof DATE_MODE_DATE | typeof DATE_MODE_TBD
+  >(DATE_MODE_DATE);
+  const [rentStartDateMode, setRentStartDateMode] = useState<
+    typeof DATE_MODE_DATE | typeof DATE_MODE_TBD
+  >(DATE_MODE_DATE);
+  const [maintenanceMode, setMaintenanceMode] = useState<
+    typeof MAINTENANCE_MODE_AMOUNT | typeof MAINTENANCE_MODE_ACTUALS
+  >(MAINTENANCE_MODE_AMOUNT);
+  const [maintenanceAmount, setMaintenanceAmount] = useState("");
+  const [propertyTypeLayout, setPropertyTypeLayout] = useState("");
+  const [propertyUnitCount, setPropertyUnitCount] = useState("1");
+  const [parkingType, setParkingType] = useState("");
+  const [parkingUnitCount, setParkingUnitCount] = useState("1");
   const [noticePeriodChoice, setNoticePeriodChoice] = useState("1 month");
 
   const [creatorName, setCreatorName] = useState("");
@@ -105,8 +163,24 @@ export default function AdminForm() {
     return `${serviceTermChoice} months`;
   };
 
-  const buildRentFreePeriod = (): string =>
-    rentFreeDays === RENT_FREE_NONE ? "None" : `${rentFreeDays} days`;
+  const buildRentFreePeriod = (): string => {
+    if (rentFreeDays === RENT_FREE_NONE) return "None";
+    if (rentFreeDays === RENT_FREE_TBD) return STORED_TBD;
+    return `${rentFreeDays} days`;
+  };
+
+  const buildPropertyTypeForPayload = (layout: string, countStr: string): string => {
+    const n = Math.min(20, Math.max(1, Math.round(Number(countStr)) || 1));
+    if (n <= 1) return layout;
+    return `${n} × ${layout}`;
+  };
+
+  const buildParkingForPayload = (kind: string, countStr: string): string => {
+    if (kind === "None") return "None";
+    const n = Math.min(20, Math.max(1, Math.round(Number(countStr)) || 1));
+    if (n <= 1) return kind;
+    return `${n} × ${kind}`;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,6 +203,18 @@ export default function AdminForm() {
       return;
     }
 
+    if (!propertyTypeLayout) {
+      setError("Please select a property type.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!parkingType) {
+      setError("Please select a parking option.");
+      setSubmitting(false);
+      return;
+    }
+
     const serviceTerm = buildServiceTerm();
     if (!serviceTerm) {
       setError("Please enter a valid number of months for the custom service term.");
@@ -136,10 +222,39 @@ export default function AdminForm() {
       return;
     }
 
-    if (rentIncrementPct === "") {
+    if (rentIncrementMode === RENT_INCREMENT_MODE_CUSTOM && rentIncrementPct === "") {
       setError("Please enter the rent increment percentage.");
       setSubmitting(false);
       return;
+    }
+
+    if (keyHandoverDateMode === DATE_MODE_DATE && !form.key_handover_date) {
+      setError('Please select a key handover date, or choose "To be decided".');
+      setSubmitting(false);
+      return;
+    }
+
+    if (rentStartDateMode === DATE_MODE_DATE && !form.rent_start_date) {
+      setError('Please select a rent start date, or choose "To be decided".');
+      setSubmitting(false);
+      return;
+    }
+
+    let maintenanceValue: string;
+    if (maintenanceMode === MAINTENANCE_MODE_ACTUALS) {
+      maintenanceValue = MAINTENANCE_AS_PER_ACTUALS;
+    } else {
+      const maintenanceNum = Number(maintenanceAmount);
+      if (
+        maintenanceAmount === "" ||
+        !Number.isFinite(maintenanceNum) ||
+        maintenanceNum < 0
+      ) {
+        setError("Please enter a valid maintenance amount (Rs), or choose As per actuals.");
+        setSubmitting(false);
+        return;
+      }
+      maintenanceValue = String(maintenanceNum);
     }
 
     const payload: OfferInsert = {
@@ -147,17 +262,22 @@ export default function AdminForm() {
       landlord_email: form.landlord_email,
       created_by: normalizedCreatorName,
       property_name: form.property_name,
-      property_type: form.property_type,
+      property_type: buildPropertyTypeForPayload(propertyTypeLayout, propertyUnitCount),
       furnishing_state: furnishingState,
-      parking: form.parking,
+      parking: buildParkingForPayload(parkingType, parkingUnitCount),
       rent_amount: Number(form.rent_amount),
       security_deposit: Number(form.security_deposit),
       service_term: serviceTerm,
-      rent_increment: `${rentIncrementPct}%`,
-      key_handover_date: form.key_handover_date,
+      rent_increment:
+        rentIncrementMode === RENT_INCREMENT_MODE_TBD
+          ? STORED_TBD
+          : `${rentIncrementPct}%`,
+      key_handover_date:
+        keyHandoverDateMode === DATE_MODE_TBD ? STORED_TBD : form.key_handover_date,
       rent_free_period: buildRentFreePeriod(),
-      rent_start_date: form.rent_start_date,
-      lock_in: form.lock_in,
+      rent_start_date:
+        rentStartDateMode === DATE_MODE_TBD ? STORED_TBD : form.rent_start_date,
+      maintenance: maintenanceValue,
       notice_period: noticePeriodChoice,
       selected_terms: selectedTerms,
     };
@@ -168,7 +288,7 @@ export default function AdminForm() {
     if (result.success) {
       setLastOfferUrl(result.offerUrl);
       if (result.emailSent) {
-        setStatusMessage(`✓ Offer created and email sent to ${form.landlord_email}`);
+        setStatusMessage(`✓ Offer created successfully. Email sent to ${form.landlord_email}`);
       } else {
         const reason = result.emailError ? ` (${result.emailError})` : "";
         setStatusMessage(
@@ -180,7 +300,37 @@ export default function AdminForm() {
     setError(result.error);
   };
 
-  const rentFreeDayOptions = Array.from({ length: 100 }, (_, i) => String(i + 1));
+  const rentFreeDayOptions = Array.from(
+    { length: RENT_FREE_MAX_SELECTABLE_DAYS },
+    (_, i) => String(i + 1)
+  );
+
+  useEffect(() => {
+    if (
+      keyHandoverDateMode !== DATE_MODE_DATE ||
+      rentStartDateMode !== DATE_MODE_DATE ||
+      !form.key_handover_date ||
+      !form.rent_start_date
+    ) {
+      return;
+    }
+    const handoverMs = parseDateOnlyToUtcMs(form.key_handover_date);
+    const rentStartMs = parseDateOnlyToUtcMs(form.rent_start_date);
+    if (handoverMs === null || rentStartMs === null) return;
+
+    const diffDays = Math.floor((rentStartMs - handoverMs) / 86400000);
+    if (diffDays <= 0) {
+      setRentFreeDays(RENT_FREE_NONE);
+      return;
+    }
+    const capped = Math.min(diffDays, RENT_FREE_MAX_SELECTABLE_DAYS);
+    setRentFreeDays(String(capped));
+  }, [
+    keyHandoverDateMode,
+    rentStartDateMode,
+    form.key_handover_date,
+    form.rent_start_date,
+  ]);
 
   return (
     <div className="min-h-screen bg-flent-off-white">
@@ -195,7 +345,7 @@ export default function AdminForm() {
               alt="Flent"
               className="h-9 w-auto"
             />
-            <span className="eyebrow-pill bg-flent-black text-white">
+            <span className="eyebrow-pill border border-flent-pastel-brown bg-white text-flent-black">
               ADMIN
             </span>
           </Link>
@@ -206,7 +356,7 @@ export default function AdminForm() {
         <div className="mb-8 space-y-2">
           <h1 className="headline-display text-3xl font-bold text-flent-black">
             Create a new{" "}
-            <span className="headline-italic">partner offer.</span>
+            <span className="headline-italic">landlord offer.</span>
           </h1>
           <p className="max-w-xl text-sm font-medium text-flent-brown">
             Fill in the commercial details and selected terms below. Once saved, a
@@ -294,21 +444,52 @@ export default function AdminForm() {
                   id="property_name"
                   value={form.property_name}
                   onChange={(e) => setForm((f) => ({ ...f, property_name: e.target.value }))}
-                  placeholder="e.g. Green Valley Apartments, Unit 4B"
+                  placeholder="e.g. 202, Green Valley Apartments"
                   required
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="property_type" className="text-xs font-semibold text-flent-brown">
-                  Property type
-                </Label>
-                <Input
-                  id="property_type"
-                  value={form.property_type}
-                  onChange={(e) => setForm((f) => ({ ...f, property_type: e.target.value }))}
-                  placeholder="e.g. 3BHK Apartment"
-                  required
-                />
+                <span className="text-xs font-semibold text-flent-brown">Property type</span>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="property_type_layout" className="text-[11px] font-medium text-flent-brown/90">
+                      Layout
+                    </Label>
+                    <select
+                      id="property_type_layout"
+                      className={INPUT_LIKE_SELECT}
+                      value={propertyTypeLayout}
+                      onChange={(e) => setPropertyTypeLayout(e.target.value)}
+                      required
+                    >
+                      <option value="" disabled>
+                        Select layout
+                      </option>
+                      {PROPERTY_TYPE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="property_unit_count" className="text-[11px] font-medium text-flent-brown/90">
+                      Number of properties (Enterprise)
+                    </Label>
+                    <select
+                      id="property_unit_count"
+                      className={INPUT_LIKE_SELECT}
+                      value={propertyUnitCount}
+                      onChange={(e) => setPropertyUnitCount(e.target.value)}
+                    >
+                      {UNIT_COUNT_OPTIONS.map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="furnishing_state" className="text-xs font-semibold text-flent-brown">
@@ -332,15 +513,51 @@ export default function AdminForm() {
                 </select>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="parking" className="text-xs font-semibold text-flent-brown">
-                  Parking
-                </Label>
-                <Input
-                  id="parking"
-                  value={form.parking}
-                  onChange={(e) => setForm((f) => ({ ...f, parking: e.target.value }))}
-                  placeholder="e.g. 1 covered car parking"
-                />
+                <span className="text-xs font-semibold text-flent-brown">Parking</span>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="parking_type" className="text-[11px] font-medium text-flent-brown/90">
+                      Type
+                    </Label>
+                    <select
+                      id="parking_type"
+                      className={INPUT_LIKE_SELECT}
+                      value={parkingType}
+                      onChange={(e) => setParkingType(e.target.value)}
+                      required
+                    >
+                      <option value="" disabled>
+                        Select parking
+                      </option>
+                      {PARKING_TYPE_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label
+                      htmlFor="parking_unit_count"
+                      className={`text-[11px] font-medium text-flent-brown/90 ${parkingType === "None" ? "opacity-50" : ""}`}
+                    >
+                      Number of parking slots
+                    </Label>
+                    <select
+                      id="parking_unit_count"
+                      className={`${INPUT_LIKE_SELECT} ${parkingType === "None" ? "cursor-not-allowed opacity-50" : ""}`}
+                      value={parkingUnitCount}
+                      onChange={(e) => setParkingUnitCount(e.target.value)}
+                      disabled={parkingType === "None"}
+                    >
+                      {UNIT_COUNT_OPTIONS.map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
@@ -371,6 +588,36 @@ export default function AdminForm() {
                     required
                   />
                 </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="maintenance_mode" className="text-xs font-semibold text-flent-brown">
+                  Maintenance
+                </Label>
+                <select
+                  id="maintenance_mode"
+                  className={INPUT_LIKE_SELECT}
+                  value={maintenanceMode}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === MAINTENANCE_MODE_AMOUNT || v === MAINTENANCE_MODE_ACTUALS) {
+                      setMaintenanceMode(v);
+                    }
+                  }}
+                >
+                  <option value={MAINTENANCE_MODE_AMOUNT}>Specify amount (Rs)</option>
+                  <option value={MAINTENANCE_MODE_ACTUALS}>{MAINTENANCE_AS_PER_ACTUALS}</option>
+                </select>
+                {maintenanceMode === MAINTENANCE_MODE_AMOUNT && (
+                  <Input
+                    id="maintenance_amount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={maintenanceAmount}
+                    onChange={(e) => setMaintenanceAmount(e.target.value)}
+                    placeholder="e.g. 5000"
+                  />
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="service_term" className="text-xs font-semibold text-flent-brown">
@@ -408,55 +655,109 @@ export default function AdminForm() {
                 )}
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="rent_increment" className="text-xs font-semibold text-flent-brown">
+                <Label htmlFor="rent_increment_mode" className="text-xs font-semibold text-flent-brown">
                   Rent increment
                 </Label>
-                <div className="flex h-10 w-full overflow-hidden rounded-[8px] border border-flent-pastel-brown bg-white shadow-sm transition-colors focus-within:border-flent-forest focus-within:ring-2 focus-within:ring-flent-forest/40 focus-within:ring-offset-2">
-                  <span className="flex shrink-0 items-center border-r border-flent-pastel-brown bg-flent-off-white px-3 text-sm font-semibold text-flent-brown">
-                    %
-                  </span>
-                  <input
-                    id="rent_increment"
-                    type="text"
-                    inputMode="decimal"
-                    autoComplete="off"
-                    value={rentIncrementPct}
-                    onChange={(e) => onRentIncrementInput(e.target.value)}
-                    placeholder="e.g. 5"
-                    className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-flent-brown/60"
-                  />
-                </div>
+                <select
+                  id="rent_increment_mode"
+                  className={INPUT_LIKE_SELECT}
+                  value={rentIncrementMode}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    if (v === RENT_INCREMENT_MODE_TBD || v === RENT_INCREMENT_MODE_CUSTOM) {
+                      setRentIncrementMode(v);
+                    }
+                  }}
+                >
+                  <option value={RENT_INCREMENT_MODE_CUSTOM}>Specify percentage</option>
+                  <option value={RENT_INCREMENT_MODE_TBD}>{STORED_TBD}</option>
+                </select>
+                {rentIncrementMode === RENT_INCREMENT_MODE_CUSTOM && (
+                  <div className="flex h-10 w-full overflow-hidden rounded-[8px] border border-flent-pastel-brown bg-white shadow-sm transition-colors focus-within:border-flent-forest focus-within:ring-2 focus-within:ring-flent-forest/40 focus-within:ring-offset-2">
+                    <span className="flex shrink-0 items-center border-r border-flent-pastel-brown bg-flent-off-white px-3 text-sm font-semibold text-flent-brown">
+                      %
+                    </span>
+                    <input
+                      id="rent_increment"
+                      type="text"
+                      inputMode="decimal"
+                      autoComplete="off"
+                      value={rentIncrementPct}
+                      onChange={(e) => onRentIncrementInput(e.target.value)}
+                      placeholder="e.g. 5"
+                      className="min-w-0 flex-1 border-0 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-flent-brown/60"
+                    />
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
-                  <Label htmlFor="key_handover_date" className="text-xs font-semibold text-flent-brown">
+                  <Label htmlFor="key_handover_date_mode" className="text-xs font-semibold text-flent-brown">
                     Key handover date
                   </Label>
-                  <Input
-                    id="key_handover_date"
-                    type="date"
-                    value={form.key_handover_date}
-                    onChange={(e) => setForm((f) => ({ ...f, key_handover_date: e.target.value }))}
-                    required
-                  />
+                  <select
+                    id="key_handover_date_mode"
+                    className={INPUT_LIKE_SELECT}
+                    value={keyHandoverDateMode}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v === DATE_MODE_DATE || v === DATE_MODE_TBD) {
+                        setKeyHandoverDateMode(v);
+                      }
+                    }}
+                  >
+                    <option value={DATE_MODE_DATE}>Specific date</option>
+                    <option value={DATE_MODE_TBD}>{STORED_TBD}</option>
+                  </select>
+                  {keyHandoverDateMode === DATE_MODE_DATE && (
+                    <Input
+                      id="key_handover_date"
+                      type="date"
+                      value={form.key_handover_date}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, key_handover_date: e.target.value }))
+                      }
+                    />
+                  )}
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="rent_start_date" className="text-xs font-semibold text-flent-brown">
+                  <Label htmlFor="rent_start_date_mode" className="text-xs font-semibold text-flent-brown">
                     Rent start date
                   </Label>
-                  <Input
-                    id="rent_start_date"
-                    type="date"
-                    value={form.rent_start_date}
-                    onChange={(e) => setForm((f) => ({ ...f, rent_start_date: e.target.value }))}
-                    required
-                  />
+                  <select
+                    id="rent_start_date_mode"
+                    className={INPUT_LIKE_SELECT}
+                    value={rentStartDateMode}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v === DATE_MODE_DATE || v === DATE_MODE_TBD) {
+                        setRentStartDateMode(v);
+                      }
+                    }}
+                  >
+                    <option value={DATE_MODE_DATE}>Specific date</option>
+                    <option value={DATE_MODE_TBD}>{STORED_TBD}</option>
+                  </select>
+                  {rentStartDateMode === DATE_MODE_DATE && (
+                    <Input
+                      id="rent_start_date"
+                      type="date"
+                      value={form.rent_start_date}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, rent_start_date: e.target.value }))
+                      }
+                    />
+                  )}
                 </div>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="rent_free_period" className="text-xs font-semibold text-flent-brown">
                   Rent free days
                 </Label>
+                <p className="text-[11px] font-medium text-flent-brown/75">
+                  Auto-fills from handover → rent start when both dates are set (same day → None).
+                  Override anytime.
+                </p>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <select
                     id="rent_free_period"
@@ -465,6 +766,7 @@ export default function AdminForm() {
                     onChange={(e) => setRentFreeDays(e.target.value)}
                   >
                     <option value={RENT_FREE_NONE}>None</option>
+                    <option value={RENT_FREE_TBD}>{STORED_TBD}</option>
                     {rentFreeDayOptions.map((d) => (
                       <option key={d} value={d}>
                         {d === "1" ? "1 day" : `${d} days`}
@@ -472,18 +774,6 @@ export default function AdminForm() {
                     ))}
                   </select>
                 </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="lock_in" className="text-xs font-semibold text-flent-brown">
-                  Lock-in
-                </Label>
-                <Input
-                  id="lock_in"
-                  value={form.lock_in}
-                  onChange={(e) => setForm((f) => ({ ...f, lock_in: e.target.value }))}
-                  placeholder="e.g. 24 months"
-                  required
-                />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="notice_period" className="text-xs font-semibold text-flent-brown">

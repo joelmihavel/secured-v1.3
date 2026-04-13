@@ -42,6 +42,7 @@ export async function setAdminAuthCookie(): Promise<void> {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
+    // Needed so server routes like `/api/admin/*` can read the cookie too.
     path: "/",
     maxAge: 60 * 60 * 12,
   });

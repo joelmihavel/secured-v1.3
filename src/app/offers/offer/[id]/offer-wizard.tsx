@@ -97,7 +97,7 @@ type TermInfoId =
   | "key_handover_date"
   | "staging_period"
   | "rent_start_date"
-  | "lock_in"
+  | "maintenance"
   | "notice_period";
 
 const TERM_INFO: Record<TermInfoId, string> = {
@@ -121,8 +121,8 @@ const TERM_INFO: Record<TermInfoId, string> = {
     "The window between key handover and rent start — when we furnish, stage, and get your home tenant-ready.",
   rent_start_date:
     "The date your monthly rent begins. From here, it hits your account like clockwork.",
-  lock_in:
-    "The minimum period both parties are committed to the partnership.",
+  maintenance:
+    "Monthly maintenance for the property — a fixed amount or as per actuals, as agreed.",
   notice_period:
     "The time required to end the partnership, so arrangements can be planned.",
 };
@@ -332,8 +332,18 @@ const slideVariants = {
   }),
 };
 
+function formatMaintenance(s: string): string {
+  const t = s.trim();
+  if (!t) return "—";
+  if (t === "As per actuals") return t;
+  const n = Number(t);
+  if (Number.isFinite(n)) return formatCurrency(n);
+  return t;
+}
+
 function formatDate(s: string): string {
   if (!s) return s;
+  if (s === "To be decided") return s;
   try {
     return new Date(s).toLocaleDateString("en-IN", {
       day: "numeric",
@@ -819,6 +829,15 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                     valueBold={false}
                   />
                   <FieldCard
+                    label="Maintenance"
+                    value={formatMaintenance(offer.maintenance)}
+                    infoId="maintenance"
+                    activeInfoId={activeInfoId}
+                    setActiveInfoId={setActiveInfoId}
+                    isCoarsePointer={isCoarsePointer}
+                    valueBold={false}
+                  />
+                  <FieldCard
                     label="Service term"
                     value={offer.service_term}
                     infoId="service_term"
@@ -858,15 +877,6 @@ export function OfferWizard({ offer }: { offer: Offer }) {
                     label="Rent start date"
                     value={formatDate(offer.rent_start_date)}
                     infoId="rent_start_date"
-                    activeInfoId={activeInfoId}
-                    setActiveInfoId={setActiveInfoId}
-                    isCoarsePointer={isCoarsePointer}
-                    valueBold={false}
-                  />
-                  <FieldCard
-                    label="Lock-in"
-                    value={offer.lock_in}
-                    infoId="lock_in"
                     activeInfoId={activeInfoId}
                     setActiveInfoId={setActiveInfoId}
                     isCoarsePointer={isCoarsePointer}

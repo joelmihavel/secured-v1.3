@@ -14,6 +14,7 @@ export type Offer = {
   key_handover_date: string;
   rent_free_period: string;
   rent_start_date: string;
+  maintenance: string;
   lock_in: string;
   notice_period: string;
   selected_terms: string[];
@@ -37,7 +38,7 @@ export type OfferInsert = {
   key_handover_date: string;
   rent_free_period: string;
   rent_start_date: string;
-  lock_in: string;
+  maintenance: string;
   notice_period: string;
   selected_terms: string[];
 };

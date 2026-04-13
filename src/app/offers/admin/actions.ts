@@ -31,6 +31,9 @@ export async function logoutAdmin(): Promise<void> {
   redirect("/offers/admin");
 }
 
+/** Public HTTPS URL so images load in email clients (localhost / preview URLs do not). */
+const FLENT_EMAIL_LOGO_URL = "https://www.flent.in/flent-logo-black.png";
+
 function normalizeBaseUrl(raw: string | undefined): string | null {
   if (!raw) return null;
   const trimmed = raw.trim();
@@ -92,7 +95,7 @@ function formatOfferEmailHtml(params: {
         <p style="margin: 0 0 12px; color: #000000;">Flent</p>
         <p style="margin: 0 0 4px; color: #000000; font-style: italic;">Why rent, when you can Flent?</p>
         <p style="margin: 0 0 20px;"><a href="https://www.flent.in" style="color: #000000; text-decoration: underline;">www.flent.in</a></p>
-        <img src="${getOfferBaseUrl()}/flent-logo-black.png" alt="Flent logo" style="display: block; width: 96px; height: auto;" />
+        <img src="${FLENT_EMAIL_LOGO_URL}" alt="Flent logo" style="display: block; width: 96px; height: auto;" />
       </div>
     </div>
   `;
@@ -123,8 +126,8 @@ export async function sendOfferEmail(params: {
   const { data, error } = await resend.emails.send({
     from: "Flent <landlords@email.flent.in>",
     to: params.landlord_email,
-    cc: ["raghav@flent.in", "aniket@flent.in", "homeowners@flent.in"],
-    replyTo: "aniket@flent.in",
+    cc: ["homeowners@flent.in"],
+    replyTo: "homeowners@flent.in",
     subject,
     html,
   });
@@ -175,7 +178,7 @@ export async function createOffer(formData: OfferInsert): Promise<CreateOfferRes
         key_handover_date: formData.key_handover_date,
         rent_free_period: formData.rent_free_period,
         rent_start_date: formData.rent_start_date,
-        lock_in: formData.lock_in,
+        maintenance: formData.maintenance,
         notice_period: formData.notice_period,
         selected_terms: formData.selected_terms,
       })
@@ -210,6 +213,8 @@ export async function createOffer(formData: OfferInsert): Promise<CreateOfferRes
         emailError instanceof Error ? emailError.message : "Unknown email error";
     }
 
+    // Store send timestamp for admin visibility.
+    // Also persist message id (if present) for webhook correlation.
     if (emailSent) {
       const sentAtIso = new Date().toISOString();
 

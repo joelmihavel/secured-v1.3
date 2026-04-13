@@ -11,6 +11,8 @@ export async function GET(req: Request) {
   const supabase = createServerClient();
   const { searchParams } = new URL(req.url);
   const creator = (searchParams.get("creator") ?? "").trim();
+  // Use * so this works even if the remote DB is behind local migrations (PostgREST
+  // only exposes columns that actually exist; an explicit list fails if any name is missing).
   const { data, error } = await supabase
     .from("offers")
     .select("*")
@@ -91,3 +93,4 @@ export async function GET(req: Request) {
     creatorCounts: creatorCounts ?? null,
   });
 }
+
