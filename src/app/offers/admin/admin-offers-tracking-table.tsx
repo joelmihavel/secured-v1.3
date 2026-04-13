@@ -24,7 +24,8 @@ type OfferTrackingRow = {
   key_handover_date: string;
   rent_free_period: string;
   rent_start_date: string;
-  lock_in: string;
+  /** Present after maintenance column migration(s); value is Rs amount text or "As per actuals". */
+  maintenance?: string | null;
   notice_period: string;
   created_at: string;
   agreed: boolean;
@@ -91,6 +92,7 @@ function formatMaybeIso(iso: string | null | undefined) {
 
 function formatDateOnly(value: string | null | undefined) {
   if (!value) return "—";
+  if (value === "To be decided") return value;
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "—";
   return d.toLocaleDateString("en-IN", {
@@ -436,7 +438,9 @@ export default function AdminOffersTrackingTable() {
                     <th className="whitespace-nowrap px-2 py-3 font-semibold text-flent-brown">Key handover</th>
                     <th className="min-w-[100px] px-2 py-3 font-semibold text-flent-brown">Rent-free period</th>
                     <th className="whitespace-nowrap px-2 py-3 font-semibold text-flent-brown">Rent start</th>
-                    <th className="px-2 py-3 font-semibold text-flent-brown">Lock-in</th>
+                    <th className="whitespace-nowrap px-2 py-3 font-semibold text-flent-brown">
+                      Maintenance
+                    </th>
                     <th className="px-2 py-3 font-semibold text-flent-brown">Notice period</th>
                   </tr>
                 </thead>
@@ -554,8 +558,15 @@ export default function AdminOffersTrackingTable() {
                       <td className="whitespace-nowrap px-2 py-4 text-[12px] text-flent-black/90">
                         {formatDateOnly(row.rent_start_date)}
                       </td>
-                      <td className="max-w-[100px] px-2 py-4 text-[12px] text-flent-black/90">
-                        {row.lock_in || "—"}
+                      <td className="max-w-[140px] px-2 py-4 text-[12px] font-medium text-flent-black/90">
+                        {(() => {
+                          const raw = row.maintenance;
+                          if (raw == null || String(raw).trim() === "") return "—";
+                          const s = String(raw).trim();
+                          if (s === "As per actuals") return s;
+                          const n = Number(s);
+                          return Number.isFinite(n) ? formatCurrency(n) : s;
+                        })()}
                       </td>
                       <td className="max-w-[100px] px-2 py-4 text-[12px] text-flent-black/90">
                         {row.notice_period || "—"}

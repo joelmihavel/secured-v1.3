@@ -37,6 +37,7 @@ export async function POST(request: Request) {
 
   let payload: string;
   try {
+    // IMPORTANT: raw body is required for signature verification.
     payload = await request.text();
   } catch {
     return NextResponse.json({ error: "Unable to read request body" }, { status: 400 });
@@ -75,6 +76,7 @@ export async function POST(request: Request) {
     const openedAtIso = toIsoOrNull(verified.data?.created_at ?? verified.created_at);
     if (!openedAtIso) return NextResponse.json({ ok: true });
 
+    // Update whichever column matches the message id (idempotent).
     const { error: firstOpenedUpdateError } = await supabase
       .from("offers")
       .update({ first_email_opened_at: openedAtIso })

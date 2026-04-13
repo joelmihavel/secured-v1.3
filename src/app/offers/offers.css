@@ -1,30 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
 @theme {
-  --color-flent-forest: #008E75;
-  --color-flent-brown: #7F5639;
-  --color-flent-red: #C64747;
-  --color-flent-violet: #614ECE;
-  --color-flent-pink: #F5B8D0;
-  --color-flent-orange: #FFA37B;
-  --color-flent-yellow: #FFE98A;
-  --color-flent-cyan: #93F2E9;
-  --color-flent-off-white: #F5F4F0;
-  --color-flent-welcome-bg: #FAF7F2;
-  --color-flent-black: #1A1A2E;
-  --color-flent-pastel-green: #C0E3DC;
-  --color-flent-pastel-brown: #DDD0C7;
-  --color-flent-pastel-orange: #FFE2D8;
+  --color-flent-forest: #008e75;
+  --color-flent-brown: #7f5639;
+  --color-flent-red: #c64747;
+  --color-flent-violet: #614ece;
+  --color-flent-pink: #f5b8d0;
+  --color-flent-orange: #ffa37b;
+  --color-flent-yellow: #ffe98a;
+  --color-flent-cyan: #93f2e9;
+  --color-flent-off-white: #f5f4f0;
+  --color-flent-welcome-bg: #faf7f2;
+  --color-flent-black: #1a1a2e;
+  --color-flent-pastel-green: #c0e3dc;
+  --color-flent-pastel-brown: #ddd0c7;
+  --color-flent-pastel-orange: #ffe2d8;
 }
 
-.offers-root {
+@font-face {
+  font-family: "Zin Display Condensed";
+  src: url("/fonts/ZinDisplayCondensed-Demo.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
   min-height: 100vh;
-  background-color: #f5f4f0;
-  color: #1a1a2e;
+  background-color: #f5f4f0; /* flent-off-white */
+  color: #1a1a2e; /* flent-black */
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   position: relative;
 }
 
-.offers-root::before {
+body::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -64,6 +75,12 @@
 .headline-display {
   font-family: var(--font-zin), "Plus Jakarta Sans", system-ui,
     -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Overrides global fluid `h1` from `globals.css` (higher specificity + !important). */
+h1.offers-admin-login-title {
+  font-size: 2.425rem !important;
+  line-height: 1.35 !important;
 }
 
 .headline-italic {
@@ -154,16 +171,19 @@
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  /* Default (medium): offer step CTAs, general use */
   .cta-button {
     font-size: 0.95rem;
     padding: 11px 26px;
   }
 
+  /* Large: hero and final CTAs on offer page */
   .cta-button--lg {
     font-size: 1.05rem;
     padding: 14px 34px;
   }
 
+  /* Small: admin form submit, compact contexts */
   .cta-button--sm {
     font-size: 0.8rem;
     padding: 9px 20px;
@@ -305,3 +325,4 @@
     }
   }
 }
+

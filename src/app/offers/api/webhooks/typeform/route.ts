@@ -36,6 +36,7 @@ function verifyTypeformSignature(payload: string, receivedSignature: string, sec
   hmac.update(payload);
   const digest = hmac.digest("base64");
   const expected = `sha256=${digest}`;
+  // Constant-time compare to reduce timing attacks.
   return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expected));
 }
 
@@ -89,6 +90,7 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (!offerRow?.id) {
+    // Nothing to mark (either already completed, no agreed offer, or email mismatch).
     return NextResponse.json({ ok: true });
   }
 

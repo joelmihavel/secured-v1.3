@@ -40,7 +40,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           Back to home
         </Link>
         <div className="space-y-2">
-          <h1 className="headline-display text-2xl font-bold text-flent-black">
+          <h1 className="headline-display offers-admin-login-title font-bold text-flent-black">
             Supply Landlord Offers - Admin Login
           </h1>
           <p className="text-sm text-flent-brown">
