@@ -110,14 +110,6 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
         };
     }, [isOpen]);
 
-    const handleWhatsAppClick = () => {
-        const whatsappNumber = "918904695925";
-        const whatsappMessage = "Hi! I'm interested in learning more about Flent.";
-        const encodedMessage = encodeURIComponent(whatsappMessage);
-        const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, "")}?text=${encodedMessage}`;
-        window.open(whatsappUrl, "_blank");
-    };
-
     const getLinkHref = (link: { href: string; sectionId: string }) => {
         if (isHome && link.sectionId) {
             return `#${link.sectionId}`;
@@ -439,7 +431,6 @@ const NavbarContent = ({ variant, activeTab, onTabChange }: NavbarProps) => {
                                 data-cta-id={CTA_IDS.NAVBAR_CONTACT_US}
                                 data-cta-context="navbar"
                                 onClick={() => {
-                                    handleWhatsAppClick();
                                     setIsOpen(false);
                                 }}
                             >

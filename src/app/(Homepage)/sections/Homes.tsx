@@ -15,7 +15,7 @@ import { CTA_IDS } from "@/lib/cta-ids";
 import { FlexibleCarousel } from "@/components/ui/flexible-carousel";
 import { Button } from "@/components/ui/Button";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
 interface HomesProps {

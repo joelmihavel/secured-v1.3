@@ -25,10 +25,9 @@ import {
     IconCurrencyDollar as CircleDollarSign,
     IconSparkles as Sparkles,
     IconHeadphones as Headphones,
-    IconShield as Shield,
-    Icon as LucideIcon
+    IconShield as Shield
 } from "@tabler/icons-react";
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type ComponentType, type ReactNode } from "react";
 import { Gravity, MatterBody } from "@/components/ui/gravity";
 import { Marquee } from "@/components/ui/Marquee";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -36,7 +35,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export type CompareItem = {
     text: string;
-    icon: LucideIcon;
+    icon: ComponentType<{ className?: string; strokeWidth?: number }>;
     bgColor: string;
     textColor: string;
     borderColor: string;

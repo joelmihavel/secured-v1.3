@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useMobile } from "@/hooks/useMobile";
 import { openChat } from "@/lib/open-chat";
+import { appendWaxToWhatsAppUrl, getWaxSessionCode } from "@/lib/wax";
 import {
   trackWhatsAppCtaClicked,
   WhatsAppCtaSource,
@@ -64,7 +65,9 @@ export function useWhatsAppCta(
 
       if (!isMobile) {
         e.preventDefault();
-        openChat(url);
+        const waxCode = getWaxSessionCode();
+        const urlWithWax = appendWaxToWhatsAppUrl(url, waxCode);
+        openChat(urlWithWax);
       }
     },
     [isMobile, url, tracking]
