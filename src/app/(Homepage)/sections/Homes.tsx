@@ -65,6 +65,7 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
 
     const cards = sortedProperties.map((item, index) => {
         const location = locations.find(l => l.id === item.fieldData.location);
+        const hasActiveDiscount = propertyHasDiscount(item) === true;
         return (
             <Link
                 key={item.id}
@@ -74,7 +75,7 @@ export const Homes = ({ properties = [], locations = [], rooms = [], occupants =
                 onClick={() =>
                     trackPropertyCardClick({
                         property_slug: item.fieldData.slug,
-                        property_type: propertyHasDiscount(item) ? "discounted" : "standard",
+                        property_type: hasActiveDiscount ? "discounted" : "standard",
                         page_section: "homepage",
                         cta_id: CTA_IDS.PROPERTY_CARD,
                     })
