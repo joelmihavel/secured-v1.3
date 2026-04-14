@@ -356,7 +356,8 @@ export const PropertyCard = ({
   const isComingSoon = variant === "coming-soon";
   const isOccupied = !isComingSoon && !property.fieldData.available;
 
-  const showRibbon = propertyHasDiscount(property) && !isOccupied;
+  const hasActiveDiscount = propertyHasDiscount(property) === true;
+  const showRibbon = hasActiveDiscount && !isOccupied;
   const ribbonSavings = getRibbonDiscountSavings(property, rooms);
   const discountEndDate = getDiscountEndDateFormatted(property);
   const discountPercent = Number(property.fieldData["discount"]) || 0;

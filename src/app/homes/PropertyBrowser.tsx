@@ -441,6 +441,12 @@ export const PropertyBrowser = ({
     () => filteredProperties.filter((property) => property.fieldData.available),
     [filteredProperties]
   );
+  const shouldShowDiscountCta = useMemo(
+    () =>
+      availableFilteredProperties.length > 0 &&
+      availableFilteredProperties.some((property) => propertyHasDiscount(property)),
+    [availableFilteredProperties]
+  );
 
   return (
     <>
@@ -510,6 +516,7 @@ export const PropertyBrowser = ({
               const locationName = locationId
                 ? locationMap.get(locationId)
                 : undefined;
+              const hasActiveDiscount = propertyHasDiscount(property) === true;
 
               return (
                 <React.Fragment key={property.id}>
@@ -519,7 +526,7 @@ export const PropertyBrowser = ({
                     onClick={() =>
                       trackPropertyCardClick({
                         property_slug: property.fieldData.slug,
-                        property_type: propertyHasDiscount(property) ? "discounted" : "standard",
+                        property_type: hasActiveDiscount ? "discounted" : "standard",
                         property_area: locationName,
                         page_section: "search",
                         cta_id: CTA_IDS.PROPERTY_CARD,
@@ -533,12 +540,12 @@ export const PropertyBrowser = ({
                       occupants={occupants}
                     />
                   </Link>
-                  {index === 1 && (
+                  {shouldShowDiscountCta && index === 1 && (
                     <div className="md:hidden">
                       <DiscountCta />
                     </div>
                   )}
-                  {index === 3 && (
+                  {shouldShowDiscountCta && index === 3 && (
                     <div className="hidden md:block">
                       <DiscountCta />
                     </div>

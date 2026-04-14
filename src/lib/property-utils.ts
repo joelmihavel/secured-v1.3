@@ -217,12 +217,26 @@ export const formatCurrency = (amount: number | null | undefined) => {
 };
 
 function getPropertyDiscountContext(property: Property, allRooms: Room[]) {
-    const isDiscounted = Boolean(
-        property.fieldData["apply-discount"] &&
-        property.fieldData["discount"]
+    const discountPercentRaw = Number(property.fieldData["discount"]) || 0;
+    const discountPercent = discountPercentRaw > 0 ? discountPercentRaw : 0;
+    const rawDiscountEndDate = property.fieldData["discount-end-date"];
+    const discountEndDate = rawDiscountEndDate ? new Date(rawDiscountEndDate as string) : null;
+    const hasValidDiscountEndDate = Boolean(
+        discountEndDate && !Number.isNaN(discountEndDate.getTime())
     );
 
-    const discountPercent = isDiscounted ? (Number(property.fieldData["discount"]) || 0) : 0;
+    const now = new Date();
+    const discountEndOfDay = hasValidDiscountEndDate
+        ? new Date(discountEndDate as Date)
+        : null;
+    if (discountEndOfDay) {
+        discountEndOfDay.setHours(23, 59, 59, 999);
+    }
+
+    const isDiscountDateActive = discountEndOfDay
+        ? discountEndOfDay.getTime() >= now.getTime()
+        : false;
+    const isDiscounted = discountPercent > 0 && isDiscountDateActive;
 
     const propertyRoomIds = property.fieldData.rooms || [];
     const propertyRooms = allRooms.filter((r) => propertyRoomIds.includes(r.id));
