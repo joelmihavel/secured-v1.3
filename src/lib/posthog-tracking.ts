@@ -492,6 +492,7 @@ export type OwnersFieldName =
 export type OwnersFailureStage = 'client_validation' | 'hubspot_api' | 'network';
 export type OwnersErrorCode =
   | 'missing_typeofhome'
+  | 'missing_expected_rent'
   | 'missing_vacancy_status'
   | 'hubspot_error'
   | 'unknown';
