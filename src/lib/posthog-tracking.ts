@@ -521,7 +521,7 @@ export function trackOwnersFormSubmitAttempted(
   payload: OwnersFormBasePayload & {
     required_fields_present: boolean;
     has_property_address: boolean;
-    has_expected_rent: boolean;
+    has_expected_rent?: boolean;
   }
 ): void {
   trackWithContext(OWNERS_FORM_SUBMIT_ATTEMPTED_EVENT, payload);
