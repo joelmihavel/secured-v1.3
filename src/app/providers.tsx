@@ -12,11 +12,21 @@
  * @see {@link docs/POSTHOG_ATTRIBUTION.md} Full Attribution Implementation Guide
  */
 'use client'
-import posthog, { CaptureResult } from 'posthog-js'
+import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from "next/navigation"
 import { CTATracker } from "@/components/tracking/CTATracker"
+
+type CaptureResultLike = {
+  event?: string;
+  properties?: {
+    $elements?: Array<{
+      attributes?: Record<string, unknown>;
+      attr_class?: string;
+    }>;
+  };
+}
 
 function PostHogPageView() {
   const pathname = usePathname()
@@ -54,7 +64,7 @@ export function CSPostHogProvider({ children }: { children: React.ReactNode }) {
           element_allowlist: undefined,
         },
         // Safety net: filter autocapture events for elements already tracked by our CTA system
-        before_send: (cr: CaptureResult | null) => {
+        before_send: (cr: CaptureResultLike | null) => {
           if (!cr) return null;
           if (cr.event === '$autocapture') {
             const elements = cr.properties?.$elements;
