@@ -194,10 +194,7 @@ function serializeFiltersToSearchParams({
   return { params, urlChanged };
 }
 
-function useHomesSearchFilters(
-  properties: Property[],
-  locations: Location[]
-) {
+function useHomesSearchFilters(properties: Property[], locations: Location[]) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

@@ -323,8 +323,8 @@ export default async function PropertyPage({
         <Rating reviews={reviews} />
       </section>
 
-      <MoreOptions 
-        properties={properties.filter(isPropertyActive)} 
+      <MoreOptions
+        properties={properties.filter(isPropertyActive)}
         currentPropertyId={property.id}
         rooms={allRooms}
         occupants={allOccupants}
