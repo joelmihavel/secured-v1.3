@@ -340,3 +340,37 @@ export const sortByAvailabilityThenRank = (a: Property, b: Property): number => 
     if (aAvailable !== bAvailable) return aAvailable ? -1 : 1;
     return sortProperties(a, b);
 };
+
+/* Disabled: combine CMS Locality + Area (location) for card/header labels. Re-enable when needed.
+import type { Locality, Location } from "@/lib/webflow";
+
+export function formatPropertyLocalityDisplay(
+    localityName?: string | null,
+    areaName?: string | null
+): string | undefined {
+    const locality = localityName?.trim();
+    const area = areaName?.trim();
+    if (locality && area) return `${locality}, ${area}`;
+    if (locality) return locality;
+    if (area) return area;
+    return undefined;
+}
+
+export function getPropertyLocalityAndAreaNames(
+    property: Property,
+    locations: Location[],
+    localities: Locality[]
+): { localityName?: string; areaName?: string } {
+    const localityId = property.fieldData.locality;
+    const locationId = property.fieldData.location;
+    const localityName =
+        localityId != null && String(localityId).length > 0
+            ? localities.find((l) => l.id === localityId)?.fieldData.name
+            : undefined;
+    const areaName =
+        locationId != null && String(locationId).length > 0
+            ? locations.find((l) => l.id === locationId)?.fieldData.name
+            : undefined;
+    return { localityName, areaName };
+}
+*/

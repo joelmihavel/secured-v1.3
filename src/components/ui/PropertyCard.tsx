@@ -34,6 +34,7 @@ import { getCompanyLogo } from "@/lib/company-logos";
 interface PropertyCardProps {
   property: Property;
   index?: number;
+  /** Area name from Locations collection (Property.fieldData.location). */
   locationName?: string;
   variant?: "default" | "coming-soon";
   rooms?: Room[];

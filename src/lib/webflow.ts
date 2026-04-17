@@ -8,6 +8,8 @@ export const SITE_ID = "6593ed11d5ad65d107dfe76c";
 export const COLLECTIONS = {
   PROPERTIES: "6593ed11d5ad65d107dfe7af",
   LOCATIONS: "6595a74ba4f6dc705a68fc96",
+  /** CMS "Locality" reference on properties (neighbourhood / sub-area). */
+  LOCALITIES: "69bb77eba52523e653aea8ca",
   REVIEWS: "6595b72233057094bab0e0c1",
   AMENITIES: "6595a6b3510135f8bf9c4000",
   ROOMS: "6595bb2d446200b72e034d85",
@@ -79,6 +81,9 @@ export interface Property extends WebflowItem {
     type?: string; // Option ID
     amenities?: string[]; // MultiReference IDs
     rooms?: string[]; // MultiReference IDs
+    /** CMS "Locality" — reference to Localities collection. */
+    locality?: string; // Reference ID
+    /** CMS "Area" — reference to Locations collection. */
     location?: string; // Reference ID
     hotspots?: string[]; // MultiReference IDs
     reviews?: string[]; // MultiReference IDs
@@ -122,6 +127,14 @@ export interface Location extends WebflowItem {
     city?: string; // Option ID
     properties?: string[]; // MultiReference IDs
     "unlisted-house"?: string[]; // MultiReference IDs
+  };
+}
+
+/** Localities collection — linked from Property.fieldData.locality. */
+export interface Locality extends WebflowItem {
+  fieldData: {
+    name: string;
+    slug?: string;
   };
 }
 
