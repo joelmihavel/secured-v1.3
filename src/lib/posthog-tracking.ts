@@ -492,6 +492,7 @@ export type OwnersFieldName =
 export type OwnersFailureStage = 'client_validation' | 'hubspot_api' | 'network';
 export type OwnersErrorCode =
   | 'missing_typeofhome'
+  | 'missing_expected_rent'
   | 'missing_vacancy_status'
   | 'hubspot_error'
   | 'unknown';
@@ -521,7 +522,7 @@ export function trackOwnersFormSubmitAttempted(
   payload: OwnersFormBasePayload & {
     required_fields_present: boolean;
     has_property_address: boolean;
-    has_expected_rent: boolean;
+    has_expected_rent?: boolean;
   }
 ): void {
   trackWithContext(OWNERS_FORM_SUBMIT_ATTEMPTED_EVENT, payload);

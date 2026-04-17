@@ -110,12 +110,12 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
       !!formData.phone.trim() &&
       !!formData.email.trim() &&
       !!formData.typeofhome &&
+      !!formData.expected_rent &&
       !!formData.is_property_vacant_now;
     trackOwnersFormSubmitAttempted({
       ...OWNERS_FORM_BASE_PAYLOAD,
       required_fields_present: requiredFieldsPresent,
       has_property_address: !!formData.landlord_lead_property_address,
-      has_expected_rent: !!formData.expected_rent,
     });
 
     // Validate required fields
@@ -126,6 +126,17 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
         ...OWNERS_FORM_BASE_PAYLOAD,
         failure_stage: "client_validation",
         error_code: "missing_typeofhome",
+      });
+      return;
+    }
+
+    if (!formData.expected_rent.trim()) {
+      setStatus("error");
+      setErrorMessage("Please enter your expected rent.");
+      trackOwnersFormSubmitFailed({
+        ...OWNERS_FORM_BASE_PAYLOAD,
+        failure_stage: "client_validation",
+        error_code: "missing_expected_rent",
       });
       return;
     }
@@ -315,12 +326,13 @@ export const GetStartedForm = ({ buttonText = "Let's Get Started" }: { buttonTex
           htmlFor="expected_rent"
           className="block text-sm font-medium text-gray-700 mb-2"
         >
-          Expected Rent
+          Expected Rent <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
           id="expected_rent"
           name="expected_rent"
+          required
           value={formData.expected_rent}
           onChange={handleChange}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-text-main focus:border-transparent"
