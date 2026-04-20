@@ -7,6 +7,11 @@
     storageKey: 'wax_attribution',
     debug: false
   };
+  var WHATSAPP_NUMBER = ((window.__FLENT_WHATSAPP_NUMBER__ || '') + '').replace(/\D/g, '');
+
+  function buildWhatsAppLink(message) {
+    return 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
+  }
 
   function log() {
     if (CONFIG.debug) {
@@ -132,8 +137,8 @@
     var waxCode = attribution ? (attribution.sessionCode || '') : '';
 
     var isOwnersPage = pathname === '/owners';
-    var defaultWhatsAppLink = 'https://wa.me/918904695925?text=Curious%20to%20know%20more%20about%20Flent%E2%80%94tell%20me%20everything%21';
-    var ownersWhatsAppLink = 'https://wa.me/918904695925?text=Hi%2C%20I\u2019m%20a%20homeowner.%20How%20can%20Flent%20help%3F';
+    var defaultWhatsAppLink = buildWhatsAppLink('Curious to know more about Flent-tell me everything!');
+    var ownersWhatsAppLink = buildWhatsAppLink("Hi, I'm a homeowner. How can Flent help?");
     var whatsappHref = isOwnersPage ? ownersWhatsAppLink : defaultWhatsAppLink;
 
     var button = document.createElement('a');

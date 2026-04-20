@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react"
 import { Eye } from "lucide-react"
+import { buildWhatsAppApiLink } from "@/lib/whatsapp"
 
 // Generate a "stable but dynamic" viewer count that changes every few minutes
 function getViewerCount(): number {
@@ -128,7 +129,9 @@ export function QualificationForm() {
           <div className="mt-6 border-t border-border pt-6">
             <p className="mb-3 text-sm text-muted-foreground">Can't wait?</p>
             <a
-              href="https://api.whatsapp.com/send/?phone=918904695925&text=Found+you+via+ads,+excited+to+know+more+about+Flent&type=phone_number&app_absent=0"
+              href={buildWhatsAppApiLink(
+                "Found you via ads, excited to know more about Flent"
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-flent-green px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-flent-green/90"

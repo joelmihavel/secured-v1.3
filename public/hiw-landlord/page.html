@@ -2513,7 +2513,7 @@
     <div class="speak-btn reveal-up">
       <div class="btn-primary">
         <div class="pill"></div>
-        <a href="https://wa.me/918904695925?text=Help%20me%20understand%20more%20about%20flent%20secured%20for%20landlords" target="_blank" rel="noopener noreferrer" class="btn-inner" style="text-decoration: none;">
+        <a href="https://wa.me/?text=Help%20me%20understand%20more%20about%20flent%20secured%20for%20landlords" data-wa-message="Help me understand more about flent secured for landlords" target="_blank" rel="noopener noreferrer" class="btn-inner" style="text-decoration: none;">
           <span>Talk to Support</span>
         </a>
       </div>
@@ -3120,6 +3120,35 @@
         setLoading(btnInner, btnSpan, false, 'Proceed');
       }
     }
+  </script>
+
+  <script>
+  (function() {
+    function sanitizeWhatsappNumber(value) {
+      return (value || '').toString().replace(/\D/g, '');
+    }
+
+    function applyWhatsappNumber(number) {
+      if (!number) return;
+      document.querySelectorAll('a[data-wa-message]').forEach(function(link) {
+        var message = link.getAttribute('data-wa-message') || '';
+        link.href = 'https://wa.me/' + number + '?text=' + encodeURIComponent(message);
+      });
+    }
+
+    var runtimeNumber = sanitizeWhatsappNumber(window.__FLENT_WHATSAPP_NUMBER__);
+    if (runtimeNumber) {
+      applyWhatsappNumber(runtimeNumber);
+      return;
+    }
+
+    fetch('/api/runtime-config')
+      .then(function(response) { return response.ok ? response.json() : null; })
+      .then(function(payload) {
+        applyWhatsappNumber(sanitizeWhatsappNumber(payload && payload.whatsappNumber));
+      })
+      .catch(function() {});
+  })();
   </script>
 
   <script>
