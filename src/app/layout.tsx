@@ -52,6 +52,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const whatsappNumber = (process.env.WHATSAPP_NUMBER || "").replace(/\D/g, "");
+
   return (
     <html lang="en">
       <body
@@ -107,6 +109,10 @@ export default function RootLayout({
               return false;
             }
           `}
+        </Script>
+
+        <Script id="whatsapp-runtime-config" strategy="beforeInteractive">
+          {`window.__FLENT_WHATSAPP_NUMBER__ = "${whatsappNumber}";`}
         </Script>
 
         {/* WAX Attribution Tracking Script */}

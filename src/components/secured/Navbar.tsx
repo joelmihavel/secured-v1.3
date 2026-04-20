@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useVariant } from "./VariantContext";
 import { Button } from "./ui/Button";
+import { buildWhatsAppApiLink } from "@/lib/whatsapp";
 
 /* ── Easing curves ── */
 const EASE_SMOOTH = [0.77, 0, 0.175, 1] as const;
@@ -139,7 +140,9 @@ const NAV_ITEMS = [
   { label: "Back to Flent Homes", href: "https://www.flent.in/" },
   {
     label: "Contact Us",
-    href: "https://api.whatsapp.com/send/?phone=918904695925&text=Curious+to+know+more+about+Flent%E2%80%94tell+me+everything%21+%5BWAX-UK6N%5D&type=phone_number&app_absent=0",
+    href: buildWhatsAppApiLink(
+      "Curious to know more about Flent—tell me everything! [WAX-UK6N]"
+    ),
     target: "_blank",
     rel: "noopener noreferrer",
   },

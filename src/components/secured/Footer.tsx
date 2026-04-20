@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import type { FooterContent } from "@/lib/secured/types";
+import { buildWhatsAppApiLink } from "@/lib/whatsapp";
 
 export function Footer({ data }: { data: FooterContent }) {
   return (
@@ -56,7 +57,9 @@ export function Footer({ data }: { data: FooterContent }) {
             {data.exploreLabel}
           </a>
           <a
-            href="https://api.whatsapp.com/send/?phone=918904695925&text=Curious+to+know+more+about+Flent%E2%80%94tell+me+everything%21+%5BWAX-UK6N%5D&type=phone_number&app_absent=0"
+            href={buildWhatsAppApiLink(
+              "Curious to know more about Flent—tell me everything! [WAX-UK6N]"
+            )}
             target="_blank"
             rel="noopener noreferrer"
             className="flex w-full items-center justify-center rounded-xl bg-[#202020] px-6 py-4 text-sm leading-5 text-white transition-colors 3xl:text-base 3xl:py-5 4xl:text-lg 4xl:py-6 5xl:text-xl 5xl:py-8"
