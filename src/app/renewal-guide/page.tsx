@@ -3,11 +3,22 @@
 
 import { useState, useEffect } from "react"
 import "./renewal-guide.css"
-import { CheckCircle2, HelpCircle, Loader2, ChevronRight, Sparkles, Calendar } from "lucide-react"
+import { CheckCircle2, HelpCircle, Loader2, ChevronRight, Sparkles, Calendar, AlertCircle } from "lucide-react"
 import { Card, CardContent } from "./ui/card"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
+
+const DEMAND_MWEB_ORIGIN = process.env.NEXT_PUBLIC_DEMAND_MWEB_ORIGIN ?? ""
+const RENEWAL_ENDPOINT = `${DEMAND_MWEB_ORIGIN}/api/public/renewal-selection`
+
+const ERROR_MESSAGES: Record<number, string> = {
+  400: "Something's off with this link — please use the link from your latest email.",
+  401: "This link has expired or wasn't meant for you. Please use the most recent email we sent.",
+  404: "This link has expired or wasn't meant for you. Please use the most recent email we sent.",
+  409: "This renewal is already closed. Reply to the email if you need to change anything.",
+  500: "Something broke on our end. Reply to the email and we'll handle it.",
+}
 
 const FAQ_CATEGORIES = [
   {
@@ -64,10 +75,10 @@ const FAQ_CATEGORIES = [
 ]
 
 const SAVINGS_OPTIONS = [
-  { id: "save-0", discount: 0, lockIn: 0, label: "No Lock-in", lockInLabel: "Flexible" },
-  { id: "save-30", discount: 30, lockIn: 6, label: "6 Months", lockInLabel: "6 months lock-in" },
-  { id: "save-40", discount: 40, lockIn: 9, label: "9 Months", lockInLabel: "9 months lock-in" },
-  { id: "save-50", discount: 50, lockIn: 11, label: "11 Months", lockInLabel: "11 months lock-in" },
+  { id: "save-0", selection: "no_lock_in", discount: 0, lockIn: 0, label: "No Lock-in", lockInLabel: "Flexible" },
+  { id: "save-30", selection: "6m", discount: 30, lockIn: 6, label: "6 Months", lockInLabel: "6 months lock-in" },
+  { id: "save-40", selection: "9m", discount: 40, lockIn: 9, label: "9 Months", lockInLabel: "9 months lock-in" },
+  { id: "save-50", selection: "11m", discount: 50, lockIn: 11, label: "11 Months", lockInLabel: "11 months lock-in" },
 ]
 
 const formatCurrency = (amount) => {
@@ -93,10 +104,15 @@ export default function RenewalGuidePage() {
   const [escalation, setEscalation] = useState(10)
   const [tenantEmail, setTenantEmail] = useState("")
   const [tenantName, setTenantName] = useState("")
+  const [cycle, setCycle] = useState<string | null>(null)
+  const [sig, setSig] = useState<string | null>(null)
+  const [brokenLink, setBrokenLink] = useState(false)
   const [selectedSavings, setSelectedSavings] = useState(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState(null)
+  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null)
   const [submitMessage, setSubmitMessage] = useState("")
+  const [successNextAction, setSuccessNextAction] = useState("")
+  const [confirmedLabel, setConfirmedLabel] = useState("")
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -106,10 +122,15 @@ export default function RenewalGuidePage() {
     const rentParsed = rentParam ? parseInt(rentParam.replace(/[₹,\s]/g, "")) : NaN
     const rent = !isNaN(rentParsed) ? rentParsed : 50000
     const esc = params.get("escalation") ? parseFloat(params.get("escalation")) : 10
+    const cycleParam = params.get("cycle")
+    const sigParam = params.get("sig")
     setTenantEmail(email)
     setTenantName(name)
     setCurrentRent(rent)
     setEscalation(esc)
+    setCycle(cycleParam)
+    setSig(sigParam)
+    if (!cycleParam || !sigParam) setBrokenLink(true)
   }, [])
 
   const escalationAmount = (currentRent * escalation) / 100
@@ -125,15 +146,15 @@ export default function RenewalGuidePage() {
   const selectedOption = selectedSavings ? SAVINGS_OPTIONS.find((opt) => opt.id === selectedSavings) : null
   const selectedCalc = selectedOption ? calculateSavings(selectedOption) : null
 
-  const handleSubmit = async () => {
+  const postSelection = async (selection: string, label: string) => {
+    if (brokenLink || !cycle || !sig) {
+      setSubmitStatus("error")
+      setSubmitMessage("This link seems broken — check your email for the latest renewal message.")
+      return
+    }
     if (!tenantEmail) {
       setSubmitStatus("error")
       setSubmitMessage("Please enter your email address.")
-      return
-    }
-    if (!selectedOption) {
-      setSubmitStatus("error")
-      setSubmitMessage("Please select a savings plan.")
       return
     }
 
@@ -141,25 +162,30 @@ export default function RenewalGuidePage() {
     setSubmitStatus(null)
 
     const payload = {
-      tenant_email: tenantEmail,
-      tenant_name: tenantName || null,
-      current_rent: currentRent,
-      escalation_percent: escalation,
-      lockin_months: selectedOption.lockIn,
-      lockin_label: selectedOption.label + " Lock-in",
-      discount_percent: selectedOption.discount,
-      new_monthly_rent: selectedCalc.newMonthlyRent,
-      total_savings: selectedCalc.totalSavings,
+      cycle,
+      sig,
+      email: tenantEmail,
+      name: tenantName || undefined,
+      selection,
     }
 
     try {
-      await fetch("https://script.google.com/macros/s/AKfycbyWI2FgBUcWCiwuDJ6xQtQ98j1MTVZQm9YeZp5tU62dIVvfnYKKDoKA4s65eeKj8WES/exec", {
+      const res = await fetch(RENEWAL_ENDPOINT, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
-      setSubmitStatus("success")
-      setSubmitMessage("Your renewal choice has been confirmed. Our team will reach out shortly.")
-    } catch (error) {
+      if (res.ok) {
+        const data = await res.json()
+        setConfirmedLabel(label)
+        setSuccessNextAction(data.next_action ?? "")
+        setSubmitStatus("success")
+      } else {
+        const msg = ERROR_MESSAGES[res.status] ?? "Something went wrong. Please try again."
+        setSubmitStatus("error")
+        setSubmitMessage(msg)
+      }
+    } catch {
       setSubmitStatus("error")
       setSubmitMessage("Something went wrong. Please try again.")
     } finally {
@@ -167,7 +193,45 @@ export default function RenewalGuidePage() {
     }
   }
 
+  const handleSubmit = () => {
+    if (!selectedOption) {
+      setSubmitStatus("error")
+      setSubmitMessage("Please select a savings plan.")
+      return
+    }
+    postSelection(selectedOption.selection, selectedOption.label)
+  }
+
+  const handleConsultation = () => {
+    postSelection("consultation", "Consultation")
+  }
+
   const bgStyle = { background: "repeating-linear-gradient(135deg, #f8f8f8 0px, #f8f8f8 10px, #f4f4f4 10px, #f4f4f4 20px)" }
+
+  if (brokenLink) {
+    return (
+      <div className="renewal-root min-h-screen" style={bgStyle}>
+        <div className="max-w-lg mx-auto px-4 py-16">
+          <div className="text-center mb-8">
+            <a href="https://flent.in"><FlentLogo /></a>
+          </div>
+          <Card className="bg-white border-zinc-200 rounded-2xl shadow-sm">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "#FEF2F2" }}>
+                <AlertCircle className="w-8 h-8 text-red-500" />
+              </div>
+              <h2 className="text-xl font-bold text-zinc-900 mb-2" style={{ fontFamily: "Plus Jakarta Sans, sans-serif" }}>
+                Link looks broken
+              </h2>
+              <p className="text-zinc-500 text-sm">
+                This link seems broken — check your email for the latest renewal message.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
 
   if (submitStatus === "success") {
     return (
@@ -182,25 +246,34 @@ export default function RenewalGuidePage() {
                 <CheckCircle2 className="w-8 h-8" style={{ color: "#008E75" }} />
               </div>
               <h2 className="text-2xl font-bold text-zinc-900 mb-2" style={{ fontFamily: "Plus Jakarta Sans, sans-serif" }}>
-                You're All Set!
+                We got it!
               </h2>
-              <p className="text-zinc-500 mb-6">{submitMessage}</p>
-              <div className="bg-zinc-50 rounded-lg p-4 text-left">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Total Savings</span>
-                    <span className="font-bold" style={{ color: "#008E75" }}>{formatCurrency(selectedCalc.totalSavings)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">Lock-in Period</span>
-                    <span className="text-zinc-800 font-medium">{selectedOption.label}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-500">New Monthly Rent</span>
-                    <span className="text-zinc-800 font-mono">{formatCurrency(selectedCalc.newMonthlyRent)}</span>
+              {confirmedLabel !== "Consultation" && (
+                <p className="text-zinc-600 text-sm mb-2">
+                  Your <span className="font-semibold">{confirmedLabel}</span> selection is recorded.
+                </p>
+              )}
+              {successNextAction && (
+                <p className="text-zinc-500 text-sm mb-6">{successNextAction}</p>
+              )}
+              {selectedCalc && confirmedLabel !== "Consultation" && (
+                <div className="bg-zinc-50 rounded-lg p-4 text-left">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Total Savings</span>
+                      <span className="font-bold" style={{ color: "#008E75" }}>{formatCurrency(selectedCalc.totalSavings)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">Lock-in Period</span>
+                      <span className="text-zinc-800 font-medium">{selectedOption.label}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-zinc-500">New Monthly Rent</span>
+                      <span className="text-zinc-800 font-mono">{formatCurrency(selectedCalc.newMonthlyRent)}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -403,16 +476,19 @@ export default function RenewalGuidePage() {
 
         {/* Help Button */}
         <div className="text-center mb-10">
-          <a
-            href="https://calendar.app.google/DumGhTWdbLPNUzRf7"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition-all"
+          <button
+            onClick={handleConsultation}
+            disabled={isSubmitting}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition-all disabled:opacity-50"
             style={{ background: "#FFE988", color: "#7a6800" }}
           >
-            <Calendar className="w-4 h-4" />
+            {isSubmitting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Calendar className="w-4 h-4" />
+            )}
             Need help deciding? Block some time
-          </a>
+          </button>
         </div>
 
         {/* FAQ */}
