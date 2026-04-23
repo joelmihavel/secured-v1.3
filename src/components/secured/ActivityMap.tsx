@@ -207,16 +207,24 @@ function getExplorePath(area: string) {
 
 /* ── Component ── */
 
-export function ActivityMap() {
+export interface SelectedBuilding {
+  data: BuildingData;
+  x: number;
+  y: number;
+}
+
+export { type BuildingData };
+
+export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: SelectedBuilding | null) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
-  const popupRef = useRef<maplibregl.Popup | null>(null);
   const exploreAnimRef = useRef<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<"all" | "overpaying" | "cashback">("all");
   const [flyArea, setFlyArea] = useState("");
   const [exploring, setExploring] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const selectedBuildingRef = useRef<BuildingData | null>(null);
 
   const activeFilterRef = useRef(activeFilter);
   activeFilterRef.current = activeFilter;
@@ -225,13 +233,13 @@ export function ActivityMap() {
   const renderMarkers = useCallback((map: maplibregl.Map, filter: "all" | "overpaying" | "cashback") => {
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
-    if (popupRef.current) { popupRef.current.remove(); popupRef.current = null; }
+    selectedBuildingRef.current = null;
+    onBuildingSelect?.(null);
 
     const buildings = getFilteredBuildings(filter);
 
     for (const b of buildings) {
       const isOverpaying = b.rent > b.market_avg;
-      const overpayAmount = b.rent - b.market_avg;
       const isHighUsers = b.users >= 10;
 
       const glowColor = isOverpaying
@@ -254,42 +262,11 @@ export function ActivityMap() {
         .setLngLat([b.lng, b.lat])
         .addTo(map);
 
-      const popupHTML = `
-        <div class="secured-3d-popup">
-          <div class="secured-3d-popup-area">${b.area}</div>
-          <div class="secured-3d-popup-rent">
-            <span class="secured-3d-popup-label">Rent</span>
-            <span class="secured-3d-popup-value">${formatINR(b.rent)}/mo</span>
-          </div>
-          <div class="secured-3d-popup-rent">
-            <span class="secured-3d-popup-label">Market avg</span>
-            <span class="secured-3d-popup-value">${formatINR(b.market_avg)}/mo</span>
-          </div>
-          ${isOverpaying
-            ? `<div class="secured-3d-popup-alert">Overpaying by ${formatINR(overpayAmount)}/mo</div>`
-            : `<div class="secured-3d-popup-good">Below market rate — good deal</div>`
-          }
-          <div class="secured-3d-popup-divider"></div>
-          <div class="secured-3d-popup-cashback">Earn <strong>${formatINR(b.cashback)}/year</strong> cashback</div>
-          <div class="secured-3d-popup-users">${b.users} people nearby use Secured</div>
-          <a href="https://apps.apple.com/in/app/secured-by-flent/id6757275258" target="_blank" rel="noopener noreferrer" class="secured-3d-popup-cta">Optimize your rent</a>
-        </div>
-      `;
-
       el.addEventListener("click", (e) => {
         e.stopPropagation();
-        if (popupRef.current) popupRef.current.remove();
-        const popup = new maplibregl.Popup({
-          offset: 12,
-          closeButton: true,
-          closeOnClick: true,
-          maxWidth: "260px",
-          className: "secured-3d-popup-wrapper",
-        })
-          .setLngLat([b.lng, b.lat])
-          .setHTML(popupHTML)
-          .addTo(map);
-        popupRef.current = popup;
+        selectedBuildingRef.current = b;
+        const point = map.project([b.lng, b.lat]);
+        onBuildingSelect?.({ data: b, x: point.x, y: point.y });
       });
 
       el.addEventListener("mouseenter", () => el.classList.add("secured-3d-marker-hover"));
@@ -324,10 +301,22 @@ export function ActivityMap() {
       renderMarkers(map, activeFilterRef.current);
     });
 
+    map.on("move", () => {
+      const b = selectedBuildingRef.current;
+      if (b) {
+        const point = map.project([b.lng, b.lat]);
+        onBuildingSelect?.({ data: b, x: point.x, y: point.y });
+      }
+    });
+
+    map.on("click", () => {
+      selectedBuildingRef.current = null;
+      onBuildingSelect?.(null);
+    });
+
     return () => {
-      if (exploreAnimRef.current) cancelAnimationFrame(exploreAnimRef.current);
+      if (exploreAnimRef.current) clearTimeout(exploreAnimRef.current);
       markersRef.current.forEach((m) => m.remove());
-      if (popupRef.current) popupRef.current.remove();
       map.remove();
       mapRef.current = null;
     };

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Button } from "./ui/Button";
 import type { HeroContent } from "@/lib/secured/types";
+import type { SelectedBuilding, BuildingData } from "./ActivityMap";
 
 const CASHBACK_RATE = 0.01;
 
@@ -36,6 +37,8 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
   const [areaRentRanges, setAreaRentRanges] = useState<AreaRentRange[]>([]);
   const prevVariant = useRef(variant);
   const [showText, setShowText] = useState(true);
+  const [selectedBuilding, setSelectedBuilding] = useState<SelectedBuilding | null>(null);
+  const handleBuildingSelect = useCallback((b: SelectedBuilding | null) => setSelectedBuilding(b), []);
 
   useEffect(() => {
     setMounted(true);
@@ -100,8 +103,22 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
     <section data-section="hero" className="relative flex w-full flex-col overflow-hidden bg-[#131313]" style={{ height: "100vh", minHeight: 700 }}>
       {/* Interactive map — inset to sit within the border lines */}
       <div className="absolute inset-0 z-0 lg:left-[80px] lg:right-[80px]">
-        {mounted && <LazyActivityMap />}
+        {mounted && <LazyActivityMap onBuildingSelect={handleBuildingSelect} />}
       </div>
+
+      {/* Building info popup — above everything, offset by map inset on lg */}
+      {selectedBuilding && (
+        <div className="absolute inset-0 z-[500] pointer-events-none lg:left-[80px] lg:right-[80px]">
+          <div className="pointer-events-auto">
+            <BuildingPopup
+              building={selectedBuilding.data}
+              x={selectedBuilding.x}
+              y={selectedBuilding.y}
+              onClose={() => setSelectedBuilding(null)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Bottom-center overlay */}
       <div className="pointer-events-none relative z-[450] flex flex-1 flex-col items-center justify-end pb-8 px-6 md:pb-14">
@@ -320,13 +337,84 @@ export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?
   );
 }
 
-function LazyActivityMap() {
-  const [ActivityMap, setActivityMap] = useState<React.ComponentType | null>(null);
+function BuildingPopup({
+  building,
+  x,
+  y,
+  onClose,
+}: {
+  building: BuildingData;
+  x: number;
+  y: number;
+  onClose: () => void;
+}) {
+  const isOverpaying = building.rent > building.market_avg;
+  const diff = Math.abs(building.rent - building.market_avg);
+
+  return (
+    <div
+      className="absolute z-[500]"
+      style={{
+        left: x,
+        top: y - 16,
+        transform: "translate(-50%, -100%)",
+        animation: "popupFadeIn 0.2s ease-out",
+      }}
+    >
+      <div
+        className="secured-3d-popup relative rounded-[14px] border border-white/[0.06] bg-[#161616]/95 shadow-[0_16px_48px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+        style={{ minWidth: 240, maxWidth: 280 }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-2 top-2 text-white/30 transition-colors hover:text-white"
+          style={{ fontSize: 16, lineHeight: 1 }}
+        >
+          ×
+        </button>
+        <div className="secured-3d-popup-area">{building.area}</div>
+        <div className="secured-3d-popup-rent">
+          <span className="secured-3d-popup-label">Rent</span>
+          <span className="secured-3d-popup-value">{formatINR(building.rent)}/mo</span>
+        </div>
+        <div className="secured-3d-popup-rent">
+          <span className="secured-3d-popup-label">Market avg</span>
+          <span className="secured-3d-popup-value">{formatINR(building.market_avg)}/mo</span>
+        </div>
+        {isOverpaying ? (
+          <div className="secured-3d-popup-alert">Overpaying by {formatINR(diff)}/mo</div>
+        ) : (
+          <div className="secured-3d-popup-good">Below market rate — good deal</div>
+        )}
+        <div className="secured-3d-popup-divider" />
+        <div className="secured-3d-popup-cashback">
+          Earn <strong>{formatINR(building.cashback)}/year</strong> cashback
+        </div>
+        <div className="secured-3d-popup-users">
+          {building.users} people nearby use Secured
+        </div>
+        <a
+          href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="secured-3d-popup-cta"
+        >
+          Optimize your rent
+        </a>
+      </div>
+      {/* Arrow */}
+      <div className="mx-auto h-0 w-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-[#161616]/95" />
+    </div>
+  );
+}
+
+function LazyActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: SelectedBuilding | null) => void }) {
+  const [ActivityMap, setActivityMap] = useState<React.ComponentType<{ onBuildingSelect?: (b: SelectedBuilding | null) => void }> | null>(null);
 
   useEffect(() => {
     import("./ActivityMap").then((m) => setActivityMap(() => m.ActivityMap));
   }, []);
 
   if (!ActivityMap) return null;
-  return <ActivityMap />;
+  return <ActivityMap onBuildingSelect={onBuildingSelect} />;
 }
