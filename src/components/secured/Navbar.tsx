@@ -151,18 +151,32 @@ const NAV_ITEMS = [
 export function Navbar() {
   const { variant, setVariant, menuOpen, setMenuOpen } = useVariant();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [hideToggle, setHideToggle] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(true);
+  const [howItWorksVisible, setHowItWorksVisible] = useState(false);
+  const hideToggle = heroVisible || howItWorksVisible;
 
-  // Hide bottom toggle when How It Works section is in view
   useEffect(() => {
-    const target = document.querySelector('[data-section="how-it-works"]');
-    if (!target) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setHideToggle(entry.isIntersecting),
-      { threshold: 0.15 }
-    );
-    observer.observe(target);
-    return () => observer.disconnect();
+    const hero = document.querySelector('[data-section="hero"]');
+    const hiw = document.querySelector('[data-section="how-it-works"]');
+    const observers: IntersectionObserver[] = [];
+
+    if (hero) {
+      const o = new IntersectionObserver(
+        ([entry]) => setHeroVisible(entry.isIntersecting),
+        { threshold: 0.15 }
+      );
+      o.observe(hero);
+      observers.push(o);
+    }
+    if (hiw) {
+      const o = new IntersectionObserver(
+        ([entry]) => setHowItWorksVisible(entry.isIntersecting),
+        { threshold: 0.15 }
+      );
+      o.observe(hiw);
+      observers.push(o);
+    }
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   // Lock body scroll when menu is open
@@ -193,16 +207,33 @@ export function Navbar() {
     <>
       {/* Top bar — always visible, z-index above overlay */}
       <div className="fixed top-0 z-[60] w-full">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 pb-2 pt-6 md:px-8 lg:px-12 lg:pt-10 xl:max-w-[1600px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] 4xl:max-w-[2600px] 5xl:max-w-[3600px]">
-          {/* Left — Logo */}
+        <div className="flex w-full items-center justify-between px-6 pb-2 pt-6 md:px-8 lg:px-[200px] lg:pt-[80px]">
+          {/* Left — Secured by flent logo */}
           <a href="/" data-navbar-logo className="3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
-            <Image
-              src="/assets/logos/flent-logo.svg"
-              alt="Flent"
-              width={67}
-              height={24}
-              priority
-            />
+            <div className="flex flex-col items-end gap-[3px]">
+              <span
+                className="text-[18px] leading-[18px] tracking-[-0.6px] text-[#ff9a6d]"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Secured
+              </span>
+              <div className="flex items-center gap-[4px]">
+                <span
+                  className="text-[14px] leading-[16px] tracking-[-0.5px] text-white font-light"
+                  style={{ fontFamily: "var(--font-ui)" }}
+                >
+                  by
+                </span>
+                <Image
+                  src="/assets/icons/flent-wordmark-white.svg"
+                  alt="flent"
+                  width={40}
+                  height={14}
+                  priority
+                  className="h-[11px] w-auto"
+                />
+              </div>
+            </div>
           </a>
 
           {/* Right — Hamburger (hover-triggered) */}

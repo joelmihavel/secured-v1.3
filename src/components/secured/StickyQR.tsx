@@ -1,10 +1,33 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export function StickyQR() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const hero = document.querySelector('[data-section="hero"]');
+    if (!hero) { setVisible(true); return; }
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { threshold: 0.15 }
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="fixed bottom-[108px] right-12 z-50 hidden md:flex md:items-center" style={{ height: 40 }}>
+    <div
+      className="fixed bottom-[108px] right-12 z-50 hidden md:flex md:items-center"
+      style={{
+        height: 40,
+        pointerEvents: visible ? "auto" : "none",
+        transition: "transform 0.5s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.5s cubic-bezier(0.77, 0, 0.175, 1)",
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        opacity: visible ? 1 : 0,
+      }}
+    >
       <a
         href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
         target="_blank"

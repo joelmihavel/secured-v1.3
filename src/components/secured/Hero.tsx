@@ -1,133 +1,332 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Button } from "./ui/Button";
 import type { HeroContent } from "@/lib/secured/types";
 
+const CASHBACK_RATE = 0.008;
+
+interface AreaRentRange {
+  area: string;
+  min: number;
+  max: number;
+  median: number;
+  p25: number;
+  p75: number;
+}
+
+function calcPercentile(rent: number, range: AreaRentRange): number {
+  if (rent <= range.min) return 0;
+  if (rent >= range.max) return 100;
+  return Math.round(((rent - range.min) / (range.max - range.min)) * 100);
+}
+
+function formatINR(amount: number): string {
+  return "₹" + amount.toLocaleString("en-IN");
+}
+
+type HeroStep = "explore" | "result";
+
 export function Hero({ data, variant = "tenant" }: { data: HeroContent; variant?: "tenant" | "landlord" }) {
-  const isLandlord = variant === "landlord";
-  const [showText, setShowText] = useState(true);
+  const [mounted, setMounted] = useState(false);
+  const [step, setStep] = useState<HeroStep>("explore");
+  const [rentInput, setRentInput] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [areaNames, setAreaNames] = useState<string[]>([]);
+  const [areaRentRanges, setAreaRentRanges] = useState<AreaRentRange[]>([]);
   const prevVariant = useRef(variant);
-  const isFirstRender = useRef(true);
+  const [showText, setShowText] = useState(true);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    setMounted(true);
+    import("./ActivityMap").then((m) => {
+      setAreaNames(m.AREA_NAMES);
+      setAreaRentRanges(m.AREA_RENT_RANGES);
+      if (m.AREA_NAMES.length > 0) setSelectedArea(m.AREA_NAMES[3]);
+    });
+  }, []);
 
+  useEffect(() => {
     if (prevVariant.current !== variant) {
       setShowText(false);
-      const timer = setTimeout(() => {
-        setShowText(true);
-      }, 500);
+      const timer = setTimeout(() => setShowText(true), 500);
       prevVariant.current = variant;
       return () => clearTimeout(timer);
     }
   }, [variant]);
 
+  const rent = parseInt(rentInput.replace(/,/g, ""), 10) || 0;
+  const currentRange = useMemo(
+    () => areaRentRanges.find((r) => r.area === selectedArea),
+    [selectedArea, areaRentRanges]
+  );
+  const percentile = currentRange && rent > 0 ? calcPercentile(rent, currentRange) : 0;
+  const monthlyCashback = Math.round(rent * CASHBACK_RATE);
+  const annualCashback = monthlyCashback * 12;
+
+  const handleCheck = useCallback(() => {
+    if (rent >= 5000 && selectedArea) setStep("result");
+  }, [rent, selectedArea]);
+
+  const handleReset = useCallback(() => {
+    setStep("explore");
+    setRentInput("");
+  }, []);
+
+  const handleRentChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    if (raw === "") { setRentInput(""); return; }
+    const num = parseInt(raw, 10);
+    setRentInput(num.toLocaleString("en-IN"));
+  }, []);
+
+  const percentileLabel = percentile <= 30
+    ? "Below average — great deal!"
+    : percentile <= 60
+    ? "Around market rate"
+    : percentile <= 80
+    ? "Above average for this area"
+    : "Premium range — you might be overpaying";
+
+  const percentileColor = percentile <= 30
+    ? "#4ade80"
+    : percentile <= 60
+    ? "#ff9a6d"
+    : percentile <= 80
+    ? "#fbbf24"
+    : "#ef4444";
+
   return (
-    <section className="relative flex min-h-[600px] w-full flex-col overflow-hidden bg-[#131313] pt-4 md:min-h-[calc(100vh-100px)] md:pt-0 lg:h-[calc(100vh-100px)]">
-      {/* Background layers */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[#131313] lg:left-[205px]" />
-        <div className="absolute top-0 left-0 hidden h-full w-[205px] bg-[#1a1a1a] lg:block" />
-
-        {/* Left texture */}
-        <div className="absolute left-0 top-0 h-full w-[70%] opacity-[0.65] lg:w-[579px] lg:opacity-100">
-          <Image src="/assets/backgrounds/hero-texture-left.svg" alt="" fill className="object-cover" aria-hidden="true" />
-        </div>
-
-        {/* Right texture */}
-        <div className="absolute right-0 top-0 hidden h-full w-[591px] opacity-[0.32] lg:block">
-          <Image src="/assets/backgrounds/hero-texture-right.png" alt="" fill className="object-cover opacity-[0.48]" aria-hidden="true" />
-        </div>
+    <section data-section="hero" className="relative flex w-full flex-col overflow-hidden bg-[#131313]" style={{ height: "100vh", minHeight: 700 }}>
+      {/* Interactive map — inset to sit within the border lines */}
+      <div className="absolute inset-0 z-0 lg:left-[80px] lg:right-[80px]">
+        {mounted && <LazyActivityMap />}
       </div>
 
-      {/* Content — two-container layout */}
-      <div className="relative mx-auto flex w-full flex-1 max-w-[1440px] flex-col-reverse items-center px-6 pt-24 md:px-8 lg:flex-row lg:px-12 lg:pt-0 xl:max-w-[1600px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] 4xl:max-w-[2600px] 5xl:max-w-[3600px]">
-        {/* Phone container */}
-        <motion.div
-          layout
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="flex w-full items-center justify-center lg:h-full lg:w-1/2 lg:items-end"
-          style={{ order: isLandlord ? 2 : 1 }}
+      {/* Bottom-center overlay */}
+      <div className="pointer-events-none relative z-[450] flex flex-1 flex-col items-center justify-end pb-8 px-6 md:pb-14">
+        <div
+          className="pointer-events-auto flex w-full max-w-[440px] flex-col items-center text-center transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:max-w-[480px]"
+          style={{
+            opacity: showText ? 1 : 0,
+            transform: showText ? "translateY(0)" : "translateY(12px)",
+          }}
         >
-          <div className="relative z-[1] mt-8 w-[255px] md:w-[360px] lg:mt-0 lg:w-[500px] 3xl:w-[600px] 4xl:w-[720px] 5xl:w-[960px]">
-            {/* Clipping container: shows phone screen+frame, crops the hand on desktop */}
-            <div className="relative">
-              {/* Tenant phone */}
-              <Image
-                src="/assets/illustrations/hero-phone-mockup.png"
-                alt="Flent Secured app showing rent payment"
-                width={706}
-                height={1003}
-                priority
-                className="h-auto w-full transition-opacity duration-300"
-                style={{ opacity: isLandlord ? 0 : 1 }}
-              />
-              {/* Landlord phone overlaid */}
-              <Image
-                src="/assets/illustrations/hero-phone-mockup-landlord.png"
-                alt="Flent Secured app showing payment receipt"
-                width={706}
-                height={1003}
-                priority
-                className="absolute inset-0 h-auto w-full transition-opacity duration-300"
-                style={{ opacity: isLandlord ? 1 : 0 }}
-              />
-            </div>
-          </div>
-        </motion.div>
+          {step === "explore" ? (
+            <div className="flex w-full flex-col items-center gap-5">
+              {/* Heading */}
+              <div className="flex flex-col items-center gap-1.5">
+                <h1 className="font-display text-[28px] leading-[1.05] tracking-[-1.5px] text-white md:text-[40px] lg:text-[48px] lg:tracking-[-2px]">
+                  Are you <span className="text-[#ff9a6d]">overpaying</span> rent?
+                </h1>
+                <p
+                  className="text-sm leading-[1.5] tracking-[-0.3px] text-[#797979] md:text-base"
+                  style={{ fontFamily: "var(--font-ui)" }}
+                >
+                  Check how your rent compares &amp; earn cashback
+                </p>
+              </div>
 
-        {/* Text container */}
-        <motion.div
-          layout
-          transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
-          className="flex w-full items-center justify-center lg:h-full lg:w-1/2"
-          style={{ order: isLandlord ? 1 : 2 }}
-        >
-          <div
-            className="relative z-[2] flex w-full max-w-[446px] flex-col gap-4 text-center transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] md:gap-6 lg:text-left xl:max-w-[520px] 2xl:max-w-[580px] 3xl:max-w-[700px] 4xl:max-w-[900px] 5xl:max-w-[1200px]"
-            style={{
-              opacity: showText ? 1 : 0,
-              transform: showText ? "translateY(0)" : "translateY(8px)",
-            }}
-          >
-            <div className="flex flex-col gap-2 md:gap-3">
-              <h1 className="font-display text-[36px] leading-[1] tracking-[-1.5px] text-white md:text-[48px] lg:text-[64px] lg:leading-[64px] lg:tracking-[-2px] xl:text-[72px] xl:leading-[72px] 2xl:text-[80px] 2xl:leading-[80px] 3xl:text-[96px] 3xl:leading-[96px] 4xl:text-[120px] 4xl:leading-[120px] 5xl:text-[160px] 5xl:leading-[160px]">
-                {data.headingPrefix}{" "}
-                <span className="text-[#ff9a6d]">{data.headingHighlight}</span>
-              </h1>
+              {/* Input card */}
+              <div className="w-full rounded-2xl border border-white/[0.06] bg-[#1a1a1a]/90 p-5 backdrop-blur-xl md:p-6">
+                {/* Area selector */}
+                <div className="mb-4">
+                  <label
+                    className="mb-1.5 block text-left text-[11px] font-medium uppercase tracking-[1px] text-[#666]"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    Your Area
+                  </label>
+                  <select
+                    value={selectedArea}
+                    onChange={(e) => setSelectedArea(e.target.value)}
+                    className="w-full appearance-none border-b border-white/10 bg-transparent pb-2 text-[15px] text-white outline-none transition-colors focus:border-[#ff9a6d]"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    {areaNames.map((name) => (
+                      <option key={name} value={name} className="bg-[#1a1a1a] text-white">
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Rent input */}
+                <div className="mb-5">
+                  <label
+                    className="mb-1.5 block text-left text-[11px] font-medium uppercase tracking-[1px] text-[#666]"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    Monthly Rent
+                  </label>
+                  <div className="flex items-baseline gap-1 border-b border-white/10 pb-2 transition-colors focus-within:border-[#ff9a6d]">
+                    <span className="text-[15px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>₹</span>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="e.g. 25,000"
+                      value={rentInput}
+                      onChange={handleRentChange}
+                      onKeyDown={(e) => e.key === "Enter" && handleCheck()}
+                      className="w-full bg-transparent text-[15px] text-white placeholder-[#444] outline-none"
+                      style={{ fontFamily: "var(--font-ui)" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Check button */}
+                <Button
+                  fullWidth
+                  onClick={handleCheck}
+                  disabled={rent < 5000 || !selectedArea}
+                >
+                  Check My Rent
+                </Button>
+              </div>
+
               <p
-                className="text-lg leading-[1.4] tracking-[-0.5px] text-[#797979] md:text-[22px] lg:text-[28px] lg:leading-[40px] lg:tracking-[-1px] xl:text-[32px] xl:leading-[44px] 2xl:text-[36px] 2xl:leading-[48px] 3xl:text-[42px] 3xl:leading-[56px] 4xl:text-[52px] 4xl:leading-[68px] 5xl:text-[72px] 5xl:leading-[92px]"
+                className="text-xs tracking-[-0.2px] text-[#555]"
                 style={{ fontFamily: "var(--font-ui)" }}
               >
-                {data.subheading}
+                Explore the map above to see what others pay
               </p>
             </div>
+          ) : (
+            <div className="flex w-full flex-col items-center gap-4">
+              {/* Result card */}
+              <div className="w-full rounded-2xl border border-white/[0.06] bg-[#1a1a1a]/90 p-5 backdrop-blur-xl md:p-6">
+                {/* Header */}
+                <div className="mb-4 flex items-start justify-between">
+                  <div className="text-left">
+                    <p
+                      className="text-[11px] font-medium uppercase tracking-[1px] text-[#666]"
+                      style={{ fontFamily: "var(--font-ui)" }}
+                    >
+                      Your rent in {selectedArea}
+                    </p>
+                    <p className="mt-1 font-display text-[28px] leading-[1] tracking-[-1px] text-white">
+                      {formatINR(rent)}<span className="text-base text-[#666]">/mo</span>
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleReset}
+                    className="mt-1 text-xs text-[#666] underline decoration-[#444] underline-offset-2 transition-colors hover:text-white"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    Edit
+                  </button>
+                </div>
 
-            <p
-              className="text-sm leading-[1.8] tracking-[-0.32px] text-[#8a8a8a] md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
-              style={{ fontFamily: "var(--font-ui)" }}
-            >
-              {data.description}
-            </p>
+                {/* Percentile bar */}
+                <div className="mb-4">
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <p
+                      className="text-[11px] font-medium uppercase tracking-[1px] text-[#666]"
+                      style={{ fontFamily: "var(--font-ui)" }}
+                    >
+                      Rent Percentile
+                    </p>
+                    <p
+                      className="text-xs font-semibold"
+                      style={{ fontFamily: "var(--font-ui)", color: percentileColor }}
+                    >
+                      {percentile}th
+                    </p>
+                  </div>
+                  <div className="relative h-2 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                    {/* Range markers */}
+                    {currentRange && (
+                      <>
+                        <div
+                          className="absolute top-0 h-full rounded-full bg-white/[0.04]"
+                          style={{
+                            left: `${((currentRange.p25 - currentRange.min) / (currentRange.max - currentRange.min)) * 100}%`,
+                            width: `${((currentRange.p75 - currentRange.p25) / (currentRange.max - currentRange.min)) * 100}%`,
+                          }}
+                        />
+                      </>
+                    )}
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${percentile}%`, backgroundColor: percentileColor }}
+                    />
+                    {/* Marker dot */}
+                    <div
+                      className="absolute top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1a1a1a] transition-all duration-500"
+                      style={{ left: `${percentile}%`, backgroundColor: percentileColor }}
+                    />
+                  </div>
+                  <div className="mt-1.5 flex items-center justify-between">
+                    <span className="text-[10px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                      {formatINR(currentRange?.min ?? 0)}
+                    </span>
+                    <span
+                      className="text-[11px]"
+                      style={{ fontFamily: "var(--font-ui)", color: percentileColor }}
+                    >
+                      {percentileLabel}
+                    </span>
+                    <span className="text-[10px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                      {formatINR(currentRange?.max ?? 0)}
+                    </span>
+                  </div>
+                </div>
 
-            <div className="flex flex-col gap-4">
-              <Button fullWidth onClick={() => document.getElementById("download-app")?.scrollIntoView({ behavior: "smooth" })}>{data.ctaButtonText}</Button>
-              <p
-                className="text-xs leading-[1.8] tracking-[-0.24px] text-[#8a8a8a] 3xl:text-sm 4xl:text-base 5xl:text-lg"
-                style={{ fontFamily: "var(--font-ui)" }}
-              >
-                {data.ctaDisclaimer}
-              </p>
+                {/* Divider */}
+                <div className="mb-4 h-px w-full bg-white/[0.06]" />
+
+                {/* Cashback potential */}
+                <div className="mb-4">
+                  <p
+                    className="mb-2 text-[11px] font-medium uppercase tracking-[1px] text-[#666]"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    Your Cashback Potential
+                  </p>
+                  <div className="flex gap-3">
+                    <div className="flex-1 rounded-xl bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.5px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>Monthly</p>
+                      <p className="mt-0.5 font-display text-xl leading-[1] tracking-[-0.5px] text-[#ff9a6d]">
+                        {formatINR(monthlyCashback)}
+                      </p>
+                    </div>
+                    <div className="flex-1 rounded-xl bg-white/[0.04] p-3">
+                      <p className="text-[10px] uppercase tracking-[0.5px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>Annual</p>
+                      <p className="mt-0.5 font-display text-xl leading-[1] tracking-[-0.5px] text-white">
+                        {formatINR(annualCashback)}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-[10px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                    Based on {formatINR(rent)}/mo × {(CASHBACK_RATE * 100).toFixed(1)}% cashback rate
+                  </p>
+                </div>
+
+                {/* Download CTA */}
+                <Button
+                  href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  fullWidth
+                >
+                  Start Earning — Download App
+                </Button>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          )}
+        </div>
       </div>
     </section>
   );
+}
+
+function LazyActivityMap() {
+  const [ActivityMap, setActivityMap] = useState<React.ComponentType | null>(null);
+
+  useEffect(() => {
+    import("./ActivityMap").then((m) => setActivityMap(() => m.ActivityMap));
+  }, []);
+
+  if (!ActivityMap) return null;
+  return <ActivityMap />;
 }

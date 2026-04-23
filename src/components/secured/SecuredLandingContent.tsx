@@ -2,7 +2,6 @@
 
 import {
   Hero,
-  GridDivider,
   Commitment,
   CreditCard,
   GettingStarted,
@@ -47,12 +46,19 @@ export function SecuredLandingContent() {
       };
 
   return (
-    <>
+    <div className="relative">
+      {/* Persistent vertical border lines */}
+      <div
+        className="pointer-events-none absolute top-0 bottom-0 z-30 hidden lg:block"
+        style={{ left: 80, width: "0.3px", backgroundColor: "#444444" }}
+      />
+      <div
+        className="pointer-events-none absolute top-0 bottom-0 z-30 hidden lg:block"
+        style={{ right: 80, width: "0.3px", backgroundColor: "#444444" }}
+      />
+
       <main className="flex flex-col gap-12 md:gap-0">
-        <div>
-          <Hero data={data.hero} variant={variant} />
-          <GridDivider variant={variant} />
-        </div>
+        <Hero data={data.hero} variant={variant} />
         <div style={{ marginTop: 48 }} />
         <Commitment data={data.commitment} variant={variant} />
         <CreditCard data={data.creditCard} />
@@ -66,6 +72,6 @@ export function SecuredLandingContent() {
         <Stats data={STATS_DEFAULTS} />
       </main>
       <Footer data={FOOTER_DEFAULTS} />
-    </>
+    </div>
   );
 }

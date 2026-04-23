@@ -7,7 +7,7 @@ import { buildWhatsAppApiLink } from "@/lib/whatsapp";
 
 export function Footer({ data }: { data: FooterContent }) {
   return (
-    <footer className="relative flex flex-col items-center overflow-hidden bg-[#131313] px-6 pb-[140px] pt-8 md:px-16 md:pb-[220px] md:pt-20 lg:px-[120px]">
+    <footer className="relative flex flex-col items-center overflow-hidden bg-[#131313] px-6 pb-[140px] pt-8 md:px-12 md:pb-[220px] md:pt-20 lg:px-[200px]">
       {/* Background halftone dot pattern — tiled across entire footer */}
       <div
         className="pointer-events-none absolute inset-0"

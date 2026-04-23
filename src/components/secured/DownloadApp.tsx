@@ -42,7 +42,7 @@ export function DownloadApp({ data }: { data: DownloadAppContent }) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="relative z-10 mx-auto w-full max-w-[1440px] px-4 md:px-6 xl:max-w-[1600px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] 4xl:max-w-[2600px] 5xl:max-w-[3600px]"
+        className="relative z-10 mx-auto w-full px-6 md:px-12 lg:px-[200px]"
       >
         <div className="relative overflow-hidden rounded-2xl bg-[#1a1a1a] md:rounded-3xl">
           {/* Geometric line art illustration */}
