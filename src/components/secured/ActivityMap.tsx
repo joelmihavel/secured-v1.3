@@ -108,12 +108,6 @@ function formatINR(n: number): string {
   return "₹" + n.toLocaleString("en-IN");
 }
 
-function getFilteredBuildings(filter: "all" | "overpaying" | "cashback"): BuildingData[] {
-  if (filter === "overpaying") return BUILDINGS.filter((b) => b.rent > b.market_avg);
-  if (filter === "cashback") return BUILDINGS.filter((b) => b.cashback >= 2400);
-  return BUILDINGS;
-}
-
 /* ── Map style with vector tiles for 3D buildings ── */
 
 const MAP_STYLE: maplibregl.StyleSpecification = {
@@ -167,44 +161,6 @@ const MAP_STYLE: maplibregl.StyleSpecification = {
   ],
 };
 
-/* ── Explore Street (car mode) path ── */
-
-const EXPLORE_PATHS: Record<string, Array<{ center: [number, number]; bearing: number; pitch: number; zoom: number }>> = {
-  "Koramangala": [
-    { center: [77.6200, 12.9370], bearing: 30, pitch: 60, zoom: 15.5 },
-    { center: [77.6230, 12.9350], bearing: 60, pitch: 60, zoom: 15.5 },
-    { center: [77.6260, 12.9340], bearing: 90, pitch: 55, zoom: 15.5 },
-    { center: [77.6280, 12.9330], bearing: 120, pitch: 55, zoom: 15.5 },
-    { center: [77.6250, 12.9320], bearing: 180, pitch: 60, zoom: 15.5 },
-    { center: [77.6220, 12.9330], bearing: 240, pitch: 55, zoom: 15.5 },
-    { center: [77.6200, 12.9350], bearing: 300, pitch: 60, zoom: 15.5 },
-    { center: [77.6200, 12.9370], bearing: 360, pitch: 60, zoom: 15.5 },
-  ],
-  "Whitefield": [
-    { center: [77.7460, 12.9710], bearing: 20, pitch: 60, zoom: 15.5 },
-    { center: [77.7490, 12.9700], bearing: 50, pitch: 58, zoom: 15.5 },
-    { center: [77.7520, 12.9690], bearing: 80, pitch: 55, zoom: 15.5 },
-    { center: [77.7540, 12.9680], bearing: 130, pitch: 58, zoom: 15.5 },
-    { center: [77.7510, 12.9670], bearing: 200, pitch: 60, zoom: 15.5 },
-    { center: [77.7480, 12.9680], bearing: 280, pitch: 58, zoom: 15.5 },
-    { center: [77.7460, 12.9700], bearing: 340, pitch: 60, zoom: 15.5 },
-    { center: [77.7460, 12.9710], bearing: 380, pitch: 60, zoom: 15.5 },
-  ],
-  "Indiranagar": [
-    { center: [77.6380, 12.9730], bearing: 10, pitch: 60, zoom: 15.5 },
-    { center: [77.6410, 12.9720], bearing: 45, pitch: 58, zoom: 15.5 },
-    { center: [77.6440, 12.9710], bearing: 90, pitch: 55, zoom: 15.5 },
-    { center: [77.6430, 12.9700], bearing: 150, pitch: 58, zoom: 15.5 },
-    { center: [77.6400, 12.9710], bearing: 240, pitch: 60, zoom: 15.5 },
-    { center: [77.6380, 12.9720], bearing: 320, pitch: 58, zoom: 15.5 },
-    { center: [77.6380, 12.9730], bearing: 370, pitch: 60, zoom: 15.5 },
-  ],
-};
-
-function getExplorePath(area: string) {
-  return EXPLORE_PATHS[area] || EXPLORE_PATHS["Koramangala"];
-}
-
 /* ── Component ── */
 
 export interface SelectedBuilding {
@@ -219,24 +175,17 @@ export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: Selec
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
-  const exploreAnimRef = useRef<number | null>(null);
-  const [activeFilter, setActiveFilter] = useState<"all" | "overpaying" | "cashback">("all");
   const [flyArea, setFlyArea] = useState("");
-  const [exploring, setExploring] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const selectedBuildingRef = useRef<BuildingData | null>(null);
 
-  const activeFilterRef = useRef(activeFilter);
-  activeFilterRef.current = activeFilter;
-
-  /* ── Render markers for a given filter ── */
-  const renderMarkers = useCallback((map: maplibregl.Map, filter: "all" | "overpaying" | "cashback") => {
+  const renderMarkers = useCallback((map: maplibregl.Map) => {
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
     selectedBuildingRef.current = null;
     onBuildingSelect?.(null);
 
-    const buildings = getFilteredBuildings(filter);
+    const buildings = BUILDINGS;
 
     for (const b of buildings) {
       const isOverpaying = b.rent > b.market_avg;
@@ -298,7 +247,7 @@ export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: Selec
     map.on("load", () => {
       mapRef.current = map;
       setMapReady(true);
-      renderMarkers(map, activeFilterRef.current);
+      renderMarkers(map);
     });
 
     map.on("move", () => {
@@ -315,26 +264,17 @@ export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: Selec
     });
 
     return () => {
-      if (exploreAnimRef.current) clearTimeout(exploreAnimRef.current);
       markersRef.current.forEach((m) => m.remove());
       map.remove();
       mapRef.current = null;
     };
   }, [renderMarkers]);
 
-  /* ── React to filter changes ── */
-  useEffect(() => {
-    if (!mapRef.current || !mapReady) return;
-    renderMarkers(mapRef.current, activeFilter);
-  }, [activeFilter, mapReady, renderMarkers]);
-
-  /* ── Fly to area ── */
   const handleFlyTo = useCallback((area: string) => {
     if (!area || !mapRef.current) return;
     const coords = AREA_COORDS[area];
     if (!coords) return;
     setFlyArea(area);
-    stopExplore();
     mapRef.current.flyTo({
       center: coords,
       zoom: 14.5,
@@ -343,54 +283,6 @@ export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: Selec
       duration: 2000,
       essential: true,
     });
-  }, []);
-
-  /* ── Explore street (car mode) ── */
-  const startExplore = useCallback(() => {
-    if (!mapRef.current) return;
-    setExploring(true);
-    const map = mapRef.current;
-    const currentCenter = map.getCenter();
-
-    let closestArea = "Koramangala";
-    let minDist = Infinity;
-    for (const [area, coords] of Object.entries(AREA_COORDS)) {
-      const dist = Math.hypot(coords[0] - currentCenter.lng, coords[1] - currentCenter.lat);
-      if (dist < minDist) { minDist = dist; closestArea = area; }
-    }
-
-    const path = getExplorePath(closestArea);
-    let step = 0;
-    const totalSteps = path.length;
-    const STEP_DURATION = 3000;
-
-    function animateStep() {
-      if (!mapRef.current) return;
-      const waypoint = path[step % totalSteps];
-      mapRef.current.easeTo({
-        center: waypoint.center,
-        bearing: waypoint.bearing,
-        pitch: waypoint.pitch,
-        zoom: waypoint.zoom,
-        duration: STEP_DURATION,
-        easing: (t) => t * (2 - t),
-      });
-
-      step++;
-      exploreAnimRef.current = window.setTimeout(() => {
-        animateStep();
-      }, STEP_DURATION) as unknown as number;
-    }
-
-    animateStep();
-  }, []);
-
-  const stopExplore = useCallback(() => {
-    setExploring(false);
-    if (exploreAnimRef.current) {
-      clearTimeout(exploreAnimRef.current);
-      exploreAnimRef.current = null;
-    }
   }, []);
 
   return (
@@ -402,48 +294,6 @@ export function ActivityMap({ onBuildingSelect }: { onBuildingSelect?: (b: Selec
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[10] h-[55%] bg-gradient-to-t from-[#131313] via-[#131313]/90 via-30% to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 left-0 z-[10] w-24 bg-gradient-to-r from-[#131313] to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-[10] w-24 bg-gradient-to-l from-[#131313] to-transparent" />
-
-      {/* Controls — left column: filters + explore */}
-      <div className="absolute left-5 top-20 z-[20] flex flex-col gap-1.5 md:left-6 md:top-24">
-        {(["all", "overpaying", "cashback"] as const).map((f) => (
-          <button
-            key={f}
-            onClick={() => setActiveFilter(f)}
-            className={`rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
-              activeFilter === f
-                ? "border-[#ff9a6d]/40 bg-[#ff9a6d]/10 text-[#ff9a6d]"
-                : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
-            }`}
-            style={{ fontFamily: "var(--font-ui)" }}
-          >
-            {f === "all" ? "All Homes" : f === "overpaying" ? "Overpaying" : "Cashback Hotspots"}
-          </button>
-        ))}
-
-        <div className="mt-1 h-px w-8 bg-white/[0.06]" />
-
-        <button
-          onClick={exploring ? stopExplore : startExplore}
-          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
-            exploring
-              ? "border-[#8b5cf6]/40 bg-[#8b5cf6]/10 text-[#8b5cf6]"
-              : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
-          }`}
-          style={{ fontFamily: "var(--font-ui)" }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {exploring ? (
-              <>
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </>
-            ) : (
-              <polygon points="5,3 19,12 5,21" />
-            )}
-          </svg>
-          {exploring ? "Stop" : "Explore Street"}
-        </button>
-      </div>
 
       {/* Area fly-to — top center */}
       <div className="absolute left-1/2 top-20 z-[20] -translate-x-1/2 md:top-24">
