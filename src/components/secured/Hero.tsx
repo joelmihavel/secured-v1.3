@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { Button } from "./ui/Button";
 import type { HeroContent } from "@/lib/secured/types";
 
-const CASHBACK_RATE = 0.008;
+const CASHBACK_RATE = 0.01;
 
 interface AreaRentRange {
   area: string;

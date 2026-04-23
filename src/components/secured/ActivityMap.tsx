@@ -94,7 +94,7 @@ function generateBuildings(): BuildingData[] {
         area,
         rent,
         market_avg: marketAvg,
-        cashback: Math.round(rent * 0.008 * 12),
+        cashback: Math.round(rent * 0.01 * 12),
         users,
       });
     }
@@ -104,9 +104,21 @@ function generateBuildings(): BuildingData[] {
 
 const BUILDINGS = generateBuildings();
 
-const DARK_STYLE: maplibregl.StyleSpecification = {
+function formatINR(n: number): string {
+  return "₹" + n.toLocaleString("en-IN");
+}
+
+function getFilteredBuildings(filter: "all" | "overpaying" | "cashback"): BuildingData[] {
+  if (filter === "overpaying") return BUILDINGS.filter((b) => b.rent > b.market_avg);
+  if (filter === "cashback") return BUILDINGS.filter((b) => b.cashback >= 2400);
+  return BUILDINGS;
+}
+
+/* ── Map style with vector tiles for 3D buildings ── */
+
+const MAP_STYLE: maplibregl.StyleSpecification = {
   version: 8,
-  name: "Secured Dark",
+  name: "Secured Dark 3D",
   sources: {
     "carto-dark": {
       type: "raster",
@@ -114,7 +126,12 @@ const DARK_STYLE: maplibregl.StyleSpecification = {
       tileSize: 256,
       attribution: "",
     },
+    openmaptiles: {
+      type: "vector",
+      url: "https://tiles.openfreemap.org/planet",
+    },
   },
+  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
   layers: [
     {
       id: "carto-dark-layer",
@@ -123,12 +140,69 @@ const DARK_STYLE: maplibregl.StyleSpecification = {
       minzoom: 0,
       maxzoom: 20,
     },
+    {
+      id: "3d-buildings",
+      source: "openmaptiles",
+      "source-layer": "building",
+      type: "fill-extrusion",
+      minzoom: 13,
+      paint: {
+        "fill-extrusion-color": [
+          "interpolate", ["linear"], ["get", "render_height"],
+          0, "#1a1a2e",
+          15, "#252547",
+          30, "#2d2d5e",
+        ],
+        "fill-extrusion-height": [
+          "interpolate", ["linear"], ["zoom"],
+          13, 0,
+          14, ["*", ["coalesce", ["get", "render_height"], 10], 1.5],
+        ],
+        "fill-extrusion-base": [
+          "coalesce", ["get", "render_min_height"], 0,
+        ],
+        "fill-extrusion-opacity": 0.7,
+      },
+    },
   ],
-  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
 };
 
-function formatINR(n: number): string {
-  return "₹" + n.toLocaleString("en-IN");
+/* ── Explore Street (car mode) path ── */
+
+const EXPLORE_PATHS: Record<string, Array<{ center: [number, number]; bearing: number; pitch: number; zoom: number }>> = {
+  "Koramangala": [
+    { center: [77.6200, 12.9370], bearing: 30, pitch: 60, zoom: 15.5 },
+    { center: [77.6230, 12.9350], bearing: 60, pitch: 60, zoom: 15.5 },
+    { center: [77.6260, 12.9340], bearing: 90, pitch: 55, zoom: 15.5 },
+    { center: [77.6280, 12.9330], bearing: 120, pitch: 55, zoom: 15.5 },
+    { center: [77.6250, 12.9320], bearing: 180, pitch: 60, zoom: 15.5 },
+    { center: [77.6220, 12.9330], bearing: 240, pitch: 55, zoom: 15.5 },
+    { center: [77.6200, 12.9350], bearing: 300, pitch: 60, zoom: 15.5 },
+    { center: [77.6200, 12.9370], bearing: 360, pitch: 60, zoom: 15.5 },
+  ],
+  "Whitefield": [
+    { center: [77.7460, 12.9710], bearing: 20, pitch: 60, zoom: 15.5 },
+    { center: [77.7490, 12.9700], bearing: 50, pitch: 58, zoom: 15.5 },
+    { center: [77.7520, 12.9690], bearing: 80, pitch: 55, zoom: 15.5 },
+    { center: [77.7540, 12.9680], bearing: 130, pitch: 58, zoom: 15.5 },
+    { center: [77.7510, 12.9670], bearing: 200, pitch: 60, zoom: 15.5 },
+    { center: [77.7480, 12.9680], bearing: 280, pitch: 58, zoom: 15.5 },
+    { center: [77.7460, 12.9700], bearing: 340, pitch: 60, zoom: 15.5 },
+    { center: [77.7460, 12.9710], bearing: 380, pitch: 60, zoom: 15.5 },
+  ],
+  "Indiranagar": [
+    { center: [77.6380, 12.9730], bearing: 10, pitch: 60, zoom: 15.5 },
+    { center: [77.6410, 12.9720], bearing: 45, pitch: 58, zoom: 15.5 },
+    { center: [77.6440, 12.9710], bearing: 90, pitch: 55, zoom: 15.5 },
+    { center: [77.6430, 12.9700], bearing: 150, pitch: 58, zoom: 15.5 },
+    { center: [77.6400, 12.9710], bearing: 240, pitch: 60, zoom: 15.5 },
+    { center: [77.6380, 12.9720], bearing: 320, pitch: 58, zoom: 15.5 },
+    { center: [77.6380, 12.9730], bearing: 370, pitch: 60, zoom: 15.5 },
+  ],
+};
+
+function getExplorePath(area: string) {
+  return EXPLORE_PATHS[area] || EXPLORE_PATHS["Koramangala"];
 }
 
 /* ── Component ── */
@@ -138,49 +212,24 @@ export function ActivityMap() {
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const popupRef = useRef<maplibregl.Popup | null>(null);
+  const exploreAnimRef = useRef<number | null>(null);
   const [activeFilter, setActiveFilter] = useState<"all" | "overpaying" | "cashback">("all");
-  const [isMobile, setIsMobile] = useState(false);
+  const [flyArea, setFlyArea] = useState("");
+  const [exploring, setExploring] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
 
-  useEffect(() => {
-    setIsMobile(window.innerWidth < 768);
-  }, []);
+  const activeFilterRef = useRef(activeFilter);
+  activeFilterRef.current = activeFilter;
 
-  const filteredBuildings = BUILDINGS.filter((b) => {
-    if (activeFilter === "overpaying") return b.rent > b.market_avg;
-    if (activeFilter === "cashback") return b.cashback >= 2400;
-    return true;
-  });
+  /* ── Render markers for a given filter ── */
+  const renderMarkers = useCallback((map: maplibregl.Map, filter: "all" | "overpaying" | "cashback") => {
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+    if (popupRef.current) { popupRef.current.remove(); popupRef.current = null; }
 
-  const initMap = useCallback(() => {
-    if (!containerRef.current || mapRef.current) return;
+    const buildings = getFilteredBuildings(filter);
 
-    const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: DARK_STYLE,
-      center: [77.6245, 12.9352],
-      zoom: 13,
-      pitch: 50,
-      bearing: -15,
-      minZoom: 11,
-      maxZoom: 17,
-      maxBounds: [[77.35, 12.75], [77.85, 13.20]],
-      attributionControl: false,
-      canvasContextAttributes: { antialias: true },
-    });
-
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-
-    map.on("load", () => {
-      addBuildingMarkers(map);
-    });
-
-    mapRef.current = map;
-  }, []);
-
-  const addBuildingMarkers = useCallback((map: maplibregl.Map) => {
-    clearMarkers();
-
-    for (const b of filteredBuildings) {
+    for (const b of buildings) {
       const isOverpaying = b.rent > b.market_avg;
       const overpayAmount = b.rent - b.market_avg;
       const isHighUsers = b.users >= 10;
@@ -191,11 +240,7 @@ export function ActivityMap() {
         ? "rgba(139, 92, 246, 0.6)"
         : "rgba(255, 154, 109, 0.4)";
 
-      const dotColor = isOverpaying
-        ? "#ef4444"
-        : isHighUsers
-        ? "#8b5cf6"
-        : "#ff9a6d";
+      const dotColor = isOverpaying ? "#ef4444" : isHighUsers ? "#8b5cf6" : "#ff9a6d";
 
       const el = document.createElement("div");
       el.className = "secured-3d-marker";
@@ -209,7 +254,7 @@ export function ActivityMap() {
         .setLngLat([b.lng, b.lat])
         .addTo(map);
 
-      const popupContent = `
+      const popupHTML = `
         <div class="secured-3d-popup">
           <div class="secured-3d-popup-area">${b.area}</div>
           <div class="secured-3d-popup-rent">
@@ -220,25 +265,14 @@ export function ActivityMap() {
             <span class="secured-3d-popup-label">Market avg</span>
             <span class="secured-3d-popup-value">${formatINR(b.market_avg)}/mo</span>
           </div>
-          ${isOverpaying ? `
-            <div class="secured-3d-popup-alert">
-              Overpaying by ${formatINR(overpayAmount)}/mo
-            </div>
-          ` : `
-            <div class="secured-3d-popup-good">
-              Below market rate — good deal
-            </div>
-          `}
+          ${isOverpaying
+            ? `<div class="secured-3d-popup-alert">Overpaying by ${formatINR(overpayAmount)}/mo</div>`
+            : `<div class="secured-3d-popup-good">Below market rate — good deal</div>`
+          }
           <div class="secured-3d-popup-divider"></div>
-          <div class="secured-3d-popup-cashback">
-            Earn <strong>${formatINR(b.cashback)}/year</strong> cashback
-          </div>
-          <div class="secured-3d-popup-users">
-            ${b.users} people nearby use Secured
-          </div>
-          <a href="https://apps.apple.com/in/app/secured-by-flent/id6757275258" target="_blank" rel="noopener noreferrer" class="secured-3d-popup-cta">
-            Optimize your rent
-          </a>
+          <div class="secured-3d-popup-cashback">Earn <strong>${formatINR(b.cashback)}/year</strong> cashback</div>
+          <div class="secured-3d-popup-users">${b.users} people nearby use Secured</div>
+          <a href="https://apps.apple.com/in/app/secured-by-flent/id6757275258" target="_blank" rel="noopener noreferrer" class="secured-3d-popup-cta">Optimize your rent</a>
         </div>
       `;
 
@@ -253,51 +287,122 @@ export function ActivityMap() {
           className: "secured-3d-popup-wrapper",
         })
           .setLngLat([b.lng, b.lat])
-          .setHTML(popupContent)
+          .setHTML(popupHTML)
           .addTo(map);
         popupRef.current = popup;
       });
 
-      el.addEventListener("mouseenter", () => {
-        el.classList.add("secured-3d-marker-hover");
-      });
-      el.addEventListener("mouseleave", () => {
-        el.classList.remove("secured-3d-marker-hover");
-      });
+      el.addEventListener("mouseenter", () => el.classList.add("secured-3d-marker-hover"));
+      el.addEventListener("mouseleave", () => el.classList.remove("secured-3d-marker-hover"));
 
       markersRef.current.push(marker);
     }
-  }, [filteredBuildings]);
-
-  const clearMarkers = useCallback(() => {
-    markersRef.current.forEach((m) => m.remove());
-    markersRef.current = [];
-    if (popupRef.current) {
-      popupRef.current.remove();
-      popupRef.current = null;
-    }
   }, []);
 
+  /* ── Init map ── */
   useEffect(() => {
-    initMap();
+    if (!containerRef.current || mapRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: containerRef.current,
+      style: MAP_STYLE,
+      center: [77.6245, 12.9352],
+      zoom: 13,
+      pitch: 50,
+      bearing: -15,
+      minZoom: 11,
+      maxZoom: 17,
+      maxBounds: [[77.35, 12.75], [77.85, 13.20]],
+      attributionControl: false,
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+
+    map.on("load", () => {
+      mapRef.current = map;
+      setMapReady(true);
+      renderMarkers(map, activeFilterRef.current);
+    });
+
     return () => {
-      clearMarkers();
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      if (exploreAnimRef.current) cancelAnimationFrame(exploreAnimRef.current);
+      markersRef.current.forEach((m) => m.remove());
+      if (popupRef.current) popupRef.current.remove();
+      map.remove();
+      mapRef.current = null;
     };
+  }, [renderMarkers]);
+
+  /* ── React to filter changes ── */
+  useEffect(() => {
+    if (!mapRef.current || !mapReady) return;
+    renderMarkers(mapRef.current, activeFilter);
+  }, [activeFilter, mapReady, renderMarkers]);
+
+  /* ── Fly to area ── */
+  const handleFlyTo = useCallback((area: string) => {
+    if (!area || !mapRef.current) return;
+    const coords = AREA_COORDS[area];
+    if (!coords) return;
+    setFlyArea(area);
+    stopExplore();
+    mapRef.current.flyTo({
+      center: coords,
+      zoom: 14.5,
+      pitch: 55,
+      bearing: -20 + Math.random() * 40,
+      duration: 2000,
+      essential: true,
+    });
   }, []);
 
-  useEffect(() => {
+  /* ── Explore street (car mode) ── */
+  const startExplore = useCallback(() => {
     if (!mapRef.current) return;
+    setExploring(true);
     const map = mapRef.current;
-    if (!map.loaded()) {
-      map.on("load", () => addBuildingMarkers(map));
-    } else {
-      addBuildingMarkers(map);
+    const currentCenter = map.getCenter();
+
+    let closestArea = "Koramangala";
+    let minDist = Infinity;
+    for (const [area, coords] of Object.entries(AREA_COORDS)) {
+      const dist = Math.hypot(coords[0] - currentCenter.lng, coords[1] - currentCenter.lat);
+      if (dist < minDist) { minDist = dist; closestArea = area; }
     }
-  }, [activeFilter, addBuildingMarkers]);
+
+    const path = getExplorePath(closestArea);
+    let step = 0;
+    const totalSteps = path.length;
+    const STEP_DURATION = 3000;
+
+    function animateStep() {
+      if (!mapRef.current) return;
+      const waypoint = path[step % totalSteps];
+      mapRef.current.easeTo({
+        center: waypoint.center,
+        bearing: waypoint.bearing,
+        pitch: waypoint.pitch,
+        zoom: waypoint.zoom,
+        duration: STEP_DURATION,
+        easing: (t) => t * (2 - t),
+      });
+
+      step++;
+      exploreAnimRef.current = window.setTimeout(() => {
+        animateStep();
+      }, STEP_DURATION) as unknown as number;
+    }
+
+    animateStep();
+  }, []);
+
+  const stopExplore = useCallback(() => {
+    setExploring(false);
+    if (exploreAnimRef.current) {
+      clearTimeout(exploreAnimRef.current);
+      exploreAnimRef.current = null;
+    }
+  }, []);
 
   return (
     <div className="relative h-full w-full" data-lenis-prevent>
@@ -327,7 +432,7 @@ export function ActivityMap() {
         ))}
       </div>
 
-      {/* Area search — top center */}
+      {/* Area fly-to — top center */}
       <div className="absolute left-1/2 top-20 z-[20] -translate-x-1/2 md:top-24">
         <div className="flex items-center overflow-hidden rounded-full border border-white/10 bg-[#1a1a1a]/80 backdrop-blur-md">
           <svg className="ml-3 text-white/30" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -335,26 +440,12 @@ export function ActivityMap() {
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           <select
-            onChange={(e) => {
-              const area = e.target.value;
-              if (!area || !mapRef.current) return;
-              const coords = AREA_COORDS[area];
-              if (coords) {
-                mapRef.current.flyTo({
-                  center: coords,
-                  zoom: 14.5,
-                  pitch: 55,
-                  bearing: -20 + Math.random() * 40,
-                  duration: 2000,
-                  essential: true,
-                });
-              }
-            }}
-            defaultValue=""
+            value={flyArea}
+            onChange={(e) => handleFlyTo(e.target.value)}
             className="w-48 appearance-none bg-transparent px-3 py-2.5 text-xs text-white outline-none md:w-64"
             style={{ fontFamily: "var(--font-ui)" }}
           >
-            <option value="" disabled className="bg-[#1a1a1a] text-[#666]">
+            <option value="" className="bg-[#1a1a1a] text-[#666]">
               Fly to area...
             </option>
             {AREA_NAMES.map((name) => (
@@ -364,6 +455,31 @@ export function ActivityMap() {
             ))}
           </select>
         </div>
+      </div>
+
+      {/* Explore street toggle — top right area */}
+      <div className="absolute right-5 top-20 z-[20] md:right-16 md:top-24">
+        <button
+          onClick={exploring ? stopExplore : startExplore}
+          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
+            exploring
+              ? "border-[#8b5cf6]/40 bg-[#8b5cf6]/10 text-[#8b5cf6]"
+              : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
+          }`}
+          style={{ fontFamily: "var(--font-ui)" }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {exploring ? (
+              <>
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </>
+            ) : (
+              <polygon points="5,3 19,12 5,21" />
+            )}
+          </svg>
+          {exploring ? "Stop" : "Explore Street"}
+        </button>
       </div>
     </div>
   );
