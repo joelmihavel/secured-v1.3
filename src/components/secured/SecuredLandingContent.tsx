@@ -57,17 +57,12 @@ export function SecuredLandingContent() {
         style={{ right: 80, width: "0.3px", backgroundColor: "#444444" }}
       />
 
-      <main className="flex flex-col gap-12 md:gap-0">
+      <main className="flex flex-col">
         <Hero data={data.hero} variant={variant} />
-        <div style={{ marginTop: 48 }} />
         <Commitment data={data.commitment} variant={variant} />
         <CreditCard data={data.creditCard} />
-        <div className="-mt-12 pt-8 md:mt-0 md:pt-0">
-          <GettingStarted data={data.gettingStarted} />
-        </div>
-        <div className="pb-10 md:pb-[80px]" />
+        <GettingStarted data={data.gettingStarted} />
         <DownloadApp data={DOWNLOAD_APP_DEFAULTS} />
-        <div className="pt-10 md:pt-[80px]" />
         <FAQ items={data.faq} />
         <Stats data={STATS_DEFAULTS} />
       </main>

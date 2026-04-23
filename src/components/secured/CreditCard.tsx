@@ -1,127 +1,155 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { SectionWrapper } from "./ui/SectionWrapper";
-import { FadeIn } from "./ui/FadeIn";
+import { useRef, useEffect, useState } from "react";
+import { gsap, ScrollTrigger } from "./useGSAP";
+import { Floating, CreditCardShape, RupeeCoin } from "./FloatingElements";
 import { Button } from "./ui/Button";
-import { WordReveal, SlideUp } from "./ui/TextReveal";
 import type { CreditCardContent } from "@/lib/secured/types";
 
-function usePaperSway(baseTilt: number, index: number) {
-  const rotate = useMotionValue(baseTilt);
-  const smoothRotate = useSpring(rotate, { stiffness: 15, damping: 4, mass: 1.2 });
-  const [isHovered, setIsHovered] = useState(false);
+export function CreditCard({ data }: { data: CreditCardContent }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pinnedRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    if (isHovered) {
-      rotate.set(0);
-      return;
-    }
+    if (!containerRef.current || !pinnedRef.current) return;
 
-    const sway = () => {
-      const wind = (Math.random() - 0.4) * 5;
-      const target = baseTilt + wind;
-      rotate.set(target);
-    };
+    const trigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      pin: pinnedRef.current,
+      scrub: 0.6,
+      onUpdate: (self) => setProgress(self.progress),
+    });
 
-    sway();
-    const interval = setInterval(sway, 1800 + index * 400);
-    return () => clearInterval(interval);
-  }, [baseTilt, index, isHovered, rotate]);
+    return () => trigger.kill();
+  }, []);
 
-  return { smoothRotate, setIsHovered };
-}
+  const bgScale = 0.7 + progress * 0.3;
+  const headingOpacity = Math.min(1, progress * 5);
+  const headingY = Math.max(0, (1 - progress * 4) * 80);
 
-function FeatureCard({ text, icon, delay, index }: { text: string; icon: string; delay: number; index: number }) {
-  const isEven = index % 2 === 0;
-  const tilt = isEven ? -2.73 : 2.73;
-  const { smoothRotate, setIsHovered } = usePaperSway(tilt, index);
+  const cardProgress = (i: number) => {
+    const start = 0.2 + i * 0.1;
+    return Math.min(1, Math.max(0, (progress - start) * 5));
+  };
+
+  const ctaOpacity = Math.min(1, Math.max(0, (progress - 0.7) * 4));
 
   return (
-    <FadeIn delay={delay}>
-      <motion.div
-        className="relative flex h-[220px] w-full flex-col items-center justify-center gap-6 rounded-xl bg-[#202020] px-4 py-6 md:h-[258px] md:w-[320px] md:gap-8 xl:h-[290px] xl:w-[380px] 2xl:w-[420px] 3xl:h-[340px] 3xl:w-[500px] 4xl:h-[420px] 4xl:w-[620px] 5xl:h-[560px] 5xl:w-[840px]"
-        style={{ transformOrigin: "top left", rotate: smoothRotate }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
+    <div ref={containerRef} className="relative bg-[#131313]" style={{ height: "280vh" }}>
+      <div
+        ref={pinnedRef}
+        className="relative flex h-screen w-full items-center justify-center overflow-hidden"
       >
-        {/* Corner decoration */}
-        <div className="absolute right-0 top-0 3xl:scale-125 4xl:scale-150 5xl:scale-[2]" style={{ transformOrigin: "top right" }}>
-          <Image
-            src="/assets/icons/card-corner.svg"
-            alt=""
-            width={54}
-            height={54}
-            aria-hidden="true"
-          />
-        </div>
-
-        {/* Paper pin */}
-        <div className="absolute top-3 left-4 3xl:top-4 3xl:left-5 4xl:top-5 4xl:left-6 5xl:top-6 5xl:left-8">
-          <div className="h-4 w-4 rounded-full bg-[#ff9a6d] shadow-[0px_2px_4px_rgba(0,0,0,0.3)] 3xl:h-5 3xl:w-5 4xl:h-6 4xl:w-6 5xl:h-8 5xl:w-8">
-            <div className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#cc7b57] 3xl:h-2 3xl:w-2 4xl:h-2.5 4xl:w-2.5 5xl:h-3.5 5xl:w-3.5" />
-          </div>
-        </div>
-
-        <div className="flex h-16 items-center justify-center 3xl:h-20 4xl:h-24 5xl:h-32">
-          <Image src={icon} alt="" width={80} height={64} aria-hidden="true" className="h-16 w-auto 3xl:h-20 4xl:h-24 5xl:h-32" />
-        </div>
-        <p className="max-w-[244px] text-center font-body text-sm leading-6 text-[#a9a9a9] md:text-base 3xl:max-w-[320px] 3xl:text-lg 4xl:max-w-[420px] 4xl:text-xl 5xl:max-w-[560px] 5xl:text-2xl">
-          {text}
-        </p>
-      </motion.div>
-    </FadeIn>
-  );
-}
-
-export function CreditCard({ data }: { data: CreditCardContent }) {
-  return (
-    <section className="relative bg-[#131313] py-8 md:pb-[160px] md:pt-[160px]">
-      {/* Background decorative ellipses */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden" aria-hidden="true">
-        <Image
-          src="/assets/backgrounds/creditcard-ellipses.svg"
-          alt=""
-          width={1534}
-          height={767}
-          className="h-auto w-[1534px] max-w-none"
+        {/* Expanding background panel */}
+        <div
+          className="absolute inset-x-0 top-0 mx-auto h-full max-w-[1400px] origin-top rounded-b-[40px] bg-[#0f0f0f]"
+          style={{
+            transform: `scaleX(${bgScale})`,
+            opacity: 0.6 + progress * 0.4,
+          }}
         />
-      </div>
 
-      <SectionWrapper className="relative z-10 text-center">
-        <h2 className="mx-auto max-w-[582px] font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:text-[34px] lg:text-[40px] lg:leading-[1.5] lg:tracking-[-0.88px] xl:max-w-[700px] xl:text-[48px] 2xl:text-[52px] 3xl:max-w-[900px] 3xl:text-[60px] 4xl:max-w-[1200px] 4xl:text-[72px] 5xl:max-w-[1600px] 5xl:text-[96px]">
-          <WordReveal>{data.heading}</WordReveal>
-        </h2>
+        {/* Floating decorative elements */}
+        <Floating className="left-[6%] top-[18%] hidden md:block" speed={0.9} blur={5}>
+          <CreditCardShape size={80} />
+        </Floating>
+        <Floating className="right-[6%] top-[22%] hidden md:block" speed={1.1} direction="down" blur={3} rotate={-10}>
+          <CreditCardShape size={56} />
+        </Floating>
+        <Floating className="left-[15%] bottom-[22%] hidden md:block" speed={0.7} blur={6}>
+          <RupeeCoin size={44} />
+        </Floating>
+        <Floating className="right-[12%] bottom-[18%] hidden md:block" speed={0.8} direction="down" blur={4}>
+          <RupeeCoin size={36} />
+        </Floating>
 
-        <SlideUp delay={0.3} className="mt-3">
+        {/* Content */}
+        <div className="relative z-10 mx-auto max-w-[900px] px-6 text-center xl:max-w-[1000px]">
+          {/* Heading */}
+          <h2
+            className="mx-auto max-w-[700px] font-display text-[32px] leading-[1.1] tracking-[-1.5px] text-white md:text-[48px] lg:text-[56px] xl:text-[64px]"
+            style={{
+              opacity: headingOpacity,
+              transform: `translateY(${headingY}px)`,
+            }}
+          >
+            {data.heading}
+          </h2>
+
           <p
-            className="text-base leading-[1.6] text-[#797979] md:text-xl 3xl:text-2xl 4xl:text-3xl 5xl:text-4xl"
-            style={{ fontFamily: "var(--font-ui)" }}
+            className="mx-auto mt-4 text-base leading-[1.6] text-[#797979] md:text-lg"
+            style={{
+              fontFamily: "var(--font-ui)",
+              opacity: Math.min(1, Math.max(0, (progress - 0.1) * 5)),
+              transform: `translateY(${Math.max(0, (1 - (progress - 0.1) * 4) * 40)}px)`,
+            }}
           >
             {data.subheading}
           </p>
-        </SlideUp>
 
-        {/* Feature cards — 2-col grid */}
-        <div className="mx-auto mt-8 max-w-[700px] grid grid-cols-1 gap-7 md:mt-12 md:grid-cols-2 md:gap-10 xl:max-w-[840px] 2xl:max-w-[920px] 3xl:max-w-[1100px] 4xl:max-w-[1400px] 5xl:max-w-[1900px]">
-          {data.featureCards.map((card, i) => (
-            <FeatureCard key={i} text={card.text} icon={card.icon} delay={0.1 * i} index={i} />
-          ))}
-        </div>
+          {/* Feature cards */}
+          <div className="mx-auto mt-10 grid max-w-[800px] grid-cols-1 gap-4 md:mt-14 md:grid-cols-2 md:gap-5">
+            {data.featureCards.map((card, i) => {
+              const p = cardProgress(i);
+              return (
+                <div
+                  key={i}
+                  className="group flex items-start gap-4 rounded-2xl border border-[#282828] bg-[#161616] p-5 text-left transition-colors duration-300 hover:border-[#ff9a6d]/30 md:p-6"
+                  style={{
+                    opacity: p,
+                    transform: `translateY(${(1 - p) * 24}px)`,
+                  }}
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-[#ff9a6d]/10 md:h-12 md:w-12">
+                    <svg className="h-5 w-5 text-[#ff9a6d] md:h-6 md:w-6" viewBox="0 0 24 24" fill="none">
+                      <rect x="2" y="5" width="20" height="14" rx="3" stroke="currentColor" strokeWidth="1.5" />
+                      <line x1="2" y1="10" x2="22" y2="10" stroke="currentColor" strokeWidth="1.5" />
+                    </svg>
+                  </div>
+                  <p
+                    className="text-sm leading-[1.6] text-[#b0b0b0] md:text-[15px]"
+                    style={{ fontFamily: "var(--font-ui)" }}
+                  >
+                    {card.text}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
 
-        {/* CTA */}
-        <div className="mx-auto mt-10 max-w-[480px] md:mt-16 3xl:max-w-[580px] 4xl:max-w-[720px] 5xl:max-w-[960px]">
-          <Button fullWidth onClick={() => document.getElementById("download-app")?.scrollIntoView({ behavior: "smooth" })}>{data.ctaButtonText}</Button>
-          <p
-            className="mt-3 text-center text-xs leading-[1.8] tracking-[-0.24px] text-[#8a8a8a] 3xl:text-sm 4xl:text-base 5xl:text-lg"
-            style={{ fontFamily: "var(--font-ui)" }}
+          {/* CTA */}
+          <div
+            className="mx-auto mt-10 max-w-[400px]"
+            style={{ opacity: ctaOpacity }}
           >
-            {data.ctaDisclaimer}
-          </p>
+            <Button
+              fullWidth
+              onClick={() => document.getElementById("download-app")?.scrollIntoView({ behavior: "smooth" })}
+            >
+              {data.ctaButtonText}
+            </Button>
+            {data.ctaDisclaimer && (
+              <p
+                className="mt-3 text-xs text-[#666]"
+                style={{ fontFamily: "var(--font-ui)" }}
+              >
+                {data.ctaDisclaimer}
+              </p>
+            )}
+          </div>
         </div>
-      </SectionWrapper>
-    </section>
+
+        {/* Gradient overlay at top */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-32"
+          style={{
+            background: "linear-gradient(180deg, #131313 0%, transparent 100%)",
+          }}
+        />
+      </div>
+    </div>
   );
 }
