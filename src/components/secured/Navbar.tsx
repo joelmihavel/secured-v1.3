@@ -206,10 +206,10 @@ export function Navbar() {
   return (
     <>
       {/* Top bar — always visible, z-index above overlay */}
-      <div className="fixed top-0 z-[60] w-full">
+      <div className="pointer-events-none fixed top-0 z-[60] w-full">
         <div className="flex w-full items-center justify-between px-6 pb-2 pt-6 md:px-8 lg:px-[200px] lg:pt-[80px]">
           {/* Left — Secured by flent logo */}
-          <a href="/" data-navbar-logo className="3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
+          <a href="/" data-navbar-logo className="pointer-events-auto 3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
             <div className="flex flex-col items-end gap-[3px]">
               <span
                 className="text-[18px] leading-[18px] tracking-[-0.6px] text-[#ff9a6d]"
@@ -238,7 +238,7 @@ export function Navbar() {
 
           {/* Right — Hamburger (hover-triggered) */}
           <button
-            className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a] 3xl:h-14 3xl:w-14 4xl:h-[72px] 4xl:w-[72px] 5xl:h-24 5xl:w-24 3xl:rounded-2xl"
+            className="pointer-events-auto relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a] 3xl:h-14 3xl:w-14 4xl:h-[72px] 4xl:w-[72px] 5xl:h-24 5xl:w-24 3xl:rounded-2xl"
             onMouseEnter={openMenu}
             onClick={() => setMenuOpen(!menuOpen)}
             style={{

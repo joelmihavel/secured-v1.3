@@ -414,7 +414,7 @@ export function ActivityMap() {
       <div className="pointer-events-none absolute inset-y-0 left-0 z-[10] w-24 bg-gradient-to-r from-[#131313] to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-[10] w-24 bg-gradient-to-l from-[#131313] to-transparent" />
 
-      {/* Filter toggles — top left */}
+      {/* Controls — left column: filters + explore */}
       <div className="absolute left-5 top-20 z-[20] flex flex-col gap-1.5 md:left-6 md:top-24">
         {(["all", "overpaying", "cashback"] as const).map((f) => (
           <button
@@ -430,6 +430,30 @@ export function ActivityMap() {
             {f === "all" ? "All Homes" : f === "overpaying" ? "Overpaying" : "Cashback Hotspots"}
           </button>
         ))}
+
+        <div className="mt-1 h-px w-8 bg-white/[0.06]" />
+
+        <button
+          onClick={exploring ? stopExplore : startExplore}
+          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
+            exploring
+              ? "border-[#8b5cf6]/40 bg-[#8b5cf6]/10 text-[#8b5cf6]"
+              : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
+          }`}
+          style={{ fontFamily: "var(--font-ui)" }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {exploring ? (
+              <>
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </>
+            ) : (
+              <polygon points="5,3 19,12 5,21" />
+            )}
+          </svg>
+          {exploring ? "Stop" : "Explore Street"}
+        </button>
       </div>
 
       {/* Area fly-to — top center */}
@@ -455,31 +479,6 @@ export function ActivityMap() {
             ))}
           </select>
         </div>
-      </div>
-
-      {/* Explore street toggle — top right area */}
-      <div className="absolute right-5 top-20 z-[20] md:right-16 md:top-24">
-        <button
-          onClick={exploring ? stopExplore : startExplore}
-          className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
-            exploring
-              ? "border-[#8b5cf6]/40 bg-[#8b5cf6]/10 text-[#8b5cf6]"
-              : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
-          }`}
-          style={{ fontFamily: "var(--font-ui)" }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            {exploring ? (
-              <>
-                <rect x="6" y="4" width="4" height="16" />
-                <rect x="14" y="4" width="4" height="16" />
-              </>
-            ) : (
-              <polygon points="5,3 19,12 5,21" />
-            )}
-          </svg>
-          {exploring ? "Stop" : "Explore Street"}
-        </button>
       </div>
     </div>
   );
