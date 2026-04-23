@@ -1,28 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import { useEffect, useRef, useState, useCallback } from "react";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 
-const KORAMANGALA_CENTER: [number, number] = [12.9352, 77.6245];
-const DEFAULT_ZOOM = 14;
-
-interface HotspotData {
-  area: string;
-  lat: number;
-  lng: number;
-  users: number;
-  cashback: number;
-}
-
-interface TenantPin {
-  lat: number;
-  lng: number;
-  rent: number;
-  cashback: number;
-  area: string;
-}
+/* ── Types ── */
 
 export interface AreaRentRange {
   area: string;
@@ -32,6 +14,19 @@ export interface AreaRentRange {
   p25: number;
   p75: number;
 }
+
+interface BuildingData {
+  id: number;
+  lat: number;
+  lng: number;
+  area: string;
+  rent: number;
+  market_avg: number;
+  cashback: number;
+  users: number;
+}
+
+/* ── Data ── */
 
 export const AREA_RENT_RANGES: AreaRentRange[] = [
   { area: "Whitefield", min: 12000, max: 55000, median: 28000, p25: 18000, p75: 38000 },
@@ -53,23 +48,23 @@ export const AREA_RENT_RANGES: AreaRentRange[] = [
 
 export const AREA_NAMES = AREA_RENT_RANGES.map((a) => a.area);
 
-const HOTSPOTS: HotspotData[] = [
-  { area: "Whitefield", lat: 12.9698, lng: 77.7499, users: 48, cashback: 120000 },
-  { area: "HSR Layout", lat: 12.9116, lng: 77.6474, users: 32, cashback: 80000 },
-  { area: "Indiranagar", lat: 12.9719, lng: 77.6412, users: 27, cashback: 65000 },
-  { area: "Koramangala", lat: 12.9352, lng: 77.6245, users: 41, cashback: 100000 },
-  { area: "Jayanagar", lat: 12.9250, lng: 77.5938, users: 22, cashback: 55000 },
-  { area: "Marathahalli", lat: 12.9591, lng: 77.7009, users: 35, cashback: 88000 },
-  { area: "BTM Layout", lat: 12.9166, lng: 77.6101, users: 29, cashback: 72000 },
-  { area: "Electronic City", lat: 12.8399, lng: 77.6770, users: 18, cashback: 45000 },
-  { area: "Hebbal", lat: 13.0358, lng: 77.5970, users: 15, cashback: 38000 },
-  { area: "JP Nagar", lat: 12.9063, lng: 77.5857, users: 24, cashback: 60000 },
-  { area: "Bellandur", lat: 12.9256, lng: 77.6762, users: 38, cashback: 95000 },
-  { area: "Sarjapur Road", lat: 12.9107, lng: 77.6872, users: 31, cashback: 78000 },
-  { area: "Rajajinagar", lat: 12.9867, lng: 77.5528, users: 12, cashback: 30000 },
-  { area: "Yelahanka", lat: 13.1007, lng: 77.5963, users: 10, cashback: 25000 },
-  { area: "Bannerghatta Road", lat: 12.8876, lng: 77.5969, users: 20, cashback: 50000 },
-];
+const AREA_COORDS: Record<string, [number, number]> = {
+  "Whitefield": [77.7499, 12.9698],
+  "HSR Layout": [77.6474, 12.9116],
+  "Indiranagar": [77.6412, 12.9719],
+  "Koramangala": [77.6245, 12.9352],
+  "Jayanagar": [77.5938, 12.9250],
+  "Marathahalli": [77.7009, 12.9591],
+  "BTM Layout": [77.6101, 12.9166],
+  "Electronic City": [77.6770, 12.8399],
+  "Hebbal": [77.5970, 13.0358],
+  "JP Nagar": [77.5857, 12.9063],
+  "Bellandur": [77.6762, 12.9256],
+  "Sarjapur Road": [77.6872, 12.9107],
+  "Rajajinagar": [77.5528, 12.9867],
+  "Yelahanka": [77.5963, 13.1007],
+  "Bannerghatta Road": [77.5969, 12.8876],
+};
 
 function seededRandom(seed: number) {
   let s = seed;
@@ -79,236 +74,295 @@ function seededRandom(seed: number) {
   };
 }
 
-function generateTenantPins(): TenantPin[] {
-  const pins: TenantPin[] = [];
+function generateBuildings(): BuildingData[] {
+  const buildings: BuildingData[] = [];
   const rng = seededRandom(42);
-
-  for (const hotspot of HOTSPOTS) {
-    const count = Math.min(hotspot.users, 5);
+  let id = 1;
+  for (const [area, coords] of Object.entries(AREA_COORDS)) {
+    const range = AREA_RENT_RANGES.find((r) => r.area === area)!;
+    const count = 4 + Math.floor(rng() * 4);
     for (let i = 0; i < count; i++) {
-      const latOffset = (rng() - 0.5) * 0.012;
-      const lngOffset = (rng() - 0.5) * 0.012;
-      const rent = Math.round((15000 + rng() * 30000) / 1000) * 1000;
-      const cashback = Math.round(rent * (0.008 + rng() * 0.007));
-      pins.push({
-        lat: hotspot.lat + latOffset,
-        lng: hotspot.lng + lngOffset,
+      const lngOffset = (rng() - 0.5) * 0.014;
+      const latOffset = (rng() - 0.5) * 0.014;
+      const rent = Math.round((range.min + rng() * (range.max - range.min)) / 1000) * 1000;
+      const marketAvg = range.median;
+      const users = 2 + Math.floor(rng() * 18);
+      buildings.push({
+        id: id++,
+        lng: coords[0] + lngOffset,
+        lat: coords[1] + latOffset,
+        area,
         rent,
-        cashback,
-        area: hotspot.area,
+        market_avg: marketAvg,
+        cashback: Math.round(rent * 0.008 * 12),
+        users,
       });
     }
   }
-  return pins;
+  return buildings;
 }
 
-const TENANT_PINS = generateTenantPins();
+const BUILDINGS = generateBuildings();
 
-function formatRent(amount: number): string {
-  if (amount >= 1000) return `₹${(amount / 1000).toFixed(0)}K`;
-  return `₹${amount}`;
+const DARK_STYLE: maplibregl.StyleSpecification = {
+  version: 8,
+  name: "Secured Dark",
+  sources: {
+    "carto-dark": {
+      type: "raster",
+      tiles: ["https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png"],
+      tileSize: 256,
+      attribution: "",
+    },
+  },
+  layers: [
+    {
+      id: "carto-dark-layer",
+      type: "raster",
+      source: "carto-dark",
+      minzoom: 0,
+      maxzoom: 20,
+    },
+  ],
+  glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
+};
+
+function formatINR(n: number): string {
+  return "₹" + n.toLocaleString("en-IN");
 }
 
-function formatCashback(amount: number): string {
-  if (amount >= 100000) return `₹${(amount / 100000).toFixed(1)}L`;
-  if (amount >= 1000) return `₹${(amount / 1000).toFixed(0)}K`;
-  return `₹${amount}`;
-}
-
-
-function AreaHighlights() {
-  const map = useMap();
-
-  useEffect(() => {
-    const layers: L.Layer[] = [];
-
-    for (const hotspot of HOTSPOTS) {
-      const radius = 300 + hotspot.users * 12;
-
-      const circle = L.circle([hotspot.lat, hotspot.lng], {
-        radius,
-        color: "rgba(255, 154, 109, 0.25)",
-        weight: 1,
-        fillColor: "rgba(255, 154, 109, 0.06)",
-        fillOpacity: 1,
-        dashArray: "4 4",
-      }).addTo(map);
-
-      const label = L.divIcon({
-        className: "",
-        html: `<div class="secured-area-label">${hotspot.area}</div>`,
-        iconSize: [120, 20],
-        iconAnchor: [60, 10],
-      });
-      const labelMarker = L.marker([hotspot.lat, hotspot.lng], { icon: label, interactive: false }).addTo(map);
-
-      layers.push(circle, labelMarker);
-    }
-
-    return () => {
-      layers.forEach((l) => map.removeLayer(l));
-    };
-  }, [map]);
-
-  return null;
-}
-
-
-function TenantMarkers({
-  onHover,
-  onLeave,
-}: {
-  onHover: (pin: TenantPin, x: number, y: number) => void;
-  onLeave: () => void;
-}) {
-  const map = useMap();
-
-  useEffect(() => {
-    const markers: L.Marker[] = [];
-
-    for (const pin of TENANT_PINS) {
-      const icon = L.divIcon({
-        className: "",
-        html: `
-          <div class="secured-tenant-pin">
-            <div class="secured-tenant-dot"></div>
-            <div class="secured-tenant-info">
-              <span class="secured-tenant-rent">${formatRent(pin.rent)}</span>
-              <span class="secured-tenant-cashback">↩ ₹${pin.cashback.toLocaleString("en-IN")}</span>
-            </div>
-          </div>
-        `,
-        iconSize: [90, 28],
-        iconAnchor: [6, 14],
-      });
-
-      const marker = L.marker([pin.lat, pin.lng], { icon }).addTo(map);
-
-      marker.on("mouseover", (e: L.LeafletMouseEvent) => {
-        const point = map.latLngToContainerPoint(e.latlng);
-        onHover(pin, point.x, point.y);
-      });
-      marker.on("mouseout", () => onLeave());
-      marker.on("click", (e: L.LeafletMouseEvent) => {
-        const point = map.latLngToContainerPoint(e.latlng);
-        onHover(pin, point.x, point.y);
-      });
-
-      markers.push(marker);
-    }
-
-    return () => {
-      markers.forEach((m) => map.removeLayer(m));
-    };
-  }, [map, onHover, onLeave]);
-
-  return null;
-}
-
-function FlyToArea({ area }: { area: string }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!area) return;
-    const match = HOTSPOTS.find(
-      (h) => h.area.toLowerCase().includes(area.toLowerCase())
-    );
-    if (match) {
-      map.flyTo([match.lat, match.lng], 14, { duration: 1.2 });
-    }
-  }, [area, map]);
-
-  return null;
-}
+/* ── Component ── */
 
 export function ActivityMap() {
-  const [tooltip, setTooltip] = useState<{
-    data: TenantPin;
-    x: number;
-    y: number;
-  } | null>(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [flyTarget, setFlyTarget] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null);
+  const markersRef = useRef<maplibregl.Marker[]>([]);
+  const popupRef = useRef<maplibregl.Popup | null>(null);
+  const [activeFilter, setActiveFilter] = useState<"all" | "overpaying" | "cashback">("all");
+  const [isMobile, setIsMobile] = useState(false);
 
-  const handleHover = useCallback((data: TenantPin, x: number, y: number) => {
-    setTooltip({ data, x, y });
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
   }, []);
 
-  const handleLeave = useCallback(() => {
-    setTooltip(null);
+  const filteredBuildings = BUILDINGS.filter((b) => {
+    if (activeFilter === "overpaying") return b.rent > b.market_avg;
+    if (activeFilter === "cashback") return b.cashback >= 2400;
+    return true;
+  });
+
+  const initMap = useCallback(() => {
+    if (!containerRef.current || mapRef.current) return;
+
+    const map = new maplibregl.Map({
+      container: containerRef.current,
+      style: DARK_STYLE,
+      center: [77.6245, 12.9352],
+      zoom: 13,
+      pitch: 50,
+      bearing: -15,
+      minZoom: 11,
+      maxZoom: 17,
+      maxBounds: [[77.35, 12.75], [77.85, 13.20]],
+      attributionControl: false,
+      canvasContextAttributes: { antialias: true },
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+
+    map.on("load", () => {
+      addBuildingMarkers(map);
+    });
+
+    mapRef.current = map;
   }, []);
 
-  const handleSearch = useCallback(() => {
-    if (searchValue.trim()) setFlyTarget(searchValue.trim());
-  }, [searchValue]);
+  const addBuildingMarkers = useCallback((map: maplibregl.Map) => {
+    clearMarkers();
+
+    for (const b of filteredBuildings) {
+      const isOverpaying = b.rent > b.market_avg;
+      const overpayAmount = b.rent - b.market_avg;
+      const isHighUsers = b.users >= 10;
+
+      const glowColor = isOverpaying
+        ? "rgba(239, 68, 68, 0.6)"
+        : isHighUsers
+        ? "rgba(139, 92, 246, 0.6)"
+        : "rgba(255, 154, 109, 0.4)";
+
+      const dotColor = isOverpaying
+        ? "#ef4444"
+        : isHighUsers
+        ? "#8b5cf6"
+        : "#ff9a6d";
+
+      const el = document.createElement("div");
+      el.className = "secured-3d-marker";
+      el.innerHTML = `
+        <div class="secured-3d-pulse" style="background: ${glowColor}"></div>
+        <div class="secured-3d-dot" style="background: ${dotColor}; box-shadow: 0 0 8px ${glowColor}"></div>
+        <div class="secured-3d-label">${formatINR(b.rent)}</div>
+      `;
+
+      const marker = new maplibregl.Marker({ element: el, anchor: "center" })
+        .setLngLat([b.lng, b.lat])
+        .addTo(map);
+
+      const popupContent = `
+        <div class="secured-3d-popup">
+          <div class="secured-3d-popup-area">${b.area}</div>
+          <div class="secured-3d-popup-rent">
+            <span class="secured-3d-popup-label">Rent</span>
+            <span class="secured-3d-popup-value">${formatINR(b.rent)}/mo</span>
+          </div>
+          <div class="secured-3d-popup-rent">
+            <span class="secured-3d-popup-label">Market avg</span>
+            <span class="secured-3d-popup-value">${formatINR(b.market_avg)}/mo</span>
+          </div>
+          ${isOverpaying ? `
+            <div class="secured-3d-popup-alert">
+              Overpaying by ${formatINR(overpayAmount)}/mo
+            </div>
+          ` : `
+            <div class="secured-3d-popup-good">
+              Below market rate — good deal
+            </div>
+          `}
+          <div class="secured-3d-popup-divider"></div>
+          <div class="secured-3d-popup-cashback">
+            Earn <strong>${formatINR(b.cashback)}/year</strong> cashback
+          </div>
+          <div class="secured-3d-popup-users">
+            ${b.users} people nearby use Secured
+          </div>
+          <a href="https://apps.apple.com/in/app/secured-by-flent/id6757275258" target="_blank" rel="noopener noreferrer" class="secured-3d-popup-cta">
+            Optimize your rent
+          </a>
+        </div>
+      `;
+
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (popupRef.current) popupRef.current.remove();
+        const popup = new maplibregl.Popup({
+          offset: 12,
+          closeButton: true,
+          closeOnClick: true,
+          maxWidth: "260px",
+          className: "secured-3d-popup-wrapper",
+        })
+          .setLngLat([b.lng, b.lat])
+          .setHTML(popupContent)
+          .addTo(map);
+        popupRef.current = popup;
+      });
+
+      el.addEventListener("mouseenter", () => {
+        el.classList.add("secured-3d-marker-hover");
+      });
+      el.addEventListener("mouseleave", () => {
+        el.classList.remove("secured-3d-marker-hover");
+      });
+
+      markersRef.current.push(marker);
+    }
+  }, [filteredBuildings]);
+
+  const clearMarkers = useCallback(() => {
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+    if (popupRef.current) {
+      popupRef.current.remove();
+      popupRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => {
+    initMap();
+    return () => {
+      clearMarkers();
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+    if (!map.loaded()) {
+      map.on("load", () => addBuildingMarkers(map));
+    } else {
+      addBuildingMarkers(map);
+    }
+  }, [activeFilter, addBuildingMarkers]);
 
   return (
     <div className="relative h-full w-full" data-lenis-prevent>
-      <MapContainer
-        center={KORAMANGALA_CENTER}
-        zoom={DEFAULT_ZOOM}
-        zoomControl={true}
-        attributionControl={false}
-        scrollWheelZoom={false}
-        dragging={true}
-        doubleClickZoom={true}
-        touchZoom={true}
-        minZoom={11}
-        maxZoom={16}
-        maxBounds={[[12.75, 77.35], [13.20, 77.85]]}
-        maxBoundsViscosity={1.0}
-        style={{ height: "100%", width: "100%", background: "#131313", zIndex: 0 }}
-      >
-        <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-          maxZoom={19}
-        />
-        <AreaHighlights />
-        <TenantMarkers onHover={handleHover} onLeave={handleLeave} />
-        {flyTarget && <FlyToArea area={flyTarget} />}
-      </MapContainer>
+      <div ref={containerRef} className="h-full w-full" />
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-[400] h-32 bg-gradient-to-b from-[#131313] to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[400] h-[55%] bg-gradient-to-t from-[#131313] via-[#131313]/90 via-30% to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-[400] w-24 bg-gradient-to-r from-[#131313] to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-[400] w-24 bg-gradient-to-l from-[#131313] to-transparent" />
+      {/* Edge fades */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-[10] h-32 bg-gradient-to-b from-[#131313] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[10] h-[55%] bg-gradient-to-t from-[#131313] via-[#131313]/90 via-30% to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-[10] w-24 bg-gradient-to-r from-[#131313] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-[10] w-24 bg-gradient-to-l from-[#131313] to-transparent" />
 
-      {tooltip && (
-        <div
-          className="pointer-events-none absolute z-[500] animate-[fadeScale_0.2s_ease-out]"
-          style={{
-            left: tooltip.x,
-            top: tooltip.y - 12,
-            transform: "translate(-50%, -100%)",
-          }}
-        >
-          <div className="rounded-xl border border-white/10 bg-[#1a1a1a]/90 px-4 py-3 shadow-xl backdrop-blur-md">
-            <p className="text-sm font-semibold text-white">{tooltip.data.area}</p>
-            <p className="mt-1 text-xs text-[#aaa]">
-              Rent: {formatRent(tooltip.data.rent)}/mo
-            </p>
-            <p className="mt-0.5 text-xs font-medium text-[#c4a0ff]">
-              ₹{tooltip.data.cashback.toLocaleString("en-IN")} cashback earned
-            </p>
-          </div>
-        </div>
-      )}
+      {/* Filter toggles — top left */}
+      <div className="absolute left-5 top-20 z-[20] flex flex-col gap-1.5 md:left-6 md:top-24">
+        {(["all", "overpaying", "cashback"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setActiveFilter(f)}
+            className={`rounded-full border px-3 py-1.5 text-[10px] font-medium uppercase tracking-[1px] backdrop-blur-md transition-all md:text-[11px] ${
+              activeFilter === f
+                ? "border-[#ff9a6d]/40 bg-[#ff9a6d]/10 text-[#ff9a6d]"
+                : "border-white/[0.06] bg-[#1a1a1a]/70 text-[#666] hover:text-white"
+            }`}
+            style={{ fontFamily: "var(--font-ui)" }}
+          >
+            {f === "all" ? "All Homes" : f === "overpaying" ? "Overpaying" : "Cashback Hotspots"}
+          </button>
+        ))}
+      </div>
 
-      <div className="absolute left-1/2 top-20 z-[500] -translate-x-1/2 md:top-24">
+      {/* Area search — top center */}
+      <div className="absolute left-1/2 top-20 z-[20] -translate-x-1/2 md:top-24">
         <div className="flex items-center overflow-hidden rounded-full border border-white/10 bg-[#1a1a1a]/80 backdrop-blur-md">
           <svg className="ml-3 text-white/30" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input
-            type="text"
-            placeholder="Find your area..."
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="w-48 bg-transparent px-3 py-2.5 text-xs text-white placeholder-white/30 outline-none md:w-64"
+          <select
+            onChange={(e) => {
+              const area = e.target.value;
+              if (!area || !mapRef.current) return;
+              const coords = AREA_COORDS[area];
+              if (coords) {
+                mapRef.current.flyTo({
+                  center: coords,
+                  zoom: 14.5,
+                  pitch: 55,
+                  bearing: -20 + Math.random() * 40,
+                  duration: 2000,
+                  essential: true,
+                });
+              }
+            }}
+            defaultValue=""
+            className="w-48 appearance-none bg-transparent px-3 py-2.5 text-xs text-white outline-none md:w-64"
             style={{ fontFamily: "var(--font-ui)" }}
-          />
+          >
+            <option value="" disabled className="bg-[#1a1a1a] text-[#666]">
+              Fly to area...
+            </option>
+            {AREA_NAMES.map((name) => (
+              <option key={name} value={name} className="bg-[#1a1a1a] text-white">
+                {name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
