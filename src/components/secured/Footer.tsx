@@ -95,14 +95,14 @@ export function Footer({ data }: { data: FooterContent }) {
           className="flex flex-col items-center gap-4 pt-4 md:pt-8"
         >
           <div className="flex flex-col items-center">
-            <span className="font-body text-center text-[28px] leading-[130%] text-[#797979] md:text-[36px] lg:text-[48px] xl:text-[56px] 2xl:text-[64px] 3xl:text-[76px] 4xl:text-[96px] 5xl:text-[128px]">
+            <span className="font-body text-center text-[28px] leading-[130%] text-[#999] md:text-[36px] lg:text-[48px] xl:text-[56px] 2xl:text-[64px] 3xl:text-[76px] 4xl:text-[96px] 5xl:text-[128px]">
               {data.taglineLine1}
             </span>
             <span className="font-body text-center text-[28px] leading-[130%] text-[#ff9a6d] md:text-[36px] lg:text-[48px] xl:text-[56px] 2xl:text-[64px] 3xl:text-[76px] 4xl:text-[96px] 5xl:text-[128px]">
               {data.taglineLine2}
             </span>
           </div>
-          <p className="font-body text-center text-xs uppercase leading-[18px] tracking-[1px] text-[#5a5a5a] md:text-sm 3xl:text-base 4xl:text-lg 5xl:text-xl">
+          <p className="font-body text-center text-xs uppercase leading-[18px] tracking-[1px] text-[#777] md:text-sm 3xl:text-base 4xl:text-lg 5xl:text-xl">
             {data.copyright}
           </p>
         </motion.div>

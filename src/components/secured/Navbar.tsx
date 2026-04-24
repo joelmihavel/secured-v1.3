@@ -128,7 +128,7 @@ function MaskedCTA({ index, variant }: { index: number; variant: "tenant" | "lan
           fullWidth
           className="mt-4"
         >
-          {variant === "landlord" ? "Invite your tenant" : "Join the Waitlist"}
+          {variant === "landlord" ? "Invite your tenant" : "Join the waitlist"}
         </Button>
       </motion.div>
     </div>
@@ -151,21 +151,21 @@ const NAV_ITEMS = [
 export function Navbar() {
   const { variant, setVariant, menuOpen, setMenuOpen } = useVariant();
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [heroVisible, setHeroVisible] = useState(true);
+  const [rentMapVisible, setRentMapVisible] = useState(false);
   const [howItWorksVisible, setHowItWorksVisible] = useState(false);
-  const hideToggle = heroVisible || howItWorksVisible;
+  const hideToggle = rentMapVisible || howItWorksVisible;
 
   useEffect(() => {
-    const hero = document.querySelector('[data-section="hero"]');
+    const rentMap = document.querySelector('[data-section="rent-map"]');
     const hiw = document.querySelector('[data-section="how-it-works"]');
     const observers: IntersectionObserver[] = [];
 
-    if (hero) {
+    if (rentMap) {
       const o = new IntersectionObserver(
-        ([entry]) => setHeroVisible(entry.isIntersecting),
+        ([entry]) => setRentMapVisible(entry.isIntersecting),
         { threshold: 0.15 }
       );
-      o.observe(hero);
+      o.observe(rentMap);
       observers.push(o);
     }
     if (hiw) {
@@ -205,11 +205,18 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top bar — always visible, z-index above overlay */}
-      <div className="fixed top-0 z-[60] w-full">
+      {/* Top bar — hides when map section is visible */}
+      <div
+        className={`pointer-events-none fixed z-[60] w-full ${variant === "tenant" ? "top-7" : "top-0"}`}
+        style={{
+          opacity: rentMapVisible && !menuOpen ? 0 : 1,
+          transform: rentMapVisible && !menuOpen ? "translateY(-20px)" : "translateY(0)",
+          transition: "opacity 0.4s ease, transform 0.4s ease",
+        }}
+      >
         <div className="flex w-full items-center justify-between px-6 pb-2 pt-6 md:px-8 lg:px-[200px] lg:pt-[80px]">
           {/* Left — Secured by flent logo */}
-          <a href="/" data-navbar-logo className="3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
+          <a href="/" data-navbar-logo className="pointer-events-auto 3xl:scale-150 4xl:scale-[2] 5xl:scale-[2.8]" style={{ transformOrigin: "left center" }}>
             <div className="flex flex-col items-end gap-[3px]">
               <span
                 className="text-[18px] leading-[18px] tracking-[-0.6px] text-[#ff9a6d]"
@@ -238,7 +245,7 @@ export function Navbar() {
 
           {/* Right — Hamburger (hover-triggered) */}
           <button
-            className="relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a] 3xl:h-14 3xl:w-14 4xl:h-[72px] 4xl:w-[72px] 5xl:h-24 5xl:w-24 3xl:rounded-2xl"
+            className="pointer-events-auto relative z-[60] flex h-10 w-10 items-center justify-center rounded-xl bg-[#202020] transition-colors hover:bg-[#2a2a2a] 3xl:h-14 3xl:w-14 4xl:h-[72px] 4xl:w-[72px] 5xl:h-24 5xl:w-24 3xl:rounded-2xl"
             onMouseEnter={openMenu}
             onClick={() => setMenuOpen(!menuOpen)}
             style={{
@@ -332,7 +339,7 @@ export function Navbar() {
           <button
             onClick={() => setVariant("tenant")}
             className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm 3xl:px-8 3xl:py-3 3xl:text-base 4xl:px-10 4xl:py-4 4xl:text-lg 5xl:px-12 5xl:py-5 5xl:text-xl ${
-              variant === "tenant" ? "font-semibold text-black" : "font-medium text-[#a6a6a6] hover:text-white"
+              variant === "tenant" ? "font-semibold text-black" : "font-medium text-[#bbb] hover:text-white"
             }`}
           >
             {variant === "tenant" && (
@@ -342,12 +349,12 @@ export function Navbar() {
                 transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
               />
             )}
-            <span className="relative z-10">I&apos;m a Tenant</span>
+            <span className="relative z-10">Tenant</span>
           </button>
           <button
             onClick={() => setVariant("landlord")}
             className={`relative rounded-[50px] px-4 py-1.5 text-xs leading-5 transition-all duration-200 md:px-6 md:py-2 md:text-sm 3xl:px-8 3xl:py-3 3xl:text-base 4xl:px-10 4xl:py-4 4xl:text-lg 5xl:px-12 5xl:py-5 5xl:text-xl ${
-              variant === "landlord" ? "font-semibold text-black" : "font-medium text-[#a6a6a6] hover:text-white"
+              variant === "landlord" ? "font-semibold text-black" : "font-medium text-[#bbb] hover:text-white"
             }`}
           >
             {variant === "landlord" && (
@@ -357,7 +364,7 @@ export function Navbar() {
                 transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
               />
             )}
-            <span className="relative z-10">I&apos;m a Landlord</span>
+            <span className="relative z-10">Landlord</span>
           </button>
         </div>
       </nav>

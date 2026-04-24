@@ -112,14 +112,14 @@ export function FAQ({ items }: { items: FaqItem[] }) {
         <div className="flex flex-col items-center gap-2 text-center">
           <SlideUp>
             <p
-              className="text-sm leading-[1.6] tracking-[-0.32px] text-[#b5b5b5] md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
+              className="text-sm leading-[1.6] tracking-[-0.32px] text-[#d0d0d0] md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
               style={{ fontFamily: "var(--font-ui)" }}
             >
               FAQs
             </p>
           </SlideUp>
           <h2 className="font-display text-[28px] leading-[1.4] tracking-[-0.5px] text-white md:text-[40px] md:leading-[1.5] md:tracking-[-0.88px] xl:text-[48px] 2xl:text-[52px] 3xl:text-[60px] 4xl:text-[72px] 5xl:text-[96px]">
-            <WordReveal delay={0.1}>Good Renters ask important questions</WordReveal>
+            <WordReveal delay={0.1}>Got questions? We got answers.</WordReveal>
           </h2>
         </div>
 

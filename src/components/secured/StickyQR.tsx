@@ -7,14 +7,37 @@ export function StickyQR() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const hero = document.querySelector('[data-section="hero"]');
-    if (!hero) { setVisible(true); return; }
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(!entry.isIntersecting),
-      { threshold: 0.15 }
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
+    const rentMap = document.querySelector('[data-section="rent-map"]');
+    const hiw = document.querySelector('[data-section="how-it-works"]');
+    const observers: IntersectionObserver[] = [];
+
+    const update = () => {
+      setVisible(!rentMapVisible && !hiwVisible);
+    };
+
+    let rentMapVisible = false;
+    let hiwVisible = false;
+
+    if (rentMap) {
+      const o = new IntersectionObserver(
+        ([entry]) => { rentMapVisible = entry.isIntersecting; update(); },
+        { threshold: 0.15 }
+      );
+      o.observe(rentMap);
+      observers.push(o);
+    }
+    if (hiw) {
+      const o = new IntersectionObserver(
+        ([entry]) => { hiwVisible = entry.isIntersecting; update(); },
+        { threshold: 0.15 }
+      );
+      o.observe(hiw);
+      observers.push(o);
+    }
+
+    if (!rentMap && !hiw) setVisible(true);
+
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   return (

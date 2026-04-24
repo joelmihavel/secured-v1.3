@@ -74,7 +74,7 @@ export function Stats({ data }: { data: StatsContent }) {
                       )}
                     </p>
                     <p
-                      className="text-sm font-medium leading-[1.6] text-[#797979] md:whitespace-nowrap md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
+                      className="text-sm font-medium leading-[1.6] text-[#999] md:whitespace-nowrap md:text-base 3xl:text-lg 4xl:text-xl 5xl:text-2xl"
                       style={{ fontFamily: "var(--font-ui)" }}
                     >
                       {stat.label}
