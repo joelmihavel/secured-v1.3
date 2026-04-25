@@ -74,7 +74,7 @@ export function PhoneReveal() {
             src="/assets/screens/app-home.png"
             alt="Secured app"
             fill
-            className="object-cover object-top"
+            className="object-fill"
             sizes="(max-width: 768px) 280px, (max-width: 1024px) 320px, 360px"
             priority
           />

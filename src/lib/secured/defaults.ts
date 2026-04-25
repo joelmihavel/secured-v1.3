@@ -115,33 +115,33 @@ export const COVERAGE_LANDLORD_DEFAULTS: CoverageContent = {
 
 export const GETTING_STARTED_DEFAULTS: GettingStartedContent = {
   sectionLabel: "How does it work?",
-  heading: "Getting started takes 2 minutes",
+  heading: "Getting started is simple & straightforward",
   steps: [
     {
       number: 1,
-      title: "Join Secured",
-      description: "Join Secured",
+      title: "Request your invite",
+      description: "Request your invite, Share your address, rent amount, & phone number",
       phone: "/assets/illustrations/how-it-works/screen-1.png",
       connector: "/assets/backgrounds/connector-1.svg",
     },
     {
       number: 2,
-      title: "Invite your landlord",
-      description: "Invite your landlord",
+      title: "Complete your KYC",
+      description: "Complete your KYC, & invite your landlord, We handle the rest",
       phone: "/assets/illustrations/how-it-works/screen-2.png",
       connector: "/assets/backgrounds/connector-2.svg",
     },
     {
       number: 3,
-      title: "They get free protection",
-      description: "They get free protection",
+      title: "Landlord accepts",
+      description: "Landlord accepts and gets insured. A free ₹1.5 lakh rental cover activates instantly.",
       phone: "/assets/illustrations/how-it-works/screen-3.png",
       connector: "/assets/backgrounds/connector-3.svg",
     },
     {
       number: 4,
-      title: "You start earning cashback",
-      description: "You start earning cashback",
+      title: "Pay rent as usual",
+      description: "Pay rent as usual, earn 1% back, Every timely payment unlocks more rewards.",
       phone: "/assets/illustrations/how-it-works/screen-4.png",
       connector: "/assets/backgrounds/connector-4.svg",
     },

@@ -526,32 +526,35 @@ export function RentMapSection() {
         </div>
       )}
 
-      {/* Bottom overlay — rent checker strip on top of map */}
-      <div className="pointer-events-none relative z-[450] flex flex-1 flex-col justify-end">
-        <div className="pointer-events-auto w-full">
+      {/* Bottom overlay — rent checker floating on top of map */}
+      <div className="pointer-events-none absolute inset-0 z-[450] flex items-end justify-center pb-8 md:pb-10">
+        <div className="pointer-events-auto w-[calc(100%-32px)] max-w-[600px]">
           {step === "explore" ? (
-            <div className="w-full border-t border-white/[0.08] bg-[#131313]/85 px-4 py-3 shadow-[0_-4px_24px_rgba(0,0,0,0.4)] backdrop-blur-xl md:px-8">
-              {/* Title row */}
+            <div className="rounded-2xl border border-white/[0.1] bg-[#131313]/90 px-6 py-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-xl md:px-8 md:py-6">
+              {/* Title */}
               <p
-                className="mb-2.5 text-center text-[10px] uppercase tracking-[0.14em] text-[#777] md:mb-2 md:text-left"
+                className="mb-4 text-center text-[10px] uppercase tracking-[0.16em] text-[#777]"
                 style={{ fontFamily: "var(--font-ui)" }}
               >
                 Check if you&apos;re overpaying rent
               </p>
 
-              {/* Horizontal form strip */}
-              <div className="flex flex-col gap-3 md:flex-row md:items-end md:gap-3">
+              {/* Form — full-width horizontal layout */}
+              <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-0">
                 {/* Area picker */}
-                <div className="md:w-[200px] md:flex-shrink-0">
-                  <label className="mb-1 block text-[9px] font-medium uppercase tracking-[1px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>
+                <div className="flex-1">
+                  <label className="mb-1.5 block text-[9px] font-medium uppercase tracking-[1px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
                     Area
                   </label>
                   <AreaPicker areas={areaNames} value={selectedArea} onChange={handleAreaChange} areaCoords={areaCoords} />
                 </div>
 
+                {/* Divider */}
+                <div className="hidden h-10 w-px bg-white/[0.06] mx-5 md:block" />
+
                 {/* BHK pills */}
-                <div className="md:flex-shrink-0">
-                  <label className="mb-1 block text-[9px] font-medium uppercase tracking-[1px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>
+                <div className="flex-shrink-0">
+                  <label className="mb-1.5 block text-[9px] font-medium uppercase tracking-[1px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
                     Type
                   </label>
                   <div className="flex gap-1.5">
@@ -563,7 +566,7 @@ export function RentMapSection() {
                         className={`rounded-full px-3 py-1.5 text-[11px] font-medium transition-all ${
                           selectedBhk === bhk
                             ? "bg-[#ff9a6d]/[0.12] text-[#ff9a6d] ring-1 ring-inset ring-[#ff9a6d]/25"
-                            : "bg-white/[0.04] text-[#666] hover:bg-white/[0.06] hover:text-white/50"
+                            : "bg-white/[0.04] text-[#555] hover:bg-white/[0.06] hover:text-white/50"
                         }`}
                         style={{ fontFamily: "var(--font-ui)" }}
                       >
@@ -573,13 +576,16 @@ export function RentMapSection() {
                   </div>
                 </div>
 
+                {/* Divider */}
+                <div className="hidden h-10 w-px bg-white/[0.06] mx-5 md:block" />
+
                 {/* Monthly rent */}
-                <div className="md:w-[160px] md:flex-shrink-0">
-                  <label className="mb-1 block text-[9px] font-medium uppercase tracking-[1px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>
+                <div className="flex-1">
+                  <label className="mb-1.5 block text-[9px] font-medium uppercase tracking-[1px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
                     Monthly Rent
                   </label>
                   <div className="flex items-baseline gap-1.5 border-b border-white/10 pb-1.5 transition-colors focus-within:border-[#ff9a6d]">
-                    <span className="text-[14px] text-[#666]" style={{ fontFamily: "var(--font-ui)" }}>₹</span>
+                    <span className="text-[14px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>₹</span>
                     <input
                       type="text"
                       inputMode="numeric"
@@ -587,129 +593,122 @@ export function RentMapSection() {
                       value={rentInput}
                       onChange={handleRentChange}
                       onKeyDown={(e) => e.key === "Enter" && handleCheck()}
-                      className="w-full bg-transparent text-[14px] text-white placeholder-[#555] outline-none"
+                      className="w-full bg-transparent text-[14px] text-white placeholder-[#444] outline-none"
                       style={{ fontFamily: "var(--font-ui)" }}
                     />
                   </div>
                 </div>
+              </div>
 
-                {/* Check button */}
-                <div className="md:flex-shrink-0">
-                  <Button onClick={handleCheck} disabled={rent < 5000 || !selectedArea}>
-                    Check my rent
-                  </Button>
-                </div>
+              {/* Check button — full width, centered below form */}
+              <div className="mt-5">
+                <Button fullWidth onClick={handleCheck} disabled={rent < 5000 || !selectedArea}>
+                  Check my rent
+                </Button>
               </div>
 
               {/* Bottom info row */}
-              <div className="mt-2 flex flex-col items-center gap-1 md:flex-row md:justify-between">
+              <div className="mt-3 flex flex-col items-center gap-1.5 md:flex-row md:justify-between">
                 {bhkRange && (
-                  <p className="text-[9px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                  <p className="text-[9px] text-[#444]" style={{ fontFamily: "var(--font-ui)" }}>
                     {selectedBhk} in {selectedArea}: {formatINR(bhkRange.min)} – {formatINR(bhkRange.max)}
                   </p>
                 )}
                 <div className="flex items-center gap-1.5">
                   <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#4ade80] shadow-[0_0_4px_rgba(74,222,128,0.5)]" />
-                  <p className="text-[9px] tracking-[0.02em] text-white/40" style={{ fontFamily: "var(--font-ui)" }}>
+                  <p className="text-[9px] tracking-[0.02em] text-white/30" style={{ fontFamily: "var(--font-ui)" }}>
                     Based on real data from Secured users across Bangalore
                   </p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="w-full border-t border-white/[0.08] bg-[#131313]/85 px-4 py-4 shadow-[0_-4px_24px_rgba(0,0,0,0.4)] backdrop-blur-xl md:px-8">
-              {/* Result — horizontal layout on desktop */}
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-                {/* Left: rent + area */}
-                <div className="flex items-start gap-4 md:flex-shrink-0">
-                  <div>
-                    <p className="text-[9px] font-medium uppercase tracking-[1px] text-[#777]" style={{ fontFamily: "var(--font-ui)" }}>
-                      {selectedBhk} in {selectedArea}
-                    </p>
-                    <p className="mt-1 font-display text-[24px] leading-[1] tracking-[-1px] text-white">
-                      {formatINR(rent)}<span className="ml-0.5 text-[11px] tracking-normal text-[#777]">/mo</span>
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleReset}
-                    className="mt-1 text-[10px] text-[#777] underline decoration-[#444] underline-offset-2 transition-colors hover:text-white md:mt-0"
-                    style={{ fontFamily: "var(--font-ui)" }}
-                  >
-                    Edit
-                  </button>
+            <div className="rounded-2xl border border-white/[0.1] bg-[#131313]/90 px-6 py-5 shadow-[0_12px_48px_rgba(0,0,0,0.6)] backdrop-blur-xl md:px-8 md:py-6">
+              {/* Top row: rent info + edit */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-2">
+                  <p className="font-display text-[28px] leading-[1] tracking-[-1px] text-white md:text-[32px]">
+                    {formatINR(rent)}
+                  </p>
+                  <span className="text-[11px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>/mo</span>
+                  <span className="text-[10px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>·</span>
+                  <span className="text-[11px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                    {selectedBhk} in {selectedArea}
+                  </span>
                 </div>
+                <button
+                  onClick={handleReset}
+                  className="rounded-full border border-white/[0.08] px-3 py-1 text-[10px] text-[#777] transition-colors hover:border-white/20 hover:text-white"
+                  style={{ fontFamily: "var(--font-ui)" }}
+                >
+                  Edit
+                </button>
+              </div>
 
-                {/* Divider */}
-                <div className="hidden h-10 w-px bg-white/[0.1] md:block" />
-
-                {/* Center: percentile bar */}
-                <div className="flex-1">
-                  <div className="mb-1.5 flex items-center justify-between">
-                    <span className="text-[9px] font-medium uppercase tracking-[0.5px] text-[#777]" style={{ fontFamily: "var(--font-ui)" }}>
-                      Percentile
-                    </span>
-                    <span className="text-[10px] font-semibold" style={{ fontFamily: "var(--font-ui)", color: percentileColor }}>
-                      {percentile}th — {percentileLabel}
-                    </span>
-                  </div>
-                  <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-white/[0.1]">
-                    {bhkRange && (
-                      <div
-                        className="absolute top-0 h-full rounded-full bg-white/[0.04]"
-                        style={{
-                          left: `${((bhkRange.p25 - bhkRange.min) / (bhkRange.max - bhkRange.min)) * 100}%`,
-                          width: `${((bhkRange.p75 - bhkRange.p25) / (bhkRange.max - bhkRange.min)) * 100}%`,
-                        }}
-                      />
-                    )}
+              {/* Percentile verdict */}
+              <div className="mt-4">
+                <p className="text-[12px] font-semibold" style={{ fontFamily: "var(--font-ui)", color: percentileColor }}>
+                  {percentileLabel}
+                </p>
+                <div className="mt-2 relative h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
+                  {bhkRange && (
                     <div
-                      className="absolute left-0 top-0 h-full rounded-full transition-all duration-500"
-                      style={{ width: `${percentile}%`, backgroundColor: percentileColor }}
+                      className="absolute top-0 h-full rounded-full bg-white/[0.04]"
+                      style={{
+                        left: `${((bhkRange.p25 - bhkRange.min) / (bhkRange.max - bhkRange.min)) * 100}%`,
+                        width: `${((bhkRange.p75 - bhkRange.p25) / (bhkRange.max - bhkRange.min)) * 100}%`,
+                      }}
                     />
-                    <div
-                      className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1a1a1a] transition-all duration-500"
-                      style={{ left: `${percentile}%`, backgroundColor: percentileColor }}
-                    />
-                  </div>
-                  <div className="mt-1 flex justify-between">
-                    <span className="text-[8px] text-[#777]" style={{ fontFamily: "var(--font-ui)" }}>{formatINR(bhkRange?.min ?? 0)}</span>
-                    <span className="text-[8px] text-[#777]" style={{ fontFamily: "var(--font-ui)" }}>{formatINR(bhkRange?.max ?? 0)}</span>
-                  </div>
+                  )}
+                  <div
+                    className="absolute left-0 top-0 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${percentile}%`, backgroundColor: percentileColor }}
+                  />
+                  <div
+                    className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#1a1a1a] transition-all duration-500"
+                    style={{ left: `${percentile}%`, backgroundColor: percentileColor }}
+                  />
                 </div>
-
-                {/* Divider */}
-                <div className="hidden h-10 w-px bg-white/[0.1] md:block" />
-                <div className="h-px w-full bg-white/[0.1] md:hidden" />
-
-                {/* Right: cashback + CTA */}
-                <div className="flex flex-col gap-2 md:flex-shrink-0 md:items-end">
-                  <div>
-                    <p className="text-[9px] font-medium uppercase tracking-[1px] text-[#777]" style={{ fontFamily: "var(--font-ui)" }}>
-                      Cashback with Secured
-                    </p>
-                    <div className="mt-1 flex items-baseline gap-3">
-                      <p className="font-display text-[20px] leading-[1] tracking-[-0.8px] text-[#ff9a6d]">
-                        {formatINR(annualCashback)}<span className="ml-0.5 text-[11px] text-[#ff9a6d]/50">/yr</span>
-                      </p>
-                      <div className="h-4 w-px bg-white/[0.1]" />
-                      <p className="font-display text-[14px] leading-[1] tracking-[-0.3px] text-white/60">
-                        {formatINR(monthlyCashback)}<span className="ml-0.5 text-[10px] text-white/60">/mo</span>
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Start earning
-                  </Button>
+                <div className="mt-1 flex justify-between">
+                  <span className="text-[9px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>{formatINR(bhkRange?.min ?? 0)}</span>
+                  <span className="text-[9px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                    {percentile}th percentile
+                  </span>
+                  <span className="text-[9px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>{formatINR(bhkRange?.max ?? 0)}</span>
                 </div>
               </div>
 
+              {/* Divider */}
+              <div className="my-4 h-px w-full bg-white/[0.06]" />
+
+              {/* Cashback row */}
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-[9px] font-medium uppercase tracking-[1px] text-[#555]" style={{ fontFamily: "var(--font-ui)" }}>
+                    Cashback with Secured
+                  </p>
+                  <div className="mt-1.5 flex items-baseline gap-3">
+                    <p className="font-display text-[24px] leading-[1] tracking-[-0.8px] text-[#ff9a6d]">
+                      {formatINR(annualCashback)}<span className="ml-0.5 text-[12px] text-[#ff9a6d]/50">/yr</span>
+                    </p>
+                    <div className="h-4 w-px bg-white/[0.08]" />
+                    <p className="font-display text-[16px] leading-[1] tracking-[-0.3px] text-white/50">
+                      {formatINR(monthlyCashback)}<span className="ml-0.5 text-[11px] text-white/30">/mo</span>
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  href="https://apps.apple.com/in/app/secured-by-flent/id6757275258"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Start earning →
+                </Button>
+              </div>
+
               {/* Promo banner */}
-              <div className="mt-2.5 rounded-lg border border-[#ff9a6d]/15 bg-[#ff9a6d]/[0.05] px-3 py-1.5">
-                <p className="text-center text-[10px] font-medium text-[#ff9a6d]" style={{ fontFamily: "var(--font-ui)" }}>
+              <div className="mt-4 rounded-lg border border-[#ff9a6d]/10 bg-[#ff9a6d]/[0.04] px-3 py-2">
+                <p className="text-center text-[10px] font-medium text-[#ff9a6d]/80" style={{ fontFamily: "var(--font-ui)" }}>
                   This month: flat ₹1,000 cashback on your next rent
                 </p>
               </div>
